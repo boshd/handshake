@@ -1,0 +1,38 @@
+# Uncomment the next line to define a global platform for your project
+platform :ios, '12.0'
+
+target 'space-ios' do
+  # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for space-ios
+
+  # firebase
+  pod 'Firebase/Core'
+  pod 'Firebase/Auth'
+  pod 'Firebase/Database'
+  pod 'Firebase/Messaging'
+  pod 'Firebase/Storage'
+  pod 'Firebase/Firestore'
+  pod 'Firebase/Functions'
+  pod 'Firebase/Crashlytics'
+  pod 'Firebase/Analytics'
+
+  pod 'RealmSwift'
+  pod 'SDWebImage'
+  pod 'SVProgressHUD'
+  pod 'FloatingPanel'
+  pod 'CropViewController'
+  pod 'PhoneNumberKit', '~> 3.3'
+  
+  target 'space-iosTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+  target 'space-iosUITests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+end
