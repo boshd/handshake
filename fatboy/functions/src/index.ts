@@ -7,19 +7,22 @@ https://github.com/dalenguyen/serverless-rest-api/blob/master/functions/src/inde
 */
 import { constructNotificationPayload } from './helpers/notifications'
 import * as functions from 'firebase-functions'
-import * as express from 'express'
+// import * as express from 'express'
 import { db, admin } from './core/admin'
 import {
     getUsersWithPreparedNumbers,
 } from './handlers/users/getUsers'
 import { constants } from './core/constants'
+import { incrementBadge, sendMessageToMember, updateChannelLastMessage } from './helpers/messaging'
 
 // API routes
-const app = express()
-app.get('/users', getUsersWithPreparedNumbers)
-app.post('/users', getUsersWithPreparedNumbers)
-app.put('/users', getUsersWithPreparedNumbers)
-exports.api = functions.https.onRequest(app)
+// const app = express()
+// app.get('/users', getUsersWithPreparedNumbers)
+// app.post('/users', getUsersWithPreparedNumbers)
+// app.put('/users', getUsersWithPreparedNumbers)
+// exports.api = functions.https.onRequest(app)
+
+exports.getUsersWithPreparedNumbers = getUsersWithPreparedNumbers
 
 export const sendNotificationToAllChannelDevices = functions.firestore
 	.document('channels/{channelId}/thread/{messageId}')
@@ -90,6 +93,44 @@ export const updateEventFCMTokenIdsArrayOnUpdate = functions.firestore
             })
         }
 
+    })
+
+    /*
+    CHANNEL OPERATIONS
+    */
+
+    exports.sendGroupMessage = functions.firestore
+    .document(constants.CHANNELS_COLLECTION + '/{channelId}/messageIds/{messageId}')
+    .onCreate((onCreateSnapshot, context) => {
+        const channelId = context.params.channelId
+        const messageId = context.params.messageId
+        const senderId = onCreateSnapshot.id
+        var lastMessageId = ''
+
+        return admin.firestore().collection(`/channels/${channelId}/messageIds`)
+        .limitToLast(1)
+        .onSnapshot(snap => {
+            snap.docChanges().forEach(change => {
+                if (change.type === 'added') {
+                    lastMessageId = change.doc.id
+
+                    admin
+                    .firestore()
+                    .collection(constants.CHANNELS_COLLECTION + `/${channelId}/participantIds`)
+                    .get()
+                    .then(snapshot => {
+                        if (!snapshot.empty) {
+                            let members = snapshot.docs
+                            members.forEach(member => {
+                                sendMessageToMember(member.id, channelId, senderId, messageId)
+                                incrementBadge(member.id, channelId, lastMessageId)
+                                updateChannelLastMessage(member.id, channelId, lastMessageId)
+                            })
+                        }
+                    })
+                }
+            })
+        })
     })
 
 // import * as functions from 'firebase-functions'
