@@ -97,7 +97,6 @@ class ChannelCell: InteractiveTableViewCell {
         label.textAlignment = .center
         label.font = ThemeManager.currentTheme().secondaryFontBold(with: 10)
         
-        
         return label
     }()
 
@@ -114,7 +113,7 @@ class ChannelCell: InteractiveTableViewCell {
         mainView.addSubview(eventStatus)
         mainView.addSubview(title)
         mainView.addSubview(subTitle)
-//        mainView.addSubview(badgeLabel)
+        mainView.addSubview(badgeLabel)
 //        badgeLabel.clipsToBounds = false
 //        badgeLabel.layer.zPosition = .greatestFiniteMagnitude
         
@@ -135,10 +134,10 @@ class ChannelCell: InteractiveTableViewCell {
             channelImageView.heightAnchor.constraint(equalToConstant: 75),
             channelImageView.widthAnchor.constraint(equalToConstant: 75),
             
-//            badgeLabel.centerYAnchor.constraint(equalTo: channelImageView.topAnchor, constant: 12),
-//            badgeLabel.centerXAnchor.constraint(equalTo: channelImageView.leadingAnchor, constant: 12),
-//            badgeLabel.heightAnchor.constraint(equalToConstant: 20),
-//            badgeLabel.widthAnchor.constraint(equalToConstant: 20),
+            badgeLabel.centerYAnchor.constraint(equalTo: channelImageView.topAnchor, constant: 12),
+            badgeLabel.centerXAnchor.constraint(equalTo: channelImageView.leadingAnchor, constant: 12),
+            badgeLabel.heightAnchor.constraint(equalToConstant: 20),
+            badgeLabel.widthAnchor.constraint(equalToConstant: 20),
             
             eventStatus.centerYAnchor.constraint(equalTo: mainView.centerYAnchor, constant: 0),
             eventStatus.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -5),

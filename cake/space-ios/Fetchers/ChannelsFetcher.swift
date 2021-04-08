@@ -316,7 +316,6 @@ class ChannelsFetcher: NSObject {
             }) else { return }
             
             self.channels[index] = updatedChannel
-            print("cuz we here lmao")
             self.delegate?.channels(update: self.channels[index], reloadNeeded: true)
         }
         

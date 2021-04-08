@@ -91,6 +91,19 @@ extension ChannelCell {
         
         startTimer()
         
+        let badgeString = channels[indexPath.row].badge.value?.toString()
+        let badgeInt = channels[indexPath.row].badge.value ?? 0
+
+        guard badgeInt > 0, channels[indexPath.row].lastMessage?.fromId != Auth.auth().currentUser?.uid else {
+            badgeLabel.isHidden = true
+//            messageLabelRightConstraint.constant = 0
+//            badgeLabelWidthConstraint.constant = 0
+            return
+        }
+
+        badgeLabel.text = badgeString
+        badgeLabel.isHidden = false
+        
         return
     }
 }

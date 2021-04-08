@@ -544,9 +544,9 @@ enum Theme: Int {
     var outgoingMessageBackgroundColor: UIColor {
         switch self {
             case .normal:
-                return .defaultHotRed()
+                return .fabPurple()
             case .dark:
-                return .defaultHotRed()
+                return .fabPurple()
         }
     }
     

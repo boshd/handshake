@@ -407,20 +407,6 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
 //        upcomingRealmChannels = upcomingRealmChannels?.sorted(byKeyPath: "startTime", ascending: false)
 //        pastRealmChannels = pastRealmChannels?.sorted(byKeyPath: "startTime", ascending: false)
         theRealmChannels = theRealmChannels?.sorted(byKeyPath: "startTime", ascending: false)
-        
-//        guard let realmAllConversations = theRealmChannels else { return }
-//        let badge = realmAllConversations.compactMap({ (conversation) -> Int in
-//            return conversation.badge.value ?? 0
-//        }).reduce(0, +)
-//
-//        guard badge > 0 else {
-////            tabItem.badgeValue = nil
-//            UIApplication.shared.applicationIconBadgeNumber = 0
-//            return
-//        }
-//        print("----DF-D-F-D-D-F-D-F- //////  \(badge)")
-////        tabItem.badgeValue = badge.toString()
-//        UIApplication.shared.applicationIconBadgeNumber = badge
 
         guard let realmChannels = realmChannels else { return }
         if !isAppLoaded {
@@ -434,12 +420,17 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
                 }
             }
         }
+        valid id
+        159
+        
         
         if realmChannels.count == 0 {
             checkIfThereAnyActiveChats(isEmpty: true)
         } else {
             checkIfThereAnyActiveChats(isEmpty: false)
         }
+        
+        configureTabBarBadge()
         
         guard !isAppLoaded else { return }
         isAppLoaded = true
@@ -477,6 +468,18 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
         updateUITimer = nil
     }
     
+    func configureTabBarBadge() {
+        guard let realmAllConversations = realmChannels else { return }
+        let badge = realmAllConversations.compactMap({ (conversation) -> Int in
+            return conversation.badge.value ?? 0
+        }).reduce(0, +)
+        guard badge > 0 else {
+            UIApplication.shared.applicationIconBadgeNumber = 0
+            return
+        }
+        UIApplication.shared.applicationIconBadgeNumber = badge
+    }
+    
     // MARK: - Navigation methods
     
     func presentOnboardingController() {
@@ -490,21 +493,6 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @objc func presentSettings() {
-        guard let realmAllConversations = realmChannels else { return }
-        let badge = realmAllConversations.compactMap({ (conversation) -> Int in
-            return conversation.badge.value ?? 0
-        }).reduce(0, +)
-
-        guard badge > 0 else {
-//            tabItem.badgeValue = nil
-            print("0 badge")
-            UIApplication.shared.applicationIconBadgeNumber = 0
-            return
-        }
-        print("----DF-D-F-D-D-F-D-F- //////  \(badge)")
-//        tabItem.badgeValue = badge.toString()
-        UIApplication.shared.applicationIconBadgeNumber = badge
-        
         guard Auth.auth().currentUser != nil else { return }
         hapticFeedback(style: .selectionChanged)
         print(userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme))
