@@ -917,6 +917,7 @@ extension UINavigationItem {
 public let messageStatusRead = "Read"
 public let messageStatusSending = "Sending"
 public let messageStatusDelivered = "Delivered"
+public let messageStatusNotSent = "Sending failed"
 
 let cameraAccessDeniedMessage = " needs access to your camera to take photos and videos.\n\nPlease go to Settings –– Privacy –– Camera –– and set  to ON."
 let contactsAccessDeniedMessage = " needs access to your contacts to create new ones.\n\nPlease go to Settings –– Privacy –– Contacts –– and set  to ON."
@@ -1300,7 +1301,9 @@ public func parseAddress(selectedItem: MKPlacemark) -> String {
     return addressLine
 }
 
-public func runTransaction(firstChild: String, secondChild: String) {
+//public func runTransaction()
+
+public func runTransactiofn(firstChild: String, secondChild: String) {
   var ref = Database.database().reference().child("user-messages").child(firstChild).child(secondChild)
   ref.observeSingleEvent(of: .value, with: { (snapshot) in
     

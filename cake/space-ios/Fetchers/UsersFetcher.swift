@@ -73,12 +73,14 @@ class UsersFetcher: NSObject {
             }
         }
         return preparedNumberTuples
-    }
+    }// AA009ZPCW3
     
     fileprivate func requestUsers() {
         guard let currentUserID = Auth.auth().currentUser?.uid else { return }
         
         let tuples = prepareNumberTuples(from: globalVariables.localContacts)
+        
+        
         functions.httpsCallable("getUsersWithPreparedNumbers").call(["preparedNumbers": tuples.map({ $0.1 })]) { (result, error) in
             if error != nil {
                 print(error?.localizedDescription ?? "error in https call - getUsersWithPreparedNumbers")

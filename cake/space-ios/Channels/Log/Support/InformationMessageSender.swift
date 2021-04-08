@@ -16,8 +16,8 @@ class InformationMessageSender: NSObject {
     
     func sendInformationMessage(channelID: String, channelName: String, participantIDs: [String], text: String, channel: Channel?) {
         
-        let channelReference = Firestore.firestore().collection("channels").document(channelID)
-        let newInformationMessageReference = channelReference.collection("thread").document()
+        //let channelReference = Firestore.firestore().collection("channels").document(channelID)
+        let newInformationMessageReference = Firestore.firestore().collection("messages").document()
         
         let timestamp = NSNumber(value: Int(Date().timeIntervalSince1970))
         let defaultMessageStatus = messageStatusDelivered

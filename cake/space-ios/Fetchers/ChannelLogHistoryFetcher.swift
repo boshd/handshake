@@ -40,7 +40,8 @@ class ChannelLogHistoryFetcher: NSObject {
     }
     
     fileprivate func getFirstID(_ currentUserID: String, _ channelID: String) {
-        let firstIDReference = Firestore.firestore().collection("channels").document(channelID).collection("thread")
+        let firstIDReference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID).collection("messageIds")
+        //let firstIDReference = Firestore.firestore().collection("channels").document(channelID).collection("thread")
         let numberOfMessagesToLoad = messagesToLoad + messages.count
         let firstIDQuery = firstIDReference.order(by: "timestamp", descending: true).limit(to: numberOfMessagesToLoad)
         firstIDQuery.getDocuments { (snapshot, error) in
@@ -52,7 +53,7 @@ class ChannelLogHistoryFetcher: NSObject {
         
     fileprivate func getLastID(_ firstDocument: DocumentSnapshot, _ currentUserID: String, _ channelID: String) {
         let nextMessageIndex = messages.count + 1
-        let lastIDReference = Firestore.firestore().collection("channels").document(channelID).collection("thread")
+        let lastIDReference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID).collection("messageIds")
         let lastIDQuery = lastIDReference.order(by: "timestamp", descending: true).limit(to: nextMessageIndex)
         lastIDQuery.getDocuments { (snapshot, error) in
             guard let documents = snapshot?.documents else { print(error?.localizedDescription ?? "error"); return }
@@ -68,7 +69,7 @@ class ChannelLogHistoryFetcher: NSObject {
     }
     
     fileprivate func getRange(_ firstDocument: DocumentSnapshot, _ lastDocument: DocumentSnapshot, _ currentUserID: String, _ channelID: String) {
-        let rangeReference = Firestore.firestore().collection("channels").document(channelID).collection("thread")
+        let rangeReference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID).collection("messageIds")
         let rangeQuery = rangeReference.order(by: "timestamp", descending: false).start(atDocument: firstDocument).end(atDocument: lastDocument)
         rangeQuery.getDocuments { (snapshot, error) in
             guard let docs = snapshot?.documents else { print(error?.localizedDescription ?? "error"); return }

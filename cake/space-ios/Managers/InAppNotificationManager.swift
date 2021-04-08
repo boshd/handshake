@@ -101,14 +101,16 @@ class InAppNotificationManager: NSObject {
             guard channel.participantIds.contains(currentUserID) else { return }
             
             var first = true
-            notificationReference = Firestore.firestore().collection("channels").document(channelID).collection("thread")
+//            Database.database().reference().child("user-messages").child(currentUserID).child(chatID).child(messageMetaDataFirebaseFolder)
+            notificationReference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID).collection("messageIds")
+            //notificationReference = Firestore.firestore().collection("channels").document(channelID).collection("thread")
             let listener = notificationReference.order(by: "timestamp", descending: true).addSnapshotListener { (querySnapshot, error) in
                 guard let documents = querySnapshot?.documents else {
                     print("error // ", error!)
                     return
                 }
                 
-                print("\(self.individualChannelListenersDict.count) // listeners")
+//                print("\(self.individualChannelListenersDict.count) // listeners")
                 
                 if documents.count > 0 { // if channel thread isn't empty
                     let document = documents[0]

@@ -102,5 +102,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         globalIndicator.setDefaultMaskType(.clear)
         globalIndicator.setMaximumDismissTimeInterval(1.0)
     }
+    
+    func applicationWillTerminate(_ application: UIApplication) {
+          // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+          Database.database().purgeOutstandingWrites()
+          autoreleasepool {
+              try! RealmKeychain.defaultRealm.safeWrite {
+                  for object in RealmKeychain.defaultRealm.objects(Message.self).filter("status == %@", messageStatusSending) {
+                      object.status = messageStatusNotSent
+                  }
+              }
+          }
+    }
 
 }

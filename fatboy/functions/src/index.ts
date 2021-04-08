@@ -13,7 +13,7 @@ import {
     getUsersWithPreparedNumbers,
 } from './handlers/users/getUsers'
 import { constants } from './core/constants'
-import { incrementBadge, sendMessageToMember, updateChannelLastMessage } from './helpers/messaging'
+// import { incrementBadge, sendMessageToMember, updateChannelLastMessage } from './helpers/messaging'
 
 // API routes
 // const app = express()
@@ -66,7 +66,7 @@ export const updateEventFCMTokenIdsArrayOnUpdate = functions.firestore
         const after = change.after.data()
         const newToken = after['fcmToken']
 
-        if (oldToken != newToken) {
+        if (oldToken !== newToken) {
             db
             .collection('users')
             .doc(userId)
@@ -102,36 +102,144 @@ export const updateEventFCMTokenIdsArrayOnUpdate = functions.firestore
     exports.sendGroupMessage = functions.firestore
     .document(constants.CHANNELS_COLLECTION + '/{channelId}/messageIds/{messageId}')
     .onCreate((onCreateSnapshot, context) => {
+        console.log('message created and triggered this cloud f\'n')
         const channelId = context.params.channelId
         const messageId = context.params.messageId
-        const senderId = onCreateSnapshot.id
-        var lastMessageId = ''
+        const data = onCreateSnapshot.data()
+        functions.logger.log(data['fromId'])
+        const senderId = data['fromId']
+        // var lastMessageId = ''
 
-        return admin.firestore().collection(`/channels/${channelId}/messageIds`)
-        .limitToLast(1)
-        .onSnapshot(snap => {
-            snap.docChanges().forEach(change => {
-                if (change.type === 'added') {
-                    lastMessageId = change.doc.id
+        if (senderId === null || senderId === '') {
+            return
+        }
 
-                    admin
-                    .firestore()
-                    .collection(constants.CHANNELS_COLLECTION + `/${channelId}/participantIds`)
-                    .get()
-                    .then(snapshot => {
-                        if (!snapshot.empty) {
-                            let members = snapshot.docs
-                            members.forEach(member => {
-                                sendMessageToMember(member.id, channelId, senderId, messageId)
-                                incrementBadge(member.id, channelId, lastMessageId)
-                                updateChannelLastMessage(member.id, channelId, lastMessageId)
-                            })
-                        }
-                    })
-                }
-            })
+        console.log('pre-admin')
+
+
+        // return
+        // db
+        // .collection('channels')
+        // .doc(channelId)
+        // .collection('messageIds')
+
+        return db
+        .collection(constants.CHANNELS_COLLECTION + '/'+ channelId + '/participantIds')
+        .get()
+        .then(snapshot => {
+            if (!snapshot.empty) {
+                console.log('snapshot not empty')
+                let members = snapshot.docs
+                members.forEach(member => {
+                    console.log('sender id: ' + senderId + ' // member id: ' + member.id)
+
+                    if (member.id !== senderId) {
+                        sendMessageToMember(member.id)
+                        incrementBadge(member.id)
+                        updateChannelLastMessage(member.id)
+                    }
+                })
+            }
         })
+        .then(snapshot => { functions.logger.info('success') })
+        .catch(err => { functions.logger.error(err) })
+
+
+        // return db
+        // .collection('/channels/' + channelId + '/messageIds')
+        // .orderBy('timestamp', 'desc')
+        // .limitToLast(1)
+        // .get()
+        // .then(snap => {
+        //     console.log('beginning')
+        //     functions.logger.log(snap)
+        //     lastMessageId = snap.docs[0].id
+
+        //     db
+        //     .collection(constants.CHANNELS_COLLECTION + '/'+ channelId + '/participantIds')
+        //     .get()
+        //     .then(snapshot => {
+        //         if (!snapshot.empty) {
+        //             console.log('snapshot not empty')
+        //             let members = snapshot.docs
+        //             members.forEach(member => {
+        //                 console.log('sender id: ' + senderId + ' // member id: ' + member.id)
+
+        //                 if (member.id !== senderId) {
+        //                     // sendMessageToMember(member.id)
+        //                     incrementBadge(member.id)
+        //                     // updateChannelLastMessage(member.id)
+        //                 }
+        //             })
+        //         }
+        //     })
+        //     .then(snapshot => { console.log('success') })
+        //     .catch(err => { console.log(err) })
+        // })
+
+        function sendMessageToMember(memberId: string) {
+            console.log('executing sendMessageToMember..')
+            db
+            .collection('users')
+            .doc(memberId)
+            .collection('channelIds')
+            .doc(channelId)
+            .collection('messageIds')
+            .doc(messageId)
+            .set({
+                'senderId': senderId,
+            })
+            .then(snapshot => { console.log('success sendMessageToMember') })
+            .catch(err => { console.log('error in sendMessageToMember // ', err) })
+        }
+
+        function updateChannelLastMessage(memberId: string) {
+            console.log('executing updateChannelLastMessage..')
+            db
+            .collection('users')
+            .doc(memberId)
+            .collection('channelIds')
+            .doc(channelId)
+            .update({
+                'lastMessageID': messageId,
+            })
+            .then(snapshot => { console.log('success updateChannelLastMessage') })
+            .catch(err => { console.log('error in updateChannelLastMessage // ', err) })
+        }
+
+        function incrementBadge(memberId: string) {
+            console.log('executing incrementBadge..')
+            const ref = db
+            .collection('users')
+            .doc(memberId)
+            .collection('channelIds')
+            .doc(channelId)
+
+            try {
+                db.runTransaction(async (t) => {
+                    const doc: FirebaseFirestore.DocumentData = await t.get(ref)
+                    // functions.logger.info(doc.data['badge'])
+                    const newthing = (doc.data()['badge'] || 0) + 1
+                    t.update(ref, {
+                        'badge': newthing,
+                    })
+                })
+                .then(snapshot => { functions.logger.info('success incrementBadge') })
+                .catch(err => { functions.logger.error('error in incrementBadge // ', err) })
+                functions.logger.info('Transaction success!')
+            } catch (e) {
+                functions.logger.error('Transaction failure:', e)
+            }
+
+
+            // .update({
+            //     'badge': lastMessageId,
+            // })
+            // .then(snapshot => { functions.logger.info('success incrementBadge') })
+            // .catch(err => { functions.logger.error('error in incrementBadge // ', err) })
+        }
     })
+
 
 // import * as functions from 'firebase-functions'
 // import * as admin from 'firebase-admin'

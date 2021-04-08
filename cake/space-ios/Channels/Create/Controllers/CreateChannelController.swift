@@ -324,7 +324,7 @@ extension CreateChannelController {
             hapticFeedback(style: .success)
             
 //            if let localChannelData = localChannelData {
-            self?.informationMessageSender.sendInformationMessage(channelID: newChannelReference.documentID, channelName: self?.channelName ?? "", participantIDs: memberIDs.0, text: "New event has been created. Discuss and share ideas here.", channel: Channel(dictionary: self?.localChannelData))
+//            self?.informationMessageSender.sendInformationMessage(channelID: newChannelReference.documentID, channelName: self?.channelName ?? "", participantIDs: memberIDs.0, text: "New event has been created. Discuss and share ideas here.", channel: Channel(dictionary: self?.localChannelData))
 //            }
             
             self?.dismiss(animated: true, completion: nil)

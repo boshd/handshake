@@ -60,6 +60,7 @@ extension ChannelLogController: UICollectionViewDelegateFlowLayout, UICollection
                     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: collectionView.outgoingMessageCellID, for: indexPath) as! OutgoingMessageCell
                     cell.channelLogController = self
                     cell.setupData(message: message)
+                    cell.configureDeliveryStatus(at: indexPath, groupMessages: self.groupedMessages, message: message)
                     cell.contentView.isUserInteractionEnabled = true
                     return cell
                 case false:

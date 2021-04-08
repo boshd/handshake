@@ -29,6 +29,7 @@ class OutgoingMessageCell: BaseMessageCell {
         textView.delegate = self
         bubbleView.addSubview(textView)
         bubbleView.addSubview(timeLabel)
+        contentView.addSubview(deliveryStatus)
         timeLabel.backgroundColor = .clear
         timeLabel.textColor = ThemeManager.currentTheme().outgoingTimestampTextColor
         //bubbleView.tintColor = ThemeManager.currentTheme().outgoingBubbleTintColor

@@ -158,8 +158,6 @@ class ChannelsFetcher: NSObject {
             }
             let channel = Channel(dictionary: data as [String : AnyObject])
             
-            print("heyaaa")
-            
             guard let lastMessageID = channel.lastMessageId else {
                 self.loadAdditionalMetadata(for: channel)
                 return
@@ -170,8 +168,10 @@ class ChannelsFetcher: NSObject {
     }
     
     fileprivate func loadLastMessage(for messageID: String, channel: Channel) {
-        guard let channelID = channel.id else { return }
-        Firestore.firestore().collection("channels").document(channelID).collection("thread").document(messageID).getDocument { (snapshot, error) in
+//        guard let channelID = channel.id else { return }
+        
+//        Firestore.firestore().collection("channels").document(channelID).collection("thread").document(messageID).getDocument { (snapshot, error) in
+        Firestore.firestore().collection("messages").document(messageID).getDocument { (snapshot, error) in
             if error != nil {
                 print(error?.localizedDescription as Any)
                 return

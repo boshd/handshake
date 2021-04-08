@@ -49,14 +49,14 @@ class MessagesFetcher: NSObject {
     }
     
     func loadMessagesData(for channel: Channel, controller: UIViewController?) {
-        guard let channelID = channel.id, let controller = controller else { return }
+        guard let currentUserID = Auth.auth().currentUser?.uid, let channelID = channel.id, let controller = controller else { return }
         
-        let reference = Firestore.firestore().collection("channels").document(channelID).collection("thread").order(by: "timestamp", descending: true).limit(to: messagesToLoad)
+        let reference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID).collection("messageIds").limit(to: messagesToLoad)
         
         loadingMessagesGroup.enter()
         newLoadMessages(reference: reference, channelID: channelID, channel: channel)
-        
         loadingMessagesGroup.notify(queue: .main) {
+            print("notified \(self.messages.count)")
             guard self.messages.count != 0 else {
                 if self.isInitialChatMessagesLoad {
                     self.messages = self.sortedMessages(unsortedMessages: self.messages)
@@ -71,7 +71,6 @@ class MessagesFetcher: NSObject {
                 if self.isInitialChatMessagesLoad {
                     self.messages = self.sortedMessages(unsortedMessages: self.messages)
                 }
-                
                 self.isInitialChatMessagesLoad = false
                 self.delegate?.messages(shouldChangeMessageStatusToReadAt: self.messageReference, controller: controller)
                 self.delegate?.messages(shouldBeUpdatedTo: self.messages, channel: channel, controller: controller)
@@ -92,11 +91,13 @@ class MessagesFetcher: NSObject {
             for _ in 0 ..< documentsCount { loadedMessagesGroup.enter() }
             
             loadedMessagesGroup.notify(queue: .main) { [weak self] in
+                print("loadedMessagesGroup notified")
                 self?.messages = loadedMessages
                 self?.loadingMessagesGroup.leave()
             }
             
             self.threadListener = reference.addSnapshotListener { (snapshot, error) in
+                print("triggered")
                 if error != nil {
                     print(error?.localizedDescription ?? "error")
                     return
@@ -104,31 +105,43 @@ class MessagesFetcher: NSObject {
                 guard let documentChanges = snapshot?.documentChanges else { return }
                 
                 if !documentChanges.isEmpty {
-                
                     documentChanges.forEach { (diff) in
                         if diff.type == .added {
+                            print("triggered added")
                             let messageUID = diff.document.documentID
-                            guard var dictionary = diff.document.data() as [String: AnyObject]? else { return }
-                            dictionary.updateValue(messageUID as AnyObject, forKey: "messageUID")
-                            dictionary = self.preloadCellData(to: dictionary)
                             
-                            self.messageReference = Firestore.firestore().collection("channels").document(channelID).collection("thread").document(messageUID)
-                            guard self.isInitialChatMessagesLoad else {
-                                self.handleMessageInsertionInRuntime(newDictionary: dictionary)
-                                return
+                            self.messageReference = Firestore.firestore().collection("messages").document(messageUID)
+                            self.messageReference.getDocument { (snapshot, error) in
+                                if error != nil {
+                                    print(error?.localizedDescription ?? "error")
+                                    return
+                                }
+                                
+                                guard var dictionary = snapshot?.data() as [String: AnyObject]? else { return }
+                                dictionary.updateValue(messageUID as AnyObject, forKey: "messageUID")
+                                dictionary = self.preloadCellData(to: dictionary)
+                                print("triggere vdvddvdvd")
+                                guard self.isInitialChatMessagesLoad else {
+                                    self.handleMessageInsertionInRuntime(newDictionary: dictionary)
+                                    print("triggered :(")
+                                    return
+                                }
+                                
+                                let message = Message(dictionary: dictionary)
+                                message.channel = channel
+                                
+                                if message.timestamp.value ?? 0 >= self.messages.first?.timestamp.value ?? 0 {
+                                    loadedMessages.append(message)
+                                }
+                                loadedMessagesGroup.leave()
                             }
-                            
-                            let message = Message(dictionary: dictionary)
-                            message.channel = channel
-                            
-                            if message.timestamp.value ?? 0 >= self.messages.first?.timestamp.value ?? 0 {
-                                loadedMessages.append(message)
-                            }
-                            loadedMessagesGroup.leave()
                         }
                     }
                 } else {
-                    loadedMessagesGroup.leave()
+                    guard let documentsCount = snapshot?.documents.count else { return }
+                    if documentsCount > 0 {
+                        loadedMessagesGroup.leave()
+                    }
                 }
             }
         }

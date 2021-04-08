@@ -178,7 +178,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     override func willMove(toParent parent: UIViewController?) {
-        print("MOVING TO PARENT")
     }
     
 
@@ -550,16 +549,28 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         self.channel = channel
     }
     
-    @objc func handleChannelRemoved(_ notification: Notification) {
-//        guard let obj = notification.object as? [String: Any], let removedChannelID = obj["channelID"] as? String, let currentChannelID = channel?.id else { return }
-//        if currentChannelID == removedChannelID {
-//            navigationController?.popViewController(animated: true)
-//        }
+    @objc func handleChannelRemoved(_ notification: Notification) {}
+    
+    
+    fileprivate func resetBadgeForSelf() {
+        print("resetting badge for self...")
+        guard let unwrappedChannel = channel else { return }
+        let channelObject = ThreadSafeReference(to: unwrappedChannel)
+        guard let channel = realm.resolve(channelObject) else { return }
+        
+        guard let toId = channel.id,
+              let fromId = Auth.auth().currentUser?.uid
+        else { return }
+        
+        Firestore.firestore().collection("user-channels-meta").document(fromId).collection("channelIds").document(toId).setData([
+            "badge": 0
+        ]) { (error) in
+            if error != nil { print("error // ", error?.localizedDescription ?? "error") }
+        }
     }
-    
-    
 
-    @objc fileprivate func deleteAndExitHandler() {
+    @objc
+    fileprivate func deleteAndExitHandler() {
         print("HERE AT CHATLOG")
         guard let channelID = channel?.id else { return }
         NotificationCenter.default.removeObserver(self)
@@ -686,20 +697,40 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     // MARK: - DATABASE MESSAGE STATUS
-    func updateMessageStatus(messageRef: DocumentReference) {}
-    
-    fileprivate func resetBadgeForSelf() {
-        guard let unwrappedChannel = channel else { return }
-        let channelObject = ThreadSafeReference(to: unwrappedChannel)
-        guard let channel = realm.resolve(channelObject) else { return }
-        // is this it?
+    func updateMessageStatus(messageRef: DocumentReference) {
+        print("arrived")
+        guard let uid = Auth.auth().currentUser?.uid, currentReachabilityStatus != .notReachable else { return }
+        var senderID: String?
+        
+        messageRef.getDocument { (snapshot, error) in
+            guard error == nil else { print(error?.localizedDescription ?? "error"); return }
+            
+            guard let data = snapshot?.data() else { return }
+            
+            senderID = data["fromId"] as? String
+            
+            guard uid != senderID,
+                (UIApplication.topViewController() is ChannelLogController ||
+                    UIApplication.topViewController() is ChannelDetailsController ||
+                    UIApplication.topViewController() is ParticipantsController ||
+                    UIApplication.topViewController() is UpdateChannelController ||
+                    UIApplication.topViewController() is INSPhotosViewController ||
+                    UIApplication.topViewController() is SFSafariViewController)
+            else { senderID = nil; print("stuck hererer"); return }
+            
+            messageRef.updateData([
+                "seen": true,
+                "status": messageStatusRead
+            ]) { (error) in
+                if error != nil {
+                    print(error?.localizedDescription ?? "error")
+                }
+                self.resetBadgeForSelf()
+            }
+        }
     }
     
     func updateMessageStatusUI(sentMessage: Message) {
-        if userDefaults.currentBoolObjectState(for: userDefaults.inAppSounds) {
-            let systemSoundID: SystemSoundID = 1004
-            AudioServicesPlaySystemSound (systemSoundID)
-        }
         guard let messageToUpdate = channel?.messages.filter("messageUID == %@", sentMessage.messageUID ?? "").first else { return }
         try! realm.safeWrite {
             messageToUpdate.status = sentMessage.status
@@ -713,7 +744,20 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
                 }
             }
         }
-        guard messageToUpdate.messageUID == self.groupedMessages.last?.messages.last?.messageUID else { return }
+        guard sentMessage.status == messageStatusDelivered,
+        messageToUpdate.messageUID == self.groupedMessages.last?.messages.last?.messageUID,
+        userDefaults.currentBoolObjectState(for: userDefaults.inAppSounds) else { return }
+//        SystemSoundID.playFileNamed(fileName: "sent", withExtenstion: "caf")
+        
+        let systemSoundID: SystemSoundID = 1004
+        AudioServicesPlaySystemSound (systemSoundID)
+        
+//        if userDefaults.currentBoolObjectState(for: userDefaults.inAppSounds) {
+//            let systemSoundID: SystemSoundID = 1004
+//            AudioServicesPlaySystemSound (systemSoundID)
+//        }
+        
+//        guard messageToUpdate.messageUID == self.groupedMessages.last?.messages.last?.messageUID else { return }
     }
     
     // MARK: - Title view

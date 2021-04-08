@@ -32,11 +32,15 @@ struct MessageFontsAppearance {
     }
 
     static var defaultTimeLabelTextFont: UIFont {
-        return ThemeManager.currentTheme().secondaryFontBoldItalic(with: 9)
+        return ThemeManager.currentTheme().secondaryFont(with: 9)
     }
 
     static var defaultMessageAuthorNameFont: UIFont {
-        return ThemeManager.currentTheme().secondaryFontBold(with: 10)
+        return ThemeManager.currentTheme().secondaryFontBold(with: 9)
+    }
+    
+    static var defaultDeliveryStatusTextFont: UIFont {
+        return ThemeManager.currentTheme().secondaryFontBoldItalic(with: 9)
     }
     
 }
@@ -112,6 +116,17 @@ class BaseMessageCell: UICollectionViewCell {
         return label
     }()
     
+    lazy var deliveryStatus: UILabel = {
+        var deliveryStatus = UILabel()
+        deliveryStatus.text = "status"
+        deliveryStatus.font = MessageFontsAppearance.defaultDeliveryStatusTextFont
+        deliveryStatus.textColor =  ThemeManager.currentTheme().generalSubtitleColor
+        deliveryStatus.isHidden = true
+        deliveryStatus.textAlignment = .right
+
+        return deliveryStatus
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -163,6 +178,26 @@ class BaseMessageCell: UICollectionViewCell {
         
         
         return rect
+    }
+    
+    func configureDeliveryStatus(at indexPath: IndexPath, groupMessages: [MessageSection], message: Message) {
+
+        guard let lastItem = groupMessages.last else { return }
+        let lastRow = lastItem.messages.count - 1
+        let lastSection = groupMessages.count - 1
+
+        let lastIndexPath = IndexPath(row: lastRow, section: lastSection)
+
+        switch indexPath == lastIndexPath {
+        case true:
+            deliveryStatus.frame = CGRect(x: frame.width - 80, y: bubbleView.frame.height + 2, width: 70, height: 12)//.integral
+            deliveryStatus.text = message.status
+            deliveryStatus.isHidden = false
+            deliveryStatus.layoutIfNeeded()
+        default:
+            deliveryStatus.isHidden = true
+            deliveryStatus.layoutIfNeeded()
+        }
     }
     
 }

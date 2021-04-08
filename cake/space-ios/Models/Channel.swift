@@ -32,6 +32,7 @@ final class Channel: Object {
     @objc dynamic var description_: String?
     @objc dynamic var locationName: String?
     
+    
     var status: EventStatus?
     
     var isCancelled = RealmOptional<Bool>()
@@ -50,8 +51,6 @@ final class Channel: Object {
     var maybeIds = List<String>()
     var notGoingIds = List<String>()
     
-//    var fcmTokens = List<String>()
-//    @objc dynamic var fcmTokens: [String:String]
     var fcmTokens = List<FCMToken>()
     
     var isMuted = RealmOptional<Bool>()
