@@ -201,7 +201,7 @@ export const updateEventFCMTokenIdsArrayOnUpdate = functions.firestore
             .collection('channelIds')
             .doc(channelId)
             .update({
-                'lastMessageID': messageId,
+                'lastMessageId': messageId,
             })
             .then(snapshot => { console.log('success updateChannelLastMessage') })
             .catch(err => { console.log('error in updateChannelLastMessage // ', err) })

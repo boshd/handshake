@@ -559,12 +559,12 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         guard let channel = realm.resolve(channelObject) else { return }
         
         guard let toId = channel.id,
-              let fromId = Auth.auth().currentUser?.uid
+              let currentUserID = Auth.auth().currentUser?.uid
         else { return }
         
-        Firestore.firestore().collection("user-channels-meta").document(fromId).collection("channelIds").document(toId).setData([
+        Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(toId).setData([
             "badge": 0
-        ]) { (error) in
+        ], merge: true) { (error) in
             if error != nil { print("error // ", error?.localizedDescription ?? "error") }
         }
     }

@@ -92,7 +92,6 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
         print(userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme))
         if #available(iOS 13, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) &&
             userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme) {
-            print("srsfsf")
             if traitCollection.userInterfaceStyle == .light {
                 ThemeManager.applyTheme(theme: .normal)
             } else {
@@ -409,6 +408,19 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
 //        pastRealmChannels = pastRealmChannels?.sorted(byKeyPath: "startTime", ascending: false)
         theRealmChannels = theRealmChannels?.sorted(byKeyPath: "startTime", ascending: false)
         
+//        guard let realmAllConversations = theRealmChannels else { return }
+//        let badge = realmAllConversations.compactMap({ (conversation) -> Int in
+//            return conversation.badge.value ?? 0
+//        }).reduce(0, +)
+//
+//        guard badge > 0 else {
+////            tabItem.badgeValue = nil
+//            UIApplication.shared.applicationIconBadgeNumber = 0
+//            return
+//        }
+//        print("----DF-D-F-D-D-F-D-F- //////  \(badge)")
+////        tabItem.badgeValue = badge.toString()
+//        UIApplication.shared.applicationIconBadgeNumber = badge
 
         guard let realmChannels = realmChannels else { return }
         if !isAppLoaded {
@@ -478,6 +490,21 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @objc func presentSettings() {
+        guard let realmAllConversations = realmChannels else { return }
+        let badge = realmAllConversations.compactMap({ (conversation) -> Int in
+            return conversation.badge.value ?? 0
+        }).reduce(0, +)
+
+        guard badge > 0 else {
+//            tabItem.badgeValue = nil
+            print("0 badge")
+            UIApplication.shared.applicationIconBadgeNumber = 0
+            return
+        }
+        print("----DF-D-F-D-D-F-D-F- //////  \(badge)")
+//        tabItem.badgeValue = badge.toString()
+        UIApplication.shared.applicationIconBadgeNumber = badge
+        
         guard Auth.auth().currentUser != nil else { return }
         hapticFeedback(style: .selectionChanged)
         print(userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme))

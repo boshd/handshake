@@ -341,10 +341,10 @@ extension CreateChannelController {
 
         batch.setData(channelData, forDocument: newChannelReference)
         for participantID in participantIDs {
-            batch.setData(["participantId":participantID], forDocument: newChannelReference.collection("participantIds").document(participantID))
+            batch.setData(["participantId":participantID], forDocument: newChannelReference.collection("participantIds").document(participantID), merge: true)
             batch.setData([
-                "channelId": newChannelReference.documentID
-            ], forDocument: usersCollectionReference.document(participantID).collection("channelIds").document(newChannelReference.documentID))
+                "id": newChannelReference.documentID
+            ], forDocument: usersCollectionReference.document(participantID).collection("channelIds").document(newChannelReference.documentID), merge: true)
         }
         
         batch.commit { [unowned self] (error) in

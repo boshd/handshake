@@ -140,7 +140,7 @@ class MessageSender: NSObject {
         
         let ref = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID)
         ref.setData([
-            "lastMessageID": messageID as Any
+            "lastMessageId": messageID as Any
         ], merge: true)
     }
 }

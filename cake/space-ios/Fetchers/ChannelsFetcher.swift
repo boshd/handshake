@@ -78,6 +78,7 @@ class ChannelsFetcher: NSObject {
                     return
                 }
                 self.group = DispatchGroup()
+                print("FOUND \(documents.count) docs")
                 for _ in 0 ..< documents.count { self.group?.enter() }
                 self.group?.notify(queue: .main, execute: { [weak self] in
                     //guard let unwrappedSelf = self else { return }
@@ -108,13 +109,16 @@ class ChannelsFetcher: NSObject {
                         return
                     }
                     guard let snap = snapshot else { return }
+                    print("snap is here")
                     snap.documentChanges.forEach { (diff) in
                         if (diff.type == .added) {
+                            print("snap is added")
                             let channelID = diff.document.documentID
                             self?.listenToChannel(with: channelID)
                             self?.delegate?.channels(addedNewChannel: true, channelID: channelID)
                             self?.loadConversation(for: channelID)
                         } else if (diff.type == .removed) {
+                            print("snap is removed")
                             let channelID = diff.document.documentID
 //                            let obj: [String: Any] = ["channelID": channelID]
 //                            NotificationCenter.default.post(name: .channelRemoved, object: obj)
@@ -138,6 +142,7 @@ class ChannelsFetcher: NSObject {
                             }
                             self?.delegate?.channels(didRemove: true, channelID: channelID)
                         } else {
+                            print("snap is else")
                         }
                     }
                 })
@@ -146,8 +151,12 @@ class ChannelsFetcher: NSObject {
     }
 
     fileprivate func loadConversation(for channelID: String?) {
-        guard let channelID = channelID, let _ = Auth.auth().currentUser?.uid else { return }
-        let groupChannelDataReference = Firestore.firestore().collection("channels").document(channelID)
+        guard let currentUserID = Auth.auth().currentUser?.uid,
+              let channelID = channelID
+        else { return }
+        
+        //let groupChannelDataReference = Firestore.firestore().collection("channels").document(channelID)
+        let groupChannelDataReference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID)
         groupChannelDataReference.getDocument { (documentSnapshot, error) in
             guard let data = documentSnapshot?.data() else {
                 if error != nil {
@@ -156,8 +165,9 @@ class ChannelsFetcher: NSObject {
                 self.delegate?.channels(didFinishFetching: true, channels: self.channels)
                 return
             }
+            print("ariveee")
+            print(data)
             let channel = Channel(dictionary: data as [String : AnyObject])
-            
             guard let lastMessageID = channel.lastMessageId else {
                 self.loadAdditionalMetadata(for: channel)
                 return
@@ -176,27 +186,32 @@ class ChannelsFetcher: NSObject {
                 print(error?.localizedDescription as Any)
                 return
             }
+            print(" 1 loadLastMessage")
             guard var dictionary = snapshot?.data() as [String: AnyObject]? else { return }
+            print(" 2 loadLastMessage")
             dictionary.updateValue(messageID as AnyObject, forKey: "messageUID")
             dictionary = self.messagesFetcher.preloadCellData(to: dictionary)
             let message = Message(dictionary: dictionary)
             channel.lastMessageTimestamp.value = message.timestamp.value
             message.channel = channel
             channel.lastMessageRuntime = message
+            print(" last loadLastMessage")
             self.loadAdditionalMetadata(for: channel)
         }
     }
     
     fileprivate func loadAdditionalMetadata(for channel: Channel) {
-        guard let chatID = channel.id, let _ = Auth.auth().currentUser?.uid else { return }
-
-        Firestore.firestore().collection("channels").document(chatID).getDocument { (snapshot, error) in
+        print("begin of additional")
+        guard let channelID = channel.id, let _ = Auth.auth().currentUser?.uid else { return }
+        print("in additional")
+        Firestore.firestore().collection("channels").document(channelID).getDocument { (snapshot, error) in
             if error != nil {
                 print(error as Any)
                 return
             }
+            print("in get doc")
             guard var dictionary = snapshot?.data() as [String: AnyObject]? else { return }
-            dictionary.updateValue(chatID as AnyObject, forKey: "id")
+            dictionary.updateValue(channelID as AnyObject, forKey: "id")
 
             if let membersIDs = dictionary["participantIds"] as? [String:AnyObject] {
                 dictionary.updateValue(Array(membersIDs.values) as AnyObject, forKey: "participantIds")
@@ -214,6 +229,12 @@ class ChannelsFetcher: NSObject {
             channel.maybeIds = metaInfo.maybeIds
             channel.notGoingIds = metaInfo.notGoingIds
             channel.locationName = metaInfo.locationName
+            channel.latitude = metaInfo.latitude
+            channel.longitude = metaInfo.longitude
+            channel.isVirtual = metaInfo.isVirtual
+            channel.isCancelled = metaInfo.isCancelled
+            channel.startTime = metaInfo.startTime
+            channel.endTime = metaInfo.endTime
             channel.fcmTokens = metaInfo.fcmTokens
             if let fcmTokensDict = dictionary["fcmTokens"] as? [String:String] {
                 channel.fcmTokens = convertRawFCMTokensToRealmCompatibleType(fcmTokensDict)
