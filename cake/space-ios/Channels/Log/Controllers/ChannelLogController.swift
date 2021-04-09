@@ -28,7 +28,11 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     var channel: Channel?
     
+    let typingIndicatorDatabaseID = "typingIndicator"
+    let typingIndicatorStateDatabaseKeyID = "Is typing"
+    
     var groupedMessages = [MessageSection]()
+    var typingIndicatorSection: [String] = []
     
     var dayFormatter = DateFormatter()
     var monthFormatter = DateFormatter()
@@ -38,6 +42,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     let timeFormatter  = DateFormatter()
     
     var channelListener: ListenerRegistration?
+    var typingIndicatorCollectionListener: ListenerRegistration?
     
     let channelManager = ChannelManager()
 
@@ -184,7 +189,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         unblockInputViewConstraints()
-        print("view did god damn disappear \(self.navigationController)")
+        
         if savedContentOffset != nil {
             UIView.performWithoutAnimation { [weak self] in
                 guard let unwrappedSelf = self else { return }
@@ -195,6 +200,17 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         
         setupHeaderView()
         checkChannelStateAndPermissions()
+        
+        if let uid = Auth.auth().currentUser?.uid, let channel = channel, channel.participantIds.contains(uid) {
+            if typingIndicatorCollectionListener == nil  {
+                observeTypingIndicator()
+            }
+        }
+        
+        if collectionView.numberOfSections == groupedMessages.count + 1 {
+            guard let cell = self.collectionView.cellForItem(at: IndexPath(item: 0, section: groupedMessages.count)) as? TypingIndicatorCell else { return }
+            cell.restart()
+        }
     }
     var navigationBarTitleGestureRecognizer: UITapGestureRecognizer?
     private var savedContentOffset: CGPoint!
@@ -211,6 +227,14 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         super.viewDidDisappear(animated)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+        isTyping = false
+        
+        if typingIndicatorCollectionListener != nil {
+            typingIndicatorCollectionListener?.remove()
+            //typingIndicatorReference.removeObserver(withHandle: typingIndicatorHandle)
+        }
+
     }
     
     
@@ -602,6 +626,14 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         DispatchQueue.main.async { [weak self] in
             self?.collectionView.reloadData()
         }
+        
+        func updateTypingIndicatorIfNeeded() {
+            if collectionView.numberOfSections == groupedMessages.count + 1 {
+                guard let cell = self.collectionView.cellForItem(at: IndexPath(item: 0, section: 1)) as? TypingIndicatorCell else { return }
+                cell.restart()
+            }
+        }
+        updateTypingIndicatorIfNeeded()
 
         collectionView.collectionViewLayout.invalidateLayout()
     }
@@ -671,6 +703,105 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         }
     }
     
+    // MARK: - DATABASE TYPING INDICATOR // TO MOVE
+    private var localTyping = false
+
+    var isTyping: Bool {
+        get {
+            return localTyping
+        }
+        set {
+            localTyping = newValue
+            guard let currentUserID = Auth.auth().currentUser?.uid else { return }
+            let typingData: NSDictionary = [currentUserID: newValue]
+            if localTyping {
+                sendTypingStatus(data: typingData)
+            } else {
+                guard let channelID = channel?.id else { return }
+                Firestore.firestore().collection("channels").document(channelID).collection("typingUserIds").document(currentUserID).delete()
+            }
+        }
+    }
+    
+    func sendTypingStatus(data: NSDictionary) {
+        guard let currentUserID = Auth.auth().currentUser?.uid,
+              let channelID = channel?.id
+        else { return }
+        Firestore.firestore().collection("channels").document(channelID).collection("typingUserIds").document(currentUserID).setData(data as! [String : Any], merge: true)
+    }
+    
+    func observeTypingIndicator() {
+        guard let currentUserID = Auth.auth().currentUser?.uid,
+              let channelID = channel?.id
+        else { return }
+        
+        typingIndicatorCollectionListener = Firestore.firestore().collection("channels").document(channelID).collection("typingUserIds").addSnapshotListener { (snapshot, error) in
+            if error != nil {
+                print(error?.localizedDescription ?? "error")
+                self.handleTypingIndicatorAppearance(isEnabled: false)
+                return
+            }
+            
+            guard let empty = snapshot?.isEmpty else { return }
+            
+            if empty {
+                self.handleTypingIndicatorAppearance(isEnabled: false)
+            }
+            
+            snapshot?.documentChanges.forEach({ (change) in
+                if change.type == .added {
+                    print("added")
+                    if change.document.documentID != currentUserID {
+                        self.handleTypingIndicatorAppearance(isEnabled: true)
+                    }
+                    
+                }
+                if change.type == .removed {
+                    if let count = snapshot?.documents.count, count < 1 {
+                        self.handleTypingIndicatorAppearance(isEnabled: false)
+                    }
+                }
+            })
+            
+        }
+    }
+    
+    func handleTypingIndicatorAppearance(isEnabled: Bool) {
+        if isEnabled {
+            guard collectionView.numberOfSections == groupedMessages.count else { return }
+            self.typingIndicatorSection = ["TypingIndicator"]
+            self.collectionView.performBatchUpdates ({
+                print("inserting")
+                self.collectionView.insertSections([groupedMessages.count])
+            }, completion: { (isCompleted) in
+                print(isCompleted)
+                if self.isScrollViewAtTheBottom() {
+                    if self.collectionView.contentSize.height < self.collectionView.bounds.height {
+                        return
+                    }
+                    self.collectionView.scrollToBottom(animated: true)
+                }
+            })
+        } else {
+            guard collectionView.numberOfSections == groupedMessages.count + 1 else { return }
+            self.collectionView.performBatchUpdates ({
+                self.typingIndicatorSection.removeAll()
+
+                if self.collectionView.numberOfSections > groupedMessages.count {
+                    self.collectionView.deleteSections([groupedMessages.count])
+
+                    guard let cell = self.collectionView.cellForItem(at: IndexPath(item: 0, section: groupedMessages.count)) as? TypingIndicatorCell else {
+                        return
+                    }
+                    cell.typingIndicator.stopAnimating()
+                    if isScrollViewAtTheBottom() {
+                        collectionView.scrollToBottom(animated: true)
+                    }
+                }
+            }, completion: nil)
+        }
+    }
+    
     // MARK: - Keyboard
 
     @objc open dynamic func keyboardWillShow(_ notification: Notification) {
@@ -708,16 +839,18 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
             guard let data = snapshot?.data() else { return }
             
             senderID = data["fromId"] as? String
+            print("in here")
+            print(UIApplication.topViewController())
             
             guard uid != senderID,
-                (UIApplication.topViewController() is ChannelLogController ||
+                  (UIApplication.topViewController() is ChannelLogController ||
                     UIApplication.topViewController() is ChannelDetailsController ||
                     UIApplication.topViewController() is ParticipantsController ||
                     UIApplication.topViewController() is UpdateChannelController ||
                     UIApplication.topViewController() is INSPhotosViewController ||
                     UIApplication.topViewController() is SFSafariViewController)
             else { senderID = nil; print("stuck hererer"); return }
-            
+            print("in here2")
             messageRef.updateData([
                 "seen": true,
                 "status": messageStatusRead
@@ -747,17 +880,10 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         guard sentMessage.status == messageStatusDelivered,
         messageToUpdate.messageUID == self.groupedMessages.last?.messages.last?.messageUID,
         userDefaults.currentBoolObjectState(for: userDefaults.inAppSounds) else { return }
-//        SystemSoundID.playFileNamed(fileName: "sent", withExtenstion: "caf")
+        SystemSoundID.playFileNamed(fileName: "sent", withExtenstion: "caf")
         
-        let systemSoundID: SystemSoundID = 1004
-        AudioServicesPlaySystemSound (systemSoundID)
-        
-//        if userDefaults.currentBoolObjectState(for: userDefaults.inAppSounds) {
-//            let systemSoundID: SystemSoundID = 1004
-//            AudioServicesPlaySystemSound (systemSoundID)
-//        }
-        
-//        guard messageToUpdate.messageUID == self.groupedMessages.last?.messages.last?.messageUID else { return }
+//        let systemSoundID: SystemSoundID = 1004
+//        AudioServicesPlaySystemSound (systemSoundID)
     }
     
     // MARK: - Title view
@@ -832,13 +958,68 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
             basicErrorAlertWith(title: basicErrorTitleForAlert, message: noInternetError, controller: self)
             return
         }
-        
+        isTyping = false
         let text = inputContainerView.inputTextView.text
         inputContainerView.prepareForSend()
         guard let channel = self.channel else { return }
         let messageSender = MessageSender(realmChannel(from: channel), text: text)
         messageSender.delegate = self
         messageSender.sendMessage()
+    }
+    
+    @objc func presentResendActions(_ sender: UIButton) {
+        let controller = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let resendAction = UIAlertAction(title: "Resend", style: .default) { (action) in
+            self.resendMessage(sender)
+        }
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        controller.addAction(resendAction)
+        controller.addAction(cancelAction)
+
+        inputContainerView.resignAllResponders()
+        controller.modalPresentationStyle = .overCurrentContext
+        present(controller, animated: true, completion: nil)
+    }
+    
+    fileprivate func resendMessage(_ sender: UIButton) {
+        let point = collectionView.convert(CGPoint.zero, from: sender)
+        guard let indexPath = collectionView.indexPathForItem(at: point) else { return }
+        guard let channel = self.channel else { return }
+        let message = groupedMessages[indexPath.section].messages[indexPath.row]
+
+        guard currentReachabilityStatus != .notReachable else {
+            basicErrorAlertWith(title: basicErrorTitleForAlert, message: noInternetError, controller: self)
+            return
+        }
+        isTyping = false
+        inputContainerView.prepareForSend()
+        resendTextMessage(channel, message.text, at: indexPath)
+    }
+
+    fileprivate func resendTextMessage(_ channel: Channel, _ text: String?, at indexPath: IndexPath) {
+        handleResend(channel: channel, text: text, indexPath: indexPath)
+    }
+    
+    fileprivate func handleResend(channel: Channel, text: String?, indexPath: IndexPath) {
+        print("gonna send")
+        let messageSender = MessageSender(channel, text: text)
+        messageSender.delegate = self
+        messageSender.sendMessage()
+
+        deleteLocalMessage(at: indexPath)
+    }
+    
+    fileprivate func deleteLocalMessage(at indexPath: IndexPath) {
+        let message = groupedMessages[indexPath.section].messages[indexPath.row]
+        try! realm.safeWrite {
+            guard let object = realm.object(ofType: Message.self, forPrimaryKey: message.messageUID ?? "") else { return }
+            realm.delete(object)
+
+            collectionView.performBatchUpdates({
+                collectionView.deleteItems(at: [indexPath])
+            }, completion: nil)
+        }
     }
     
     fileprivate func realmChannel(from channel: Channel) -> Channel {

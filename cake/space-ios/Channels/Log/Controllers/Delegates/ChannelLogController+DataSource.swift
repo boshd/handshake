@@ -11,9 +11,9 @@ import Firebase
 import Photos
 
 extension ChannelLogController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
-
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return groupedMessages.count
+        return groupedMessages.count + typingIndicatorSection.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -40,7 +40,15 @@ extension ChannelLogController: UICollectionViewDelegateFlowLayout, UICollection
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        guard indexPath.section != groupedMessages.count else { return showTypingIndicator(indexPath: indexPath)! as! TypingIndicatorCell }
         return selectCell(for: indexPath, isGroupChat: true)!
+    }
+    
+    fileprivate func showTypingIndicator(indexPath: IndexPath) -> UICollectionViewCell? {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: collectionView.typingIndicatorCellID, for: indexPath) as! TypingIndicatorCell
+        cell.restart()
+        return cell
     }
     
     fileprivate func selectCell(for indexPath: IndexPath, isGroupChat: Bool) -> UICollectionViewCell? {

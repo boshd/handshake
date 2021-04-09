@@ -14,6 +14,7 @@ class ChannelCollectionView: UICollectionView {
     
     let incomingMessageCellID = "incomingMessageCellID"
     let outgoingMessageCellID = "outgoingMessageCellID"
+    let typingIndicatorCellID = "typingIndicatorCellID"
     let informationMessageCellID = "informationMessageCellID"
 
 
@@ -33,6 +34,7 @@ class ChannelCollectionView: UICollectionView {
     fileprivate func registerCells() {
         register(IncomingMessageCell.self, forCellWithReuseIdentifier: incomingMessageCellID)
         register(OutgoingMessageCell.self, forCellWithReuseIdentifier: outgoingMessageCellID)
+        register(TypingIndicatorCell.self, forCellWithReuseIdentifier: typingIndicatorCellID)
         register(InformationMessageCell.self, forCellWithReuseIdentifier: informationMessageCellID)
         register(ChannelLogViewControllerSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "lol")
         registerNib(UINib(nibName: "TimestampView", bundle: nil), forRevealableViewReuseIdentifier: "timestamp")

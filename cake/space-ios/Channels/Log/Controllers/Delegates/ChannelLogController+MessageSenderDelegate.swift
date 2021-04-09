@@ -10,9 +10,7 @@ import UIKit
 
 extension ChannelLogController: MessageSenderDelegate {
     
-    func update(mediaSending progress: Double, animated: Bool) {
-        // uploadProgressBar.setProgress(Float(progress), animated: animated)
-    }
+    func update(mediaSending progress: Double, animated: Bool) {}
     
     func update(with values: [String: AnyObject]) {
         autoreleasepool {

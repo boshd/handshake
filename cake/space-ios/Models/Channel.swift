@@ -40,6 +40,8 @@ final class Channel: Object {
     var createdAt = RealmOptional<Int64>()
     var lastMessageTimestamp = RealmOptional<Int64>()
     
+    let isTyping = RealmOptional<Bool>()
+    
     var startTime = RealmOptional<Int64>()
     var endTime = RealmOptional<Int64>()
     
@@ -76,6 +78,10 @@ final class Channel: Object {
     
     override static func primaryKey() -> String? {
         return "id"
+    }
+    
+    func getTyping() -> Bool {
+        return RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: id ?? "")?.isTyping.value ?? false
     }
     
     convenience init(dictionary: [String: AnyObject]?) {

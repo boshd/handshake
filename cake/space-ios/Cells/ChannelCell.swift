@@ -177,7 +177,7 @@ class ChannelCell: InteractiveTableViewCell {
         timer?.invalidate()
         timer = nil
     }
-  
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         title.text = nil

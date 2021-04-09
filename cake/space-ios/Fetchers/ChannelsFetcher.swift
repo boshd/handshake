@@ -109,28 +109,17 @@ class ChannelsFetcher: NSObject {
                         return
                     }
                     guard let snap = snapshot else { return }
-                    print("snap is here")
                     snap.documentChanges.forEach { (diff) in
                         if (diff.type == .added) {
-                            print("snap is added")
+                            print("this is called initially right?")
                             let channelID = diff.document.documentID
                             self?.listenToChannel(with: channelID)
                             self?.delegate?.channels(addedNewChannel: true, channelID: channelID)
                             self?.loadConversation(for: channelID)
                         } else if (diff.type == .removed) {
-                            print("snap is removed")
                             let channelID = diff.document.documentID
-//                            let obj: [String: Any] = ["channelID": channelID]
-//                            NotificationCenter.default.post(name: .channelRemoved, object: obj)
-//                            if let channel = RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: channelID),
-//                               !channel.isInvalidated {
-//                                print("you were removed")
-                                let obj: [String: Any] = ["channelID": channelID]
-                                NotificationCenter.default.post(name: .channelRemoved, object: obj)
-//                            } else {
-//                                print("you left")
-//                            }
-                            
+                            let obj: [String: Any] = ["channelID": channelID]
+                            NotificationCenter.default.post(name: .channelRemoved, object: obj)
                             if self?.individualChannelListenersDict.count != 0 {
                                 self?.individualChannelListenersDict[channelID]?.remove()
                                 
@@ -141,8 +130,22 @@ class ChannelsFetcher: NSObject {
                                 }
                             }
                             self?.delegate?.channels(didRemove: true, channelID: channelID)
-                        } else {
-                            print("snap is else")
+                        } else if (diff.type == .modified) {
+                            // listening to user's unique channel
+                            print("BTW WE GOT A CHANNEL UPDATE JS")
+                            
+                            guard let data = diff.document.data() as [String:AnyObject]? else { return }
+                            
+                            let updatedChannel = Channel(dictionary: data)
+                            guard let updatedChannelID = updatedChannel.id else { return }
+                            
+                            guard let index = self?.channels.firstIndex(where: { (channel) -> Bool in
+                                return channel.id == updatedChannelID
+                            }) else { return }
+                            self?.channels[index].badge = updatedChannel.badge
+                            self?.channels[index].lastMessageId = updatedChannel.lastMessageId
+                            guard let unwrappedSelf = self else { print("stuck in modified channel"); return }
+                            unwrappedSelf.delegate?.channels(update: unwrappedSelf.channels[index], reloadNeeded: true)
                         }
                     }
                 })
@@ -155,7 +158,6 @@ class ChannelsFetcher: NSObject {
               let channelID = channelID
         else { return }
         
-        //let groupChannelDataReference = Firestore.firestore().collection("channels").document(channelID)
         let groupChannelDataReference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID)
         groupChannelDataReference.getDocument { (documentSnapshot, error) in
             guard let data = documentSnapshot?.data() else {
@@ -165,9 +167,10 @@ class ChannelsFetcher: NSObject {
                 self.delegate?.channels(didFinishFetching: true, channels: self.channels)
                 return
             }
-            print("ariveee")
-            print(data)
             let channel = Channel(dictionary: data as [String : AnyObject])
+            
+            channel.isTyping.value = channel.getTyping()
+            
             guard let lastMessageID = channel.lastMessageId else {
                 self.loadAdditionalMetadata(for: channel)
                 return
@@ -178,38 +181,29 @@ class ChannelsFetcher: NSObject {
     }
     
     fileprivate func loadLastMessage(for messageID: String, channel: Channel) {
-//        guard let channelID = channel.id else { return }
-        
-//        Firestore.firestore().collection("channels").document(channelID).collection("thread").document(messageID).getDocument { (snapshot, error) in
         Firestore.firestore().collection("messages").document(messageID).getDocument { (snapshot, error) in
             if error != nil {
                 print(error?.localizedDescription as Any)
                 return
             }
-            print(" 1 loadLastMessage")
             guard var dictionary = snapshot?.data() as [String: AnyObject]? else { return }
-            print(" 2 loadLastMessage")
             dictionary.updateValue(messageID as AnyObject, forKey: "messageUID")
             dictionary = self.messagesFetcher.preloadCellData(to: dictionary)
             let message = Message(dictionary: dictionary)
             channel.lastMessageTimestamp.value = message.timestamp.value
             message.channel = channel
             channel.lastMessageRuntime = message
-            print(" last loadLastMessage")
             self.loadAdditionalMetadata(for: channel)
         }
     }
     
     fileprivate func loadAdditionalMetadata(for channel: Channel) {
-        print("begin of additional")
         guard let channelID = channel.id, let _ = Auth.auth().currentUser?.uid else { return }
-        print("in additional")
         Firestore.firestore().collection("channels").document(channelID).getDocument { (snapshot, error) in
             if error != nil {
                 print(error as Any)
                 return
             }
-            print("in get doc")
             guard var dictionary = snapshot?.data() as [String: AnyObject]? else { return }
             dictionary.updateValue(channelID as AnyObject, forKey: "id")
 
@@ -266,8 +260,13 @@ class ChannelsFetcher: NSObject {
     }
     
     func update(channel: Channel, at index: Int) {
+        
+        if channel.isTyping.value == nil {
+            let isTyping = channels[index].isTyping.value
+            channel.isTyping.value = isTyping
+        }
+        
         guard isGroupAlreadyFinished, (channels[index].isMuted.value != channel.isMuted.value) else {
-            // everything ok..?
             if isGroupAlreadyFinished {
                 channels[index] = channel
                 delegate?.channels(update: channels[index], reloadNeeded: false)
@@ -299,17 +298,18 @@ class ChannelsFetcher: NSObject {
         let channelReference = Firestore.firestore().collection("channels").document(channelID)
         
         let listener = channelReference.addSnapshotListener { (snapshot, error) in
+            // listening to ACTUAL channel
             if error != nil {
                 print(error?.localizedDescription ?? "error")
                 return
             }
             
+            print("BTW WE GOT A CHANNEL UPDATE JS")
+            
             guard let data = snapshot?.data() as [String:AnyObject]? else { return }
             
             let updatedChannel = Channel(dictionary: data)
-            guard let updatedChannelID = updatedChannel.id
-                  // let currentUserID = Auth.auth().currentUser?.uid
-            else { return }
+            guard let updatedChannelID = updatedChannel.id else { return }
             
             guard let index = self.channels.firstIndex(where: { (channel) -> Bool in
                 return channel.id == updatedChannelID

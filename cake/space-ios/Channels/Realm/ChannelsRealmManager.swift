@@ -28,6 +28,8 @@ class ChannelsRealmManager {
 
             RealmKeychain.defaultRealm.beginWrite()
             for channel in channels {
+                channel.isTyping.value = RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: channel.id ?? "")?.isTyping.value
+                
                 RealmKeychain.defaultRealm.create(Channel.self, value: channel, update: .modified)
                 if let message = channel.lastMessageRuntime {
                     message.senderName = RealmKeychain.defaultRealm.object(ofType: Message.self, forPrimaryKey: message.messageUID ?? "")?.senderName

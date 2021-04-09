@@ -120,10 +120,8 @@ class MessagesFetcher: NSObject {
                                 guard var dictionary = snapshot?.data() as [String: AnyObject]? else { return }
                                 dictionary.updateValue(messageUID as AnyObject, forKey: "messageUID")
                                 dictionary = self.preloadCellData(to: dictionary)
-                                print("triggere vdvddvdvd")
                                 guard self.isInitialChatMessagesLoad else {
                                     self.handleMessageInsertionInRuntime(newDictionary: dictionary)
-                                    print("triggered :(")
                                     return
                                 }
                                 

@@ -63,12 +63,7 @@ class MessageSender: NSObject {
             return
         }
         
-        //let reference = Database.database().reference().child("messages").childByAutoId()
-        
-        let reference = Firestore.firestore().collection("messages")
-        
-//        let threadReference = DBreference.collection("channels").document(toID).collection("thread")
-        let newMessageReference = reference.document()
+        let newMessageReference = Firestore.firestore().collection("messages").document()
 
         let messageUID = newMessageReference.documentID
         let messageStatus = messageStatusDelivered
@@ -96,7 +91,7 @@ class MessageSender: NSObject {
                 print("error // ", error?.localizedDescription ?? "")
                 return
             }
-
+            print("BOUT TO LEAVE")
             messageSendingGroup.leave()
             delegateGroup.leave()
         }
@@ -106,27 +101,29 @@ class MessageSender: NSObject {
         }
         
         messageSendingGroup.notify(queue: .global(qos: .background), execute: {
+            print("IM NOTIFIED!")
             self.updateDatabase(at: newMessageReference, with: defaultData, toID: toID, fromID: fromID)
         })
     }
     
     fileprivate func updateDatabase(at reference: DocumentReference, with values: [String: AnyObject], toID: String, fromID: String ) {
-        // set or update?
-        reference.setData(values) { (error) in
+        
+        let batch = Firestore.firestore().batch()
+        
+        batch.setData(values, forDocument: reference)
+        batch.setData([
+            "fromId": fromID
+        ], forDocument: Firestore.firestore().collection("channels").document(toID).collection("messageIds").document(reference.documentID), merge: true)
+        batch.setData([
+            "fromId": fromID
+        ], forDocument: Firestore.firestore().collection("users").document(fromID).collection("channelIds").document(toID).collection("messageIds").document(reference.documentID), merge: true)
+        
+        batch.commit() { (error) in
             if error != nil {
                 print(error?.localizedDescription ?? "error")
                 return
             }
-            
-            let messageId = reference.documentID
-            
-            Firestore.firestore().collection("channels").document(toID).collection("messageIds").document(messageId).setData([
-                "fromId": fromID
-            ])
-            Firestore.firestore().collection("users").document(fromID).collection("channelIds").document(toID).collection("messageIds").document(messageId).setData([
-                "fromId": fromID
-            ])
-            self.updateLastMessage(with: messageId)
+            self.updateLastMessage(with: reference.documentID)
         }
     }
 

@@ -101,21 +101,24 @@ class InAppNotificationManager: NSObject {
             guard channel.participantIds.contains(currentUserID) else { return }
             
             var first = true
-//            Database.database().reference().child("user-messages").child(currentUserID).child(chatID).child(messageMetaDataFirebaseFolder)
             notificationReference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID).collection("messageIds")
-            //notificationReference = Firestore.firestore().collection("channels").document(channelID).collection("thread")
-            let listener = notificationReference.order(by: "timestamp", descending: true).addSnapshotListener { (querySnapshot, error) in
+            let listener = notificationReference.addSnapshotListener { (querySnapshot, error) in
                 guard let documents = querySnapshot?.documents else {
                     print("error // ", error!)
                     return
                 }
+                
+                print("triggrred 3ady")
                 
 //                print("\(self.individualChannelListenersDict.count) // listeners")
                 
                 if documents.count > 0 { // if channel thread isn't empty
                     let document = documents[0]
 
+                    print("triggrred 3ady -- and docs are more than 0")
+                    
                     if (first) {
+                        print("bescause iz first")
                         first = false
                         return
                     }
@@ -125,8 +128,12 @@ class InAppNotificationManager: NSObject {
                     var dictionary = document.data()
                     dictionary.updateValue(messageID as AnyObject, forKey: "messageUID")
                     
+                    print(dictionary)
+                    
                     let message = Message(dictionary: dictionary as [String : AnyObject])
-                    guard let uid = Auth.auth().currentUser?.uid, message.fromId != uid else { return }
+                    
+                    print(Auth.auth().currentUser?.uid)
+                    guard let uid = Auth.auth().currentUser?.uid, message.fromId != uid else { print("\(message.fromId) ,,,,,,"); return }
                     self.handleInAppSoundPlaying(message: message, channel: channel, channels: self.channels)
                 }
             }
@@ -136,12 +143,14 @@ class InAppNotificationManager: NSObject {
     }
     
     func handleInAppSoundPlaying(message: Message, channel: Channel, channels: [Channel]) {
+        print("arived ALL THE WAY HERE")
         if UIApplication.topViewController() is SFSafariViewController ||
         UIApplication.topViewController() is ChannelLogController { return }
         
         if let index = channels.firstIndex(where: { (chan) -> Bool in
             return chan.id == channel.id
         }) {
+            print("arived ALL THE WAY HERE")
             if let muted = channels[index].isMuted.value, !muted, let channelName = channels[index].name {
                 self.playNotificationSound()
                 if userDefaults.currentBoolObjectState(for: userDefaults.inAppNotifications) {
@@ -151,7 +160,7 @@ class InAppNotificationManager: NSObject {
                     } else {
                         title = channelName
                     }
-                    self.showInAppNotification(title: title, subtitle: self.subtitleForMessage(message: message))
+                    self.showInAppNotification(channel: channels[index], title: channelName, subtitle: self.subtitleForMessage(message: message), resource: channelAvatar(resource: channels[index].thumbnailImageUrl), placeholder: channelPlaceholder() )
                 }
             } else if let channelName = channels[index].name, channels[index].isMuted.value == nil {
                 self.playNotificationSound()
@@ -162,10 +171,24 @@ class InAppNotificationManager: NSObject {
                     } else {
                         title = channelName
                     }
-                    self.showInAppNotification(title: title, subtitle: self.subtitleForMessage(message: message))
+                    self.showInAppNotification(channel: channels[index], title: channelName, subtitle: self.subtitleForMessage(message: message), resource: channelAvatar(resource: channels[index].thumbnailImageUrl), placeholder: channelPlaceholder())
                 }
             }
         }
+    }
+    
+    fileprivate func channelAvatar(resource: String?) -> Any {
+        let placeHolderImage = UIImage(named: "GroupIcon")
+        guard let imageURL = resource, imageURL != "" else { return placeHolderImage! }
+        return URL(string: imageURL)!
+    }
+    
+    fileprivate func channelPlaceholder() -> Data? {
+        let placeHolderImage = UIImage(named: "GroupIcon")
+        guard let data = placeHolderImage?.asJPEGData else {
+            return nil
+        }
+        return data
     }
     
     fileprivate func subtitleForMessage(message: Message) -> String {
@@ -186,13 +209,17 @@ class InAppNotificationManager: NSObject {
         return data
     }
 
-    fileprivate func showInAppNotification(title: String, subtitle: String/*, user: User*/) {
-        let announcement = Announcement(title: title, subtitle: subtitle, image: nil, duration: 3,
-                                        backgroundColor: UIColor.black.withAlphaComponent(0.85),
-                                        textColor: .white,
-                                        dragIndicatordColor: .lighterGray()) {}
-        guard let rc = UIApplication.shared.keyWindow?.rootViewController else { return }
-        space_ios.show(shout: announcement, to: rc)
+    fileprivate func showInAppNotification(channel: Channel, title: String, subtitle: String, resource: Any?, placeholder: Data?) {
+        
+        let notification: InAppNotification = InAppNotification(resource: resource, title: title, subtitle: subtitle, data: placeholder)
+        InAppNotificationDispatcher.shared.show(notification: notification) { (_) in
+            guard let controller = UIApplication.shared.keyWindow?.rootViewController else { return }
+            guard let id = channel.id, let realmChannel = RealmKeychain.defaultRealm.objects(Channel.self).filter("id == %@", id).first else {
+                channelLogPresenter.open(channel, controller: controller)
+                return
+            }
+            channelLogPresenter.open(realmChannel, controller: controller)
+        }
     }
 
     fileprivate func playNotificationSound() {        

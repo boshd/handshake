@@ -158,7 +158,6 @@ final class InputContainerView: UIControl {
 
     func resignAllResponders() {
         inputTextView.resignFirstResponder()
-        print("CULPRIT")
     }
 }
 
@@ -210,9 +209,10 @@ extension InputContainerView: UITextViewDelegate {
      }
 
      func textViewDidChange(_ textView: UITextView) {
-       confirugeHeightConstraint()
-       placeholderLabel.isHidden = !textView.text.isEmpty
-       handleSendButtonState()
+        confirugeHeightConstraint()
+        placeholderLabel.isHidden = !textView.text.isEmpty
+        channelLogController?.isTyping = !textView.text.isEmpty
+        handleSendButtonState()
      }
 
      func textViewDidEndEditing(_ textView: UITextView) {

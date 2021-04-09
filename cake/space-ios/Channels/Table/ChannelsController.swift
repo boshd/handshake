@@ -420,9 +420,6 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
                 }
             }
         }
-        valid id
-        159
-        
         
         if realmChannels.count == 0 {
             checkIfThereAnyActiveChats(isEmpty: true)

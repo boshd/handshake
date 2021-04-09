@@ -86,6 +86,7 @@
 		BC3AE88824B9F1DD00619FCF /* AddLocationViewController+Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3AE88724B9F1DD00619FCF /* AddLocationViewController+Map.swift */; };
 		BC3AE88A24B9F23C00619FCF /* LocationSearchTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3AE88924B9F23C00619FCF /* LocationSearchTable.swift */; };
 		BC3AE88F24B9F5C800619FCF /* RoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3AE88E24B9F5C800619FCF /* RoundButton.swift */; };
+		BC41D7D1261F92180090FFF7 /* TypingIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC41D7D0261F92180090FFF7 /* TypingIndicatorManager.swift */; };
 		BC44E6C522CCDCB400F50956 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC44E6C422CCDCB400F50956 /* UserCell.swift */; };
 		BC44E6C722CCDD4E00F50956 /* UserCell+ConfigureCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC44E6C622CCDD4E00F50956 /* UserCell+ConfigureCell.swift */; };
 		BC44E6C922CCE1F600F50956 /* CheckableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC44E6C822CCE1F600F50956 /* CheckableTableViewCell.swift */; };
@@ -268,6 +269,16 @@
 		BCC1A28322D4A63600766AF9 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A28222D4A63600766AF9 /* StorageManager.swift */; };
 		BCC9A5EF237F6F340052446A /* ChannelsFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC9A5EE237F6F340052446A /* ChannelsFetcher.swift */; };
 		BCC9A5F1237FD29F0052446A /* InAppNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC9A5F0237FD29F0052446A /* InAppNotificationManager.swift */; };
+		BCCF55062620999200AFBF7C /* TypingIndicatorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCF55052620999200AFBF7C /* TypingIndicatorCell.swift */; };
+		BCCF550C262099FE00AFBF7C /* TypingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCF550B262099FE00AFBF7C /* TypingIndicator.swift */; };
+		BCCF551426209A1900AFBF7C /* TypingBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCF551326209A1900AFBF7C /* TypingBubble.swift */; };
+		BCCF551926209A2D00AFBF7C /* BubbleCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCF551826209A2D00AFBF7C /* BubbleCircle.swift */; };
+		BCCF551F2620D7E100AFBF7C /* InAppNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCF551E2620D7E100AFBF7C /* InAppNotification.swift */; };
+		BCCF55272620D80E00AFBF7C /* InAppNotificationDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCF55262620D80E00AFBF7C /* InAppNotificationDispatcher.swift */; };
+		BCCF552C2620D82700AFBF7C /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCF552B2620D82700AFBF7C /* Utils.swift */; };
+		BCCF55312620D83E00AFBF7C /* CustomizedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCF55302620D83E00AFBF7C /* CustomizedView.swift */; };
+		BCCF55362620D85800AFBF7C /* CustomizedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCF55352620D85800AFBF7C /* CustomizedImageView.swift */; };
+		BCCF553B2620D87900AFBF7C /* InAppNotificationBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCF553A2620D87900AFBF7C /* InAppNotificationBanner.swift */; };
 		BCD6B9C725A92BF200482155 /* MainRoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD6B9C625A92BF200482155 /* MainRoundButton.swift */; };
 		BCDB2BF522FDE15A002FC6A2 /* AccountSettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDB2BF422FDE15A002FC6A2 /* AccountSettingsController.swift */; };
 		BCDE184C2554BA5900A64499 /* ChannelsController+RowActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDE184B2554BA5900A64499 /* ChannelsController+RowActions.swift */; };
@@ -425,6 +436,7 @@
 		BC3AE88724B9F1DD00619FCF /* AddLocationViewController+Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddLocationViewController+Map.swift"; sourceTree = "<group>"; };
 		BC3AE88924B9F23C00619FCF /* LocationSearchTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchTable.swift; sourceTree = "<group>"; };
 		BC3AE88E24B9F5C800619FCF /* RoundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundButton.swift; sourceTree = "<group>"; };
+		BC41D7D0261F92180090FFF7 /* TypingIndicatorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingIndicatorManager.swift; sourceTree = "<group>"; };
 		BC44E6C422CCDCB400F50956 /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		BC44E6C622CCDD4E00F50956 /* UserCell+ConfigureCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserCell+ConfigureCell.swift"; sourceTree = "<group>"; };
 		BC44E6C822CCE1F600F50956 /* CheckableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckableTableViewCell.swift; sourceTree = "<group>"; };
@@ -607,6 +619,16 @@
 		BCC1A28222D4A63600766AF9 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
 		BCC9A5EE237F6F340052446A /* ChannelsFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsFetcher.swift; sourceTree = "<group>"; };
 		BCC9A5F0237FD29F0052446A /* InAppNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppNotificationManager.swift; sourceTree = "<group>"; };
+		BCCF55052620999200AFBF7C /* TypingIndicatorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingIndicatorCell.swift; sourceTree = "<group>"; };
+		BCCF550B262099FE00AFBF7C /* TypingIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingIndicator.swift; sourceTree = "<group>"; };
+		BCCF551326209A1900AFBF7C /* TypingBubble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingBubble.swift; sourceTree = "<group>"; };
+		BCCF551826209A2D00AFBF7C /* BubbleCircle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BubbleCircle.swift; sourceTree = "<group>"; };
+		BCCF551E2620D7E100AFBF7C /* InAppNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppNotification.swift; sourceTree = "<group>"; };
+		BCCF55262620D80E00AFBF7C /* InAppNotificationDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppNotificationDispatcher.swift; sourceTree = "<group>"; };
+		BCCF552B2620D82700AFBF7C /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		BCCF55302620D83E00AFBF7C /* CustomizedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomizedView.swift; sourceTree = "<group>"; };
+		BCCF55352620D85800AFBF7C /* CustomizedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomizedImageView.swift; sourceTree = "<group>"; };
+		BCCF553A2620D87900AFBF7C /* InAppNotificationBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppNotificationBanner.swift; sourceTree = "<group>"; };
 		BCD6B9C625A92BF200482155 /* MainRoundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainRoundButton.swift; sourceTree = "<group>"; };
 		BCDB2BF422FDE15A002FC6A2 /* AccountSettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettingsController.swift; sourceTree = "<group>"; };
 		BCDE184B2554BA5900A64499 /* ChannelsController+RowActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelsController+RowActions.swift"; sourceTree = "<group>"; };
@@ -717,6 +739,7 @@
 			children = (
 				BC59276C22A135AC006A5CEF /* Public.swift */,
 				BCDE18512555AEEC00A64499 /* ChannelMembersManager.swift */,
+				BC41D7D0261F92180090FFF7 /* TypingIndicatorManager.swift */,
 				BCF6EFC1250917D300853718 /* BlockedUsersManager.swift */,
 				BCC9A5F0237FD29F0052446A /* InAppNotificationManager.swift */,
 				BCC1A28222D4A63600766AF9 /* StorageManager.swift */,
@@ -1117,6 +1140,7 @@
 				BC3F6626251D7CFB009A44EE /* Message Cells */,
 				BC59276022A0EDAF006A5CEF /* ChannelCell.swift */,
 				BC59276A22A133C1006A5CEF /* ChannelCell+ConfigureCell.swift */,
+				BCCF55052620999200AFBF7C /* TypingIndicatorCell.swift */,
 				BCF48C8A2380A388004B8E21 /* SettingsCell.swift */,
 				BC08DF90236B335500A917D7 /* ParticipantCell.swift */,
 				BC08DF92236B338100A917D7 /* ParticipantCell+ConfigureCell.swift */,
@@ -1202,6 +1226,8 @@
 		BC6A821024731CC200FA1F93 /* UI Components */ = {
 			isa = PBXGroup;
 			children = (
+				BCCF551D2620D7CA00AFBF7C /* InAppBanner */,
+				BCCF550A262099D100AFBF7C /* TypingIndicator */,
 				BC5BAFBF25A24AAC00996DCB /* Custom Alert Controller */,
 				BCB027FB256846F40082B318 /* UIIncrementSlider */,
 				BCBDA17C254E274C0051A183 /* Multiple Selection Controllers */,
@@ -1567,6 +1593,29 @@
 				BC6B9AE82489CD8700157725 /* CreateChannelExtendedCell.swift */,
 			);
 			path = Cells;
+			sourceTree = "<group>";
+		};
+		BCCF550A262099D100AFBF7C /* TypingIndicator */ = {
+			isa = PBXGroup;
+			children = (
+				BCCF550B262099FE00AFBF7C /* TypingIndicator.swift */,
+				BCCF551326209A1900AFBF7C /* TypingBubble.swift */,
+				BCCF551826209A2D00AFBF7C /* BubbleCircle.swift */,
+			);
+			path = TypingIndicator;
+			sourceTree = "<group>";
+		};
+		BCCF551D2620D7CA00AFBF7C /* InAppBanner */ = {
+			isa = PBXGroup;
+			children = (
+				BCCF551E2620D7E100AFBF7C /* InAppNotification.swift */,
+				BCCF55262620D80E00AFBF7C /* InAppNotificationDispatcher.swift */,
+				BCCF552B2620D82700AFBF7C /* Utils.swift */,
+				BCCF55302620D83E00AFBF7C /* CustomizedView.swift */,
+				BCCF55352620D85800AFBF7C /* CustomizedImageView.swift */,
+				BCCF553A2620D87900AFBF7C /* InAppNotificationBanner.swift */,
+			);
+			path = InAppBanner;
 			sourceTree = "<group>";
 		};
 		BCD9577422C13B130065DE5F /* Create */ = {
@@ -2106,11 +2155,13 @@
 				BCEF08AD2545F93A0069C6F5 /* ChannelsHeaderView.swift in Sources */,
 				BC5BAFD225A24F1B00996DCB /* ActionSheetContainerView.swift in Sources */,
 				BCB027E7256845A90082B318 /* AppearanceTextSizeTableViewCell.swift in Sources */,
+				BCCF551926209A2D00AFBF7C /* BubbleCircle.swift in Sources */,
 				BC5C499725475064007AF964 /* ChannelController+ChannelUpdatesDelegate.swift in Sources */,
 				BCDE18652558220000A64499 /* ParticipantsController+SelectedUsersDelegate.swift in Sources */,
 				BC8C118025BB38E9000CBD25 /* UpdateChannelController+DatePicker.swift in Sources */,
 				BCBBC29A25388C5A0010F39E /* ActivityTitleView.swift in Sources */,
 				BC67F638252FA03B00E7D274 /* VerificationController.swift in Sources */,
+				BCCF55272620D80E00AFBF7C /* InAppNotificationDispatcher.swift in Sources */,
 				BC6C60B62384507D003DBB53 /* ChannelLogController+MessageSenderDelegate.swift in Sources */,
 				BCB027D52568453B0082B318 /* MenuControlsTableViewController.swift in Sources */,
 				BC68C0BD258A9BD500D3A730 /* ChannelLogController+ChannelManager.swift in Sources */,
@@ -2120,6 +2171,7 @@
 				BCBDA167254DF0510051A183 /* ChannelsController+ContactsUpdatesDelegate.swift in Sources */,
 				BCF8EDFC2389CEAD00234160 /* UserProfileContainerView.swift in Sources */,
 				BC35EF292476241F0021056B /* CreateChannelDetailsContainerView.swift in Sources */,
+				BCCF55062620999200AFBF7C /* TypingIndicatorCell.swift in Sources */,
 				BC1A780A22A3FCB3005AC5CE /* MessageTextView.swift in Sources */,
 				BC35EF25247323420021056B /* RSVPView.swift in Sources */,
 				BC04B8C0236F1BE0008FDF60 /* ChannelLogController+ChannelHistoryFetcherDelegate.swift in Sources */,
@@ -2174,6 +2226,7 @@
 				BC59275322A08EC3006A5CEF /* FirebaseService.swift in Sources */,
 				BC493040253A15EA00441F62 /* ContactsController.swift in Sources */,
 				BC82CF9823778C10003B2360 /* MessagesFetcher.swift in Sources */,
+				BCCF552C2620D82700AFBF7C /* Utils.swift in Sources */,
 				BC5187B925332D1000880418 /* CountriesTableViewController.swift in Sources */,
 				BC23D2C5259BADFE004AE1CF /* MapController+SearchTableDelegate.swift in Sources */,
 				BCDE184C2554BA5900A64499 /* ChannelsController+RowActions.swift in Sources */,
@@ -2191,6 +2244,7 @@
 				BC0F42872358C2A6000D3DF0 /* StackCell.swift in Sources */,
 				BC74F2B422D0A62E00B37801 /* CreateAccountContainerView.swift in Sources */,
 				BC3AE88824B9F1DD00619FCF /* AddLocationViewController+Map.swift in Sources */,
+				BCCF551F2620D7E100AFBF7C /* InAppNotification.swift in Sources */,
 				BC74F2BC22D0ED2700B37801 /* PhoneController.swift in Sources */,
 				BC34685823C2904E00170FA7 /* ChatInputContainerView.swift in Sources */,
 				BC0F428D2359450C000D3DF0 /* CreateChannelOptionsContainerView.swift in Sources */,
@@ -2220,7 +2274,9 @@
 				BCE5ABFF249EEE6A001172C4 /* HeaderView.swift in Sources */,
 				BCBDA1B3254EFF810051A183 /* CreateChannelController+Map.swift in Sources */,
 				BCF48C8B2380A388004B8E21 /* SettingsCell.swift in Sources */,
+				BCCF55362620D85800AFBF7C /* CustomizedImageView.swift in Sources */,
 				BC5938E425071BEC007743C3 /* DescriptionCell.swift in Sources */,
+				BCCF550C262099FE00AFBF7C /* TypingIndicator.swift in Sources */,
 				BC22A6F622B681B5001D9068 /* ExploreViewController.swift in Sources */,
 				BCB6CDEC2389F182005E0D55 /* AccountSettingsTableViewCell.swift in Sources */,
 				BC0EAF342512470E00394898 /* BottomScrollContainer.swift in Sources */,
@@ -2278,6 +2334,7 @@
 				BCC1A27F22D4826900766AF9 /* PhotoController.swift in Sources */,
 				BC98B101236E3ACC009A45DA /* UIView+Extensions.swift in Sources */,
 				BC5187C425332D6000880418 /* CountriesFetcher.swift in Sources */,
+				BCCF551426209A1900AFBF7C /* TypingBubble.swift in Sources */,
 				BCBDA17F254E27A80051A183 /* SelectParticipantsController.swift in Sources */,
 				BCAC057022AD4A0C006D0C24 /* ContactsService.swift in Sources */,
 				BCB0281C256AE30B0082B318 /* ProfileController.swift in Sources */,
@@ -2298,6 +2355,7 @@
 				BC0EAF3A2512619600394898 /* InputTextView.swift in Sources */,
 				BC6B9AE52489CD6800157725 /* CreateChannelHeaderCell.swift in Sources */,
 				BCDE18522555AEEC00A64499 /* ChannelMembersManager.swift in Sources */,
+				BC41D7D1261F92180090FFF7 /* TypingIndicatorManager.swift in Sources */,
 				BC0ED01324A226D2009D4E70 /* SelectionHeaderCell.swift in Sources */,
 				BCF8AC3F2551B0EA0045B2C5 /* VerticalTitleSubtitleView.swift in Sources */,
 				BC6B9AE92489CD8700157725 /* CreateChannelExtendedCell.swift in Sources */,
@@ -2343,10 +2401,12 @@
 				BC0F428B2358D643000D3DF0 /* StackCellBase.swift in Sources */,
 				BC8C116525BB273B000CBD25 /* UpdateChannelController+MapDelegate.swift in Sources */,
 				BC1A77FD22A3F8B6005AC5CE /* fChannelLogController+DataSource.swift in Sources */,
+				BCCF553B2620D87900AFBF7C /* InAppNotificationBanner.swift in Sources */,
 				BCEFCC132596ADF4009D3482 /* PermissionsController.swift in Sources */,
 				BC0C4275256AE8F7000C740F /* ProfileController+NameEditing.swift in Sources */,
 				BC9E02B02482FAA2002CA4AE /* SelectUsersButtonView.swift in Sources */,
 				BC59276322A11CAB006A5CEF /* IncomingMessageCell.swift in Sources */,
+				BCCF55312620D83E00AFBF7C /* CustomizedView.swift in Sources */,
 				BCA9CEFB238B0306002FE100 /* ChannelDetailsControllerAvatarOpenerDelegate.swift in Sources */,
 				BCB02807256847420082B318 /* UIIncrementSliderDotView.swift in Sources */,
 				BCC1A27B22D3C47000766AF9 /* PhoneContainerView.swift in Sources */,

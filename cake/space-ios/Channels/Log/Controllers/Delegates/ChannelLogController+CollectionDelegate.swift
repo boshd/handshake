@@ -13,7 +13,12 @@ import AVFoundation
 extension ChannelLogController: CollectionDelegate {
     
     func collectionView(shouldUpdateOutgoingMessageStatusFrom reference: DocumentReference, message: Message) {
-        guard message.messageUID != nil else { return }
+        reference.addSnapshotListener { (snapshot, error) in
+            guard error == nil else { print(error?.localizedDescription ?? ""); return }
+            guard let exists = snapshot?.exists, exists, let data = snapshot?.data(), let messageStatus = data["status"] as? String else { return }
+            message.status = messageStatus
+            self.updateMessageStatusUI(sentMessage: message)
+        }
         DispatchQueue.global(qos: .background).async {
             self.updateMessageStatus(messageRef: reference)
         }

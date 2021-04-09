@@ -30,6 +30,7 @@ class OutgoingMessageCell: BaseMessageCell {
         bubbleView.addSubview(textView)
         bubbleView.addSubview(timeLabel)
         contentView.addSubview(deliveryStatus)
+        addSubview(resendButton)
         timeLabel.backgroundColor = .clear
         timeLabel.textColor = ThemeManager.currentTheme().outgoingTimestampTextColor
         //bubbleView.tintColor = ThemeManager.currentTheme().outgoingBubbleTintColor
@@ -39,6 +40,7 @@ class OutgoingMessageCell: BaseMessageCell {
         guard let messageText = message.text else { return }
         textView.text = messageText
         timeLabel.text = message.convertedTimestamp
+        resendButtonFrame(message: message)
         bubbleView.frame = setupBubbleViewFrame(message: message)
         textView.frame.size = CGSize(width: bubbleView.frame.width, height: bubbleView.frame.height)
         timeLabel.frame.origin = CGPoint(x: bubbleView.frame.width-timeLabel.frame.width-5, y: bubbleView.frame.height-timeLabel.frame.height-5)
@@ -49,7 +51,8 @@ class OutgoingMessageCell: BaseMessageCell {
     fileprivate func setupBubbleViewFrame(message: Message) -> CGRect {
         guard let portaritEstimate = message.estimatedFrameForText?.width.value else { return CGRect() }
 
-        let portraitX = frame.width - CGFloat(portaritEstimate) - BaseMessageCell.outgoingMessageHorisontalInsets - BaseMessageCell.scrollIndicatorInset
+        let portraitX = frame.width - CGFloat(portaritEstimate) - BaseMessageCell.outgoingMessageHorisontalInsets - BaseMessageCell.scrollIndicatorInset - resendButtonWidth()
+        
         let portraitFrame = setupFrameWithLabel(portraitX,
                                                 BaseMessageCell.bubbleViewMaxWidth,
                                                 CGFloat(portaritEstimate),

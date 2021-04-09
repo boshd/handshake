@@ -13,20 +13,39 @@ var contentSizeWhenInsertingToTop: CGSize?
 
 class AutoSizingCollectionViewFlowLayout: UICollectionViewFlowLayout {
     
+//    override func prepare() {
+//        super.prepare()
+//
+//        sectionHeadersPinToVisibleBounds = true
+//        minimumLineSpacing = 5
+//        if isInsertingCellsToTop == true {
+//            if let collectionView = collectionView, let oldContentSize = contentSizeWhenInsertingToTop {
+//                let newContentSize = collectionViewContentSize
+//                let contentOffsetY = collectionView.contentOffset.y + (newContentSize.height - oldContentSize.height)
+//                let newOffset = CGPoint(x: collectionView.contentOffset.x, y: contentOffsetY)
+//                collectionView.setContentOffset(newOffset, animated: false)
+//            }
+//            contentSizeWhenInsertingToTop = nil
+//            isInsertingCellsToTop = false
+//        }
+//    }
+
     override func prepare() {
         super.prepare()
-        
+        minimumLineSpacing = 2
         sectionHeadersPinToVisibleBounds = true
-        minimumLineSpacing = 5
-        if isInsertingCellsToTop == true {
-            if let collectionView = collectionView, let oldContentSize = contentSizeWhenInsertingToTop {
+        if globalVariables.isInsertingCellsToTop == true {
+            if let collectionView = collectionView, let oldContentSize = globalVariables.contentSizeWhenInsertingToTop {
                 let newContentSize = collectionViewContentSize
                 let contentOffsetY = collectionView.contentOffset.y + (newContentSize.height - oldContentSize.height)
                 let newOffset = CGPoint(x: collectionView.contentOffset.x, y: contentOffsetY)
-                collectionView.setContentOffset(newOffset, animated: false)
+                UIView.performWithoutAnimation {
+                    collectionView.setContentOffset(newOffset, animated: false)
+                }
             }
-            contentSizeWhenInsertingToTop = nil
-            isInsertingCellsToTop = false
+            globalVariables.contentSizeWhenInsertingToTop = nil
+            globalVariables.isInsertingCellsToTop = false
         }
     }
+
 }

@@ -46,7 +46,11 @@ struct MessageFontsAppearance {
 }
 class BaseMessageCell: UICollectionViewCell {
     
-    weak var channelLogController: ChannelLogController?
+    weak var channelLogController: ChannelLogController? {
+        didSet {
+            resendButton.addTarget(channelLogController, action: #selector(ChannelLogController.presentResendActions(_:)), for: .touchUpInside)
+        }
+    }
     
     static let scrollIndicatorInset: CGFloat = 5
 
@@ -85,6 +89,14 @@ class BaseMessageCell: UICollectionViewCell {
         view.layer.cornerCurve = .continuous
 
         return view
+    }()
+    
+    lazy var resendButton: UIButton = {
+        let resendButton = UIButton(type: .infoDark)
+        resendButton.tintColor = .red
+        resendButton.isHidden = true
+        
+        return resendButton
     }()
     
     lazy var nameLabel: UILabel = {
@@ -134,6 +146,25 @@ class BaseMessageCell: UICollectionViewCell {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func resendButtonFrame(message: Message) {
+        if message.status == messageStatusNotSent {
+            resendButton.sizeToFit()
+            resendButton.frame.origin = CGPoint(x: frame.width - resendButton.frame.width - 10, y: frame.height - resendButton.frame.height)
+            resendButton.isHidden = false
+        } else {
+            resendButton.frame = CGRect.zero
+            resendButton.isHidden = true
+        }
+    }
+
+    func resendButtonWidth() -> CGFloat {
+        if resendButton.frame.width > 0 {
+            return resendButton.frame.width + 10
+        } else {
+            return 0
+        }
     }
     
     func setupViews() {
