@@ -358,19 +358,19 @@ class ChannelDetailsController: UIViewController {
         
         if startDate.isInSameDay(as: endDate) {
             endFullDate = timeFormatter.string(from: endDate)
-            fullDateFormatter.dateFormat = "EEEE, MMM d @ h:mm a"
+            fullDateFormatter.dateFormat = "EE, MMM d @ h:mm a"
         }
         
         let startFullDate = fullDateFormatter.string(from: startDate)
         
         // →
         
-        let mainString = "\(startFullDate) // \(endFullDate)"
-        let stringToColor = "//"
+        let mainString = "\(startFullDate) → \(endFullDate)"
+        let stringToColor = "→"
         let range = (mainString as NSString).range(of: stringToColor)
         let mutableAttributedString = NSMutableAttributedString.init(string: mainString)
-        mutableAttributedString.addAttribute(NSAttributedString.Key.foregroundColor, value: ThemeManager.currentTheme().generalTitleColor, range: range)
-        mutableAttributedString.addAttribute(NSAttributedString.Key.font, value: ThemeManager.currentTheme().secondaryFontBold(with: 9), range: range)
+        mutableAttributedString.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.eventOrange(), range: range)
+        mutableAttributedString.addAttribute(NSAttributedString.Key.font, value: ThemeManager.currentTheme().secondaryFontBold(with: 12), range: range)
         channelDetailsContainerView.startEndTimesLabel.attributedText = mutableAttributedString
     }
 

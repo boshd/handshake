@@ -24,14 +24,14 @@ extension ChannelLogController: MessageSenderDelegate {
                 message.channel = channel
                 realm.create(Message.self, value: message, update: .modified)
 
-                guard let newSectionTitle = message.shortConvertedTimestamp else { realm.cancelWrite(); return }
+                guard let newSectionTitle = message.shortConvertedTimestamp else { print("here1"); realm.cancelWrite(); return }
 
                 let lastSection = groupedMessages.last?.title ?? ""
                 let isNewSection = newSectionTitle != lastSection
                 if isNewSection {
                     guard let messages = channel?.messages
                     .filter("shortConvertedTimestamp == %@", newSectionTitle)
-                    .sorted(byKeyPath: "timestamp", ascending: true) else { realm.cancelWrite(); return }
+                            .sorted(byKeyPath: "timestamp", ascending: true) else { print("here2"); realm.cancelWrite(); return }
 
                     let newSection = MessageSection(messages: messages, title: newSectionTitle)
                     groupedMessages.append(newSection)

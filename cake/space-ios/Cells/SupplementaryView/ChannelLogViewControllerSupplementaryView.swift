@@ -35,17 +35,18 @@ class ChannelLogViewControllerSupplementaryView: UICollectionReusableView {
         label.numberOfLines = 1
         label.textAlignment = .center
         label.layer.masksToBounds = true
-        label.cornerRadius = 5
+        
         label.sizeToFit()
-        label.layer.masksToBounds = false
-        label.layer.shadowColor = ThemeManager.currentTheme().generalTitleColor.cgColor
-        label.layer.shadowOpacity = 0.15
-        label.layer.shadowOffset = CGSize(width: 4, height: 6)
-        label.layer.shadowRadius = 15
+//        label.layer.masksToBounds = false
+//        label.layer.shadowColor = ThemeManager.currentTheme().generalTitleColor.cgColor
+//        label.layer.shadowOpacity = 0.15
+//        label.layer.shadowOffset = CGSize(width: 4, height: 6)
+//        label.layer.shadowRadius = 15
+        label.cornerRadius = 5
         // label.textColor = ThemeManager.currentTheme().supplementaryViewTextColor
-        label.backgroundColor = ThemeManager.currentTheme().inputBarContainerViewBackgroundColor
-        label.textColor = ThemeManager.currentTheme().generalTitleColor
-        label.font = ThemeManager.currentTheme().secondaryFont(with: 9)
+        label.backgroundColor = ThemeManager.currentTheme().generalTitleColor
+        label.textColor = ThemeManager.currentTheme().generalBackgroundColor
+        label.font = ThemeManager.currentTheme().secondaryFont(with: 10)
      
         return label
     }()

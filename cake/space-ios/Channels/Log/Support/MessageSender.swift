@@ -108,23 +108,27 @@ class MessageSender: NSObject {
     
     fileprivate func updateDatabase(at reference: DocumentReference, with values: [String: AnyObject], toID: String, fromID: String ) {
         
-        let batch = Firestore.firestore().batch()
-        
-        batch.setData(values, forDocument: reference)
-        batch.setData([
-            "fromId": fromID
-        ], forDocument: Firestore.firestore().collection("channels").document(toID).collection("messageIds").document(reference.documentID), merge: true)
-        batch.setData([
-            "fromId": fromID
-        ], forDocument: Firestore.firestore().collection("users").document(fromID).collection("channelIds").document(toID).collection("messageIds").document(reference.documentID), merge: true)
-        
-        batch.commit() { (error) in
-            if error != nil {
-                print(error?.localizedDescription ?? "error")
-                return
+        reference.setData(values) { (error) in
+            guard error == nil else { print(error?.localizedDescription ?? "error"); return }
+            
+            let batch = Firestore.firestore().batch()
+            
+            batch.setData([
+                "fromId": fromID
+            ], forDocument: Firestore.firestore().collection("channels").document(toID).collection("messageIds").document(reference.documentID), merge: true)
+            batch.setData([
+                "fromId": fromID
+            ], forDocument: Firestore.firestore().collection("users").document(fromID).collection("channelIds").document(toID).collection("messageIds").document(reference.documentID), merge: true)
+            
+            batch.commit() { (error) in
+                if error != nil {
+                    print(error?.localizedDescription ?? "error")
+                    return
+                }
+                self.updateLastMessage(with: reference.documentID)
             }
-            self.updateLastMessage(with: reference.documentID)
         }
+        
     }
 
     

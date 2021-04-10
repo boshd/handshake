@@ -16,12 +16,13 @@ class InformationMessageSender: NSObject {
     
     func sendInformationMessage(channelID: String, channelName: String, participantIDs: [String], text: String, channel: Channel?) {
         
-        //let channelReference = Firestore.firestore().collection("channels").document(channelID)
+        guard let currentUserID = Auth.auth().currentUser?.uid else { return }
+        
         let newInformationMessageReference = Firestore.firestore().collection("messages").document()
         
         let timestamp = NSNumber(value: Int(Date().timeIntervalSince1970))
         let defaultMessageStatus = messageStatusDelivered
-        let fromId = Auth.auth().currentUser?.uid
+        let fromId = currentUserID
         let toId = channelID
         
         var fcmDict = [String:String]()
@@ -49,16 +50,28 @@ class InformationMessageSender: NSObject {
                 print(error?.localizedDescription as Any)
                 return
             }
-            self.updateLastMessage(with: channelID, text: text, messageID: newInformationMessageReference.documentID)
+            let batch = Firestore.firestore().batch()
+            batch.setData([
+                "fromId": fromId
+            ], forDocument: Firestore.firestore().collection("channels").document(toId).collection("messageIds").document(newInformationMessageReference.documentID), merge: true)
+            batch.setData([
+                "fromId": fromId
+            ], forDocument: Firestore.firestore().collection("users").document(fromId).collection("channelIds").document(toId).collection("messageIds").document(newInformationMessageReference.documentID), merge: true)
+            
+            batch.commit { (error) in
+                if error != nil { print(error?.localizedDescription ?? ""); return }
+                self.updateLastMessage(with: channelID, messageID: newInformationMessageReference.documentID)
+            }
+            
         }
     }
     
-    fileprivate func updateLastMessage(with channelID: String, text: String, messageID: String) {
-        let channelReference = Firestore.firestore().collection("channels").document(channelID)
-        channelReference.updateData([
-            "lastMessageTimeStamp": NSNumber(value: Int(Date().timeIntervalSince1970)) as Any,
+    fileprivate func updateLastMessage(with channelID: String, messageID: String) {
+        guard let fromID = Auth.auth().currentUser?.uid else { return }
+        let channelReference = Firestore.firestore().collection("users").document(fromID).collection("channelIds").document(channelID).collection("messageIds").document(messageID)
+        channelReference.setData([
             "lastMessageId": messageID
-        ])
+        ], merge: true)
     }
     
 }

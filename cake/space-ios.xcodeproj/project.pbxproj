@@ -279,6 +279,7 @@
 		BCCF55312620D83E00AFBF7C /* CustomizedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCF55302620D83E00AFBF7C /* CustomizedView.swift */; };
 		BCCF55362620D85800AFBF7C /* CustomizedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCF55352620D85800AFBF7C /* CustomizedImageView.swift */; };
 		BCCF553B2620D87900AFBF7C /* InAppNotificationBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCF553A2620D87900AFBF7C /* InAppNotificationBanner.swift */; };
+		BCCF554026210CA200AFBF7C /* BaseMessageCell+Handlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCF553F26210CA200AFBF7C /* BaseMessageCell+Handlers.swift */; };
 		BCD6B9C725A92BF200482155 /* MainRoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD6B9C625A92BF200482155 /* MainRoundButton.swift */; };
 		BCDB2BF522FDE15A002FC6A2 /* AccountSettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDB2BF422FDE15A002FC6A2 /* AccountSettingsController.swift */; };
 		BCDE184C2554BA5900A64499 /* ChannelsController+RowActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDE184B2554BA5900A64499 /* ChannelsController+RowActions.swift */; };
@@ -629,6 +630,7 @@
 		BCCF55302620D83E00AFBF7C /* CustomizedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomizedView.swift; sourceTree = "<group>"; };
 		BCCF55352620D85800AFBF7C /* CustomizedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomizedImageView.swift; sourceTree = "<group>"; };
 		BCCF553A2620D87900AFBF7C /* InAppNotificationBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppNotificationBanner.swift; sourceTree = "<group>"; };
+		BCCF553F26210CA200AFBF7C /* BaseMessageCell+Handlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BaseMessageCell+Handlers.swift"; sourceTree = "<group>"; };
 		BCD6B9C625A92BF200482155 /* MainRoundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainRoundButton.swift; sourceTree = "<group>"; };
 		BCDB2BF422FDE15A002FC6A2 /* AccountSettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettingsController.swift; sourceTree = "<group>"; };
 		BCDE184B2554BA5900A64499 /* ChannelsController+RowActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelsController+RowActions.swift"; sourceTree = "<group>"; };
@@ -990,6 +992,7 @@
 			isa = PBXGroup;
 			children = (
 				BC1A780522A3FA2D005AC5CE /* BaseMessageCell.swift */,
+				BCCF553F26210CA200AFBF7C /* BaseMessageCell+Handlers.swift */,
 				BC59276222A11CAB006A5CEF /* IncomingMessageCell.swift */,
 				BC1A780B22A3FDFE005AC5CE /* OutgoingMessageCell.swift */,
 				BCA13DFA23886D4000311D69 /* InformationMessageCell.swift */,
@@ -2310,6 +2313,7 @@
 				BC4C95EF23752223000579F4 /* ThemeManager.swift in Sources */,
 				BC57BCAE25093F4E00AAB5AC /* RealmCGRect.swift in Sources */,
 				BC2047B7253DDF140064F7F8 /* ParticipantsController.swift in Sources */,
+				BCCF554026210CA200AFBF7C /* BaseMessageCell+Handlers.swift in Sources */,
 				BC8C117225BB29DC000CBD25 /* Validator.swift in Sources */,
 				BC74F2B822D0D72700B37801 /* Validators.swift in Sources */,
 				BCB027FD2568470E0082B318 /* UIIncrementSliderView.swift in Sources */,

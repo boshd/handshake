@@ -14,9 +14,9 @@
 *
 * @beta
 */
-export function constructNotificationPayload(rawFcmTokens: any, messageId: string, channelId: string, senderName: string, channelName: string, fromId: string) {
+export function constructNotificationPayload(currentUserFCMToken: string, messageId: string, channelId: string, senderName: string, channelName: string, fromId: string, text: string, badge: number) {
     var title: string = ''
-    var text: string = ''
+    // var text: string = ''
 
     if (senderName && channelName) {
         title = senderName + ' @ ' + channelName
@@ -25,19 +25,6 @@ export function constructNotificationPayload(rawFcmTokens: any, messageId: strin
     } else {
         title = 'Event'
     }
-
-
-    if (text) {
-        text = text
-    } else {
-        text = 'Could not retrieve notification text'
-    }
-
-    const fcmTokens = Object.keys(rawFcmTokens)
-        .filter(key => key !== fromId)
-        .map(key => rawFcmTokens[key]);
-
-    var fcmTokensArr = Array.from(fcmTokens.values()).filter((tokenUserId: string) => tokenUserId !== fromId)
 
     return {
         priority: 'high',
@@ -54,7 +41,7 @@ export function constructNotificationPayload(rawFcmTokens: any, messageId: strin
                 aps: {
                     sound: 'push.aiff',
                     category: 'QuickReply',
-                    badge: 0,
+                    badge: badge,
                     'mutable-content': 1,
                 },
                 messageID: messageId,
@@ -62,6 +49,6 @@ export function constructNotificationPayload(rawFcmTokens: any, messageId: strin
                 // message: data,
             },
         },
-        tokens: fcmTokensArr,
+        tokens: [currentUserFCMToken],
     };
 }

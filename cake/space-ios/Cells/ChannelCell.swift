@@ -89,7 +89,7 @@ class ChannelCell: InteractiveTableViewCell {
     let badgeLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.backgroundColor = .defaultHotRed()
+        label.backgroundColor = .systemRed
         label.cornerRadius = 10
         label.layer.cornerCurve = .continuous
         label.text = "5"

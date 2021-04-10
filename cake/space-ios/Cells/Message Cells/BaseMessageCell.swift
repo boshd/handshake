@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import UIKit
 
 struct CellSizes {
 
@@ -132,7 +131,7 @@ class BaseMessageCell: UICollectionViewCell {
         var deliveryStatus = UILabel()
         deliveryStatus.text = "status"
         deliveryStatus.font = MessageFontsAppearance.defaultDeliveryStatusTextFont
-        deliveryStatus.textColor =  ThemeManager.currentTheme().generalSubtitleColor
+        deliveryStatus.textColor =  ThemeManager.currentTheme().tintColor
         deliveryStatus.isHidden = true
         deliveryStatus.textAlignment = .right
 
@@ -171,6 +170,7 @@ class BaseMessageCell: UICollectionViewCell {
         backgroundColor = .clear
         contentView.backgroundColor = .clear
         contentView.addSubview(bubbleView)
+        bubbleView.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(handleLongTap(_:))))
     }
 
     private func prepareViewsForReuse() {

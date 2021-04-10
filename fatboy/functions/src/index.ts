@@ -48,7 +48,7 @@ exports.getUsersWithPreparedNumbers = functions.https.onRequest((req, res) => {
 		)
 		.then(() => {
 			return Promise.all(
-				[res.send({ users: users })]
+				[res.send({ data: users })]
 			)
 		})
 		.catch((error) => {
@@ -61,37 +61,120 @@ exports.getUsersWithPreparedNumbers = functions.https.onRequest((req, res) => {
 	}
 })
 
-export const sendNotificationToAllChannelDevices = functions.firestore
-	.document('channels/{channelId}/thread/{messageId}')
-	.onCreate((snapshot, context) => {
-        try {
-            const channelId: string = context.params['channelId']
-            const messageId = context.params['messageId']
-            const data = snapshot.data()
-            const historicChannelName = data['historicChannelName']
-            const historicSenderName = data['historicSenderName']
-            const fromId: string = data['fromId']
+export const sendNotificationToDevice = functions.firestore
+    .document('users/{userId}/channelIds/{channelId}/messageIds/{messageId}')
+    .onCreate((userMessageSnapshot, context) => {
+        const userId: string = context.params['userId']
+        const channelId: string = context.params['toId']
+        const messageId: string = context.params['messageId']
 
-            const messagePayload = constructNotificationPayload(
-                snapshot.data().fcmTokens,
-                messageId,
-                channelId,
-                historicSenderName,
-                historicChannelName,fromId
-            )
+        if (userMessageSnapshot.exists) {
+            const userMessageData = userMessageSnapshot.data()
+            if (userMessageData !== undefined && userMessageData !== null) {
+                const fromId = userMessageData['fromId']
+                if (fromId !== userId) {
+                    try {
+                        admin
+                        .firestore()
+                        .doc('messages/'+messageId)
+                        .get()
+                        .then(async snapshot => {
+                            if (snapshot.exists) {
+                                const data = snapshot.data()
+                                if (data !== undefined && data !== null) {
+                                    const historicChannelName = data['historicChannelName']
+                                    const historicSenderName = data['historicSenderName']
+                                    const text: string = data['text']
+                                    const fcmTokens = data['fcmTokens']
+                                    var badge = 0
 
-            return admin.messaging().sendMulticast(messagePayload)
-            .then((res) => {
-                console.log('Successfully sent message // ', res);
-            })
-            .catch((error) => {
-                console.log('Error sending message // ', error)
-            })
-        } catch (error) {
-            console.log('Error sending message // ', error)
-            return
+                                    admin
+                                    .firestore()
+                                    .doc('users/'+userId+'/channelIds/'+channelId)
+                                    .get()
+                                    .then(userChannelSnapshot => {
+                                        if (userChannelSnapshot.exists) {
+                                            const userChannelData = userChannelSnapshot.data()
+                                            if (userChannelData !== undefined && userChannelData !== null) {
+                                                badge = userChannelData['badge']
+                                            }
+                                        }
+
+                                        functions.logger.info(fcmTokens)
+                                        const currentUserFCMToken = fcmTokens[userId]
+
+                                        const messagePayload = constructNotificationPayload(
+                                            currentUserFCMToken,
+                                            messageId,
+                                            channelId,
+                                            historicSenderName,
+                                            historicChannelName,
+                                            fromId,
+                                            text,
+                                            badge,
+                                        )
+
+                                        return admin.messaging().sendMulticast(messagePayload)
+                                        .then((res) => {
+                                            functions.logger.info('Successfully sent message // ', res);
+                                        })
+                                        .catch((error) => {
+                                            functions.logger.error('Error sending message // ', error)
+                                        })
+                                    })
+                                    .catch((error) => {
+                                        functions.logger.error(error)
+                                    })
+                                }
+                            }
+                            return null
+                        })
+                        .catch(err => {
+                            functions.logger.error(err)
+                        })
+                    } catch (err) {
+                        functions.logger.error(err)
+                    }
+                }
+            }
         }
     })
+
+// export const sendNotificationToAllChannelDevices = functions.firestore
+// 	.document('messages/{messageId}')
+// 	.onCreate((snapshot, context) => {
+//         try {
+//             const channelId: string = context.params['toId']
+//             const messageId = context.params['messageId']
+
+//             const data = snapshot.data()
+//             const historicChannelName = data['historicChannelName']
+//             const historicSenderName = data['historicSenderName']
+//             const fromId: string = data['fromId']
+//             const text: string = data['text']
+
+//             const messagePayload = constructNotificationPayload(
+//                 snapshot.data().fcmTokens,
+//                 messageId,
+//                 channelId,
+//                 historicSenderName,
+//                 historicChannelName,
+//                 fromId,
+//                 text
+//             )
+
+//             return admin.messaging().sendMulticast(messagePayload)
+//             .then((res) => {
+//                 console.log('Successfully sent message // ', res);
+//             })
+//             .catch((error) => {
+//                 console.log('Error sending message // ', error)
+//             })
+//         } catch (error) {
+//             console.log('Error sending message // ', error)
+//             return
+//         }
+//     })
 
 export const updateEventFCMTokenIdsArrayOnUpdate = functions.firestore
 	.document(constants.FCM_OKENS_COLLECTION + '/{userId}')
@@ -170,7 +253,7 @@ export const updateEventFCMTokenIdsArrayOnUpdate = functions.firestore
                 members.forEach(member => {
                     console.log('sender id: ' + senderId + ' // member id: ' + member.id)
 
-                    if (member.id != senderId) {
+                    if (member.id !== senderId) {
                         functions.logger.info('member id is // ', member.id)
                         batchSetEverything(member.id)
                         incrementBadge(member.id)

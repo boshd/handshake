@@ -23,6 +23,7 @@ target 'space-ios' do
   pod 'SVProgressHUD'
   pod 'FloatingPanel'
   pod 'CropViewController'
+  pod 'FTPopOverMenu_Swift'
   pod 'PhoneNumberKit', '~> 3.3'
   
   target 'space-iosTests' do

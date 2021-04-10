@@ -34,6 +34,7 @@ extension ChannelsController: ChannelUpdatesDelegate {
     }
 
     func channels(update channel: Channel, reloadNeeded: Bool) {
+        print("badge value is // arriving next")
         realmManager.update(channel: channel)
         if let realmChannels = realmChannels {
             notificationsManager.updateChannels(to: Array(realmChannels))

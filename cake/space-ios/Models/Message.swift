@@ -15,6 +15,13 @@ struct MessageSubtitle {
     static let empty = "No messages here yet."
 }
 
+enum MessageType {
+    case textMessage
+    case sendingMessage
+}
+
+let defaultMessage = Message(dictionary: ["timestamp": 0 as AnyObject])
+
 final class Message: Object {
     
     @objc dynamic var messageUID: String?

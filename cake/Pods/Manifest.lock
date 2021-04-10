@@ -315,6 +315,7 @@ PODS:
     - FirebaseCore (~> 7.0)
     - GTMSessionFetcher/Core (~> 1.4)
   - FloatingPanel (2.1.0)
+  - FTPopOverMenu_Swift (0.3.3)
   - GoogleAppMeasurement (7.3.0):
     - GoogleUtilities/AppDelegateSwizzler (~> 7.0)
     - GoogleUtilities/MethodSwizzler (~> 7.0)
@@ -402,6 +403,7 @@ DEPENDENCIES:
   - Firebase/Messaging
   - Firebase/Storage
   - FloatingPanel
+  - FTPopOverMenu_Swift
   - PhoneNumberKit (~> 3.3)
   - RealmSwift
   - SDWebImage
@@ -426,6 +428,7 @@ SPEC REPOS:
     - FirebaseMessaging
     - FirebaseStorage
     - FloatingPanel
+    - FTPopOverMenu_Swift
     - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleUtilities
@@ -459,6 +462,7 @@ SPEC CHECKSUMS:
   FirebaseMessaging: 68d1bcb14880189558a8ae57167abe0b7e417232
   FirebaseStorage: 5002b1895bfe74a5ce92ad54f966e6162d0da2e5
   FloatingPanel: 1af47b69e26df98b8728307254a9a0f4eb3cd645
+  FTPopOverMenu_Swift: 1effa730d18851c604b2937e9f956ea4b9782e4e
   GoogleAppMeasurement: 8d3c0aeede16ab7764144b5a4ca8e1d4323841b7
   GoogleDataTransport: 116c84c4bdeb76be2a7a46de51244368f9794eab
   GoogleUtilities: 3dc4ff0d5e4840e2fa8eef0889620e8c33d4218c
@@ -474,6 +478,6 @@ SPEC CHECKSUMS:
   SDWebImage: 9169792e9eec3e45bba2a0c02f74bf8bd922d1ee
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
 
-PODFILE CHECKSUM: dfd4789a308a874097bccb2a3c5b7cc41f1202d0
+PODFILE CHECKSUM: 5275085fca8ca9f3d0f0d0eaa305f200a2a60de2
 
 COCOAPODS: 1.10.0

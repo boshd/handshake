@@ -103,38 +103,32 @@ class InAppNotificationManager: NSObject {
             var first = true
             notificationReference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID).collection("messageIds")
             let listener = notificationReference.addSnapshotListener { (querySnapshot, error) in
-                guard let documents = querySnapshot?.documents else {
+                guard error == nil else {
                     print("error // ", error!)
                     return
                 }
                 
-                print("triggrred 3ady")
+                if (first) {
+                    first = false
+                    return
+                }
                 
-//                print("\(self.individualChannelListenersDict.count) // listeners")
-                
-                if documents.count > 0 { // if channel thread isn't empty
-                    let document = documents[0]
-
-                    print("triggrred 3ady -- and docs are more than 0")
-                    
-                    if (first) {
-                        print("bescause iz first")
-                        first = false
-                        return
+                guard let changes = querySnapshot?.documentChanges else { return }
+                changes.forEach { (diff) in
+                    if diff.type == .added {
+                        let messageID = diff.document.documentID
+                        
+                        Firestore.firestore().collection("messages").document(messageID).getDocument { (snapshot, error) in
+                            guard error == nil else { return }
+                            
+                            guard var dictionary = snapshot?.data() else { return }
+                            dictionary.updateValue(messageID as AnyObject, forKey: "messageUID")
+                            let message = Message(dictionary: dictionary as [String : AnyObject])
+                            
+                            guard let uid = Auth.auth().currentUser?.uid, message.fromId != uid else { return }
+                            self.handleInAppSoundPlaying(message: message, channel: channel, channels: self.channels)
+                        }
                     }
-
-                    let messageID = document.documentID
-                    
-                    var dictionary = document.data()
-                    dictionary.updateValue(messageID as AnyObject, forKey: "messageUID")
-                    
-                    print(dictionary)
-                    
-                    let message = Message(dictionary: dictionary as [String : AnyObject])
-                    
-                    print(Auth.auth().currentUser?.uid)
-                    guard let uid = Auth.auth().currentUser?.uid, message.fromId != uid else { print("\(message.fromId) ,,,,,,"); return }
-                    self.handleInAppSoundPlaying(message: message, channel: channel, channels: self.channels)
                 }
             }
             
@@ -143,7 +137,7 @@ class InAppNotificationManager: NSObject {
     }
     
     func handleInAppSoundPlaying(message: Message, channel: Channel, channels: [Channel]) {
-        print("arived ALL THE WAY HERE")
+        print(message.text)
         if UIApplication.topViewController() is SFSafariViewController ||
         UIApplication.topViewController() is ChannelLogController { return }
         
@@ -160,7 +154,7 @@ class InAppNotificationManager: NSObject {
                     } else {
                         title = channelName
                     }
-                    self.showInAppNotification(channel: channels[index], title: channelName, subtitle: self.subtitleForMessage(message: message), resource: channelAvatar(resource: channels[index].thumbnailImageUrl), placeholder: channelPlaceholder() )
+                    self.showInAppNotification(channel: channels[index], title: title, subtitle: self.subtitleForMessage(message: message), resource: channelAvatar(resource: channels[index].thumbnailImageUrl), placeholder: channelPlaceholder() )
                 }
             } else if let channelName = channels[index].name, channels[index].isMuted.value == nil {
                 self.playNotificationSound()
@@ -171,7 +165,7 @@ class InAppNotificationManager: NSObject {
                     } else {
                         title = channelName
                     }
-                    self.showInAppNotification(channel: channels[index], title: channelName, subtitle: self.subtitleForMessage(message: message), resource: channelAvatar(resource: channels[index].thumbnailImageUrl), placeholder: channelPlaceholder())
+                    self.showInAppNotification(channel: channels[index], title: title, subtitle: self.subtitleForMessage(message: message), resource: channelAvatar(resource: channels[index].thumbnailImageUrl), placeholder: channelPlaceholder())
                 }
             }
         }

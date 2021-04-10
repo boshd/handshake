@@ -52,7 +52,7 @@ class ChannelsFetcher: NSObject {
         channels.removeAll()
         isGroupAlreadyFinished = false
         group = nil
-        if userChannelIdsCollectionListener != nil { userChannelIdsCollectionListener?.remove() }
+        if userChannelIdsCollectionListener != nil { userChannelIdsCollectionListener?.remove(); userChannelIdsCollectionListener = nil }
         
         if !individualChannelListenersDict.isEmpty {
             for (_, listener) in individualChannelListenersDict {
@@ -132,7 +132,7 @@ class ChannelsFetcher: NSObject {
                             self?.delegate?.channels(didRemove: true, channelID: channelID)
                         } else if (diff.type == .modified) {
                             // listening to user's unique channel
-                            print("BTW WE GOT A CHANNEL UPDATE JS")
+                            
                             
                             guard let data = diff.document.data() as [String:AnyObject]? else { return }
                             
@@ -142,9 +142,11 @@ class ChannelsFetcher: NSObject {
                             guard let index = self?.channels.firstIndex(where: { (channel) -> Bool in
                                 return channel.id == updatedChannelID
                             }) else { return }
+                            
                             self?.channels[index].badge = updatedChannel.badge
                             self?.channels[index].lastMessageId = updatedChannel.lastMessageId
-                            guard let unwrappedSelf = self else { print("stuck in modified channel"); return }
+                            guard let unwrappedSelf = self else { print(""); return }
+                            
                             unwrappedSelf.delegate?.channels(update: unwrappedSelf.channels[index], reloadNeeded: true)
                         }
                     }

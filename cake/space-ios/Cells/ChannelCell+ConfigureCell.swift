@@ -90,7 +90,7 @@ extension ChannelCell {
         
         
         startTimer()
-        
+        print("ARRIVING HERE")
         let badgeString = channels[indexPath.row].badge.value?.toString()
         let badgeInt = channels[indexPath.row].badge.value ?? 0
 

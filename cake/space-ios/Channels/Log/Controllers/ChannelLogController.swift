@@ -15,6 +15,7 @@ import SafariServices
 import RealmSwift
 import Firebase
 import AVFoundation
+import FTPopOverMenu_Swift
 
 protocol DeleteAndExitDelegate: class {
     func deleteAndExit(from channelID: String)
@@ -232,6 +233,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         
         if typingIndicatorCollectionListener != nil {
             typingIndicatorCollectionListener?.remove()
+            typingIndicatorCollectionListener = nil
             //typingIndicatorReference.removeObserver(withHandle: typingIndicatorHandle)
         }
 
@@ -307,6 +309,18 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     func configureController() {
         channelManager.delegate = self
         channelManager.setupListeners(channel)
+    }
+    
+    func configureCellContextMenuView() -> FTConfiguration {
+        let config = FTConfiguration()
+        config.backgoundTintColor = UIColor(red: 0.15, green: 0.15, blue: 0.15, alpha: 1.0)
+        config.borderColor = UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 0.0)
+        config.menuWidth = 100
+        config.menuSeparatorColor = .clear
+        config.menuRowHeight = 40
+        config.cornerRadius = 25
+        config.textAlignment = .center
+        return config
     }
     
     func getMessages() {
@@ -769,6 +783,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     func handleTypingIndicatorAppearance(isEnabled: Bool) {
         if isEnabled {
             guard collectionView.numberOfSections == groupedMessages.count else { return }
+            hapticFeedback(style: .selectionChanged)
             self.typingIndicatorSection = ["TypingIndicator"]
             self.collectionView.performBatchUpdates ({
                 print("inserting")
@@ -880,10 +895,9 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         guard sentMessage.status == messageStatusDelivered,
         messageToUpdate.messageUID == self.groupedMessages.last?.messages.last?.messageUID,
         userDefaults.currentBoolObjectState(for: userDefaults.inAppSounds) else { return }
-        SystemSoundID.playFileNamed(fileName: "sent", withExtenstion: "caf")
+//        SystemSoundID.playFileNamed(fileName: "sent", withExtenstion: "caf")
         
-//        let systemSoundID: SystemSoundID = 1004
-//        AudioServicesPlaySystemSound (systemSoundID)
+        AudioServicesPlaySystemSound (1004)
     }
     
     // MARK: - Title view

@@ -51,7 +51,7 @@ class MessagesFetcher: NSObject {
     func loadMessagesData(for channel: Channel, controller: UIViewController?) {
         guard let currentUserID = Auth.auth().currentUser?.uid, let channelID = channel.id, let controller = controller else { return }
         
-        let reference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID).collection("messageIds").limit(to: messagesToLoad)
+        let reference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID).collection("messageIds")
         
         loadingMessagesGroup.enter()
         newLoadMessages(reference: reference, channelID: channelID, channel: channel)
@@ -97,7 +97,7 @@ class MessagesFetcher: NSObject {
             }
             
             self.threadListener = reference.addSnapshotListener { (snapshot, error) in
-                print("triggered")
+                print("message is here")
                 if error != nil {
                     print(error?.localizedDescription ?? "error")
                     return

@@ -550,6 +550,24 @@ enum Theme: Int {
         }
     }
     
+    var selectedOutgoingBubbleTintColor: UIColor {
+        switch self {
+            case .normal:
+                return .defaultMediumDarkGray()
+            case .dark:
+                return .defaultMediumDarkGray()
+        }
+    }
+    
+    var selectedIncomingBubbleTintColor: UIColor {
+        switch self {
+            case .normal:
+                return .gray
+            case .dark:
+                return .gray
+        }
+    }
+    
     var incomingMessageBackgroundColor: UIColor {
         switch self {
             case .normal:

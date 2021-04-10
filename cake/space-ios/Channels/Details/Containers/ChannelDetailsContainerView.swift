@@ -36,11 +36,11 @@ class ChannelDetailsContainerView: UIView {
     var rsvpButton: InteractiveButton = {
         var button = InteractiveButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .defaultHotRed()
+        button.backgroundColor = ThemeManager.currentTheme().buttonColor
         button.setTitle("RSVP", for: .normal)
         button.titleLabel?.font = ThemeManager.currentTheme().secondaryFontBoldItalic(with: 13)
         button.titleLabel?.textColor = .white
-        button.layer.cornerRadius = 15
+        button.layer.cornerRadius = 10
         
         return button
     }()
@@ -61,8 +61,8 @@ class ChannelDetailsContainerView: UIView {
         var label = DynamicLabel(withInsets: 0, 0, 0, 0)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
-        label.textColor = .eventOrange()
-        label.font = .boldSystemFont(ofSize: 10)
+        label.textColor = .black
+        label.font = ThemeManager.currentTheme().secondaryFontBold(with: 12)
         label.text = "FRI, DEC 19TH - MON, DEC 27TH"
         return label
     }()
@@ -345,7 +345,7 @@ class ChannelDetailsContainerView: UIView {
             startEndTimesLabel.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor, constant: 0),
             startEndTimesLabel.widthAnchor.constraint(equalTo: channelImageView.widthAnchor, constant: -40),
             
-            channelName.topAnchor.constraint(equalTo: startEndTimesLabel.bottomAnchor, constant: 6),
+            channelName.topAnchor.constraint(equalTo: startEndTimesLabel.bottomAnchor, constant: 3),
             channelName.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor, constant: 0),
             channelName.widthAnchor.constraint(equalTo: channelImageView.widthAnchor, constant: -40),
             

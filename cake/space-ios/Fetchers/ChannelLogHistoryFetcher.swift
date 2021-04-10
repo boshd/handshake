@@ -41,9 +41,8 @@ class ChannelLogHistoryFetcher: NSObject {
     
     fileprivate func getFirstID(_ currentUserID: String, _ channelID: String) {
         let firstIDReference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID).collection("messageIds")
-        //let firstIDReference = Firestore.firestore().collection("channels").document(channelID).collection("thread")
         let numberOfMessagesToLoad = messagesToLoad + messages.count
-        let firstIDQuery = firstIDReference.order(by: "timestamp", descending: true).limit(to: numberOfMessagesToLoad)
+        let firstIDQuery = firstIDReference.limit(to: numberOfMessagesToLoad)
         firstIDQuery.getDocuments { (snapshot, error) in
             guard let documents = snapshot?.documents else { print(error?.localizedDescription ?? "error"); return }
             guard let firstDocument = documents.last else { return }
@@ -54,7 +53,7 @@ class ChannelLogHistoryFetcher: NSObject {
     fileprivate func getLastID(_ firstDocument: DocumentSnapshot, _ currentUserID: String, _ channelID: String) {
         let nextMessageIndex = messages.count + 1
         let lastIDReference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID).collection("messageIds")
-        let lastIDQuery = lastIDReference.order(by: "timestamp", descending: true).limit(to: nextMessageIndex)
+        let lastIDQuery = lastIDReference.limit(to: nextMessageIndex)
         lastIDQuery.getDocuments { (snapshot, error) in
             guard let documents = snapshot?.documents else { print(error?.localizedDescription ?? "error"); return }
             guard let lastID = documents.last?.documentID, let lastDocument = documents.last else { return }
@@ -70,7 +69,7 @@ class ChannelLogHistoryFetcher: NSObject {
     
     fileprivate func getRange(_ firstDocument: DocumentSnapshot, _ lastDocument: DocumentSnapshot, _ currentUserID: String, _ channelID: String) {
         let rangeReference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID).collection("messageIds")
-        let rangeQuery = rangeReference.order(by: "timestamp", descending: false).start(atDocument: firstDocument).end(atDocument: lastDocument)
+        let rangeQuery = rangeReference.start(atDocument: firstDocument).end(atDocument: lastDocument)
         rangeQuery.getDocuments { (snapshot, error) in
             guard let docs = snapshot?.documents else { print(error?.localizedDescription ?? "error"); return }
             self.getMessages(from: rangeQuery, documents: docs, channelID: channelID)
@@ -83,16 +82,19 @@ class ChannelLogHistoryFetcher: NSObject {
         previousMessages = [Message]()
         for _ in 0 ..< documents.count { self.loadingGroup.enter() }
         for document in documents  {
-            guard var dictionary = document.data() as [String:AnyObject]? else { return }
-            let messageUID = document.documentID
-            dictionary.updateValue(messageUID as AnyObject, forKey: "messageUID")
-            dictionary = self.messagesFetcher.preloadCellData(to: dictionary)
-            let message = Message(dictionary: dictionary)
-            message.channel = self.channel
-            self.messagesFetcher.loadUserNameForOneMessage(message: message, completion: { (_, newMessage)  in
-                self.previousMessages.append(newMessage)
-                self.loadingGroup.leave()
-            })
+            Firestore.firestore().collection("messages").document(document.documentID).getDocument { (snapshot, error) in
+                guard error == nil else { print(error?.localizedDescription ?? "error"); return }
+                guard var dictionary = snapshot?.data() as [String:AnyObject]? else { return }
+                let messageUID = snapshot?.documentID
+                dictionary.updateValue(messageUID as AnyObject, forKey: "messageUID")
+                dictionary = self.messagesFetcher.preloadCellData(to: dictionary)
+                let message = Message(dictionary: dictionary)
+                message.channel = self.channel
+                self.messagesFetcher.loadUserNameForOneMessage(message: message, completion: { (_, newMessage)  in
+                    self.previousMessages.append(newMessage)
+                    self.loadingGroup.leave()
+                })
+            }
         }
     }
 
