@@ -90,10 +90,12 @@ extension ChannelCell {
         
         
         startTimer()
-        print("ARRIVING HERE")
+        
         let badgeString = channels[indexPath.row].badge.value?.toString()
         let badgeInt = channels[indexPath.row].badge.value ?? 0
 
+        print("ARRIVING HERE \(badgeInt) \(badgeString)")
+        
         guard badgeInt > 0, channels[indexPath.row].lastMessage?.fromId != Auth.auth().currentUser?.uid else {
             badgeLabel.isHidden = true
 //            messageLabelRightConstraint.constant = 0

@@ -406,7 +406,7 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
 //        inProgressRealmChannels = inProgressRealmChannels?.sorted(byKeyPath: "startTime", ascending: false)
 //        upcomingRealmChannels = upcomingRealmChannels?.sorted(byKeyPath: "startTime", ascending: false)
 //        pastRealmChannels = pastRealmChannels?.sorted(byKeyPath: "startTime", ascending: false)
-        theRealmChannels = theRealmChannels?.sorted(byKeyPath: "startTime", ascending: false)
+        theRealmChannels = theRealmChannels?.sorted(byKeyPath: "startTime", ascending: true)
 
         guard let realmChannels = realmChannels else { return }
         if !isAppLoaded {
@@ -466,7 +466,7 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func configureTabBarBadge() {
-        guard let realmAllConversations = realmChannels else { return }
+        guard let realmAllConversations = theRealmChannels else { return }
         let badge = realmAllConversations.compactMap({ (conversation) -> Int in
             return conversation.badge.value ?? 0
         }).reduce(0, +)

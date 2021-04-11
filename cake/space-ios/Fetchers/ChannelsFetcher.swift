@@ -133,7 +133,7 @@ class ChannelsFetcher: NSObject {
                         } else if (diff.type == .modified) {
                             // listening to user's unique channel
                             
-                            
+                            print("jnkjnlkjnkjnjnknjjknjknjknkjnjknjknjknkjnkjnkjnjkn")
                             guard let data = diff.document.data() as [String:AnyObject]? else { return }
                             
                             let updatedChannel = Channel(dictionary: data)
@@ -146,7 +146,7 @@ class ChannelsFetcher: NSObject {
                             self?.channels[index].badge = updatedChannel.badge
                             self?.channels[index].lastMessageId = updatedChannel.lastMessageId
                             guard let unwrappedSelf = self else { print(""); return }
-                            
+
                             unwrappedSelf.delegate?.channels(update: unwrappedSelf.channels[index], reloadNeeded: true)
                         }
                     }
