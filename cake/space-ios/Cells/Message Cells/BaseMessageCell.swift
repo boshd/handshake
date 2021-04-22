@@ -79,7 +79,7 @@ class BaseMessageCell: UICollectionViewCell {
     static let textMessageInsets = incomingTextViewTopInset + textViewBottomInset
     static let defaultTextMessageInsets = textViewBottomInset + textViewTopInset
     
-    static let messageTextSize: CGFloat = 12
+    static let messageTextSize: CGFloat = 13
     
     lazy var bubbleView: UIView = {
         let view = UIView()

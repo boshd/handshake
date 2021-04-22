@@ -58,7 +58,7 @@ class InputTextView: UITextView {
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
 
-        font = ThemeManager.currentTheme().secondaryFont(with: 12)
+        font = ThemeManager.currentTheme().secondaryFont(with: 14)
         tintColor = ThemeManager.currentTheme().tintColor
         isScrollEnabled = false
         layer.cornerRadius = 18

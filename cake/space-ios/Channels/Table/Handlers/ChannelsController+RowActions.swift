@@ -18,7 +18,7 @@ extension ChannelsController {
             hapticFeedback(style: .impact)
             let alert = CustomAlertController(title_: "Confirmation", message: "Are you sure you want to delete and exit this event?", preferredStyle: .alert)
             alert.addAction(CustomAlertAction(title: "No", style: .default, handler: {
-                self?.channelsContainerView.tableView.deselectRow(at: indexPath, animated: false)
+                self?.tableView.deselectRow(at: indexPath, animated: false)
             }))
             alert.addAction(CustomAlertAction(title: "Yes", style: .destructive, handler: {
                 self?.deleteChannel(at: indexPath)

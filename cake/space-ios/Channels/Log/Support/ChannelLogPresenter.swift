@@ -22,8 +22,8 @@ class ChannelLogPresenter: NSObject {
     fileprivate func deselectItem(controller: UIViewController) {
         guard let controller = controller as? ChannelsController else { return }
 
-        if let indexPath = controller.channelsContainerView.tableView.indexPathForSelectedRow {
-            controller.channelsContainerView.tableView.deselectRow(at: indexPath, animated: true)
+        if let indexPath = controller.tableView.indexPathForSelectedRow {
+            controller.tableView.deselectRow(at: indexPath, animated: true)
         }
     }
     
@@ -42,6 +42,13 @@ class ChannelLogPresenter: NSObject {
         messagesFetcher = MessagesFetcher()
         messagesFetcher?.delegate = self
         
+        let newMessagesReceived = (channel.badge.value ?? 0) > 0
+        let isEnoughData = channel.messages.count >= 3
+        
+        if !newMessagesReceived && isEnoughData {
+            openChannelLog(for: channel, controller: controller)
+        }
+        
         if Array(channel.participantIds).contains(currentUserID) {
             messagesFetcher?.loadMessagesData(for: channel, controller: controller)
         } else {
@@ -52,6 +59,7 @@ class ChannelLogPresenter: NSObject {
     fileprivate func openChannelLog(for channel: Channel, controller: UIViewController) {
         guard isChannelLogAlreadyOpened == false else { return }
         isChannelLogAlreadyOpened = true
+        channelLogController?.hidesBottomBarWhenPushed = true
         channelLogController?.messagesFetcher = messagesFetcher
         channelLogController?.channel = channel
         channelLogController?.getMessages()

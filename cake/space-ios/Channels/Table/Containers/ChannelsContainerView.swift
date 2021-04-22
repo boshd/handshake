@@ -23,7 +23,7 @@ class ChannelsContainerView: UIView {
     let contactsButton: MainRoundButton = {
         let button = MainRoundButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "people-1")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.setImage(UIImage(named: "contacts")?.withRenderingMode(.alwaysTemplate), for: .normal)
         button.imageEdgeInsets = UIEdgeInsets(top: 3, left: 3, bottom: 3, right: 3)
         button.cornerRadius = 30
         return button
@@ -70,26 +70,26 @@ class ChannelsContainerView: UIView {
         
         backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         
-        addSubview(channelsHeaderView)
+//        addSubview(channelsHeaderView)
         addSubview(tableView)
         addSubview(createButton)
         addSubview(contactsButton)
         
         NSLayoutConstraint.activate([
-            channelsHeaderView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 0),
-            channelsHeaderView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
-            channelsHeaderView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
-            channelsHeaderView.heightAnchor.constraint(equalToConstant: 75),
+//            channelsHeaderView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 0),
+//            channelsHeaderView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
+//            channelsHeaderView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
+//            channelsHeaderView.heightAnchor.constraint(equalToConstant: 75),
             
-            tableView.topAnchor.constraint(equalTo: channelsHeaderView.bottomAnchor, constant: 7),
+            tableView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 0),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
             tableView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0),
             
-            contactsButton.bottomAnchor.constraint(equalTo: createButton.topAnchor, constant: -10),
-            contactsButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            contactsButton.heightAnchor.constraint(equalToConstant: 60),
-            contactsButton.widthAnchor.constraint(equalToConstant: 60),
+//            contactsButton.bottomAnchor.constraint(equalTo: createButton.topAnchor, constant: -10),
+//            contactsButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+//            contactsButton.heightAnchor.constraint(equalToConstant: 60),
+//            contactsButton.widthAnchor.constraint(equalToConstant: 60),
             
             createButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -10),
             createButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),

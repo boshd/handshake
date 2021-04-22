@@ -111,9 +111,9 @@ class AccountSettingsController: UITableViewController, MFMailComposeViewControl
     fileprivate func setupNavigationbar() {
         title = "Account"
         
-        let dismissButton = UIBarButtonItem(image: UIImage(named: "i-remove"), style: .plain, target: self, action: #selector(dismissController))
-        dismissButton.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -10)
-        navigationItem.rightBarButtonItem = dismissButton
+//        let dismissButton = UIBarButtonItem(image: UIImage(named: "i-remove"), style: .plain, target: self, action: #selector(dismissController))
+//        dismissButton.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -10)
+//        navigationItem.rightBarButtonItem = dismissButton
         if let navigationController = navigationController {
             ThemeManager.setSecondaryNavigationBarAppearance(navigationController.navigationBar)
         }

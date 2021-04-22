@@ -479,13 +479,13 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     fileprivate func setupNavigationBar() {
-        let backButton = UIBarButtonItem(image: UIImage(named: "ctrl-left"), style: .plain, target: self, action:  #selector(pleasePopController))
-        backButton.tintColor = .black
-        navigationItem.leftBarButtonItem = backButton
+//        let backButton = UIBarButtonItem(image: UIImage(named: "ctrl-left"), style: .plain, target: self, action:  #selector(pleasePopController))
+//        backButton.tintColor = .black
+//        navigationItem.leftBarButtonItem = backButton
         navigationController?.interactivePopGestureRecognizer?.delegate = self
         
         if let navigationBar = navigationController?.navigationBar {
-            ThemeManager.setNavigationBarAppearance(navigationBar)
+//            ThemeManager.setNavigationBarAppearance(navigationBar)
         }
     }
 

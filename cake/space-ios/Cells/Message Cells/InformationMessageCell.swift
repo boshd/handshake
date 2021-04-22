@@ -19,7 +19,7 @@ class InformationMessageCell: RevealableCollectionViewCell {
     
     lazy var information: DynamicLabel = {
         var information = DynamicLabel(withInsets: 3, 3, 3, 3)
-        information.font = ThemeManager.currentTheme().secondaryFont(with: 10)
+        information.font = ThemeManager.currentTheme().secondaryFont(with: 11)
         information.textAlignment = .center
         information.textColor = ThemeManager.currentTheme().informationMessageTextColor
         information.numberOfLines = 0

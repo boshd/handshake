@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class ChannelCell: InteractiveTableViewCell {
+class ChannelCell: UITableViewCell {
     
     private var timer: Timer?
     private var timeCounter: Double = 0
@@ -22,7 +22,7 @@ class ChannelCell: InteractiveTableViewCell {
         mainView.translatesAutoresizingMaskIntoConstraints = false
         mainView.layer.cornerRadius = 0
         mainView.layer.shadowColor = UIColor.black.cgColor
-        mainView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+        mainView.backgroundColor = .clear
         mainView.borderWidth = 0
         mainView.borderColor = .lighterGray()
         mainView.cornerRadius = 15
@@ -80,7 +80,7 @@ class ChannelCell: InteractiveTableViewCell {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.backgroundColor = .lighterGray()
-        imageView.cornerRadius = 75/2
+        imageView.cornerRadius = 30
         imageView.layer.cornerCurve = .circular
         imageView.contentMode = .scaleAspectFill
         return imageView
@@ -105,7 +105,7 @@ class ChannelCell: InteractiveTableViewCell {
         contentView.layer.cornerRadius = 15
         userInteractionEnabledWhileDragging = true
         contentView.isUserInteractionEnabled = true
-        selectionStyle = .none
+//        selectionStyle = .default
 
         contentView.addSubview(mainView)
         
@@ -131,8 +131,8 @@ class ChannelCell: InteractiveTableViewCell {
             
             channelImageView.centerYAnchor.constraint(equalTo: mainView.centerYAnchor, constant: 0),
             channelImageView.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: 0),
-            channelImageView.heightAnchor.constraint(equalToConstant: 75),
-            channelImageView.widthAnchor.constraint(equalToConstant: 75),
+            channelImageView.heightAnchor.constraint(equalToConstant: 60),
+            channelImageView.widthAnchor.constraint(equalToConstant: 60),
             
             badgeLabel.centerYAnchor.constraint(equalTo: channelImageView.topAnchor, constant: 12),
             badgeLabel.centerXAnchor.constraint(equalTo: channelImageView.leadingAnchor, constant: 12),
@@ -183,11 +183,11 @@ class ChannelCell: InteractiveTableViewCell {
         title.text = nil
         subTitle.text = nil
         eventStatus.text = nil
-        mainView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+        mainView.backgroundColor = .clear
         title.textColor = ThemeManager.currentTheme().generalTitleColor
         subTitle.textColor = ThemeManager.currentTheme().generalSubtitleColor
         backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
-        contentView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+        contentView.backgroundColor = .clear
         imageView?.image = nil
         channel = nil
         invalidateTimer()

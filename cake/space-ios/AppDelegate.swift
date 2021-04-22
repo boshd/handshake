@@ -19,7 +19,7 @@ func setUserNotificationToken(token: String) {
     Firestore.firestore().collection("users").document(uid).updateData([token: true])
 }
 
-var channelsController: ChannelsController?
+var tabBarController: TabBarController?
 var globalIndicator = SVProgressHUD.self
 
 @UIApplicationMain
@@ -31,19 +31,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        
-//        func deleteAll() {
-//            do {
-//                try realm.safeWrite {
-//                    realm.deleteAll()
-//                }
-//            } catch {
-//                print(error.localizedDescription)
-//            }
-//        }
-//
-//        deleteAll()
-        
         print("\nAPP DELEGATE realm channel count: \(RealmKeychain.defaultRealm.objects(Channel.self).count)\n")
         
         FirebaseConfiguration.shared.setLoggerLevel(.min)
@@ -53,20 +40,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         //ThemeManager.applyTheme(theme: ThemeManager.currentTheme())
         
-        channelsController = ChannelsController()
+        tabBarController = TabBarController()
         
         if #available(iOS 13, *), userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme) {
-            channelsController?.applyInitialTheme()
+            tabBarController?.applyInitialTheme()
         } else {
             ThemeManager.applyTheme(theme: ThemeManager.currentTheme())
         }
         
         window = UIWindow(frame: UIScreen.main.bounds)
-        let navigationController = CustomNavigationController(rootViewController: channelsController ?? UIViewController())
+        let navigationController = CustomNavigationController(rootViewController: tabBarController ?? UIViewController())
+        navigationController.navigationBar.isHidden = true
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
         window?.backgroundColor = ThemeManager.currentTheme().windowBackground
-        channelsController?.presentOnboardingController()
+        tabBarController?.presentOnboardingController()
         
         // Push notifications setup
         pushManager.registerForPushNotifications()

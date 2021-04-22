@@ -123,28 +123,28 @@ class PushNotificationManager: NSObject, MessagingDelegate, UNUserNotificationCe
         case UNNotificationDefaultActionIdentifier: // App was opened from notification
 //            print(response.notification.request.content.userInfo)
             let info = response.notification.request.content.userInfo
-            if let messageDictionary = info["message"] as? [String: AnyObject] {
-                let message = Message(dictionary: messageDictionary)
-                if channelsController != nil {
-                    guard let channelID = message.toId,
-                          let realmChannels = channelsController?.theRealmChannels,
-                          let channel = RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: channelID),
-                          UIApplication.topViewController() is ChannelsController
-                    else { return }
-                    
-                    var indexPath_: IndexPath
-                    if realmChannels.contains(channel) {
-                        if let index = realmChannels.firstIndex(where: {$0 === channel}) {
-                            indexPath_ = IndexPath(row: index, section: 0)
-                            pushToChannel(indexPath: indexPath_)
-                        }
-                    } else {
-                        return
-                    }
-                
-                }
-                
-            }
+//            if let messageDictionary = info["message"] as? [String: AnyObject] {
+//                let message = Message(dictionary: messageDictionary)
+//                if tabBarController != nil {
+//                    guard let channelID = message.toId,
+//                          let realmChannels = channelsController?.theRealmChannels,
+//                          let channel = RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: channelID),
+//                          UIApplication.topViewController() is ChannelsController
+//                    else { return }
+//
+//                    var indexPath_: IndexPath
+//                    if realmChannels.contains(channel) {
+//                        if let index = realmChannels.firstIndex(where: {$0 === channel}) {
+//                            indexPath_ = IndexPath(row: index, section: 0)
+//                            pushToChannel(indexPath: indexPath_)
+//                        }
+//                    } else {
+//                        return
+//                    }
+//
+//                }
+//
+//            }
             
         case "ReplyAction":
             if let textResponse = response as? UNTextInputNotificationResponse {
@@ -162,8 +162,8 @@ class PushNotificationManager: NSObject, MessagingDelegate, UNUserNotificationCe
     }
     
     func pushToChannel(indexPath: IndexPath) {
-        channelsController?.channelsContainerView.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
-        channelsController?.channelsContainerView.tableView.delegate?.tableView!((channelsController?.channelsContainerView.tableView)!, didSelectRowAt: indexPath)
+        //channelsController?.channelsContainerView.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+        //channelsController?.channelsContainerView.tableView.delegate?.tableView!((channelsController?.channelsContainerView.tableView)!, didSelectRowAt: indexPath)
     }
     
     func handleNotification(notification: [AnyHashable : Any]) {

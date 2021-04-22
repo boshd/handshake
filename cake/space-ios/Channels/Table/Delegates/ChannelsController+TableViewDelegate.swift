@@ -8,25 +8,17 @@
 
 import UIKit
 
-extension ChannelsController: UITableViewDelegate, UITableViewDataSource {
+extension ChannelsController {
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        if section == 0 {
-//            return inProgressRealmChannels?.count ?? 0
-//        } else if section == 1 {
-//            return upcomingRealmChannels?.count ?? 0
-//        } else {
-//            return pastRealmChannels?.count ?? 0
-//        }
-        
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return theRealmChannels?.count ?? 0
     }
     
-    func numberOfSections(in tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: channelCellId, for: indexPath) as? ChannelCell ?? ChannelCell()
 //        let cell: ChannelCell = tableView.dequeueReusableCell(withIdentifier: channelCellId, for: indexPath) as! ChannelCell
         guard let realmChannels = theRealmChannels else { return cell }
@@ -35,9 +27,11 @@ extension ChannelsController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        //tableView.deselectRow(at: indexPath, animated: true)
+        
         guard let theRealmChannels = theRealmChannels else  { return }
-        hapticFeedback(style: .selectionChanged)
+//        hapticFeedback(style: .selectionChanged)
         
         let channel = theRealmChannels[indexPath.row]
         let _ = channel.updateAndReturnStatus()
@@ -49,19 +43,19 @@ extension ChannelsController: UITableViewDelegate, UITableViewDataSource {
         
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100 // previously 75
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 80 // previously 75
     }
     
-    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return nil
     }
     
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         guard let theRealmChannels = theRealmChannels
         else { return 0 }
         
@@ -83,7 +77,7 @@ extension ChannelsController: UITableViewDelegate, UITableViewDataSource {
         }
     }
     
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let label = DynamicLabel(withInsets: 2, 2, 2, 2)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .boldSystemFont(ofSize: 10)
@@ -107,7 +101,7 @@ extension ChannelsController: UITableViewDelegate, UITableViewDataSource {
         return headerView
     }
     
-    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 
         let delete = setupDeleteAction(at: indexPath)
 //        let mute = setupMuteAction(at: indexPath)

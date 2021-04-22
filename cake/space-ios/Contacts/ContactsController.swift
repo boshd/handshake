@@ -42,7 +42,6 @@ class ContactsController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Friends & Contacts"
         configureViewController()
         configureNavigationBar()
         setupSearchController()
@@ -96,16 +95,18 @@ class ContactsController: UITableViewController {
     }
 
     fileprivate func configureNavigationBar() {
-        let closeButtonItem = UIBarButtonItem(image: UIImage(named: "i-remove"), style: .plain, target: self, action: #selector(dismissController))
-        closeButtonItem.imageInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 0)
-        navigationItem.leftBarButtonItem = closeButtonItem
-        
-        let reloadButtonItem = UIBarButtonItem(title: "sync", style: .plain, target: self, action: #selector(reloadUsers))
-        navigationItem.rightBarButtonItem = reloadButtonItem
+//        let closeButtonItem = UIBarButtonItem(image: UIImage(named: "i-remove"), style: .plain, target: self, action: #selector(dismissController))
+//        closeButtonItem.imageInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 0)
+//        navigationItem.leftBarButtonItem = closeButtonItem
+//        
+//        let reloadButtonItem = UIBarButtonItem(title: "sync", style: .plain, target: self, action: #selector(reloadUsers))
+//        navigationItem.rightBarButtonItem = reloadButtonItem
          
         if let navigationController = navigationController {
             ThemeManager.setSecondaryNavigationBarAppearance(navigationController.navigationBar)
         }
+        
+        navigationItem.title = "Contacts"
     }
     
     @objc func dismissController() {

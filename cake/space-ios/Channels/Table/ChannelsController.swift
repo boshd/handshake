@@ -30,7 +30,36 @@ protocol CurrentUserDelegate: class {
     func currentUser(didUpdate user: User)
 }
 
-class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
+class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
+    
+//    private let imageView = UIImageView(image: UIImage(named: "GroupIcon"))
+    
+    private let profileImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.cornerRadius = Const.ImageSizeForLargeState / 2
+        imageView.clipsToBounds = true
+        imageView.backgroundColor = .red
+        return imageView
+    }()
+    
+    /// WARNING: Change these constants according to your project's design
+    private struct Const {
+        /// Image height/width for Large NavBar state
+        static let ImageSizeForLargeState: CGFloat = 40
+        /// Margin from right anchor of safe area to right anchor of Image
+        static let ImageRightMargin: CGFloat = 16
+        /// Margin from bottom anchor of NavBar to bottom anchor of Image for Large NavBar state
+        static let ImageBottomMarginForLargeState: CGFloat = 12
+        /// Margin from bottom anchor of NavBar to bottom anchor of Image for Small NavBar state
+        static let ImageBottomMarginForSmallState: CGFloat = 6
+        /// Image height/width for Small NavBar state
+        static let ImageSizeForSmallState: CGFloat = 32
+        /// Height of NavBar for Small state. Usually it's just 44
+        static let NavBarHeightSmallState: CGFloat = 44
+        /// Height of NavBar for Large state. Usually it's just 96.5 but if you have a custom font for the title, please make sure to edit this value since it changes the height for Large state of NavBar
+        static let NavBarHeightLargeState: CGFloat = 96.5
+    }
     
     var isSyncingUsers = false
     
@@ -41,7 +70,7 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
     let channelCellId = "channelCellId"
     
     var contactsPermissionGranted = false
-    var channelsContainerView = ChannelsContainerView()
+//    var channelsContainerView = ChannelsContainerView()
     let channelsFetcher = ChannelsFetcher()
     let viewPlaceholder = ViewPlaceholder()
     let notificationsManager = InAppNotificationManager()
@@ -83,7 +112,7 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
     
     override func loadView() {
         super.loadView()
-        loadViews()
+//        loadViews()
     }
     
     // responsible for changing theme based on system theme
@@ -115,6 +144,7 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
         addContactsObserver()
         addObservers()
         configureController()
+        navigationItem.largeTitleDisplayMode = .always
 //        showActivityTitle(title: .updatingUsers)
         guard !isAppLoaded, Auth.auth().currentUser != nil else { return }
         DispatchQueue.global(qos: .userInteractive).async { [weak self] in
@@ -122,13 +152,7 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
             self?.contactsFetcher.fetchContacts()
         }
     }
-    
-//    func outputImage(name:String,image:UIImage){
-//        let fileManager = FileManager.default
-//        let data = image.pngData()
-//        fileManager.createFile(atPath: "/Users/kareemarab/Desktop/\(name).png", contents: data, attributes: nil)
-//    }
-    
+
     @objc
     func call() {
         guard !isAppLoaded, Auth.auth().currentUser != nil else { return }
@@ -150,13 +174,10 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        configureNavigationBar()
         initializeDataSource()
-        initializeHeaderViewDataSource()
         initializeUsersDataSource()
         continiousUIUpdate()
-//        setNeedsStatusBarAppearanceUpdate()
-        navigationController?.setNavigationBarHidden(true, animated: animated)
+        configureNavigationBar()
         if let navigationBar = navigationController?.navigationBar {
             ThemeManager.setNavigationBarAppearance(navigationBar)
         }
@@ -177,10 +198,10 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
     
     // MARK: - Controller setup, configuration & clean up
     
-    private func loadViews() {
-        self.view = channelsContainerView
-        view.frame = channelsContainerView.bounds
-    }
+//    private func loadViews() {
+//        self.view = channelsContainerView
+//        view.frame = channelsContainerView.bounds
+//    }
     
     func initializeUsersDataSource() {
         guard !isAppLoaded, Auth.auth().currentUser != nil else { return }
@@ -192,36 +213,55 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
         channelsReference = Firestore.firestore().collection("channels")
         
         // tableview cell registration
-        channelsContainerView.tableView.register(ChannelCell.self, forCellReuseIdentifier: channelCellId)
-//        channelsContainerView.tableView.tableFooterView = UIView()
+        tableView.register(ChannelCell.self, forCellReuseIdentifier: channelCellId)
         
         // add targets
-        channelsContainerView.channelsHeaderView.userImageButton.addTarget(self, action: #selector(presentSettings), for: .touchUpInside)
-        channelsContainerView.createButton.addTarget(self, action: #selector(presentCreateChannelController), for: .touchUpInside)
-        channelsContainerView.contactsButton.addTarget(self, action: #selector(presentContactsController), for: .touchUpInside)
+//        channelsContainerView.createButton.addTarget(self, action: #selector(presentCreateChannelController), for: .touchUpInside)
+//        channelsContainerView.contactsButton.addTarget(self, action: #selector(presentContactsController), for: .touchUpInside)
         
         // delegates
         channelsFetcher.delegate = self
-        channelsContainerView.tableView.delegate = self
-        channelsContainerView.tableView.dataSource = self
+        tableView.delegate = self
+        tableView.dataSource = self
         usersFetcher.delegate = self
         contactsFetcher.delegate = self
     }
     
     fileprivate func configureNavigationBar() {
-//        navigationController?.setNavigationBarHidden(true, animated: true)
-        navigationController?.navigationBar.barStyle = ThemeManager.currentTheme().barStyle
+        
+//        navigationController?.navigationBar.prefersLargeTitles = true
+
+        // Initial setup for image for Large NavBar state since the the screen always has Large NavBar once it gets opened
+//        guard let navigationBar = self.navigationController?.navigationBar else { return }
+//        navigationBar.addSubview(profileImageView)
+//
+//        NSLayoutConstraint.activate([
+//            profileImageView.rightAnchor.constraint(equalTo: navigationBar.rightAnchor,
+//                                             constant: -Const.ImageRightMargin),
+//            profileImageView.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor,
+//                                              constant: -Const.ImageBottomMarginForLargeState),
+//            profileImageView.heightAnchor.constraint(equalToConstant: Const.ImageSizeForLargeState),
+//            profileImageView.widthAnchor.constraint(equalTo: profileImageView.heightAnchor)
+//        ])
+        
+
+        
+        let newChatBarButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(presentCreateChannelController))
+        navigationItem.rightBarButtonItem = newChatBarButton
+        
+        navigationItem.title = "Events"
+
     }
     
     // MARK: - Observers
     
     func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(initializeDataSource), name: .authenticationSucceeded, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(initializeHeaderViewDataSource), name: .authenticationSucceeded, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(initializeHeaderViewDataSource), name: .authenticationSucceeded, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(call), name: .authenticationSucceeded, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(changeTheme), name: .themeUpdated, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(cleanUpController), name: NSNotification.Name(rawValue: "clearUserData"), object: nil)
-        NotificationCenter.default.addObserver(self, selector:#selector(setGreeting), name: .NSCalendarDayChanged, object:nil)
+//        NotificationCenter.default.addObserver(self, selector:#selector(setGreeting), name: .NSCalendarDayChanged, object:nil)
     }
     
     func addContactsObserver() {
@@ -291,64 +331,12 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
     
     @objc fileprivate func changeTheme() {
         view.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
-        channelsContainerView.tableView.indicatorStyle = ThemeManager.currentTheme().scrollBarStyle
-        channelsContainerView.tableView.sectionIndexBackgroundColor = view.backgroundColor
-        channelsContainerView.tableView.backgroundColor = view.backgroundColor
-        channelsContainerView.tableView.isOpaque = true
-        channelsContainerView.channelsHeaderView.title.textColor = ThemeManager.currentTheme().generalTitleColor
-        channelsContainerView.channelsHeaderView.subTitle.textColor = ThemeManager.currentTheme().generalSubtitleColor
-        channelsContainerView.channelsHeaderView.seperator.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
-        channelsContainerView.contactsButton.backgroundColor = ThemeManager.currentTheme().buttonColor
-        channelsContainerView.createButton.backgroundColor = ThemeManager.currentTheme().buttonColor
-        channelsContainerView.contactsButton.tintColor = ThemeManager.currentTheme().buttonIconColor
-        channelsContainerView.createButton.tintColor = ThemeManager.currentTheme().buttonIconColor
+        tableView.indicatorStyle = ThemeManager.currentTheme().scrollBarStyle
+        tableView.sectionIndexBackgroundColor = view.backgroundColor
+        tableView.backgroundColor = view.backgroundColor
+        tableView.isOpaque = true
         DispatchQueue.main.async { [weak self] in
-            self?.channelsContainerView.tableView.reloadData()
-        }
-    }
-    
-    @objc fileprivate func initializeHeaderViewDataSource() {
-        dateFormatter.dateFormat = "EEEE, MMMM d"
-        setGreeting()
-        channelsContainerView.channelsHeaderView.subTitle.text = dateFormatter.string(from: Date()).uppercased()
-        guard !isAppLoaded, Auth.auth().currentUser != nil else { return }
-        if currentUserListenerReference == nil {
-            currentUserListenerReference = currentUserReference?.addSnapshotListener({ [weak self] (snapshot, error) in
-                if error != nil {
-                    print(error?.localizedDescription ?? "")
-                    return
-                }
-                guard let data = snapshot?.data() else { return }
-                let updatedUser = User(dictionary: data as [String:AnyObject])
-                globalCurrentUser = updatedUser
-                 self?.currentUserDelegate?.currentUser(didUpdate: updatedUser)
-                
-                userDefaults.updateObject(for: userDefaults.currentUserName, with: updatedUser.name)
-                
-                if let url = updatedUser.userThumbnailImageUrl, url != "" {
-                    self?.channelsContainerView.channelsHeaderView.userImageButton.imageView?.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "UserpicIcon"), options: [], completed: { (image, error, _, _) in
-                        if error != nil{
-                            print(error?.localizedDescription ?? "")
-                            return
-                        }
-                        self?.channelsContainerView.channelsHeaderView.userImageButton.setImage(image, for: .normal)
-                    })
-                } else {
-                    
-                    self?.channelsContainerView.channelsHeaderView.userImageButton.setImage(UIImage(named: "UserpicIcon"), for: .normal)
-                }
-            })
-        }
-    }
-    
-    @objc fileprivate  func setGreeting() {
-        let hour = Calendar.current.component(.hour, from: Date())
-        DispatchQueue.main.async {
-            switch hour {
-            case 6..<12: self.channelsContainerView.channelsHeaderView.title.text = "Good morning"
-            case 12..<17: self.channelsContainerView.channelsHeaderView.title.text = "Good afternoon"
-            default: self.channelsContainerView.channelsHeaderView.title.text = "Good evening"
-            }
+            self?.tableView.reloadData()
         }
     }
     
@@ -359,6 +347,7 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
         checkConnectivity()
         
         currentUserReference = Firestore.firestore().collection("users").document(currentUserID)
+        listenToCurrentUser()
         
         let currentDateInt64 = Int64(Int(Date().timeIntervalSince1970))
         
@@ -374,6 +363,56 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
         inProgressRealmChannels = inProgressObjects
         realmChannels = objects
         theRealmChannels = theObjects
+        
+        // date
+        dateFormatter.dateFormat = "EEEE, MMMM d"
+//        channelsContainerView.channelsHeaderView.subTitle.text = dateFormatter.string(from: Date()).uppercased()
+        let dateLabel = UILabel()
+        dateLabel.text = dateFormatter.string(from: Date()).uppercased()
+        dateLabel.font = ThemeManager.currentTheme().secondaryFontBold(with: 12)
+        dateLabel.textColor = .gray
+        dateLabel.sizeToFit()
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: dateLabel)
+    }
+    
+    private func listenToCurrentUser() {
+        
+
+//
+//        if currentUserListenerReference == nil {
+//            currentUserListenerReference = currentUserReference?.addSnapshotListener({ [weak self] (snapshot, error) in
+//                if error != nil {
+//                    print(error?.localizedDescription ?? "")
+//                    return
+//                }
+//                print("reached???")
+//                self?.profileImageView.image = UIImage(named: "300")
+//
+//                guard let data = snapshot?.data() else { return }
+//                let updatedUser = User(dictionary: data as [String:AnyObject])
+//                globalCurrentUser = updatedUser
+//                 self?.currentUserDelegate?.currentUser(didUpdate: updatedUser)
+//
+//                userDefaults.updateObject(for: userDefaults.currentUserName, with: updatedUser.name)
+//
+//                if let url = updatedUser.userThumbnailImageUrl, url != "" {
+//
+//                    self?.profileImageView.sd_setImage(with: URL(string: url), completed: nil)
+                    
+//                    self?.channelsContainerView.channelsHeaderView.userImageButton.imageView?.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "UserpicIcon"), options: [], completed: { (image, error, _, _) in
+//                        if error != nil{
+//                            print(error?.localizedDescription ?? "")
+//                            return
+//                        }
+////                        self?.channelsContainerView.setImage(image, for: .normal)
+//
+//
+//                    })
+//                } else {
+//                    self?.channelsContainerView.channelsHeaderView.userImageButton.setImage(UIImage(named: "UserpicIcon"), for: .normal)
+//                }
+//            })
+//        }
     }
     
     // MARK: - Datasource changes
@@ -383,16 +422,16 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
             guard let unwrappedSelf = self else { return }
             switch changes {
             case .initial:
-                UIView.performWithoutAnimation { unwrappedSelf.channelsContainerView.tableView.reloadData() }
+                UIView.performWithoutAnimation { unwrappedSelf.tableView.reloadData() }
                 break
             case .update(_, let deletions, let insertions, let modifications):
                 if unwrappedSelf.isAppLoaded {
                     print(deletions, insertions, modifications)
-                    unwrappedSelf.channelsContainerView.tableView.beginUpdates()
-                    unwrappedSelf.channelsContainerView.tableView.insertRows(at: insertions.map { IndexPath(row: $0, section: 0) }, with: .none)
-                    unwrappedSelf.channelsContainerView.tableView.deleteRows(at: unwrappedSelf.indexPathsToUpdate(updates: deletions, section: 0), with: .automatic)
-                    UIView.performWithoutAnimation { unwrappedSelf.channelsContainerView.tableView.reloadRows(at: unwrappedSelf.indexPathsToUpdate(updates: modifications, section: 0), with: .none) }
-                    unwrappedSelf.channelsContainerView.tableView.endUpdates()
+                    unwrappedSelf.tableView.beginUpdates()
+                    unwrappedSelf.tableView.insertRows(at: insertions.map { IndexPath(row: $0, section: 0) }, with: .none)
+                    unwrappedSelf.tableView.deleteRows(at: unwrappedSelf.indexPathsToUpdate(updates: deletions, section: 0), with: .automatic)
+                    UIView.performWithoutAnimation { unwrappedSelf.tableView.reloadRows(at: unwrappedSelf.indexPathsToUpdate(updates: modifications, section: 0), with: .none) }
+                    unwrappedSelf.tableView.endUpdates()
                 }
                 break
             case .error(let err): fatalError("\(err)"); break
@@ -410,13 +449,13 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
 
         guard let realmChannels = realmChannels else { return }
         if !isAppLoaded {
-            UIView.transition(with: channelsContainerView.tableView, duration: 0.15, options: .transitionCrossDissolve, animations: {
-                self.channelsContainerView.tableView.reloadData()
+            UIView.transition(with: tableView, duration: 0.15, options: .transitionCrossDissolve, animations: {
+                self.tableView.reloadData()
             }, completion: nil)
         } else {
             DispatchQueue.main.async { [weak self] in
                 UIView.performWithoutAnimation {
-                    self?.channelsContainerView.tableView.reloadData()
+                    self?.tableView.reloadData()
                 }
             }
         }
@@ -456,7 +495,7 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
 //        print("update here")
 //        DispatchQueue.main.async { [weak self] in
 //            self?.setGreeting()
-//            self?.channelsContainerView.tableView.reloadData()
+//            self?.tableView.reloadData()
 //        }
     }
 
@@ -550,16 +589,16 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func showActivityTitle(title: ActivityTitle) {
-        channelsContainerView.channelsHeaderView.showActivityView(with: title)
+//        channelsContainerView.channelsHeaderView.showActivityView(with: title)
     }
 
     func hideActivityTitle(title: ActivityTitle) {
-        channelsContainerView.channelsHeaderView.hideActivityView(with: title)
+//        channelsContainerView.channelsHeaderView.hideActivityView(with: title)
     }
     
     fileprivate func indexPathsToUpdate(updates: [Int], section: Int) -> [IndexPath] {
         return updates.compactMap({ [unowned self] (index) -> IndexPath? in
-            if self.channelsContainerView.tableView.hasRow(at: IndexPath(row: index, section: section)) {
+            if self.tableView.hasRow(at: IndexPath(row: index, section: section)) {
                 return IndexPath(row: index, section: section)
             } else {
                 return nil
@@ -570,12 +609,42 @@ class ChannelsController: UIViewController, UIGestureRecognizerDelegate {
 }
 
 extension ChannelsController: WelcomeControllerDelegate {
-    func onboardingFinished() {
-//        initializeUsersDataSource()
-//
-//        guard shouldReSyncUsers, isAppLoaded, Auth.auth().currentUser != nil else { return }
-//        shouldReSyncUsers = false
-//        usersFetcher.loadUsers()
-//        contactsFetcher.syncronizeContacts(contacts: contacts)
+    func onboardingFinished() {}
+}
+
+extension ChannelsController {
+    private func moveAndResizeImage(for height: CGFloat) {
+        let coeff: CGFloat = {
+            let delta = height - Const.NavBarHeightSmallState
+            let heightDifferenceBetweenStates = (Const.NavBarHeightLargeState - Const.NavBarHeightSmallState)
+            return delta / heightDifferenceBetweenStates
+        }()
+
+        let factor = Const.ImageSizeForSmallState / Const.ImageSizeForLargeState
+
+        let scale: CGFloat = {
+            let sizeAddendumFactor = coeff * (1.0 - factor)
+            return min(1.0, sizeAddendumFactor + factor)
+        }()
+
+        // Value of difference between icons for large and small states
+        let sizeDiff = Const.ImageSizeForLargeState * (1.0 - factor) // 8.0
+
+        let yTranslation: CGFloat = {
+            /// This value = 14. It equals to difference of 12 and 6 (bottom margin for large and small states). Also it adds 8.0 (size difference when the image gets smaller size)
+            let maxYTranslation = Const.ImageBottomMarginForLargeState - Const.ImageBottomMarginForSmallState + sizeDiff
+            return max(0, min(maxYTranslation, (maxYTranslation - coeff * (Const.ImageBottomMarginForSmallState + sizeDiff))))
+        }()
+
+        let xTranslation = max(0, sizeDiff - coeff * sizeDiff)
+
+        profileImageView.transform = CGAffineTransform.identity
+            .scaledBy(x: scale, y: scale)
+            .translatedBy(x: xTranslation, y: yTranslation)
+    }
+    
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        guard let height = navigationController?.navigationBar.frame.height else { return }
+//        moveAndResizeImage(for: height)
     }
 }

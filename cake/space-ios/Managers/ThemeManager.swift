@@ -23,7 +23,7 @@ struct ThemeManager {
         coloredAppearance.shadowImage = nil
         coloredAppearance.shadowColor = nil
         coloredAppearance.backgroundColor = ThemeManager.currentTheme().barBackgroundColor
-        coloredAppearance.titleTextAttributes = [.foregroundColor: ThemeManager.currentTheme().generalTitleColor, .font: ThemeManager.currentTheme().secondaryFontBoldItalic(with: 15)]
+        coloredAppearance.titleTextAttributes = [.foregroundColor: ThemeManager.currentTheme().generalTitleColor, .font: ThemeManager.currentTheme().secondaryFontBold(with: 15)]
         UINavigationBar.appearance().isTranslucent = false
         UINavigationBar.appearance().barTintColor = ThemeManager.currentTheme().barBackgroundColor
         UINavigationBar.appearance().standardAppearance = coloredAppearance
@@ -61,7 +61,7 @@ struct ThemeManager {
             coloredAppearance.shadowImage = nil
             coloredAppearance.shadowColor = nil
             coloredAppearance.backgroundColor = ThemeManager.currentTheme().barBackgroundColor
-            coloredAppearance.titleTextAttributes = [.foregroundColor: ThemeManager.currentTheme().generalTitleColor, .font: ThemeManager.currentTheme().secondaryFontBoldItalic(with: 15)]
+            coloredAppearance.titleTextAttributes = [.foregroundColor: ThemeManager.currentTheme().generalTitleColor, .font: ThemeManager.currentTheme().secondaryFontBold(with: 15)]
             naviationBar.isTranslucent = false
             naviationBar.barTintColor = ThemeManager.currentTheme().barBackgroundColor
             naviationBar.standardAppearance = coloredAppearance
@@ -76,7 +76,7 @@ struct ThemeManager {
             coloredAppearance.shadowImage = nil
             coloredAppearance.shadowColor = nil
             coloredAppearance.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
-            coloredAppearance.titleTextAttributes = [.foregroundColor: ThemeManager.currentTheme().generalTitleColor, .font: ThemeManager.currentTheme().secondaryFontBoldItalic(with: 15)]
+            coloredAppearance.titleTextAttributes = [.foregroundColor: ThemeManager.currentTheme().generalTitleColor, .font: ThemeManager.currentTheme().secondaryFontBold(with: 15)]
             naviationBar.isTranslucent = false
             naviationBar.barTintColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
             naviationBar.standardAppearance = coloredAppearance

@@ -178,6 +178,7 @@
 		BC74F2BA22D0E72800B37801 /* LoadingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC74F2B922D0E72800B37801 /* LoadingButton.swift */; };
 		BC74F2BC22D0ED2700B37801 /* PhoneController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC74F2BB22D0ED2700B37801 /* PhoneController.swift */; };
 		BC74F2BE22D26F1C00B37801 /* KeyboardLayoutConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC74F2BD22D26F1C00B37801 /* KeyboardLayoutConstraint.swift */; };
+		BC7AABD826250EFB0024A20D /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7AABD726250EFB0024A20D /* TabBarController.swift */; };
 		BC81DDBC253B2475001C24BC /* ContactsDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC81DDBB253B2475001C24BC /* ContactsDetailController.swift */; };
 		BC81DDC1253B382A001C24BC /* ContactsController+SearchHandlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC81DDC0253B382A001C24BC /* ContactsController+SearchHandlers.swift */; };
 		BC82CF9823778C10003B2360 /* MessagesFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC82CF9723778C10003B2360 /* MessagesFetcher.swift */; };
@@ -529,6 +530,7 @@
 		BC74F2B922D0E72800B37801 /* LoadingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingButton.swift; sourceTree = "<group>"; };
 		BC74F2BB22D0ED2700B37801 /* PhoneController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneController.swift; sourceTree = "<group>"; };
 		BC74F2BD22D26F1C00B37801 /* KeyboardLayoutConstraint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardLayoutConstraint.swift; sourceTree = "<group>"; };
+		BC7AABD726250EFB0024A20D /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		BC81DDBB253B2475001C24BC /* ContactsDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsDetailController.swift; sourceTree = "<group>"; };
 		BC81DDC0253B382A001C24BC /* ContactsController+SearchHandlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContactsController+SearchHandlers.swift"; sourceTree = "<group>"; };
 		BC82CF9723778C10003B2360 /* MessagesFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesFetcher.swift; sourceTree = "<group>"; };
@@ -1789,6 +1791,7 @@
 				BC59273522A0156D006A5CEF /* Models */,
 				BCAC056E22AD37FC006D0C24 /* Support */,
 				BCF979FE229D5F6A0088C568 /* AppDelegate.swift */,
+				BC7AABD726250EFB0024A20D /* TabBarController.swift */,
 				BCB921EC25B47BF000A943D5 /* LaunchScreen.storyboard */,
 				BCF97A08229D5F6B0088C568 /* Assets.xcassets */,
 				BCF97A0D229D5F6B0088C568 /* Info.plist */,
@@ -2165,6 +2168,7 @@
 				BCBBC29A25388C5A0010F39E /* ActivityTitleView.swift in Sources */,
 				BC67F638252FA03B00E7D274 /* VerificationController.swift in Sources */,
 				BCCF55272620D80E00AFBF7C /* InAppNotificationDispatcher.swift in Sources */,
+				BC7AABD826250EFB0024A20D /* TabBarController.swift in Sources */,
 				BC6C60B62384507D003DBB53 /* ChannelLogController+MessageSenderDelegate.swift in Sources */,
 				BCB027D52568453B0082B318 /* MenuControlsTableViewController.swift in Sources */,
 				BC68C0BD258A9BD500D3A730 /* ChannelLogController+ChannelManager.swift in Sources */,
