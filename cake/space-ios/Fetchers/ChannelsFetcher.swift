@@ -78,7 +78,6 @@ class ChannelsFetcher: NSObject {
                     return
                 }
                 self.group = DispatchGroup()
-                print("FOUND \(documents.count) docs")
                 for _ in 0 ..< documents.count { self.group?.enter() }
                 self.group?.notify(queue: .main, execute: { [weak self] in
                     //guard let unwrappedSelf = self else { return }
@@ -108,10 +107,10 @@ class ChannelsFetcher: NSObject {
                         first = false
                         return
                     }
+                    
                     guard let snap = snapshot else { return }
                     snap.documentChanges.forEach { (diff) in
                         if (diff.type == .added) {
-                            print("this is called initially right?")
                             let channelID = diff.document.documentID
                             self?.listenToChannel(with: channelID)
                             self?.delegate?.channels(addedNewChannel: true, channelID: channelID)
@@ -133,21 +132,43 @@ class ChannelsFetcher: NSObject {
                         } else if (diff.type == .modified) {
                             // listening to user's unique channel
                             
-                            print("jnkjnlkjnkjnjnknjjknjknjknkjnjknjknjknkjnkjnkjnjkn")
-                            guard let data = diff.document.data() as [String:AnyObject]? else { return }
+                            print("channel modified")
                             
-                            let updatedChannel = Channel(dictionary: data)
-                            guard let updatedChannelID = updatedChannel.id else { return }
                             
-                            guard let index = self?.channels.firstIndex(where: { (channel) -> Bool in
-                                return channel.id == updatedChannelID
-                            }) else { return }
                             
-                            self?.channels[index].badge = updatedChannel.badge
-                            self?.channels[index].lastMessageId = updatedChannel.lastMessageId
-                            guard let unwrappedSelf = self else { print(""); return }
+                            guard var dictionary = diff.document.data() as? [String: AnyObject] else { return }
+                            dictionary.updateValue(diff.document.documentID as AnyObject, forKey: "id")
 
-                            unwrappedSelf.delegate?.channels(update: unwrappedSelf.channels[index], reloadNeeded: true)
+                            if let isGroupAlreadyFinished = self?.isGroupAlreadyFinished, isGroupAlreadyFinished {
+                                self?.delegate?.channels(didStartUpdatingData: true)
+                            }
+
+                            let channel = Channel(dictionary: dictionary)
+                            channel.isTyping.value = channel.getTyping()
+
+                            guard let lastMessageID = channel.lastMessageId else { //if no messages in chat yet
+                                print("here1")
+                                self?.loadAdditionalMetadata(for: channel)
+                                return
+                            }
+
+                            self?.loadLastMessage(for: lastMessageID, channel: channel)
+
+
+//                            guard let data = diff.document.data() as [String:AnyObject]? else { return }
+//
+//                            let updatedChannel = Channel(dictionary: data)
+//                            guard let updatedChannelID = updatedChannel.id else { return }
+//
+//                            guard let index = self?.channels.firstIndex(where: { (channel) -> Bool in
+//                                return channel.id == updatedChannelID
+//                            }) else { return }
+//
+//                            self?.channels[index].badge = updatedChannel.badge
+//                            self?.channels[index].lastMessageId = updatedChannel.lastMessageId
+//                            guard let unwrappedSelf = self else { print(""); return }
+//
+//                            unwrappedSelf.delegate?.channels(update: unwrappedSelf.channels[index], reloadNeeded: true)
                         }
                     }
                 })
@@ -188,6 +209,7 @@ class ChannelsFetcher: NSObject {
                 print(error?.localizedDescription as Any)
                 return
             }
+            print("here2")
             guard var dictionary = snapshot?.data() as [String: AnyObject]? else { return }
             dictionary.updateValue(messageID as AnyObject, forKey: "messageUID")
             dictionary = self.messagesFetcher.preloadCellData(to: dictionary)
@@ -235,7 +257,7 @@ class ChannelsFetcher: NSObject {
             if let fcmTokensDict = dictionary["fcmTokens"] as? [String:String] {
                 channel.fcmTokens = convertRawFCMTokensToRealmCompatibleType(fcmTokensDict)
             }
-            
+            print("here3")
             prefetchThumbnail(from: channel.thumbnailImageUrl == nil ? channel.imageUrl : channel.thumbnailImageUrl)
             self.updateConversationArrays(with: channel)
         }
@@ -251,11 +273,14 @@ class ChannelsFetcher: NSObject {
     
     fileprivate func updateConversationArrays(with channel: Channel) {
         guard let channelID = channel.id else { return }
+        print("here4")
         if let index = channels.firstIndex(where: { (channel) -> Bool in
             return channel.id == channelID
         }) {
             update(channel: channel, at: index)
+            print("here5")
         } else {
+            print("here6")
             channels.append(channel)
             handleGroupOrReloadTable()
         }
@@ -267,23 +292,28 @@ class ChannelsFetcher: NSObject {
             let isTyping = channels[index].isTyping.value
             channel.isTyping.value = isTyping
         }
-        
-        guard isGroupAlreadyFinished, (channels[index].isMuted.value != channel.isMuted.value) else {
-            if isGroupAlreadyFinished {
-                channels[index] = channel
-                delegate?.channels(update: channels[index], reloadNeeded: false)
-                return
-            }
+        print("here7")
+//        guard isGroupAlreadyFinished, (channels[index].isMuted.value != channel.isMuted.value) else {
+        if isGroupAlreadyFinished {
+            print("here8")
             channels[index] = channel
-            handleGroupOrReloadTable()
+            delegate?.channels(update: channels[index], reloadNeeded: true)
             return
         }
+        print("here9")
         channels[index] = channel
-        delegate?.channels(update: channels[index], reloadNeeded: true)
+        handleGroupOrReloadTable()
+        return
+//        }
+//        channels[index] = channel
+//        delegate?.channels(update: channels[index], reloadNeeded: true)
     }
     
     fileprivate func handleGroupOrReloadTable() {
+        print("here10")
         guard isGroupAlreadyFinished else {
+            print("here11")
+            print("LOCKED HERE")
             guard group != nil else {
                 delegate?.channels(didFinishFetching: true, channels: channels)
                 return
@@ -291,6 +321,8 @@ class ChannelsFetcher: NSObject {
             group?.leave()
             return
         }
+        print("OUT HERE")
+        print("here12")
         delegate?.channels(didFinishFetching: true, channels: channels)
     }
     
@@ -298,7 +330,6 @@ class ChannelsFetcher: NSObject {
     
     fileprivate func listenToChannel(with channelID: String) {
         let channelReference = Firestore.firestore().collection("channels").document(channelID)
-        
         let listener = channelReference.addSnapshotListener { (snapshot, error) in
             // listening to ACTUAL channel
             if error != nil {

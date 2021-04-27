@@ -508,12 +508,12 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     private func setupCollectionView() {
         extendedLayoutIncludesOpaqueBars = true
         edgesForExtendedLayout = UIRectEdge.bottom
-
+        
         if #available(iOS 11.0, *) {
             navigationItem.largeTitleDisplayMode = .never
         }
         
-        setupNavigationBar()
+//        setupNavigationBar()
 
         collectionView.delegate = self
         collectionView.dataSource = self

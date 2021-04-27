@@ -32,35 +32,6 @@ protocol CurrentUserDelegate: class {
 
 class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
     
-//    private let imageView = UIImageView(image: UIImage(named: "GroupIcon"))
-    
-    private let profileImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.layer.cornerRadius = Const.ImageSizeForLargeState / 2
-        imageView.clipsToBounds = true
-        imageView.backgroundColor = .red
-        return imageView
-    }()
-    
-    /// WARNING: Change these constants according to your project's design
-    private struct Const {
-        /// Image height/width for Large NavBar state
-        static let ImageSizeForLargeState: CGFloat = 40
-        /// Margin from right anchor of safe area to right anchor of Image
-        static let ImageRightMargin: CGFloat = 16
-        /// Margin from bottom anchor of NavBar to bottom anchor of Image for Large NavBar state
-        static let ImageBottomMarginForLargeState: CGFloat = 12
-        /// Margin from bottom anchor of NavBar to bottom anchor of Image for Small NavBar state
-        static let ImageBottomMarginForSmallState: CGFloat = 6
-        /// Image height/width for Small NavBar state
-        static let ImageSizeForSmallState: CGFloat = 32
-        /// Height of NavBar for Small state. Usually it's just 44
-        static let NavBarHeightSmallState: CGFloat = 44
-        /// Height of NavBar for Large state. Usually it's just 96.5 but if you have a custom font for the title, please make sure to edit this value since it changes the height for Large state of NavBar
-        static let NavBarHeightLargeState: CGFloat = 96.5
-    }
-    
     var isSyncingUsers = false
     
     var isAppLoaded = false
@@ -144,7 +115,7 @@ class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
         addContactsObserver()
         addObservers()
         configureController()
-        navigationItem.largeTitleDisplayMode = .always
+        configureNavigationBar()
 //        showActivityTitle(title: .updatingUsers)
         guard !isAppLoaded, Auth.auth().currentUser != nil else { return }
         DispatchQueue.global(qos: .userInteractive).async { [weak self] in
@@ -177,10 +148,10 @@ class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
         initializeDataSource()
         initializeUsersDataSource()
         continiousUIUpdate()
-        configureNavigationBar()
-        if let navigationBar = navigationController?.navigationBar {
-            ThemeManager.setNavigationBarAppearance(navigationBar)
-        }
+        
+//        if let navigationBar = navigationController?.navigationBar {
+//            ThemeManager.setNavigationBarAppearance(navigationBar)
+//        }
     }
     
     override var preferredStatusBarStyle : UIStatusBarStyle {
@@ -189,7 +160,7 @@ class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        navigationController?.setNavigationBarHidden(false, animated: animated)
+//        navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
     override func didReceiveMemoryWarning() {
@@ -198,14 +169,15 @@ class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
     
     // MARK: - Controller setup, configuration & clean up
     
-//    private func loadViews() {
-//        self.view = channelsContainerView
-//        view.frame = channelsContainerView.bounds
-//    }
-    
     func initializeUsersDataSource() {
         guard !isAppLoaded, Auth.auth().currentUser != nil else { return }
         users = realm.objects(User.self)
+    }
+    
+    fileprivate func initAllTabs() {
+        guard let appDelegate = tabBarController as? TabBarController else { return }
+        _ = appDelegate.contactsController.view
+        _ = appDelegate.settingsController.view
     }
     
     fileprivate func configureController() {
@@ -223,33 +195,24 @@ class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
         channelsFetcher.delegate = self
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.separatorStyle = .singleLine
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: 100, bottom: 0, right: 0)
+        tableView.tableFooterView = UIView()
         usersFetcher.delegate = self
         contactsFetcher.delegate = self
     }
     
     fileprivate func configureNavigationBar() {
         
-//        navigationController?.navigationBar.prefersLargeTitles = true
+        if #available(iOS 11.0, *) {
+             navigationController?.navigationBar.prefersLargeTitles = true
+             navigationItem.largeTitleDisplayMode = .always
+         }
 
-        // Initial setup for image for Large NavBar state since the the screen always has Large NavBar once it gets opened
-//        guard let navigationBar = self.navigationController?.navigationBar else { return }
-//        navigationBar.addSubview(profileImageView)
-//
-//        NSLayoutConstraint.activate([
-//            profileImageView.rightAnchor.constraint(equalTo: navigationBar.rightAnchor,
-//                                             constant: -Const.ImageRightMargin),
-//            profileImageView.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor,
-//                                              constant: -Const.ImageBottomMarginForLargeState),
-//            profileImageView.heightAnchor.constraint(equalToConstant: Const.ImageSizeForLargeState),
-//            profileImageView.widthAnchor.constraint(equalTo: profileImageView.heightAnchor)
-//        ])
-        
-
-        
         let newChatBarButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(presentCreateChannelController))
         navigationItem.rightBarButtonItem = newChatBarButton
         
-        navigationItem.title = "Events"
+//        navigationItem.title = "Events"
 
     }
     
@@ -261,6 +224,7 @@ class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(call), name: .authenticationSucceeded, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(changeTheme), name: .themeUpdated, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(cleanUpController), name: NSNotification.Name(rawValue: "clearUserData"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleReloadTable), name: .messageSent, object: nil)
 //        NotificationCenter.default.addObserver(self, selector:#selector(setGreeting), name: .NSCalendarDayChanged, object:nil)
     }
     
@@ -351,11 +315,11 @@ class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
         
         let currentDateInt64 = Int64(Int(Date().timeIntervalSince1970))
         
-        let objects = RealmKeychain.defaultRealm.objects(Channel.self).sorted(byKeyPath: "startTime", ascending: false)
+        let objects = RealmKeychain.defaultRealm.objects(Channel.self).sorted(byKeyPath: "startTime", ascending: true)
         let pastObjects = objects.filter("startTime < \(currentDateInt64) && endTime < \(currentDateInt64)").sorted(byKeyPath: "startTime", ascending: false)
         let upcomingObjects = objects.filter("startTime > \(currentDateInt64) && endTime > \(currentDateInt64)").sorted(byKeyPath: "startTime", ascending: false)
         let inProgressObjects = objects.filter("startTime < \(currentDateInt64) && endTime > \(currentDateInt64)").sorted(byKeyPath: "startTime", ascending: false)
-        let theObjects = objects.sorted(byKeyPath: "startTime", ascending: false)
+        let theObjects = objects.sorted(byKeyPath: "startTime", ascending: true)
         // filter past objects newer than 24 hrs ago
         
         pastRealmChannels = pastObjects
@@ -368,9 +332,9 @@ class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
         dateFormatter.dateFormat = "EEEE, MMMM d"
 //        channelsContainerView.channelsHeaderView.subTitle.text = dateFormatter.string(from: Date()).uppercased()
         let dateLabel = UILabel()
-        dateLabel.text = dateFormatter.string(from: Date()).uppercased()
-        dateLabel.font = ThemeManager.currentTheme().secondaryFontBold(with: 12)
-        dateLabel.textColor = .gray
+        dateLabel.text = dateFormatter.string(from: Date())
+        dateLabel.font = ThemeManager.currentTheme().secondaryFontBold(with: 13)
+        dateLabel.textColor = ThemeManager.currentTheme().generalTitleColor
         dateLabel.sizeToFit()
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: dateLabel)
     }
@@ -442,14 +406,16 @@ class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
     // MARK: - User experience
     
     @objc func handleReloadTable() {
+        print("calling handle reload\n\n")
 //        inProgressRealmChannels = inProgressRealmChannels?.sorted(byKeyPath: "startTime", ascending: false)
 //        upcomingRealmChannels = upcomingRealmChannels?.sorted(byKeyPath: "startTime", ascending: false)
 //        pastRealmChannels = pastRealmChannels?.sorted(byKeyPath: "startTime", ascending: false)
         theRealmChannels = theRealmChannels?.sorted(byKeyPath: "startTime", ascending: true)
 
-        guard let realmChannels = realmChannels else { return }
+        guard let realmChannels = theRealmChannels else { return }
         if !isAppLoaded {
             UIView.transition(with: tableView, duration: 0.15, options: .transitionCrossDissolve, animations: {
+                self.initAllTabs()
                 self.tableView.reloadData()
             }, completion: nil)
         } else {
@@ -505,15 +471,32 @@ class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
     }
     
     func configureTabBarBadge() {
-        guard let realmAllConversations = theRealmChannels else { return }
-        let badge = realmAllConversations.compactMap({ (conversation) -> Int in
-            return conversation.badge.value ?? 0
+        
+        guard let tabItems = tabBarController?.tabBar.items as NSArray? else { return }
+        guard let tabItem = tabItems[Tabs.chats.rawValue] as? UITabBarItem else { return }
+        guard let realmChannels = realmChannels else { return }
+        let badge = realmChannels.compactMap({ (channel) -> Int in
+            return channel.badge.value ?? 0
         }).reduce(0, +)
+
         guard badge > 0 else {
+            tabItem.badgeValue = nil
             UIApplication.shared.applicationIconBadgeNumber = 0
             return
         }
+
+        tabItem.badgeValue = badge.toString()
         UIApplication.shared.applicationIconBadgeNumber = badge
+        
+//        guard let realmAllConversations = realmChannels else { return }
+//        let badge = realmAllConversations.compactMap({ (conversation) -> Int in
+//            return conversation.badge.value ?? 0
+//        }).reduce(0, +)
+//        guard badge > 0 else {
+//            UIApplication.shared.applicationIconBadgeNumber = 0
+//            return
+//        }
+//        UIApplication.shared.applicationIconBadgeNumber = badge
     }
     
     // MARK: - Navigation methods
@@ -610,41 +593,4 @@ class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
 
 extension ChannelsController: WelcomeControllerDelegate {
     func onboardingFinished() {}
-}
-
-extension ChannelsController {
-    private func moveAndResizeImage(for height: CGFloat) {
-        let coeff: CGFloat = {
-            let delta = height - Const.NavBarHeightSmallState
-            let heightDifferenceBetweenStates = (Const.NavBarHeightLargeState - Const.NavBarHeightSmallState)
-            return delta / heightDifferenceBetweenStates
-        }()
-
-        let factor = Const.ImageSizeForSmallState / Const.ImageSizeForLargeState
-
-        let scale: CGFloat = {
-            let sizeAddendumFactor = coeff * (1.0 - factor)
-            return min(1.0, sizeAddendumFactor + factor)
-        }()
-
-        // Value of difference between icons for large and small states
-        let sizeDiff = Const.ImageSizeForLargeState * (1.0 - factor) // 8.0
-
-        let yTranslation: CGFloat = {
-            /// This value = 14. It equals to difference of 12 and 6 (bottom margin for large and small states). Also it adds 8.0 (size difference when the image gets smaller size)
-            let maxYTranslation = Const.ImageBottomMarginForLargeState - Const.ImageBottomMarginForSmallState + sizeDiff
-            return max(0, min(maxYTranslation, (maxYTranslation - coeff * (Const.ImageBottomMarginForSmallState + sizeDiff))))
-        }()
-
-        let xTranslation = max(0, sizeDiff - coeff * sizeDiff)
-
-        profileImageView.transform = CGAffineTransform.identity
-            .scaledBy(x: scale, y: scale)
-            .translatedBy(x: xTranslation, y: yTranslation)
-    }
-    
-    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        guard let height = navigationController?.navigationBar.frame.height else { return }
-//        moveAndResizeImage(for: height)
-    }
 }

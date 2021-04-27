@@ -38,7 +38,7 @@ extension ChannelCell {
             subTitle.text = locationName
         } else {
             if let virtual = channel.isVirtual.value, virtual {
-                subTitle.text = "Virtual event"
+                subTitle.text = "Remote"
             }
         }
         
@@ -55,8 +55,8 @@ extension ChannelCell {
         switch channelStatus {
             case .upcoming:
                 
-                eventStatus.textColor = .priorityGreen()
-                eventStatus.backgroundColor = .greenEventStatusBackground()
+//                eventStatus.textColor = .priorityGreen()
+//                eventStatus.backgroundColor = .greenEventStatusBackground()
                 
                 let startDate = Date(timeIntervalSince1970: Double(integerLiteral: (channel.startTime.value ?? 0)))
                 let calendar = Calendar.current
@@ -69,43 +69,44 @@ extension ChannelCell {
                     } else if days == 0 {
                         eventStatus.text = "Today"
                     } else {
-                        eventStatus.text = "\(days) days"
+                        eventStatus.text = "In \(days) days"
                     }
                 }
-                eventStatus.textColor = .priorityGreen()
-                eventStatus.backgroundColor = .greenEventStatusBackground()
+//                eventStatus.textColor = .priorityGreen()
+//                eventStatus.backgroundColor = .greenEventStatusBackground()
             case .inProgress:
                 eventStatus.text = "In progress"
-                eventStatus.textColor = .priorityGreen()
-                eventStatus.backgroundColor = .greenEventStatusBackground()
+//                eventStatus.textColor = .priorityGreen()
+//                eventStatus.backgroundColor = .greenEventStatusBackground()
             case .expired:
                 eventStatus.text = "Expired"
-                eventStatus.textColor = .priorityRed()
-                eventStatus.backgroundColor = .redEventStatusBackground()
+//                eventStatus.textColor = .priorityRed()
+//                eventStatus.backgroundColor = .redEventStatusBackground()
             case .cancelled:
                 eventStatus.text = "Cancelled"
-                eventStatus.textColor = .priorityRed()
-                eventStatus.backgroundColor = .redEventStatusBackground()
+//                eventStatus.textColor = .priorityRed()
+//                eventStatus.backgroundColor = .redEventStatusBackground()
         }
         
         
         startTimer()
         
-        let badgeString = channels[indexPath.row].badge.value?.toString()
         let badgeInt = channels[indexPath.row].badge.value ?? 0
-
-        print("ARRIVING HERE \(badgeInt) \(badgeString)")
+        
+        print("ffff")
+        print(badgeInt)
+        print(channels[indexPath.row].lastMessage?.fromId)
+        print(Auth.auth().currentUser?.uid)
         
         guard badgeInt > 0, channels[indexPath.row].lastMessage?.fromId != Auth.auth().currentUser?.uid else {
-            badgeLabel.isHidden = true
-//            messageLabelRightConstraint.constant = 0
-//            badgeLabelWidthConstraint.constant = 0
+            updateBadge(0)
             return
         }
 
-        badgeLabel.text = badgeString
-        badgeLabel.isHidden = false
+        updateBadge(badgeInt)
         
         return
     }
 }
+
+

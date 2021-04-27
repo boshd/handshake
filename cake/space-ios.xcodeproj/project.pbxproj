@@ -738,7 +738,7 @@
 			path = Fetchers;
 			sourceTree = "<group>";
 		};
-		BC01387D2379B93800C7291A /* Managers */ = {
+		BC01387D2379B93800C7291A /* Core Managers */ = {
 			isa = PBXGroup;
 			children = (
 				BC59276C22A135AC006A5CEF /* Public.swift */,
@@ -754,7 +754,7 @@
 				BC089C912585578000A42B7D /* PushNotificationManager.swift */,
 				BC089C962585598F00A42B7D /* PushNotificationSender.swift */,
 			);
-			path = Managers;
+			path = "Core Managers";
 			sourceTree = "<group>";
 		};
 		BC0722E4237727B300A4D476 /* Channels */ = {
@@ -1786,7 +1786,7 @@
 				BC59276422A11CB1006A5CEF /* Cells */,
 				BC6A821024731CC200FA1F93 /* UI Components */,
 				BC0ED00F24A224C8009D4E70 /* Generic Controllers */,
-				BC01387D2379B93800C7291A /* Managers */,
+				BC01387D2379B93800C7291A /* Core Managers */,
 				BC01387A2379A8F900C7291A /* Fetchers */,
 				BC59273522A0156D006A5CEF /* Models */,
 				BCAC056E22AD37FC006D0C24 /* Support */,
@@ -2598,7 +2598,7 @@
 					"$(PROJECT_DIR)/Pods/GoogleAppMeasurement/Frameworks",
 				);
 				INFOPLIST_FILE = "space-ios/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2628,7 +2628,7 @@
 					"$(PROJECT_DIR)/Pods/GoogleAppMeasurement/Frameworks",
 				);
 				INFOPLIST_FILE = "space-ios/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

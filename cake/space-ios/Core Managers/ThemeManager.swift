@@ -24,13 +24,18 @@ struct ThemeManager {
         coloredAppearance.shadowColor = nil
         coloredAppearance.backgroundColor = ThemeManager.currentTheme().barBackgroundColor
         coloredAppearance.titleTextAttributes = [.foregroundColor: ThemeManager.currentTheme().generalTitleColor, .font: ThemeManager.currentTheme().secondaryFontBold(with: 15)]
-        UINavigationBar.appearance().isTranslucent = false
+//        UINavigationBar.appearance().isTranslucent = false
         UINavigationBar.appearance().barTintColor = ThemeManager.currentTheme().barBackgroundColor
         UINavigationBar.appearance().standardAppearance = coloredAppearance
         UINavigationBar.appearance().scrollEdgeAppearance = coloredAppearance
         UINavigationBar.appearance().compactAppearance = coloredAppearance
+        
+        UITabBar.appearance().tintColor = theme.tabBarTintColor
+//        let tabBarAppearance = UITabBarItem.appearance()
+//        let attributes = [NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFontBold(with: 6)]
+//        tabBarAppearance.setTitleTextAttributes(attributes, for: .normal)
+//
 
-        // UINavigationBar.appearance().barStyle = ThemeManager.currentTheme().barStyle
 
         UITableViewCell.appearance().selectionColor = ThemeManager.currentTheme().cellSelectionColor
         UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes =  [
@@ -62,7 +67,7 @@ struct ThemeManager {
             coloredAppearance.shadowColor = nil
             coloredAppearance.backgroundColor = ThemeManager.currentTheme().barBackgroundColor
             coloredAppearance.titleTextAttributes = [.foregroundColor: ThemeManager.currentTheme().generalTitleColor, .font: ThemeManager.currentTheme().secondaryFontBold(with: 15)]
-            naviationBar.isTranslucent = false
+//            naviationBar.isTranslucent = false
             naviationBar.barTintColor = ThemeManager.currentTheme().barBackgroundColor
             naviationBar.standardAppearance = coloredAppearance
             naviationBar.scrollEdgeAppearance = coloredAppearance
@@ -77,7 +82,7 @@ struct ThemeManager {
             coloredAppearance.shadowColor = nil
             coloredAppearance.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
             coloredAppearance.titleTextAttributes = [.foregroundColor: ThemeManager.currentTheme().generalTitleColor, .font: ThemeManager.currentTheme().secondaryFontBold(with: 15)]
-            naviationBar.isTranslucent = false
+//            naviationBar.isTranslucent = false
             naviationBar.barTintColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
             naviationBar.standardAppearance = coloredAppearance
             naviationBar.scrollEdgeAppearance = coloredAppearance
@@ -205,7 +210,7 @@ enum Theme: Int {
     var tabBarTintColor: UIColor {
         switch self {
             case .normal:
-                return tintColor
+                return .black
             case .dark:
                 return tintColor
         }
@@ -297,7 +302,7 @@ enum Theme: Int {
     var seperatorColor: UIColor {
         switch self {
             case .normal:
-                return .defaultLightGray()
+                return .lightGray
             case .dark:
                 return .defaultMediumDarkGray()
         }
@@ -333,9 +338,9 @@ enum Theme: Int {
     var barTextColor: UIColor {
         switch self {
             case .normal:
-                return UIColor(red: 0.67, green: 0.67, blue: 0.67, alpha: 1.0)
+                return generalTitleColor
             case .dark:
-                return UIColor(red: 0.67, green: 0.67, blue: 0.67, alpha: 1.0)
+                return generalTitleColor
         }
     }
     
@@ -544,9 +549,9 @@ enum Theme: Int {
     var outgoingMessageBackgroundColor: UIColor {
         switch self {
             case .normal:
-                return .fabPurple()
+                return .systemBlue
             case .dark:
-                return .fabPurple()
+                return .systemBlue
         }
     }
     

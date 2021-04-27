@@ -376,10 +376,12 @@ extension AccountSettingsController {
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section != 3 {
-            return 35
-        } else {
+        if section == 3 {
             return 20
+        } else if section == 0 {
+            return 0
+        } else {
+            return 35
         }
     }
     

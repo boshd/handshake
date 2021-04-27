@@ -29,6 +29,14 @@ class ChannelCell: UITableViewCell {
         
         return mainView
     }()
+    
+    let customAccessoryView: UIView = {
+        let view = UIView(frame: .zero)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .clear
+        
+        return view
+    }()
 
     let title: DynamicLabel = {
         let label = DynamicLabel(withInsets: 0, 0, 0, 0)
@@ -38,7 +46,7 @@ class ChannelCell: UITableViewCell {
         label.lineBreakMode = NSLineBreakMode.byWordWrapping
         label.sizeToFit()
         label.textColor = ThemeManager.currentTheme().generalTitleColor
-        label.font = ThemeManager.currentTheme().secondaryFontBold(with: 12)
+        label.font = ThemeManager.currentTheme().secondaryFontBold(with: 13)
         
         return label
     }()
@@ -66,12 +74,13 @@ class ChannelCell: UITableViewCell {
     }()
     
     let eventStatus: DynamicLabel = {
-        let label = DynamicLabel(withInsets: 2, 2, 3, 3)
+        let label = DynamicLabel(withInsets: 1, 1, 1, 1)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .defaultHotGreen()
+        label.textColor = ThemeManager.currentTheme().generalSubtitleColor
         label.textAlignment = .right
-        label.font = ThemeManager.currentTheme().secondaryFontBold(with: 9)
-        label.cornerRadius = 3
+        label.font = ThemeManager.currentTheme().secondaryFont(with: 12)
+        // label.cornerRadius = 10
+        label.layer.cornerCurve = .continuous
         
         return label
     }()
@@ -80,23 +89,21 @@ class ChannelCell: UITableViewCell {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.backgroundColor = .lighterGray()
-        imageView.cornerRadius = 30
+        imageView.cornerRadius = 32.5
         imageView.layer.cornerCurve = .circular
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
-    let badgeLabel: UILabel = {
+    let fontSize: CGFloat = 12
+    
+    lazy var badgeLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.backgroundColor = .systemRed
-        label.cornerRadius = 10
-        label.layer.cornerCurve = .continuous
-        label.text = "5"
-        label.textColor = .white
+        label.font = ThemeManager.currentTheme().secondaryFont(with: fontSize)
         label.textAlignment = .center
-        label.font = ThemeManager.currentTheme().secondaryFontBold(with: 10)
-        
+        label.textColor = .white
+        label.backgroundColor = ThemeManager.currentTheme().tintColor
         return label
     }()
 
@@ -106,14 +113,18 @@ class ChannelCell: UITableViewCell {
         userInteractionEnabledWhileDragging = true
         contentView.isUserInteractionEnabled = true
 //        selectionStyle = .default
+        
 
         contentView.addSubview(mainView)
         
         mainView.addSubview(channelImageView)
-        mainView.addSubview(eventStatus)
         mainView.addSubview(title)
         mainView.addSubview(subTitle)
         mainView.addSubview(badgeLabel)
+        mainView.addSubview(customAccessoryView)
+        
+        customAccessoryView.addSubview(eventStatus)
+        
 //        badgeLabel.clipsToBounds = false
 //        badgeLabel.layer.zPosition = .greatestFiniteMagnitude
         
@@ -131,24 +142,36 @@ class ChannelCell: UITableViewCell {
             
             channelImageView.centerYAnchor.constraint(equalTo: mainView.centerYAnchor, constant: 0),
             channelImageView.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: 0),
-            channelImageView.heightAnchor.constraint(equalToConstant: 60),
-            channelImageView.widthAnchor.constraint(equalToConstant: 60),
+            channelImageView.heightAnchor.constraint(equalToConstant: 65),
+            channelImageView.widthAnchor.constraint(equalToConstant: 65),
             
-            badgeLabel.centerYAnchor.constraint(equalTo: channelImageView.topAnchor, constant: 12),
-            badgeLabel.centerXAnchor.constraint(equalTo: channelImageView.leadingAnchor, constant: 12),
-            badgeLabel.heightAnchor.constraint(equalToConstant: 20),
-            badgeLabel.widthAnchor.constraint(equalToConstant: 20),
+//            badgeLabel.centerYAnchor.constraint(equalTo: channelImageView.topAnchor, constant: 12),
+//            badgeLabel.centerXAnchor.constraint(equalTo: channelImageView.leadingAnchor, constant: 12),
+//            badgeLabel.heightAnchor.constraint(equalToConstant: 16),
+//            badgeLabel.widthAnchor.constraint(equalToConstant: 16),
             
-            eventStatus.centerYAnchor.constraint(equalTo: mainView.centerYAnchor, constant: 0),
-            eventStatus.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -5),
+//            badgeLabel.centerYAnchor.constraint(equalTo: subTitle.centerYAnchor, constant: 0),
+//            badgeLabel.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -5),
+//            badgeLabel.heightAnchor.constraint(equalToConstant: 16),
+//            badgeLabel.widthAnchor.constraint(equalToConstant: 16),
             
-            title.centerYAnchor.constraint(equalTo: mainView.centerYAnchor, constant: -10),
+            title.topAnchor.constraint(equalTo: channelImageView.topAnchor, constant: 0),
             title.leadingAnchor.constraint(equalTo: channelImageView.trailingAnchor, constant: 15),
-            title.trailingAnchor.constraint(lessThanOrEqualTo: eventStatus.leadingAnchor),
+//            title.trailingAnchor.constraint(lessThanOrEqualTo: eventStatus.leadingAnchor),
             
-            subTitle.centerYAnchor.constraint(equalTo: mainView.centerYAnchor, constant: 10),
+            subTitle.centerYAnchor.constraint(equalTo: channelImageView.centerYAnchor, constant: 0),
             subTitle.leadingAnchor.constraint(equalTo: title.leadingAnchor, constant: 0),
             subTitle.trailingAnchor.constraint(equalTo: title.trailingAnchor, constant: 0),
+            
+            customAccessoryView.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: 0),
+            customAccessoryView.topAnchor.constraint(equalTo: title.topAnchor, constant: 0),
+            customAccessoryView.bottomAnchor.constraint(equalTo: subTitle.bottomAnchor, constant: 0),
+            customAccessoryView.widthAnchor.constraint(equalToConstant: 50),
+            
+            eventStatus.topAnchor.constraint(equalTo: customAccessoryView.topAnchor, constant: 0),
+            eventStatus.trailingAnchor.constraint(equalTo: customAccessoryView.trailingAnchor, constant: 0),
+            
+            
         ])
     }
     
@@ -183,6 +206,8 @@ class ChannelCell: UITableViewCell {
         title.text = nil
         subTitle.text = nil
         eventStatus.text = nil
+        badgeLabel.text = "0"
+        badgeLabel.isHidden = true
         mainView.backgroundColor = .clear
         title.textColor = ThemeManager.currentTheme().generalTitleColor
         subTitle.textColor = ThemeManager.currentTheme().generalSubtitleColor
@@ -253,27 +278,50 @@ extension ChannelCell {
                     } else if days == 0 {
                         eventStatus.text = "Today"
                     } else {
-                        eventStatus.text = "\(days) days"
+                        eventStatus.text = "In \(days) days"
                     }
                 }
                 
-                eventStatus.textColor = .priorityGreen()
-                eventStatus.backgroundColor = .greenEventStatusBackground()
+//                eventStatus.textColor = .priorityGreen()
+//                eventStatus.backgroundColor = .greenEventStatusBackground()
             case .inProgress:
                 eventStatus.text = "In progress"
-                eventStatus.textColor = .priorityGreen()
-                eventStatus.backgroundColor = .greenEventStatusBackground()
+//                eventStatus.textColor = .priorityGreen()
+//                eventStatus.backgroundColor = .greenEventStatusBackground()
             case .expired:
                 eventStatus.text = "Expired"
-                eventStatus.textColor = .priorityRed()
-                eventStatus.backgroundColor = .redEventStatusBackground()
+//                eventStatus.textColor = .priorityRed()
+//                eventStatus.backgroundColor = .redEventStatusBackground()
                 invalidateTimer()
             case .cancelled:
                 eventStatus.text = "Cancelled"
-                eventStatus.textColor = .priorityRed()
-                eventStatus.backgroundColor = .redEventStatusBackground()
+//                eventStatus.textColor = .priorityRed()
+//                eventStatus.backgroundColor = .redEventStatusBackground()
                 invalidateTimer()
         }
     }
     
+    func updateBadge(_ count: Int) {
+        if count > 0 {
+            badgeLabel.text = "\(NSNumber(value: count))"
+            badgeLabel.sizeToFit()
+            
+            let height = badgeLabel.frame.height + CGFloat(Int(0.4 * fontSize))
+            let width = (count <= 9) ? height : badgeLabel.frame.width + CGFloat(Int(fontSize))
+            
+            badgeLabel.layer.cornerRadius = height / 2.0
+            badgeLabel.clipsToBounds = true
+            customAccessoryView.addSubview(badgeLabel)
+            badgeLabel.isHidden = false
+            NSLayoutConstraint.activate([
+                badgeLabel.trailingAnchor.constraint(equalTo: customAccessoryView.trailingAnchor, constant: 0),
+                badgeLabel.bottomAnchor.constraint(equalTo: customAccessoryView.bottomAnchor, constant: 0),
+                badgeLabel.heightAnchor.constraint(equalToConstant: height),
+                badgeLabel.widthAnchor.constraint(equalToConstant: width)
+            ])
+        } else {
+            badgeLabel.text = "0"
+            badgeLabel.isHidden = true
+        }
+    }
 }

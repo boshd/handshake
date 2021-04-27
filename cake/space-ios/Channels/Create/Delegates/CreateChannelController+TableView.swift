@@ -31,7 +31,7 @@ extension CreateChannelController {
         } else if indexPath.section == 1 {
             if indexPath.row == 0 {
                 let cell = tableView.dequeueReusableCell(withIdentifier: specialSwitchCellId, for: indexPath) as? SpecialSwitchCell ?? SpecialSwitchCell()
-                cell.setupCell(title: "Go virtual?", subtitle: "Share the details in the description below")
+                cell.setupCell(title: "Remote", subtitle: "Share the details in the description below")
                 cell.isUserInteractionEnabled = true
 
                 cell.switchAccessory.isOn = isVirtual

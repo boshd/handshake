@@ -66,6 +66,9 @@ class TabBarController: UITabBarController {
         tabBar.unselectedItemTintColor = ThemeManager.currentTheme().unselectedButtonTintColor
         tabBar.isTranslucent = false
         tabBar.clipsToBounds = true
+        UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFont(with: 9)], for: .normal)
+        UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFontBold(with: 9)], for: .selected)
+        
         setTabs()
     }
 
@@ -91,9 +94,9 @@ class TabBarController: UITabBarController {
     let settingsController = AccountSettingsController()
     
     fileprivate func setTabs() {
-//        contactsController.navigationItem.title = "Contacts"
-//        channelsController.navigationItem.title = "Your events"
-//        settingsController.navigationItem.title = "Account"
+        contactsController.navigationItem.title = "Contacts"
+        channelsController.navigationItem.title = "Events"
+        settingsController.navigationItem.title = "Account"
 
         let contactsNavigationController = UINavigationController(rootViewController: contactsController)
         let channelsNavigationController = UINavigationController(rootViewController: channelsController)
@@ -101,20 +104,29 @@ class TabBarController: UITabBarController {
         let settingsNavigationController = UINavigationController(rootViewController: settingsController)
         settingsNavigationController.navigationBar.setValue(true, forKey: "hidesShadow")
 
-        if #available(iOS 11.0, *) {
-            settingsNavigationController.navigationBar.prefersLargeTitles = false
-            channelsNavigationController.navigationBar.prefersLargeTitles = true
-            contactsNavigationController.navigationBar.prefersLargeTitles = false
-            createNavigationController.navigationBar.prefersLargeTitles = false
-        }
+//        if #available(iOS 11.0, *) {
+//            settingsNavigationController.navigationBar.prefersLargeTitles = false
+//            channelsNavigationController.navigationItem.largeTitleDisplayMode = .always
+//            contactsNavigationController.navigationBar.prefersLargeTitles = false
+//            createNavigationController.navigationBar.prefersLargeTitles = false
+//        }
 
-        let contactsImage =  UIImage(named: "multiple")
-        let chatsImage = UIImage(named: "party")
-        let settingsImage = UIImage(named: "gear")
+//        if #available(iOS 11.0, *) {
+//            channelsNavigationController.navigationItem.largeTitleDisplayMode = .always
+//            
+//        }
+        
+        let contactsImage =  UIImage(named: "Contacts")
+        let chatsImage = UIImage(named: "Calendar")
+        let settingsImage = UIImage(named: "Setting")
+        
+        let contactsImageSelected =  UIImage(named: "Contacts-fill")
+        let chatsImageSelected = UIImage(named: "Calendar-fill")
+        let settingsImageSelected = UIImage(named: "Setting-fill")
 
-        let contactsTabItem = UITabBarItem(title: contactsController.navigationItem.title, image: contactsImage, selectedImage: nil)
-        let chatsTabItem = UITabBarItem(title: channelsController.navigationItem.title, image: chatsImage, selectedImage: nil)
-        let settingsTabItem = UITabBarItem(title: settingsController.navigationItem.title, image: settingsImage, selectedImage: nil)
+        let contactsTabItem = UITabBarItem(title: contactsController.navigationItem.title, image: contactsImage, selectedImage: contactsImageSelected)
+        let chatsTabItem = UITabBarItem(title: channelsController.navigationItem.title, image: chatsImage, selectedImage: chatsImageSelected)
+        let settingsTabItem = UITabBarItem(title: settingsController.navigationItem.title, image: settingsImage, selectedImage: settingsImageSelected)
 
         contactsController.tabBarItem = contactsTabItem
         channelsController.tabBarItem = chatsTabItem
@@ -123,6 +135,10 @@ class TabBarController: UITabBarController {
         let tabBarControllers = [contactsNavigationController, channelsNavigationController, settingsNavigationController]
         viewControllers = tabBarControllers
         selectedIndex = Tabs.chats.rawValue
+    }
+    
+    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        hapticFeedback(style: .selectionChanged)
     }
     
 }

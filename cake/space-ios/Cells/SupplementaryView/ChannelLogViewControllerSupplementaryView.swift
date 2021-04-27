@@ -42,7 +42,7 @@ class ChannelLogViewControllerSupplementaryView: UICollectionReusableView {
 //        label.layer.shadowOpacity = 0.15
 //        label.layer.shadowOffset = CGSize(width: 4, height: 6)
 //        label.layer.shadowRadius = 15
-        label.cornerRadius = 5
+        label.cornerRadius = 10
         // label.textColor = ThemeManager.currentTheme().supplementaryViewTextColor
         label.backgroundColor = ThemeManager.currentTheme().generalTitleColor
         label.textColor = ThemeManager.currentTheme().generalBackgroundColor
