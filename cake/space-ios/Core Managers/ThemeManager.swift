@@ -449,9 +449,9 @@ enum Theme: Int {
     var outgoingTimestampTextColor: UIColor {
         switch self {
             case .normal:
-                return .defaultLightGray()
+                return .white
             case .dark:
-                return .defaultLightGray()
+                return .white
         }
     }
     
@@ -585,7 +585,7 @@ enum Theme: Int {
     var authorNameTextColor: UIColor {
         switch self {
             case .normal:
-                return .offBlack()
+                return .black
             case .dark:
                 return UIColor(red: 0.55, green: 0.77, blue: 1.0, alpha: 1.0)
         }

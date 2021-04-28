@@ -31,11 +31,11 @@ struct MessageFontsAppearance {
     }
 
     static var defaultTimeLabelTextFont: UIFont {
-        return ThemeManager.currentTheme().secondaryFont(with: 9)
+        return ThemeManager.currentTheme().secondaryFont(with: 10)
     }
 
     static var defaultMessageAuthorNameFont: UIFont {
-        return ThemeManager.currentTheme().secondaryFontBold(with: 9)
+        return ThemeManager.currentTheme().secondaryFontBold(with: 11)
     }
     
     static var defaultDeliveryStatusTextFont: UIFont {

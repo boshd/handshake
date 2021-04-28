@@ -1,7 +1,7 @@
 //
 //  CropViewController.swift
 //
-//  Copyright 2017-2018 Timothy Oliver. All rights reserved.
+//  Copyright 2017-2020 Timothy Oliver. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to
@@ -312,6 +312,15 @@ open class CropViewController: UIViewController, TOCropViewControllerDelegate {
     }
     
     /**
+     An array of `TOCropViewControllerAspectRatioPreset` enum values denoting which
+     aspect ratios the crop view controller may display (Default is nil. All are shown)
+     */
+    public var allowedAspectRatios: [CropViewControllerAspectRatioPreset]? {
+        set { toCropViewController.allowedAspectRatios = newValue?.map { NSNumber(value: $0.rawValue) } }
+        get { return toCropViewController.allowedAspectRatios?.compactMap { CropViewControllerAspectRatioPreset(rawValue: $0.intValue) } }
+    }
+    
+    /**
      When the user hits cancel, or completes a
      UIActivityViewController operation, this block will be called,
      giving you a chance to manually dismiss the view controller
@@ -398,6 +407,34 @@ open class CropViewController: UIViewController, TOCropViewControllerDelegate {
         set { toCropViewController.cancelButtonTitle = newValue }
         get { return toCropViewController.cancelButtonTitle }
     }
+
+    /**
+    If true, button icons are visible in portairt instead button text.
+
+    Default is NO.
+    */
+    public var showOnlyIcons: Bool {
+        set { toCropViewController.showOnlyIcons = newValue }
+        get { return toCropViewController.showOnlyIcons }
+    }
+
+    /**
+    Color for the 'Done' button.
+    Setting this will override the default color.
+    */
+    public var doneButtonColor: UIColor? {
+        set { toCropViewController.doneButtonColor = newValue }
+        get { return toCropViewController.doneButtonColor }
+    }
+    
+    /**
+    Color for the 'Cancel' button.
+    Setting this will override the default color.
+    */
+    public var cancelButtonColor: UIColor? {
+        set { toCropViewController.cancelButtonColor = newValue }
+        get { return toCropViewController.cancelButtonColor }
+    }
     
     /**
      This class internally manages and abstracts access to a `TOCropViewController` instance
@@ -481,6 +518,13 @@ open class CropViewController: UIViewController, TOCropViewControllerDelegate {
         super.viewDidLayoutSubviews()
         toCropViewController.view.frame = view.bounds
         toCropViewController.viewDidLayoutSubviews()
+    }
+
+    /**
+     Commits the crop action as if user pressed done button in the bottom bar themself
+     */
+    public func commitCurrentCrop() {
+        toCropViewController.commitCurrentCrop()
     }
     
     /**

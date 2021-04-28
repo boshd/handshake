@@ -228,20 +228,12 @@ export const updateEventFCMTokenIdsArrayOnUpdate = functions.firestore
         const data = onCreateSnapshot.data()
         functions.logger.log(data['fromId'])
         const senderId = data['fromId']
-        // var lastMessageId = ''
 
         if (senderId === null || senderId === '') {
             return
         }
 
         console.log('pre-admin')
-
-
-        // return
-        // db
-        // .collection('channels')
-        // .doc(channelId)
-        // .collection('messageIds')
 
         return db
         .collection(constants.CHANNELS_COLLECTION + '/'+ channelId + '/participantIds')
@@ -282,14 +274,16 @@ export const updateEventFCMTokenIdsArrayOnUpdate = functions.firestore
                 merge: true,
             })
 
-            batch.update((
+            batch.set((
                 admin.firestore()
                 .collection('users')
                 .doc(memberId)
                 .collection('channelIds')
                 .doc(channelId)
             ), {
-                'fromId': senderId,
+                'lastMessageId': messageId,
+            }, {
+                merge: true,
             })
 
             batch
@@ -302,36 +296,6 @@ export const updateEventFCMTokenIdsArrayOnUpdate = functions.firestore
             })
 
         }
-
-        // function sendMessageToMember(memberId: string) {
-        //     console.log('executing sendMessageToMember..')
-        //     db
-        //     .collection('users')
-        //     .doc(memberId)
-        //     .collection('channelIds')
-        //     .doc(channelId)
-        //     .collection('messageIds')
-        //     .doc(messageId)
-        //     .set({
-        //         'fromId': senderId,
-        //     })
-        //     .then(snapshot => { console.log('success sendMessageToMember') })
-        //     .catch(err => { console.log('error in sendMessageToMember // ', err) })
-        // }
-
-        // function updateChannelLastMessage(memberId: string) {
-        //     console.log('executing updateChannelLastMessage..')
-        //     db
-        //     .collection('users')
-        //     .doc(memberId)
-        //     .collection('channelIds')
-        //     .doc(channelId)
-        //     .update({
-        //         'lastMessageId': messageId,
-        //     })
-        //     .then(snapshot => { console.log('success updateChannelLastMessage') })
-        //     .catch(err => { console.log('error in updateChannelLastMessage // ', err) })
-        // }
 
         function incrementBadge(memberId: string) {
             console.log('executing incrementBadge..')

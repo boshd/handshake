@@ -60,7 +60,7 @@ struct LayoutSegment {
 }
 
 class LayoutAdapter {
-    weak var vc: FloatingPanelController!
+    private unowned var vc: FloatingPanelController
     private let defaultLayout = FloatingPanelBottomLayout()
 
     fileprivate var layout: FloatingPanelLayout {
@@ -76,15 +76,14 @@ class LayoutAdapter {
         return vc.backdropView
     }
     private var safeAreaInsets: UIEdgeInsets {
-        return vc?.fp_safeAreaInsets ?? .zero
+        return vc.fp_safeAreaInsets
     }
 
     private var initialConst: CGFloat = 0.0
 
     private var fixedConstraints: [NSLayoutConstraint] = []
-    private var fullConstraints: [NSLayoutConstraint] = []
-    private var halfConstraints: [NSLayoutConstraint] = []
-    private var tipConstraints: [NSLayoutConstraint] = []
+
+    private var stateConstraints: [FloatingPanelState: [NSLayoutConstraint]] = [:]
     private var offConstraints: [NSLayoutConstraint] = []
     private var fitToBoundsConstraint: NSLayoutConstraint?
 
@@ -452,25 +451,13 @@ class LayoutAdapter {
     }
 
     private func updateStateConstraints() {
-        NSLayoutConstraint.deactivate(fullConstraints + halfConstraints + tipConstraints + offConstraints)
-
-        if let fullAnchor = layout.anchors[.full] {
-            fullConstraints = fullAnchor.layoutConstraints(vc, for: position)
-            fullConstraints.forEach {
-                $0.identifier = "FloatingPanel-full-constraint"
-            }
-        }
-        if let halfAnchor = layout.anchors[.half] {
-            halfConstraints = halfAnchor.layoutConstraints(vc, for: position)
-            halfConstraints.forEach {
-                $0.identifier = "FloatingPanel-half-constraint"
-            }
-        }
-        if let tipAnchors = layout.anchors[.tip] {
-            tipConstraints = tipAnchors.layoutConstraints(vc, for: position)
-            tipConstraints.forEach {
-                $0.identifier = "FloatingPanel-tip-constraint"
-            }
+        let allStateConstraints = stateConstraints.flatMap { $1 }
+        NSLayoutConstraint.deactivate(allStateConstraints + offConstraints)
+        stateConstraints.removeAll()
+        for state in layout.anchors.keys {
+            stateConstraints[state] = layout.anchors[state]?
+                .layoutConstraints(vc, for: position)
+                .map{ $0.identifier = "FloatingPanel-\(state)-constraint"; return $0 }
         }
         let hiddenAnchor = layout.anchors[.hidden] ?? self.hiddenAnchor
         offConstraints = hiddenAnchor.layoutConstraints(vc, for: position)
@@ -487,7 +474,7 @@ class LayoutAdapter {
 
         tearDownAttraction()
 
-        NSLayoutConstraint.deactivate(fullConstraints + halfConstraints + tipConstraints + offConstraints)
+        NSLayoutConstraint.deactivate(stateConstraints.flatMap { $1 } + offConstraints)
 
         initialConst = edgePosition(surfaceView.frame) + offset.y
 
@@ -503,7 +490,7 @@ class LayoutAdapter {
             constraint = surfaceView.leftAnchor.constraint(equalTo: vc.view.leftAnchor, constant: initialConst)
         }
 
-        constraint.priority = .defaultHigh
+        constraint.priority = .required
         constraint.identifier = "FloatingPanel-interaction"
 
         NSLayoutConstraint.activate([constraint])
@@ -527,7 +514,7 @@ class LayoutAdapter {
 
         let anchor = layout.anchors[state] ?? self.hiddenAnchor
 
-        NSLayoutConstraint.deactivate(fullConstraints + halfConstraints + tipConstraints + offConstraints)
+        NSLayoutConstraint.deactivate(stateConstraints.flatMap { $1 } + offConstraints)
         NSLayoutConstraint.deactivate(constraint: interactionConstraint)
         interactionConstraint = nil
 
@@ -646,7 +633,6 @@ class LayoutAdapter {
     // The method is separated from prepareLayout(to:) for the rotation support
     // It must be called in FloatingPanelController.traitCollectionDidChange(_:)
     func updateStaticConstraint() {
-        guard let vc = vc else { return }
         NSLayoutConstraint.deactivate(constraint: staticConstraint)
         staticConstraint = nil
 
@@ -769,17 +755,16 @@ class LayoutAdapter {
         // on-screen and off-screen view which includes
         // UIStackView(i.e. Settings view in Samples.app)
         updateStateConstraints()
+
         switch state {
-        case .full:
-            NSLayoutConstraint.activate(fullConstraints)
-        case .half:
-            NSLayoutConstraint.activate(halfConstraints)
-        case .tip:
-            NSLayoutConstraint.activate(tipConstraints)
         case .hidden:
             NSLayoutConstraint.activate(offConstraints)
         default:
-            break
+            if let constraints = stateConstraints[state] {
+                NSLayoutConstraint.activate(constraints)
+            } else {
+                log.error("Couldn't find any constraints for \(state)")
+            }
         }
     }
 

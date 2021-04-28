@@ -5,7 +5,7 @@ import UIKit
 /// A set of methods implemented by the delegate of a panel controller allows the adopting delegate to respond to
 /// messages from the FloatingPanelController class and thus respond to, and in some affect, operations such as
 /// dragging, attracting a panel, layout of a panel and the content, and transition animations.
-@objc public protocol FloatingPanelControllerDelegate: class {
+@objc public protocol FloatingPanelControllerDelegate {
     /// Returns a FloatingPanelLayout object. If you use the default one, you can use a `FloatingPanelBottomLayout` object.
     @objc(floatingPanel:layoutForTraitCollection:) optional
     func floatingPanel(_ fpc: FloatingPanelController, layoutFor newCollection: UITraitCollection) -> FloatingPanelLayout
@@ -498,7 +498,7 @@ open class FloatingPanelController: UIViewController {
             ])
 
         show(animated: animated) { [weak self] in
-            guard let `self` = self else { return }
+            guard let self = self else { return }
             self.didMove(toParent: parent)
         }
     }
@@ -517,7 +517,7 @@ open class FloatingPanelController: UIViewController {
         delegate?.floatingPanelWillRemove?(self)
 
         hide(animated: animated) { [weak self] in
-            guard let `self` = self else { return }
+            guard let self = self else { return }
 
             self.willMove(toParent: nil)
 
@@ -537,7 +537,6 @@ open class FloatingPanelController: UIViewController {
     ///     - completion: The block to execute after the view controller has finished moving. This block has no return value and takes no parameters. You may specify nil for this parameter.
     @objc(moveToState:animated:completion:)
     public func move(to: FloatingPanelState, animated: Bool, completion: (() -> Void)? = nil) {
-        assert(floatingPanel.layoutAdapter.vc != nil, "Use show(animated:completion)")
         floatingPanel.move(to: to, animated: animated, completion: completion)
     }
 
@@ -673,7 +672,7 @@ extension FloatingPanelController {
 }
 
 extension FloatingPanelController {
-    private static let dismissSwizzling: Any? = {
+    private static let dismissSwizzling: Void = {
         let aClass: AnyClass! = UIViewController.self //object_getClass(vc)
         if let imp = class_getMethodImplementation(aClass, #selector(dismiss(animated:completion:))),
             let originalAltMethod = class_getInstanceMethod(aClass, #selector(fp_original_dismiss(animated:completion:))) {
@@ -682,10 +681,8 @@ extension FloatingPanelController {
         let originalMethod = class_getInstanceMethod(aClass, #selector(dismiss(animated:completion:)))
         let swizzledMethod = class_getInstanceMethod(aClass, #selector(fp_dismiss(animated:completion:)))
         if let originalMethod = originalMethod, let swizzledMethod = swizzledMethod {
-            // switch implementation..
             method_exchangeImplementations(originalMethod, swizzledMethod)
         }
-        return nil
     }()
 }
 

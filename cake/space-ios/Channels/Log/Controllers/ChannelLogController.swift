@@ -669,7 +669,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         dayFormatter.dateFormat = "EEEE"
         timeFormatter.dateFormat = "h:mm a"
         
-        channelLogContainerView.channelLogHeaderView.timeLabel.text = fullDateFormatter.string(from: startDate)
+        channelLogContainerView.channelLogHeaderView.timeLabel.text = "📅 \(fullDateFormatter.string(from: startDate))"
 
         // Replace the hour (time) of both dates with 00:00
         let date1 = calendar.startOfDay(for: Date())
@@ -709,7 +709,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         }
         
         if let locationName = channel.locationName {
-            channelLogContainerView.channelLogHeaderView.locationNameLabel.text = locationName
+            channelLogContainerView.channelLogHeaderView.locationNameLabel.text = "📍 \(locationName)"
         } else {
             if let virtual = channel.isVirtual.value, virtual {
                 channelLogContainerView.channelLogHeaderView.locationNameLabel.text = "Virtual event"

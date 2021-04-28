@@ -32,7 +32,8 @@ class Core: NSObject, UIGestureRecognizerDelegate {
     let panGestureRecognizer: FloatingPanelPanGestureRecognizer
     var isRemovalInteractionEnabled: Bool = false
 
-    fileprivate var animator: UIViewPropertyAnimator?
+    fileprivate var isSuspended: Bool = false // Prevent a memory leak in the modal transition
+    fileprivate var transitionAnimator: UIViewPropertyAnimator?
     fileprivate var moveAnimator: NumericSpringAnimator?
 
     private var initialSurfaceLocation: CGPoint = .zero
@@ -91,6 +92,11 @@ class Core: NSObject, UIGestureRecognizerDelegate {
         backdropView.addGestureRecognizer(tapGesture)
     }
 
+    deinit {
+        // Release `NumericSpringAnimator.displayLink` from the run loop.
+        self.moveAnimator?.stopAnimation(false)
+    }
+
     func move(to: FloatingPanelState, animated: Bool, completion: (() -> Void)? = nil) {
         move(from: state, to: to, animated: animated, completion: completion)
     }
@@ -109,7 +115,8 @@ class Core: NSObject, UIGestureRecognizerDelegate {
         interruptAnimationIfNeeded()
 
         if animated {
-            func updateScrollView() {
+            let updateScrollView: () -> Void = { [weak self] in
+                guard let self = self else { return }
                 if self.state == self.layoutAdapter.edgeMostState, abs(self.layoutAdapter.offsetFromEdgeMost) <= 1.0 {
                     self.unlockScrollView()
                 } else {
@@ -121,11 +128,13 @@ class Core: NSObject, UIGestureRecognizerDelegate {
             switch (from, to) {
             case (.hidden, let to):
                 animator = vc.animatorForPresenting(to: to)
-            case (let from, .hidden):
+            case (_, .hidden):
                 let animationVector = CGVector(dx: abs(removalVector.dx), dy: abs(removalVector.dy))
                 animator = vc.animatorForDismissing(with: animationVector)
             default:
-                move(to: to, with: 0) {
+                move(to: to, with: 0) { [weak self] in
+                    guard let self = self else { return }
+
                     self.moveAnimator = nil
                     updateScrollView()
                     completion?()
@@ -138,7 +147,7 @@ class Core: NSObject, UIGestureRecognizerDelegate {
                 && layoutAdapter.isIntrinsicAnchor(state: to)
 
             animator.addAnimations { [weak self] in
-                guard let `self` = self else { return }
+                guard let self = self else { return }
 
                 self.state = to
                 self.updateLayout(to: to)
@@ -149,13 +158,17 @@ class Core: NSObject, UIGestureRecognizerDelegate {
                 }
             }
             animator.addCompletion { [weak self] _ in
-                guard let `self` = self else { return }
-                self.animator = nil
+                guard let self = self else { return }
+
+                self.transitionAnimator = nil
                 updateScrollView()
                 self.ownerVC?.notifyDidMove()
                 completion?()
             }
-            self.animator = animator
+            self.transitionAnimator = animator
+            if isSuspended {
+                return
+            }
             animator.startAnimation()
         } else {
             self.state = to
@@ -368,7 +381,7 @@ class Core: NSObject, UIGestureRecognizerDelegate {
                 if interactionInProgress {
                     lockScrollView()
                 } else {
-                    if state == layoutAdapter.edgeMostState, self.animator == nil {
+                    if state == layoutAdapter.edgeMostState, self.transitionAnimator == nil {
                         switch layoutAdapter.position {
                         case .top, .left:
                             if offsetDiff < 0 && velocity > 0 {
@@ -488,7 +501,7 @@ class Core: NSObject, UIGestureRecognizerDelegate {
             animator.stopAnimation(true)
             endAttraction(false)
         }
-        if let animator = self.animator {
+        if let animator = self.transitionAnimator {
             guard 0 >= layoutAdapter.offsetFromEdgeMost else { return }
             log.debug("a panel animation(interruptible: \(animator.isInterruptible)) interrupted!!!")
             if animator.isInterruptible {
@@ -530,15 +543,20 @@ class Core: NSObject, UIGestureRecognizerDelegate {
             return false
         }
 
-        // When the current and initial point within grabber area, do scroll.
+        // When the current point is within grabber area but the initial point is not, do scroll.
         if grabberAreaFrame.contains(point), !grabberAreaFrame.contains(initialLocation) {
             return true
         }
 
+        // When the initial point is within grabber area and the current point is out of surface, don't scroll.
+        if grabberAreaFrame.contains(initialLocation), !surfaceView.frame.contains(point) {
+            return false
+        }
+
         let scrollViewFrame = scrollView.convert(scrollView.bounds, to: surfaceView)
         guard
-            scrollViewFrame.contains(initialLocation), // When initialLocation not in scrollView, don't scroll.
-            !grabberAreaFrame.contains(point)           // When point within grabber area, don't scroll.
+            scrollViewFrame.contains(initialLocation), // When the initial point not in scrollView, don't scroll.
+            !grabberAreaFrame.contains(point)          // When point within grabber area, don't scroll.
         else {
             return false
         }
@@ -564,6 +582,9 @@ class Core: NSObject, UIGestureRecognizerDelegate {
         }
 
         if scrollView.isDecelerating {
+            return true
+        }
+        if let tableView = (scrollView as? UITableView), tableView.isEditing {
             return true
         }
 
@@ -647,7 +668,8 @@ class Core: NSObject, UIGestureRecognizerDelegate {
         stopScrollDeceleration = (0 > layoutAdapter.offsetFromEdgeMost + (1.0 / surfaceView.fp_displayScale)) // Projecting the dragging to the scroll dragging or not
         if stopScrollDeceleration {
             DispatchQueue.main.async { [weak self] in
-                guard let `self` = self else { return }
+                guard let self = self else { return }
+
                 self.stopScrolling(at: self.initialScrollOffset)
             }
         }
@@ -693,14 +715,14 @@ class Core: NSObject, UIGestureRecognizerDelegate {
 
         // Workaround: Disable a tracking scroll to prevent bouncing a scroll content in a panel animating
         let isScrollEnabled = scrollView?.isScrollEnabled
-        if let scrollView = scrollView, targetPosition != .full {
+        if let scrollView = scrollView, targetPosition != layoutAdapter.edgeMostState {
             scrollView.isScrollEnabled = false
         }
 
         startAttraction(to: targetPosition, with: velocity)
 
         // Workaround: Reset `self.scrollView.isScrollEnabled`
-        if let scrollView = scrollView, targetPosition != .full,
+        if let scrollView = scrollView, targetPosition != layoutAdapter.edgeMostState,
             let isScrollEnabled = isScrollEnabled {
             scrollView.isScrollEnabled = isScrollEnabled
         }
@@ -713,7 +735,7 @@ class Core: NSObject, UIGestureRecognizerDelegate {
         if let result = vc.delegate?.floatingPanel?(vc, shouldRemoveAt: vc.surfaceLocation, with: velocityVector) {
             return result
         }
-        let threshold = CGFloat(5.5)
+        let threshold = behaviorAdapter.removalInteractionVelocityThreshold
         switch layoutAdapter.position {
         case .top:
             return (velocityVector.dy <= -threshold)
@@ -820,15 +842,18 @@ class Core: NSObject, UIGestureRecognizerDelegate {
             decelerationRate: behaviorAdapter.springDecelerationRate,
             responseTime: behaviorAdapter.springResponseTime,
             update: { [weak self] data in
-                guard let self = self else { return }
+                guard let self = self,
+                      let ownerVC = self.ownerVC // Ensure the owner vc is existing for `layoutAdapter.surfaceLocation`
+                else { return }
                 animationConstraint.constant = data.value
                 let current = self.value(of: self.layoutAdapter.surfaceLocation)
                 let translation = data.value - initialData.value
                 self.backdropView.alpha = self.getBackdropAlpha(at: current, with: translation)
-                self.ownerVC?.notifyDidMove()
+                ownerVC.notifyDidMove()
         },
             completion: { [weak self] in
-                guard let self = self else { return }
+                guard let self = self,
+                      self.ownerVC != nil else { return }
                 self.layoutAdapter.activateLayout(for: targetPosition, forceLayout: true)
                 completion()
         })
@@ -1018,7 +1043,7 @@ public final class FloatingPanelPanGestureRecognizer: UIPanGestureRecognizer {
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesBegan(touches, with: event)
         initialLocation = touches.first?.location(in: view) ?? .zero
-        if floatingPanel?.animator != nil || floatingPanel?.moveAnimator != nil {
+        if floatingPanel?.transitionAnimator != nil || floatingPanel?.moveAnimator != nil {
             self.state = .began
         }
     }
@@ -1177,5 +1202,14 @@ private class NumericSpringAnimator: NSObject {
         let det = f + h2 * o2
         x = (f * x + h * v + h2 * o2 * xt) / det
         v = (v + h * o2 * (xt - x)) / det
+    }
+}
+
+extension FloatingPanelController {
+    func suspendTransitionAnimator(_ suspended: Bool) {
+        self.floatingPanel.isSuspended = suspended
+    }
+    var transitionAnimator: UIViewPropertyAnimator? {
+        return self.floatingPanel.transitionAnimator
     }
 }

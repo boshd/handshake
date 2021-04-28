@@ -151,7 +151,7 @@ class ChannelsFetcher: NSObject {
                                 self?.loadAdditionalMetadata(for: channel)
                                 return
                             }
-
+                            print("new message UID \\ \(lastMessageID)")
                             self?.loadLastMessage(for: lastMessageID, channel: channel)
 
 
@@ -212,6 +212,7 @@ class ChannelsFetcher: NSObject {
             print("here2")
             guard var dictionary = snapshot?.data() as [String: AnyObject]? else { return }
             dictionary.updateValue(messageID as AnyObject, forKey: "messageUID")
+            
             dictionary = self.messagesFetcher.preloadCellData(to: dictionary)
             let message = Message(dictionary: dictionary)
             channel.lastMessageTimestamp.value = message.timestamp.value

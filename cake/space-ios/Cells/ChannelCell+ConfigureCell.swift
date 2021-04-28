@@ -54,10 +54,6 @@ extension ChannelCell {
         guard let channelStatus = channel.updateAndReturnStatus() else { return }
         switch channelStatus {
             case .upcoming:
-                
-//                eventStatus.textColor = .priorityGreen()
-//                eventStatus.backgroundColor = .greenEventStatusBackground()
-                
                 let startDate = Date(timeIntervalSince1970: Double(integerLiteral: (channel.startTime.value ?? 0)))
                 let calendar = Calendar.current
                 let date1 = calendar.startOfDay(for: Date())
@@ -72,31 +68,28 @@ extension ChannelCell {
                         eventStatus.text = "In \(days) days"
                     }
                 }
-//                eventStatus.textColor = .priorityGreen()
-//                eventStatus.backgroundColor = .greenEventStatusBackground()
             case .inProgress:
                 eventStatus.text = "In progress"
-//                eventStatus.textColor = .priorityGreen()
-//                eventStatus.backgroundColor = .greenEventStatusBackground()
             case .expired:
                 eventStatus.text = "Expired"
-//                eventStatus.textColor = .priorityRed()
-//                eventStatus.backgroundColor = .redEventStatusBackground()
             case .cancelled:
                 eventStatus.text = "Cancelled"
-//                eventStatus.textColor = .priorityRed()
-//                eventStatus.backgroundColor = .redEventStatusBackground()
         }
         
         
         startTimer()
         
+        
+        
         let badgeInt = channels[indexPath.row].badge.value ?? 0
         
         print("ffff")
         print(badgeInt)
+        print(channels[indexPath.row].lastMessage?.messageUID)
+        print(channels[indexPath.row].lastMessage?.text)
         print(channels[indexPath.row].lastMessage?.fromId)
         print(Auth.auth().currentUser?.uid)
+        
         
         guard badgeInt > 0, channels[indexPath.row].lastMessage?.fromId != Auth.auth().currentUser?.uid else {
             updateBadge(0)
