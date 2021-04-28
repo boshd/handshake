@@ -140,7 +140,6 @@
 		BC59276D22A135AC006A5CEF /* Public.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC59276C22A135AC006A5CEF /* Public.swift */; };
 		BC5938E425071BEC007743C3 /* DescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5938E325071BEC007743C3 /* DescriptionCell.swift */; };
 		BC5938E62507AFE0007743C3 /* GlobalSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5938E52507AFE0007743C3 /* GlobalSettings.swift */; };
-		BC5BAFAC25A0C33D00996DCB /* ChannelsController+Contacts.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5BAFAB25A0C33D00996DCB /* ChannelsController+Contacts.swift */; };
 		BC5BAFC125A24ACB00996DCB /* CustomAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5BAFC025A24ACB00996DCB /* CustomAlertController.swift */; };
 		BC5BAFD225A24F1B00996DCB /* ActionSheetContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5BAFD125A24F1B00996DCB /* ActionSheetContainerView.swift */; };
 		BC5BAFDA25A24F2C00996DCB /* AlertContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5BAFD925A24F2C00996DCB /* AlertContainerView.swift */; };
@@ -492,7 +491,6 @@
 		BC59276C22A135AC006A5CEF /* Public.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Public.swift; sourceTree = "<group>"; };
 		BC5938E325071BEC007743C3 /* DescriptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionCell.swift; sourceTree = "<group>"; };
 		BC5938E52507AFE0007743C3 /* GlobalSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalSettings.swift; sourceTree = "<group>"; };
-		BC5BAFAB25A0C33D00996DCB /* ChannelsController+Contacts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelsController+Contacts.swift"; sourceTree = "<group>"; };
 		BC5BAFC025A24ACB00996DCB /* CustomAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlertController.swift; sourceTree = "<group>"; };
 		BC5BAFD125A24F1B00996DCB /* ActionSheetContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionSheetContainerView.swift; sourceTree = "<group>"; };
 		BC5BAFD925A24F2C00996DCB /* AlertContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertContainerView.swift; sourceTree = "<group>"; };
@@ -1673,7 +1671,6 @@
 				BCEF08982545F8F20069C6F5 /* Delegates */,
 				BCEF08A52545F9150069C6F5 /* Handlers */,
 				BC5C4984254744ED007AF964 /* ChannelsController.swift */,
-				BC5BAFAB25A0C33D00996DCB /* ChannelsController+Contacts.swift */,
 			);
 			path = Table;
 			sourceTree = "<group>";
@@ -2302,7 +2299,6 @@
 				BC493045253A163900441F62 /* CustomTableViewController.swift in Sources */,
 				BC1F31F123563E5A008B9205 /* SettingsContainerView.swift in Sources */,
 				BC5187BE25332D3400880418 /* CountriesTableViewController+Search.swift in Sources */,
-				BC5BAFAC25A0C33D00996DCB /* ChannelsController+Contacts.swift in Sources */,
 				BC98B103236E3AF5009A45DA /* AnnouncementShowing.swift in Sources */,
 				BC5C497D25474335007AF964 /* ChannelsContainerView.swift in Sources */,
 				BCBDA1C5254F008D0051A183 /* CreateChannelController+DatePicker.swift in Sources */,

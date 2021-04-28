@@ -9,12 +9,12 @@
 import UIKit
 
 class CustomTableViewController: UITableViewController {
-//    fileprivate let customNavigationItem = NavigationItem()
-//    override func viewDidLoad() {
-//        navigationController?.navigationBar.setValue(true, forKey: "hidesShadow")
-//    }
-//
-//    override var navigationItem: NavigationItem {
-//        return customNavigationItem
-//    }
+    fileprivate let customNavigationItem = NavigationItem()
+    override func viewDidLoad() {
+        navigationController?.navigationBar.setValue(true, forKey: "hidesShadow")
+    }
+
+    override var navigationItem: NavigationItem {
+        return customNavigationItem
+    }
 }

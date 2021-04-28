@@ -73,8 +73,8 @@ class ParticipantProfileController: UIViewController {
     
     fileprivate func setupNavigationBar() {
         navigationItem.title = "Profile"
-        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
-        navigationController?.navigationBar.shadowImage = UIImage()
+//        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+//        navigationController?.navigationBar.shadowImage = UIImage()
         let backButton = UIBarButtonItem(image: UIImage(named: "ctrl-left"), style: .plain, target: self, action:  #selector(goBack))
         backButton.tintColor = .black
         navigationItem.leftBarButtonItem = backButton

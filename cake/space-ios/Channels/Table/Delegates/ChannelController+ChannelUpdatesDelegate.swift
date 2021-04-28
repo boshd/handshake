@@ -13,12 +13,12 @@ extension ChannelsController: ChannelUpdatesDelegate {
   
     func channels(didStartFetching: Bool) {
         guard !isAppLoaded else { return }
-//        showActivityTitle(title: .updating)
+        showActivityTitle(title: .updating)
         
     }
 
     func channels(didStartUpdatingData: Bool) {
-//        showActivityTitle(title: .updating)
+        showActivityTitle(title: .updating)
     }
 
     func channels(didFinishFetching: Bool, channels: [Channel]) {
@@ -30,11 +30,10 @@ extension ChannelsController: ChannelUpdatesDelegate {
         guard let token1 = realmChannelsNotificationToken else { return }
         realmManager.update(channels: channels, tokens: [token1])
         handleReloadTable()
-//        hideActivityTitle(title: .updating)
+        hideActivityTitle(title: .updating)
     }
 
     func channels(update channel: Channel, reloadNeeded: Bool) {
-        print("badge value is // arriving next")
         realmManager.update(channel: channel)
         if let realmChannels = realmChannels {
             notificationsManager.updateChannels(to: Array(realmChannels))
@@ -44,19 +43,12 @@ extension ChannelsController: ChannelUpdatesDelegate {
             handleReloadTable()
         }
         
-//        hideActivityTitle(title: .updating)
+        hideActivityTitle(title: .updating)
     }
 
-    func channels(didRemove: Bool, channelID: String) {
-//        let channels = RealmKeychain.defaultRealm.objects(Channel.self)
-//        notificationsManager.updateChannels(to: Array(channels))
-        
-        
-    }
+    func channels(didRemove: Bool, channelID: String) {}
 
     func channels(addedNewChannel: Bool, channelID: String) {
         guard isAppLoaded else { return }
-//        let obj: [String: Any] = ["channelID": channelID]
-//        NotificationCenter.default.post(name: .channelAdded, object: obj)
     }
 }

@@ -155,7 +155,7 @@ class UserProfileContainerView: UIView {
     userData.addSubview(phone)
   
       NSLayoutConstraint.activate([
-        profileImageView.topAnchor.constraint(equalTo: topAnchor, constant: 30),
+        profileImageView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 30),
         profileImageView.widthAnchor.constraint(equalToConstant: 125),
         profileImageView.heightAnchor.constraint(equalToConstant: 125),
         profileImageView.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 0),

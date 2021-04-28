@@ -99,8 +99,9 @@ class AccountSettingsController: UITableViewController, MFMailComposeViewControl
 //        settingsFooterContainerView.backgroundColor = .red
 //        settingsFooterContainerView.frame = tableView.tableFooterView!.bounds
 //        tableView.tableFooterView?.isUserInteractionEnabled = true
+        tableView.separatorColor = .lightGray
         tableView.register(AccountSettingsTableViewCell.self, forCellReuseIdentifier: accountSettingsCellId)
-        tableView.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
+        tableView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         tableView.reloadData()
         settingsFooterContainerView.controller = self
 //        settingsFooterContainerView.footerView.delegate = self
@@ -310,29 +311,33 @@ extension AccountSettingsController {
         if indexPath.section == 0 {
             if indexPath.row == 0 {
                 let destination = ProfileController()
+                destination.hidesBottomBarWhenPushed = true
                 navigationController?.pushViewController(destination, animated: true)
             } else {
                 let destination = ChangePhoneNumberController()
+                destination.hidesBottomBarWhenPushed = true
                 navigationController?.isModalInPresentation = true
                 navigationController?.pushViewController(destination, animated: true)
             }
         } else if indexPath.section == 1 {
             if  indexPath.row == 0 {
                 let destination = NotificationsController()
+                destination.hidesBottomBarWhenPushed = true
                 navigationController?.pushViewController(destination, animated: true)
             } else {
                 let destination = AppearanceTableViewController()
+                destination.hidesBottomBarWhenPushed = true
                 navigationController?.pushViewController(destination, animated: true)
             }
         } else if indexPath.section == 2 {
             if indexPath.row == 0 {
-                basicErrorAlert(errorMessage: "Coming soon..", controller: self)
+                basicErrorAlert(errorMessage: "Coming soon.", controller: self)
 //                openUrl("https://kareemarab.now.sh/terms")
             } else if indexPath.row == 1 {
-                basicErrorAlert(errorMessage: "Coming soon..", controller: self)
+                basicErrorAlert(errorMessage: "Coming soon.", controller: self)
 //                openUrl("https://kareemarab.now.sh/privacy")
             } else if  indexPath.row == 2 {
-                basicErrorAlert(errorMessage: "Coming soon..", controller: self)
+                basicErrorAlert(errorMessage: "Coming soon.", controller: self)
 //                openUrl("https://kareemarab.now.sh/licences")
             } else if indexPath.row == 3 {
                 if MFMailComposeViewController.canSendMail() {

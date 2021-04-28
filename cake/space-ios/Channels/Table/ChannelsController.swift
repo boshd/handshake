@@ -9,8 +9,7 @@
 import UIKit
 import Firebase
 import RealmSwift
-import SDWebImage  
-import Contacts
+import SDWebImage
 //import SwiftConfettiView
 
 enum ActivityTitle: String {
@@ -30,7 +29,7 @@ protocol CurrentUserDelegate: class {
     func currentUser(didUpdate user: User)
 }
 
-class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
+class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate {
     
     var isSyncingUsers = false
     
@@ -40,15 +39,12 @@ class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
     
     let channelCellId = "channelCellId"
     
-    var contactsPermissionGranted = false
 //    var channelsContainerView = ChannelsContainerView()
     let channelsFetcher = ChannelsFetcher()
     let viewPlaceholder = ViewPlaceholder()
     let notificationsManager = InAppNotificationManager()
     let realmManager = ChannelsRealmManager()
     let dateFormatter = DateFormatter()
-    let usersFetcher = UsersFetcher()
-    let contactsFetcher = ContactsFetcher()
     let informationMessageSender = InformationMessageSender()
     
     var channelsReference: CollectionReference?
@@ -69,10 +65,6 @@ class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
     var upcomingRealmChannels: Results<Channel>?
     var inProgressRealmChannels: Results<Channel>?
     var users: Results<User>?
-    
-    var contacts = [CNContact]()
-    var filteredContacts = [CNContact]()
-    
     weak var currentUserDelegate: CurrentUserDelegate?
     
     let realm = try! Realm(configuration: RealmKeychain.realmUsersConfiguration())
@@ -112,25 +104,15 @@ class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        addContactsObserver()
         addObservers()
         configureController()
         configureNavigationBar()
 //        showActivityTitle(title: .updatingUsers)
-        guard !isAppLoaded, Auth.auth().currentUser != nil else { return }
-        DispatchQueue.global(qos: .userInteractive).async { [weak self] in
-            self?.usersFetcher.loadUsers()
-            self?.contactsFetcher.fetchContacts()
-        }
     }
 
     @objc
     func call() {
         guard !isAppLoaded, Auth.auth().currentUser != nil else { return }
-        DispatchQueue.global(qos: .userInteractive).async { [weak self] in
-            self?.usersFetcher.loadUsers()
-            self?.contactsFetcher.fetchContacts()
-        }
     }
     
     func applyInitialTheme() {
@@ -198,8 +180,6 @@ class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
         tableView.separatorStyle = .singleLine
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 100, bottom: 0, right: 0)
         tableView.tableFooterView = UIView()
-        usersFetcher.delegate = self
-        contactsFetcher.delegate = self
     }
     
     fileprivate func configureNavigationBar() {
@@ -228,14 +208,6 @@ class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
 //        NotificationCenter.default.addObserver(self, selector:#selector(setGreeting), name: .NSCalendarDayChanged, object:nil)
     }
     
-    func addContactsObserver() {
-        NotificationCenter.default.addObserver(self, selector: #selector(contactStoreDidChange), name: .CNContactStoreDidChange, object: nil)
-    }
-    
-    func removeContactsObserver() {
-        NotificationCenter.default.removeObserver(self, name: .CNContactStoreDidChange, object: nil)
-    }
-    
     // MARK: - @objc methods
     
     @objc fileprivate func cleanUpController() {
@@ -261,32 +233,6 @@ class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
         }
 
         deleteAll()
-        shouldReSyncUsers = true
-        userDefaults.removeObject(for: userDefaults.contactsCount)
-        userDefaults.removeObject(for: userDefaults.contactsSyncronizationStatus)
-//        userDefaults.removeObject(for: userDefaults.useSystemTheme)
-//        userDefaults.removeObject(for: userDefaults.selectedTheme)
-    }
-    
-    @objc func contactStoreDidChange(notification: NSNotification) {
-        guard Auth.auth().currentUser != nil else { return }
-        removeContactsObserver()
-        DispatchQueue.global(qos: .userInteractive).async { [weak self] in
-            self?.usersFetcher.loadUsers()
-            self?.contactsFetcher.fetchContacts()
-        }
-    }
-    
-    func forceSync() {
-        if !isSyncingUsers {
-            
-//            guard shouldReSyncUsers else { return }
-            print("in here cuz syncing")
-            shouldReSyncUsers = false
-            usersFetcher.loadUsers()
-            contactsFetcher.forcedSync = true
-            contactsFetcher.syncronizeContacts(contacts: contacts)
-        }
     }
     
 //    override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -340,29 +286,26 @@ class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
     }
     
     private func listenToCurrentUser() {
-        
-
-//
-//        if currentUserListenerReference == nil {
-//            currentUserListenerReference = currentUserReference?.addSnapshotListener({ [weak self] (snapshot, error) in
-//                if error != nil {
-//                    print(error?.localizedDescription ?? "")
-//                    return
-//                }
-//                print("reached???")
+        if currentUserListenerReference == nil {
+            currentUserListenerReference = currentUserReference?.addSnapshotListener({ [weak self] (snapshot, error) in
+                if error != nil {
+                    print(error?.localizedDescription ?? "")
+                    return
+                }
+                print("reached???")
 //                self?.profileImageView.image = UIImage(named: "300")
-//
-//                guard let data = snapshot?.data() else { return }
-//                let updatedUser = User(dictionary: data as [String:AnyObject])
-//                globalCurrentUser = updatedUser
-//                 self?.currentUserDelegate?.currentUser(didUpdate: updatedUser)
-//
-//                userDefaults.updateObject(for: userDefaults.currentUserName, with: updatedUser.name)
-//
+
+                guard let data = snapshot?.data() else { return }
+                let updatedUser = User(dictionary: data as [String:AnyObject])
+                globalCurrentUser = updatedUser
+                 self?.currentUserDelegate?.currentUser(didUpdate: updatedUser)
+
+                userDefaults.updateObject(for: userDefaults.currentUserName, with: updatedUser.name)
+
 //                if let url = updatedUser.userThumbnailImageUrl, url != "" {
 //
 //                    self?.profileImageView.sd_setImage(with: URL(string: url), completed: nil)
-                    
+//
 //                    self?.channelsContainerView.channelsHeaderView.userImageButton.imageView?.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "UserpicIcon"), options: [], completed: { (image, error, _, _) in
 //                        if error != nil{
 //                            print(error?.localizedDescription ?? "")
@@ -375,8 +318,8 @@ class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
 //                } else {
 //                    self?.channelsContainerView.channelsHeaderView.userImageButton.setImage(UIImage(named: "UserpicIcon"), for: .normal)
 //                }
-//            })
-//        }
+            })
+        }
     }
     
     // MARK: - Datasource changes
@@ -545,24 +488,6 @@ class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
     
     private var detailsTransitioningDelegate: InteractiveModalTransitioningDelegate!
     
-    @objc func presentContactsController() {
-        guard Auth.auth().currentUser != nil else { return }
-        hapticFeedback(style: .selectionChanged)
-        let destination = ContactsController()
-        destination.contacts = self.contacts
-        destination.filteredContacts = self.filteredContacts
-        destination.users = self.users
-        destination.usersFetcher = usersFetcher
-        destination.permissionGranted = contactsPermissionGranted
-        destination.presentingController = self
-        // usersFetcher.loadUsers()
-        
-        let newNavigationController = UINavigationController(rootViewController: destination)
-        newNavigationController.modalPresentationStyle = .formSheet
-        present(newNavigationController, animated: true, completion: nil)
-    }
-
-    
     // MARK: - Misc.
     
     fileprivate func checkConnectivity() {
@@ -571,12 +496,12 @@ class ChannelsController: UITableViewController, UIGestureRecognizerDelegate {
         }
     }
     
-    func showActivityTitle(title: ActivityTitle) {
-//        channelsContainerView.channelsHeaderView.showActivityView(with: title)
+    func showActivityTitle(title: UINavigationItemTitle) {
+        navigationItem.showActivityView(with: title)
     }
 
-    func hideActivityTitle(title: ActivityTitle) {
-//        channelsContainerView.channelsHeaderView.hideActivityView(with: title)
+    func hideActivityTitle(title: UINavigationItemTitle) {
+        navigationItem.hideActivityView(with: title)
     }
     
     fileprivate func indexPathsToUpdate(updates: [Int], section: Int) -> [IndexPath] {

@@ -32,33 +32,17 @@ class NavigationItem: UINavigationItem {
         }
     }
 
-//    func showActivityView(with title: UINavigationItemTitle) {
-//        let isConnectedToInternet = navigationItemActivityTitleView?.titleLabel.text != UINavigationItemTitle.noInternet.rawValue
-//
-//        if title == UINavigationItemTitle.noInternet {
-//            return
-//        }
-//
-//    }
-//
-//    func hideActivityView(with title: UINavigationItemTitle) {
-//        if navigationItemActivityTitleView?.titleLabel.text == title.rawValue {
-//            titleView = nil
-//            navigationItemActivityTitleView = nil
-//        }
-//    }
-    
     func showActivityView(with title: UINavigationItemTitle) {
         let isConnectedToInternet = navigationItemActivityTitleView?.titleLabel.text != UINavigationItemTitle.noInternet.rawValue
 
         if title == UINavigationItemTitle.noInternet {
-            navigationItemActivityTitleView = ActivityTitleView()
+            navigationItemActivityTitleView = ActivityTitleView(text: title)
             titleView = navigationItemActivityTitleView
             return
         }
 
         guard isConnectedToInternet, !isActive else { return }
-        navigationItemActivityTitleView = ActivityTitleView()
+        navigationItemActivityTitleView = ActivityTitleView(text: title)
         titleView = navigationItemActivityTitleView
     }
 

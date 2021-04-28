@@ -18,7 +18,7 @@ import RealmSwift
 private let usersCellID = "usersCellID"
 private let currentUserCellID = "currentUserCellID"
 
-class ContactsController: UITableViewController {
+class ContactsController: CustomTableViewController {
 
     var contacts = [CNContact]()
     var filteredContacts = [CNContact]()
@@ -31,8 +31,8 @@ class ContactsController: UITableViewController {
 
     let phoneNumberKit = PhoneNumberKit()
     let viewPlaceholder = ViewPlaceholder()
-    var usersFetcher: UsersFetcher?
-    //let contactsFetcher = ContactsFetcher()
+    var usersFetcher = UsersFetcher()
+    let contactsFetcher = ContactsFetcher()
     
     var permissionGranted = false
     
@@ -48,25 +48,31 @@ class ContactsController: UITableViewController {
         addContactsObserver()
         addObservers()
         setupDataSource()
-        //usersFetcher.loadUsers()
-        //contactsFetcher.fetchContacts()
+        DispatchQueue.global(qos: .userInteractive).async { [weak self] in
+            self?.usersFetcher.loadUsers()
+            self?.contactsFetcher.fetchContacts()
+        }
     }
 
-//    fileprivate var shouldReSyncUsers = false
+    fileprivate var shouldReSyncUsers = false
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.interactivePopGestureRecognizer?.delegate = nil
-        if !permissionGranted {
-            viewPlaceholder.add(for: view, title: .deniedContacts, subtitle: .deniedContacts, priority: .high, position: .center)
-        }
-        
+
+        guard shouldReSyncUsers else { return }
+        shouldReSyncUsers = false
+        usersFetcher.loadUsers()
+        contactsFetcher.syncronizeContacts(contacts: contacts)
     }
     
     deinit {
         stopContiniousUpdate()
         NotificationCenter.default.removeObserver(self)
-        createButtonDelegate?.show()
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return ThemeManager.currentTheme().statusBarStyle
     }
     
     func setupDataSource() {
@@ -79,79 +85,27 @@ class ContactsController: UITableViewController {
         }
     }
     
-    // responsible for changing theme based on system theme
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        print(userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme))
-        if #available(iOS 13, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) &&
-            userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme) {
-            if traitCollection.userInterfaceStyle == .light {
-                ThemeManager.applyTheme(theme: .normal)
-            } else {
-                ThemeManager.applyTheme(theme: .dark)
-            }
-            setNeedsStatusBarAppearanceUpdate()
-        }
-    }
-
-    fileprivate func configureNavigationBar() {
-//        let closeButtonItem = UIBarButtonItem(image: UIImage(named: "i-remove"), style: .plain, target: self, action: #selector(dismissController))
-//        closeButtonItem.imageInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 0)
-//        navigationItem.leftBarButtonItem = closeButtonItem
-//        
-//        let reloadButtonItem = UIBarButtonItem(title: "sync", style: .plain, target: self, action: #selector(reloadUsers))
-//        navigationItem.rightBarButtonItem = reloadButtonItem
-         
-        if let navigationController = navigationController {
-            ThemeManager.setSecondaryNavigationBarAppearance(navigationController.navigationBar)
-        }
-        
-        navigationItem.title = "Contacts"
-    }
-    
-    @objc func dismissController() {
-        hapticFeedback(style: .impact)
-        dismiss(animated: true, completion: nil)
-    }
-    
-    @objc func reloadUsers() {
-        hapticFeedback(style: .impact)
-        if let presentingController = presentingController as? ChannelsController {
-            presentingController.forceSync()
-            dismiss(animated: true, completion: nil)
-        }
-    }
-    
-    @objc func resyncContacts() {
-        guard Auth.auth().currentUser != nil else { return }
-        removeContactsObserver()
-//        DispatchQueue.global(qos: .userInteractive).async { [weak self] in
-//            print("start fetch")
-//            self?.usersFetcher.loadUsers()
-//            self?.contactsFetcher.fetchContacts()
-////            self.contactsFetcher.syncronizeContacts(contacts: contacts)
-//        }
-    }
-
     fileprivate func configureViewController() {
-//        if  usersFetcher !=  nil {
-//            usersFetcher?.delegate = self
-//        }
-//        usersFetcher.delegate = self
-//        contactsFetcher.delegate = self
+        usersFetcher.delegate = self
+        contactsFetcher.delegate = self
         extendedLayoutIncludesOpaqueBars = true
         definesPresentationContext = true
         edgesForExtendedLayout = UIRectEdge.top
         view.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
-//        let contactsTableViewHeaderView = ContactsTableViewHeaderView()
-//        contactsTableViewHeaderView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 35)
-//        tableView.tableHeaderView = contactsTableViewHeaderView
         tableView.indicatorStyle = ThemeManager.currentTheme().scrollBarStyle
         tableView.sectionIndexBackgroundColor = view.backgroundColor
         tableView.backgroundColor = view.backgroundColor
         tableView.separatorStyle = .none
         tableView.register(UsersTableViewCell.self, forCellReuseIdentifier: usersCellID)
         tableView.register(CurrentUserTableViewCell.self, forCellReuseIdentifier: currentUserCellID)
+    }
+    
+    fileprivate func configureNavigationBar() {
+        if let navigationController = navigationController {
+            ThemeManager.setNavigationBarAppearance(navigationController.navigationBar)
+        }
+        
+        navigationItem.title = "Contacts"
     }
     
     fileprivate func setupSearchController() {
@@ -171,7 +125,7 @@ class ContactsController: UITableViewController {
             tableView.tableHeaderView = searchBar
         }
     }
-
+    
     fileprivate func addContactsObserver() {
         NotificationCenter.default.addObserver(self,
         selector: #selector(contactStoreDidChange),
@@ -193,19 +147,24 @@ class ContactsController: UITableViewController {
 
     @objc func contactStoreDidChange(notification: NSNotification) {
         guard Auth.auth().currentUser != nil else { return }
-
+        removeContactsObserver()
+        DispatchQueue.global(qos: .userInteractive).async { [weak self] in
+            print("start fetch")
+            self?.usersFetcher.loadUsers()
+            self?.contactsFetcher.fetchContacts()
+        }
     }
 
     @objc fileprivate func changeTheme() {
-        view.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
+        view.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         tableView.sectionIndexBackgroundColor = view.backgroundColor
-        tableView.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
+        tableView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         tableView.indicatorStyle = ThemeManager.currentTheme().scrollBarStyle
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.window!.backgroundColor = ThemeManager.currentTheme().windowBackground
         if let navigationBar = navigationController?.navigationBar {
-            ThemeManager.setSecondaryNavigationBarAppearance(navigationBar)
+            ThemeManager.setNavigationBarAppearance(navigationBar)
         }
         
         DispatchQueue.main.async { [weak self] in
@@ -224,7 +183,7 @@ class ContactsController: UITableViewController {
         }
 
         deleteAll()
-//        shouldReSyncUsers = true
+        shouldReSyncUsers = true
         userDefaults.removeObject(for: userDefaults.contactsCount)
         userDefaults.removeObject(for: userDefaults.contactsSyncronizationStatus)
     }
@@ -238,14 +197,14 @@ class ContactsController: UITableViewController {
     fileprivate var updateUITimer: DispatchSourceTimer?
 
     fileprivate func continiousUIUpdate(users: [User]) {
-//        guard users.count > 0 else { return }
-//        updateUITimer = DispatchSource.makeTimerSource(flags: [], queue: DispatchQueue.main)
-//        updateUITimer?.schedule(deadline: .now(), repeating: .seconds(60))
-//        updateUITimer?.setEventHandler { [weak self] in
-//            guard let unwrappedSelf = self else { return }
-//            unwrappedSelf.performUIUpdate(users: users)
-//        }
-//        updateUITimer?.resume()
+        guard users.count > 0 else { return }
+        updateUITimer = DispatchSource.makeTimerSource(flags: [], queue: DispatchQueue.main)
+        updateUITimer?.schedule(deadline: .now(), repeating: .seconds(60))
+        updateUITimer?.setEventHandler { [weak self] in
+            guard let unwrappedSelf = self else { return }
+            unwrappedSelf.performUIUpdate(users: users)
+        }
+        updateUITimer?.resume()
     }
 
     fileprivate func performUIUpdate(users: [User]) {
@@ -276,6 +235,34 @@ class ContactsController: UITableViewController {
         updateUITimer?.cancel()
         updateUITimer = nil
     }
+    
+    // responsible for changing theme based on system theme
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        print(userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme))
+        if #available(iOS 13, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) &&
+            userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme) {
+            if traitCollection.userInterfaceStyle == .light {
+                ThemeManager.applyTheme(theme: .normal)
+            } else {
+                ThemeManager.applyTheme(theme: .dark)
+            }
+            setNeedsStatusBarAppearanceUpdate()
+        }
+    }
+    
+    @objc func dismissController() {
+        hapticFeedback(style: .impact)
+        dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func reloadUsers() {
+        hapticFeedback(style: .impact)
+        if let presentingController = presentingController as? ChannelsController {
+            dismiss(animated: true, completion: nil)
+        }
+    }
+
 }
 
 // MARK: - Table view data source
@@ -303,11 +290,11 @@ extension ContactsController {
             if users?.count == 0 {
                 return ""
             } else {
-                return "AVAILABLE"
+                return "Available"
             }
         }
         guard section == 1, filteredContacts.count != 0 else { return " " }
-        return "CONTACTS - NOT SIGNED UP"
+        return "Contacts - Not signed up"
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -318,9 +305,9 @@ extension ContactsController {
         myLabel.text = self.tableView(tableView, titleForHeaderInSection: section)
         myLabel.textColor = .gray
         
-        let attributedString = NSMutableAttributedString(string: myLabel.text!)
-        attributedString.addAttribute(NSAttributedString.Key.kern, value: CGFloat(1.5), range: NSRange(location: 0, length: attributedString.length))
-        myLabel.attributedText = attributedString
+//        let attributedString = NSMutableAttributedString(string: myLabel.text!)
+//        attributedString.addAttribute(NSAttributedString.Key.kern, value: CGFloat(1.5), range: NSRange(location: 0, length: attributedString.length))
+//        myLabel.attributedText = attributedString
 
         let headerView = UIView()
         headerView.addSubview(myLabel)
@@ -363,12 +350,13 @@ extension ContactsController {
         if indexPath.section == 0 {
             let alert = CustomAlertController(title_: nil, message: nil, preferredStyle: .actionSheet)
             
-            alert.addAction(CustomAlertAction(title: "View user profile", style: .default , handler: { [unowned self] in
+            alert.addAction(CustomAlertAction(title: "View profile", style: .default , handler: { [unowned self] in
                 let destination = ParticipantProfileController()
                 
                 guard let user = users?[indexPath.row] else { return }
                 destination.member = user
                 destination.userProfileContainerView.addPhotoLabel.isHidden = true
+                destination.hidesBottomBarWhenPushed = true
                 navigationController?.pushViewController(destination, animated: true)
             }))
             
@@ -389,24 +377,45 @@ extension ContactsController {
     
 }
 
-//extension ContactsController: UsersUpdatesDelegate {
-//    func users(shouldBeUpdatedTo users: [User]) {
-//        if users.count > 0 {
-//            autoreleasepool {
-//                if !realm.isInWriteTransaction {
-//                    realm.beginWrite()
-//                    for user in users {
-//                        realm.create(User.self, value: user, update: .modified)
-//                    }
-//                    try! realm.commitWrite()
-//                }
-//            }
-//        }
-//        
-////        self.users.
-//
-//        let syncronizationStatus = userDefaults.currentBoolObjectState(for: userDefaults.contactsSyncronizationStatus)
-//        guard syncronizationStatus == true else { return }
-//        addContactsObserver()
-//    }
-//}
+extension ContactsController: ContactsUpdatesDelegate {
+    func contacts(shouldPerformSyncronization: Bool) {
+        guard shouldPerformSyncronization else { return }
+        DispatchQueue.main.async { [weak self] in
+            self?.navigationItem.showActivityView(with: .updating)
+        }
+        DispatchQueue.global(qos: .userInteractive).async { [weak self] in
+            self?.usersFetcher.loadAndSyncUsers()
+        }
+    }
+    
+    func contacts(updateDatasource contacts: [CNContact]) {
+        self.contacts = contacts
+        self.filteredContacts = contacts
+        DispatchQueue.main.async { [weak self] in
+            UIView.performWithoutAnimation {
+                self?.tableView.reloadSections([1], with: .none)
+            }
+        }
+    }
+    
+    func contacts(handleAccessStatus: Bool) {
+        //    guard handleAccessStatus, (users?.count ?? 0) > 0 else {
+        //      viewPlaceholder.add(for: view, title: .denied, subtitle: .denied, priority: .high, position: .top)
+        //      return
+        //    }
+        //    viewPlaceholder.remove(from: view, priority: .high)
+    }
+}
+
+extension ContactsController: UsersUpdatesDelegate {
+    func users(shouldBeUpdatedTo users: [User]) {
+        reloadTableView(updatedUsers: users)
+
+        let syncronizationStatus = userDefaults.currentBoolObjectState(for: userDefaults.contactsSyncronizationStatus)
+        guard syncronizationStatus == true else { return }
+        addContactsObserver()
+        DispatchQueue.main.async { [weak self] in
+            self?.navigationItem.hideActivityView(with: .updatingUsers)
+        }
+    }
+}
