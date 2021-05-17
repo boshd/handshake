@@ -95,19 +95,23 @@ enum Theme: Int {
     case normal, dark
     
     func secondaryFont(with fontSize: CGFloat) -> UIFont {
-        return UIFont(name: "HelveticaNeue", size: fontSize)!
+//        return UIFont(name: "HelveticaNeue", size: fontSize)!
+        return UIFont.systemFont(ofSize: fontSize)
     }
     
     func secondaryFontMedium(with fontSize: CGFloat) -> UIFont {
-        return UIFont(name: "HelveticaNeue-Medium", size: fontSize)!
+//        return UIFont(name: "HelveticaNeue-Medium", size: fontSize)!
+        return UIFont.systemFont(ofSize: fontSize, weight: .medium)
     }
     
     func secondaryFontBold(with fontSize: CGFloat) -> UIFont {
-        return UIFont(name: "HelveticaNeue-Bold", size: fontSize)!
+//        return UIFont(name: "HelveticaNeue-Bold", size: fontSize)!
+        return UIFont.boldSystemFont(ofSize: fontSize)
     }
     
     func secondaryFontItalic(with fontSize: CGFloat) -> UIFont {
-        return UIFont(name: "HelveticaNeue-Italic", size: fontSize)!
+//        return UIFont(name: "HelveticaNeue-Italic", size: fontSize)!
+        return UIFont.italicSystemFont(ofSize: fontSize)
     }
     
     func secondaryFontBoldItalic(with fontSize: CGFloat) -> UIFont {

@@ -54,7 +54,7 @@ final class InputContainerView: UIControl {
         sendButton.titleLabel?.font = ThemeManager.currentTheme().secondaryFontBold(with: 14)
         sendButton.isEnabled = false
 //        sendButton.tintColor = .black
-        sendButton.setTitleColor(ThemeManager.currentTheme().buttonTextColor, for: .normal)
+        sendButton.setTitleColor(ThemeManager.currentTheme().tintColor, for: .normal)
         sendButton.setTitleColor(.lightGray, for: .disabled)
         sendButton.backgroundColor = .clear
 

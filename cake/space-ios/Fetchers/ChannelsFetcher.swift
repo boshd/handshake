@@ -25,7 +25,7 @@ class ChannelsFetcher: NSObject {
     
     weak var delegate: ChannelUpdatesDelegate?
     
-    fileprivate var group: DispatchGroup?
+    fileprivate var group: DispatchGroup!
     var groupIndex = 0
     fileprivate var isGroupAlreadyFinished: Bool!
     fileprivate var channels = [Channel]()
@@ -78,7 +78,7 @@ class ChannelsFetcher: NSObject {
                     return
                 }
                 self.group = DispatchGroup()
-                for _ in 0 ..< documents.count { self.group?.enter() }
+                for _ in 0 ..< documents.count { print("we are entering"); self.group.enter() }
                 self.group?.notify(queue: .main, execute: { [weak self] in
                     //guard let unwrappedSelf = self else { return }
                     if let delegate = self?.delegate {
@@ -93,86 +93,60 @@ class ChannelsFetcher: NSObject {
     }
     
     func observeChannelAddedOrRemoved() {
-        var first = false
+        var first = true
         if currentUserChannelIDsReference != nil {
-//            if userChannelIdsCollectionListener == nil {
-                listenerCount += 1
-                userChannelIdsCollectionListener = currentUserChannelIDsReference.addSnapshotListener({ [weak self] (snapshot, error) in
-                    if error != nil {
-                        print(error?.localizedDescription ?? "")
-                        return
-                    }
+            userChannelIdsCollectionListener = currentUserChannelIDsReference.addSnapshotListener({ [weak self] (snapshot, error) in
+                if error != nil {
+                    print(error?.localizedDescription ?? "")
+                    return
+                }
 
-                    if first {
-                        first = false
-                        return
-                    }
-                    
-                    guard let snap = snapshot else { return }
-                    snap.documentChanges.forEach { (diff) in
-                        if (diff.type == .added) {
-                            let channelID = diff.document.documentID
-                            self?.listenToChannel(with: channelID)
-                            self?.delegate?.channels(addedNewChannel: true, channelID: channelID)
-                            self?.loadConversation(for: channelID)
-                        } else if (diff.type == .removed) {
-                            let channelID = diff.document.documentID
-                            let obj: [String: Any] = ["channelID": channelID]
-                            NotificationCenter.default.post(name: .channelRemoved, object: obj)
-                            if self?.individualChannelListenersDict.count != 0 {
-                                self?.individualChannelListenersDict[channelID]?.remove()
-                                
-                                if let index = self?.individualChannelListenersDict.firstIndex(where: { (k, v) -> Bool in
-                                    return k == channelID
-                                }) {
-                                    self?.individualChannelListenersDict.remove(at: index)
-                                }
+                if first {
+                    first = false
+                    return
+                }
+                
+                guard let snap = snapshot else { return }
+                snap.documentChanges.forEach { (diff) in
+                    if (diff.type == .added) {
+                        // CHANNEL ADDED
+                        let channelID = diff.document.documentID
+                        self?.delegate?.channels(addedNewChannel: true, channelID: channelID)
+                        self?.loadConversation(for: channelID)
+                    } else if (diff.type == .removed) {
+                        // CHANNEL REMOVED
+                        let channelID = diff.document.documentID
+                        let obj: [String: Any] = ["channelID": channelID]
+                        NotificationCenter.default.post(name: .channelRemoved, object: obj)
+                        if self?.individualChannelListenersDict.count != 0 {
+                            self?.individualChannelListenersDict[channelID]?.remove()
+                            
+                            if let index = self?.individualChannelListenersDict.firstIndex(where: { (k, v) -> Bool in
+                                return k == channelID
+                            }) {
+                                self?.individualChannelListenersDict.remove(at: index)
                             }
-                            self?.delegate?.channels(didRemove: true, channelID: channelID)
-                        } else if (diff.type == .modified) {
-                            // listening to user's unique channel
-                            
-                            print("channel modified")
-                            
-                            
-                            
-                            guard var dictionary = diff.document.data() as? [String: AnyObject] else { return }
-                            dictionary.updateValue(diff.document.documentID as AnyObject, forKey: "id")
-
-                            if let isGroupAlreadyFinished = self?.isGroupAlreadyFinished, isGroupAlreadyFinished {
-                                self?.delegate?.channels(didStartUpdatingData: true)
-                            }
-
-                            let channel = Channel(dictionary: dictionary)
-                            channel.isTyping.value = channel.getTyping()
-
-                            guard let lastMessageID = channel.lastMessageId else { //if no messages in chat yet
-                                print("here1")
-                                self?.loadAdditionalMetadata(for: channel)
-                                return
-                            }
-                            print("new message UID \\ \(lastMessageID)")
-                            self?.loadLastMessage(for: lastMessageID, channel: channel)
-
-
-//                            guard let data = diff.document.data() as [String:AnyObject]? else { return }
-//
-//                            let updatedChannel = Channel(dictionary: data)
-//                            guard let updatedChannelID = updatedChannel.id else { return }
-//
-//                            guard let index = self?.channels.firstIndex(where: { (channel) -> Bool in
-//                                return channel.id == updatedChannelID
-//                            }) else { return }
-//
-//                            self?.channels[index].badge = updatedChannel.badge
-//                            self?.channels[index].lastMessageId = updatedChannel.lastMessageId
-//                            guard let unwrappedSelf = self else { print(""); return }
-//
-//                            unwrappedSelf.delegate?.channels(update: unwrappedSelf.channels[index], reloadNeeded: true)
                         }
+                        self?.delegate?.channels(didRemove: true, channelID: channelID)
+                    } else if (diff.type == .modified) {
+                        // CHANNEL MODIFIED
+                        var dictionary = diff.document.data() as [String: AnyObject]
+                        dictionary.updateValue(diff.document.documentID as AnyObject, forKey: "id")
+
+                        if let isGroupAlreadyFinished = self?.isGroupAlreadyFinished, isGroupAlreadyFinished {
+                            self?.delegate?.channels(didStartUpdatingData: true)
+                        }
+
+                        let channel = Channel(dictionary: dictionary)
+                        channel.isTyping.value = channel.getTyping()
+                        guard let lastMessageID = channel.lastMessageId else {
+                            self?.loadAdditionalMetadata(for: channel)
+                            return
+                        }
+                        self?.loadLastMessage(for: lastMessageID, channel: channel)
                     }
-                })
-//            }
+                }
+            })
         }
     }
 
@@ -293,10 +267,7 @@ class ChannelsFetcher: NSObject {
             let isTyping = channels[index].isTyping.value
             channel.isTyping.value = isTyping
         }
-        print("here7")
-//        guard isGroupAlreadyFinished, (channels[index].isMuted.value != channel.isMuted.value) else {
         if isGroupAlreadyFinished {
-            print("here8")
             channels[index] = channel
             delegate?.channels(update: channels[index], reloadNeeded: true)
             return
@@ -305,9 +276,6 @@ class ChannelsFetcher: NSObject {
         channels[index] = channel
         handleGroupOrReloadTable()
         return
-//        }
-//        channels[index] = channel
-//        delegate?.channels(update: channels[index], reloadNeeded: true)
     }
     
     fileprivate func handleGroupOrReloadTable() {
@@ -319,7 +287,7 @@ class ChannelsFetcher: NSObject {
                 delegate?.channels(didFinishFetching: true, channels: channels)
                 return
             }
-            group?.leave()
+            group.leave()
             return
         }
         print("OUT HERE")
@@ -329,32 +297,32 @@ class ChannelsFetcher: NSObject {
     
     // MARK:- INDIVIDUAL CHANNEL LISENER
     
-    fileprivate func listenToChannel(with channelID: String) {
-        let channelReference = Firestore.firestore().collection("channels").document(channelID)
-        let listener = channelReference.addSnapshotListener { (snapshot, error) in
-            // listening to ACTUAL channel
-            if error != nil {
-                print(error?.localizedDescription ?? "error")
-                return
-            }
-            
-            print("BTW WE GOT A CHANNEL UPDATE JS")
-            
-            guard let data = snapshot?.data() as [String:AnyObject]? else { return }
-            
-            let updatedChannel = Channel(dictionary: data)
-            guard let updatedChannelID = updatedChannel.id else { return }
-            
-            guard let index = self.channels.firstIndex(where: { (channel) -> Bool in
-                return channel.id == updatedChannelID
-            }) else { return }
-            
-            self.channels[index] = updatedChannel
-            self.delegate?.channels(update: self.channels[index], reloadNeeded: true)
-        }
-        
-        individualChannelListenersDict[channelID] = listener
-    }
+//    fileprivate func listenToChannel(with channelID: String) {
+//        let channelReference = Firestore.firestore().collection("channels").document(channelID)
+//        let listener = channelReference.addSnapshotListener { (snapshot, error) in
+//            // listening to ACTUAL channel
+//            if error != nil {
+//                print(error?.localizedDescription ?? "error")
+//                return
+//            }
+//
+//            print("BTW WE GOT A CHANNEL UPDATE JS")
+//
+//            guard let data = snapshot?.data() as [String:AnyObject]? else { return }
+//
+//            let updatedChannel = Channel(dictionary: data)
+//            guard let updatedChannelID = updatedChannel.id else { return }
+//
+//            guard let index = self.channels.firstIndex(where: { (channel) -> Bool in
+//                return channel.id == updatedChannelID
+//            }) else { return }
+//
+//            self.channels[index] = updatedChannel
+//            self.delegate?.channels(update: self.channels[index], reloadNeeded: true)
+//        }
+//
+//        individualChannelListenersDict[channelID] = listener
+//    }
     
 }
 

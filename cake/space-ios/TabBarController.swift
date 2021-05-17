@@ -90,17 +90,18 @@ class TabBarController: UITabBarController {
     
     let channelsController = ChannelsController()
     let contactsController = ContactsController()
-    let createController = CreateChannelController()
+    let exploreController = ExploreController()
     let settingsController = AccountSettingsController()
     
     fileprivate func setTabs() {
         contactsController.navigationItem.title = "Contacts"
         channelsController.navigationItem.title = "Events"
+        exploreController.navigationItem.title = "Explore"
         settingsController.navigationItem.title = "Account"
 
         let contactsNavigationController = UINavigationController(rootViewController: contactsController)
         let channelsNavigationController = UINavigationController(rootViewController: channelsController)
-        let createNavigationController = UINavigationController(rootViewController: createController)
+        let exploreNavigationController = UINavigationController(rootViewController: exploreController)
         let settingsNavigationController = UINavigationController(rootViewController: settingsController)
         settingsNavigationController.navigationBar.setValue(true, forKey: "hidesShadow")
 
@@ -117,19 +118,23 @@ class TabBarController: UITabBarController {
 //        }
         
         let contactsImage =  UIImage(named: "Contacts")
-        let chatsImage = UIImage(named: "Calendar")
+        let eventsImage = UIImage(named: "Calendar")
+        let exploreImage = UIImage(named: "Explore")
         let settingsImage = UIImage(named: "Setting")
         
         let contactsImageSelected =  UIImage(named: "Contacts-fill")
-        let chatsImageSelected = UIImage(named: "Calendar-fill")
+        let eventsImageSelected = UIImage(named: "Calendar-fill")
+        let exploreImageSelected = UIImage(named: "Explore-fill")
         let settingsImageSelected = UIImage(named: "Setting-fill")
 
         let contactsTabItem = UITabBarItem(title: contactsController.navigationItem.title, image: contactsImage, selectedImage: contactsImageSelected)
-        let chatsTabItem = UITabBarItem(title: channelsController.navigationItem.title, image: chatsImage, selectedImage: chatsImageSelected)
+        let eventsTabItem = UITabBarItem(title: channelsController.navigationItem.title, image: eventsImage, selectedImage: eventsImageSelected)
+        let exploreTabItem = UITabBarItem(title: exploreController.navigationItem.title, image: exploreImage, selectedImage: exploreImageSelected)
         let settingsTabItem = UITabBarItem(title: settingsController.navigationItem.title, image: settingsImage, selectedImage: settingsImageSelected)
 
         contactsController.tabBarItem = contactsTabItem
-        channelsController.tabBarItem = chatsTabItem
+        channelsController.tabBarItem = eventsTabItem
+        exploreController.tabBarItem = exploreTabItem
         settingsController.tabBarItem = settingsTabItem
 
         let tabBarControllers = [contactsNavigationController, channelsNavigationController, settingsNavigationController]

@@ -26,7 +26,7 @@ extension ChannelsController {
             self?.present(alert, animated: true, completion: nil)
         }
         
-        delete.backgroundColor = .priorityRed()
+        delete.backgroundColor = .systemRed
         delete.image = UIImage.init(named: "bucket")
         return delete
     }

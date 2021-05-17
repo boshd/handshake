@@ -137,14 +137,12 @@ class InAppNotificationManager: NSObject {
     }
     
     func handleInAppSoundPlaying(message: Message, channel: Channel, channels: [Channel]) {
-        print(message.text)
         if UIApplication.topViewController() is SFSafariViewController ||
         UIApplication.topViewController() is ChannelLogController { return }
         
         if let index = channels.firstIndex(where: { (chan) -> Bool in
             return chan.id == channel.id
         }) {
-            print("arived ALL THE WAY HERE")
             if let muted = channels[index].isMuted.value, !muted, let channelName = channels[index].name {
                 self.playNotificationSound()
                 if userDefaults.currentBoolObjectState(for: userDefaults.inAppNotifications) {

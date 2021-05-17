@@ -244,7 +244,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        print("view did god damn disappear \(self.navigationController)")
         if let viewControllers = self.navigationController?.viewControllers {
             print("viewcontrollers not nil")
             if viewControllers.count > 1 && viewControllers[viewControllers.count-2] == self {
@@ -861,7 +860,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
                   (UIApplication.topViewController() is ChannelLogController ||
                     UIApplication.topViewController() is ChannelDetailsController ||
                     UIApplication.topViewController() is ParticipantsController ||
-                    UIApplication.topViewController() is UpdateChannelController ||
+//                    UIApplication.topViewController() is UpdateChannelController ||
                     UIApplication.topViewController() is INSPhotosViewController ||
                     UIApplication.topViewController() is SFSafariViewController)
             else { senderID = nil; print("stuck hererer"); return }
@@ -919,10 +918,10 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         }
     }
     
-    func configureTitleViewWithOnlineStatus() {
+    func configureTitleView() {
 
-        if let title = channel?.name, let _ = channel?.participantIds.count {
-            self.title = title
+        if let title = channel?.name, let membersCount = channel?.participantIds.count {
+            navigationItem.setTitle(title: title, subtitle: "\(String(membersCount)) attendees")
             return
         }
 

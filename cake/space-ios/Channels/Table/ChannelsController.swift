@@ -235,10 +235,6 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         deleteAll()
     }
     
-//    override var preferredStatusBarStyle: UIStatusBarStyle {
-//        return ThemeManager.currentTheme().statusBarStyle
-//    }
-    
     @objc fileprivate func changeTheme() {
         view.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         tableView.indicatorStyle = ThemeManager.currentTheme().scrollBarStyle
@@ -276,7 +272,7 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         
         // date
         dateFormatter.dateFormat = "EEEE, MMMM d"
-//        channelsContainerView.channelsHeaderView.subTitle.text = dateFormatter.string(from: Date()).uppercased()
+        
         let dateLabel = UILabel()
         dateLabel.text = dateFormatter.string(from: Date())
         dateLabel.font = ThemeManager.currentTheme().secondaryFontBold(with: 13)
@@ -292,8 +288,6 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
                     print(error?.localizedDescription ?? "")
                     return
                 }
-                print("reached???")
-//                self?.profileImageView.image = UIImage(named: "300")
 
                 guard let data = snapshot?.data() else { return }
                 let updatedUser = User(dictionary: data as [String:AnyObject])
@@ -301,23 +295,6 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
                  self?.currentUserDelegate?.currentUser(didUpdate: updatedUser)
 
                 userDefaults.updateObject(for: userDefaults.currentUserName, with: updatedUser.name)
-
-//                if let url = updatedUser.userThumbnailImageUrl, url != "" {
-//
-//                    self?.profileImageView.sd_setImage(with: URL(string: url), completed: nil)
-//
-//                    self?.channelsContainerView.channelsHeaderView.userImageButton.imageView?.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "UserpicIcon"), options: [], completed: { (image, error, _, _) in
-//                        if error != nil{
-//                            print(error?.localizedDescription ?? "")
-//                            return
-//                        }
-////                        self?.channelsContainerView.setImage(image, for: .normal)
-//
-//
-//                    })
-//                } else {
-//                    self?.channelsContainerView.channelsHeaderView.userImageButton.setImage(UIImage(named: "UserpicIcon"), for: .normal)
-//                }
             })
         }
     }
@@ -414,7 +391,7 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
     }
     
     func configureTabBarBadge() {
-        
+        guard let currentUserID = Auth.auth().currentUser?.uid else { return }
         guard let tabItems = tabBarController?.tabBar.items as NSArray? else { return }
         guard let tabItem = tabItems[Tabs.chats.rawValue] as? UITabBarItem else { return }
         guard let realmChannels = realmChannels else { return }
@@ -425,21 +402,13 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         guard badge > 0 else {
             tabItem.badgeValue = nil
             UIApplication.shared.applicationIconBadgeNumber = 0
+            Firestore.firestore().collection("users").document(currentUserID).setData(["badge": 0], merge: true)
             return
         }
-
+        
+        Firestore.firestore().collection("users").document(currentUserID).setData(["badge": badge], merge: true)
         tabItem.badgeValue = badge.toString()
         UIApplication.shared.applicationIconBadgeNumber = badge
-        
-//        guard let realmAllConversations = realmChannels else { return }
-//        let badge = realmAllConversations.compactMap({ (conversation) -> Int in
-//            return conversation.badge.value ?? 0
-//        }).reduce(0, +)
-//        guard badge > 0 else {
-//            UIApplication.shared.applicationIconBadgeNumber = 0
-//            return
-//        }
-//        UIApplication.shared.applicationIconBadgeNumber = badge
     }
     
     // MARK: - Navigation methods

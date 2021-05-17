@@ -8,8 +8,77 @@
 
 import UIKit
 import Firebase
+import RealmSwift
 
 extension ChannelLogController: ChannelManagerDelegate {
+    
+    func nameUpdated(name: String) {
+        print("name updated")
+        try! realm.safeWrite {
+            self.channel?.name = name
+        }
+        if self.isCurrentUserMemberOfCurrentGroup() {
+            self.configureTitleView()
+        }
+    }
+    
+    func startTimeUpdated(startTime: Int64) {
+        print("start time updated")
+        try! realm.safeWrite {
+            self.channel?.startTime = RealmOptional(startTime)
+        }
+        if self.isCurrentUserMemberOfCurrentGroup() {
+            setupHeaderView()
+        }
+    }
+    
+    func endTimeUpdated(endTime: Int64) {
+        print("end time updated")
+        try! realm.safeWrite {
+            self.channel?.endTime = RealmOptional(endTime)
+        }
+        if self.isCurrentUserMemberOfCurrentGroup() {
+            setupHeaderView()
+        }
+    }
+    
+    func locationUpdated(latitude: Double, longitude: Double, locationName: String) {
+        try! realm.safeWrite {
+            self.channel?.latitude = RealmOptional(latitude)
+            self.channel?.longitude = RealmOptional(latitude)
+            self.channel?.locationName = locationName
+        }
+        if self.isCurrentUserMemberOfCurrentGroup() {
+            setupHeaderView()
+        }
+    }
+    
+    func adminsUpdated(admins: Array<String>) {
+//        try! realm.safeWrite {
+//            self.channel?.admins = RealmOptional(admins)
+//        }
+//        if self.isCurrentUserMemberOfCurrentGroup() {
+//            // configure end time
+//        }
+    }
+    
+    func isVirtualUpdated(_ isVirtual: Bool) {
+        try! realm.safeWrite {
+            self.channel?.isVirtual = RealmOptional(isVirtual)
+        }
+        if self.isCurrentUserMemberOfCurrentGroup() {
+            // configure virtuality
+        }
+    }
+    
+    func isCancelledUpdated(_ isCancelled: Bool) {
+        try! realm.safeWrite {
+            self.channel?.isCancelled = RealmOptional(isCancelled)
+        }
+        if self.isCurrentUserMemberOfCurrentGroup() {
+            // configure cancellation
+        }
+    }
     
     func channelDeleted(channelID: String) {
         guard let currentChannelID = channel?.id else { return }
@@ -31,8 +100,8 @@ extension ChannelLogController: ChannelManagerDelegate {
             }
         }
         
-        let obj: [String: Any] = ["id": id]
-        NotificationCenter.default.post(name: .memberAdded, object: obj)
+//        let obj: [String: Any] = ["id": id]
+//        NotificationCenter.default.post(name: .memberAdded, object: obj)
     }
     
     func removeMember(id: String) {
@@ -47,8 +116,8 @@ extension ChannelLogController: ChannelManagerDelegate {
             self.channel?.participantIds.remove(at: memberIndex)
         }
         
-        let obj: [String: Any] = ["id": id]
-        NotificationCenter.default.post(name: .memberRemoved, object: obj)
+//        let obj: [String: Any] = ["id": id]
+//        NotificationCenter.default.post(name: .memberRemoved, object: obj)
         
         self.changeUIAfterChildRemovedIfNeeded()
     }
@@ -56,6 +125,7 @@ extension ChannelLogController: ChannelManagerDelegate {
     fileprivate func changeUIAfterChildRemovedIfNeeded() {
         
         if isCurrentUserMemberOfCurrentGroup() {
+            configureTitleView()
         } else {
             messagesFetcher?.removeListener()
             self.inputContainerView.resignAllResponders()
@@ -64,6 +134,17 @@ extension ChannelLogController: ChannelManagerDelegate {
             
             channelLogContainerView.channelLogHeaderView.isUserInteractionEnabled = false
             channelLogContainerView.channelLogHeaderView.viewDetails.isHidden = true
+            
+            self.inputContainerView.resignAllResponders()
+            handleTypingIndicatorAppearance(isEnabled: false)
+            // removeSubtitleInGroupChat()
+            reloadInputViews()
+            reloadInputView(view: inputBlockerContainerView)
+            navigationItem.rightBarButtonItem?.isEnabled = false
+            if typingIndicatorCollectionListener != nil {
+                typingIndicatorCollectionListener?.remove()
+                typingIndicatorCollectionListener = nil
+            }
         }
      }
     

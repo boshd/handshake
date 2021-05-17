@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CreateChannelCell: UITableViewCell {
+class SelectLocationCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
@@ -19,13 +19,13 @@ class CreateChannelCell: UITableViewCell {
         
         contentView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         
-        textLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
+        textLabel?.textColor = ThemeManager.currentTheme().generalTitleColor
         detailTextLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
         
         detailTextLabel?.numberOfLines = 0
         
-        textLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 13)
-        detailTextLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 12)
+        textLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 14)
+        detailTextLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 13)
     }
   
 

@@ -536,22 +536,22 @@ class ChannelDetailsController: UIViewController {
             displayErrorAlert(title: basicErrorTitleForAlert, message: cannotDoThisState, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
             return
         }
-        
-        let destination = UpdateChannelController()
-        destination.channelName = channel.name ?? ""
-        destination.startTime = Int(channel.startTime.value ?? 0)
-        destination.endTime = Int(channel.endTime.value ?? 0)
-        destination.location = (channel.latitude.value ?? 0, channel.longitude.value ?? 0)
-        destination.locationName = channel.locationName ?? ""
-        destination.channelDescription = channel.description_
-        destination.channel = channel
-        destination.isVirtual = channel.isVirtual.value ?? false
-        
-        if channel.imageUrl != nil {
-            destination.selectedImage = channelDetailsContainerView.channelImageView.image
-        }
-
-        navigationController?.pushViewController(destination, animated: true)
+//        
+//        let destination = UpdateChannelController()
+//        destination.channelName = channel.name ?? ""
+//        destination.startTime = Int(channel.startTime.value ?? 0)
+//        destination.endTime = Int(channel.endTime.value ?? 0)
+//        destination.location = (channel.latitude.value ?? 0, channel.longitude.value ?? 0)
+//        destination.locationName = channel.locationName ?? ""
+//        destination.channelDescription = channel.description_
+//        destination.channel = channel
+//        destination.isVirtual = channel.isVirtual.value ?? false
+//        
+//        if channel.imageUrl != nil {
+//            destination.selectedImage = channelDetailsContainerView.channelImageView.image
+//        }
+//
+//        navigationController?.pushViewController(destination, animated: true)
     }
     
     @objc
@@ -911,13 +911,13 @@ class ChannelDetailsController: UIViewController {
     }
 }
 
-extension ChannelDetailsController: CreateChannelDelegate {
-    func channel(doneUpdatinigChannel: Bool) {
-        if doneUpdatinigChannel {
-            goBack()
-        }
-    }
-}
+//extension ChannelDetailsController: CreateChannelDelegate {
+//    func channel(doneUpdatinigChannel: Bool) {
+//        if doneUpdatinigChannel {
+//            goBack()
+//        }
+//    }
+//}
 
 import SafariServices
 extension ChannelDetailsController: UITextViewDelegate {

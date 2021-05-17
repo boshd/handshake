@@ -34,8 +34,8 @@ class SpecialSwitchCell: UITableViewCell {
         
         detailTextLabel?.numberOfLines = 0
         detailTextLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
-        textLabel?.font = ThemeManager.currentTheme().secondaryFontBold(with: 13)
-        textLabel?.textColor = .eventOrange()
+        textLabel?.font = ThemeManager.currentTheme().secondaryFontBold(with: 14)
+        textLabel?.textColor = ThemeManager.currentTheme().generalTitleColor
         
         contentView.isUserInteractionEnabled = true
 

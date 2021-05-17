@@ -160,13 +160,14 @@
 		BC6849AA22A9CF0A002097AC /* UsersService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6849A922A9CF0A002097AC /* UsersService.swift */; };
 		BC68C0BD258A9BD500D3A730 /* ChannelLogController+ChannelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC68C0BC258A9BD500D3A730 /* ChannelLogController+ChannelManager.swift */; };
 		BC6A821224731D1100FA1F93 /* LocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6A821124731D1100FA1F93 /* LocationView.swift */; };
-		BC6B9AE32489CC2500157725 /* CreateChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6B9AE22489CC2500157725 /* CreateChannelController.swift */; };
+		BC6B9AE32489CC2500157725 /* CreateChannelController_.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6B9AE22489CC2500157725 /* CreateChannelController_.swift */; };
 		BC6B9AE52489CD6800157725 /* CreateChannelHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6B9AE42489CD6800157725 /* CreateChannelHeaderCell.swift */; };
 		BC6B9AE72489CD7900157725 /* CreateChannelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6B9AE62489CD7900157725 /* CreateChannelCell.swift */; };
 		BC6B9AE92489CD8700157725 /* CreateChannelExtendedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6B9AE82489CD8700157725 /* CreateChannelExtendedCell.swift */; };
 		BC6C60B223843C20003DBB53 /* MessageSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6C60B123843C20003DBB53 /* MessageSender.swift */; };
 		BC6C60B423843FFB003DBB53 /* UploadProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6C60B323843FFB003DBB53 /* UploadProgress.swift */; };
 		BC6C60B62384507D003DBB53 /* ChannelLogController+MessageSenderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6C60B52384507D003DBB53 /* ChannelLogController+MessageSenderDelegate.swift */; };
+		BC710871263C341C00875FF9 /* ExploreController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC710870263C341C00875FF9 /* ExploreController.swift */; };
 		BC71ACFA253685B900EA2907 /* ChannelDetailsController+ParticipantsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC71ACF9253685B900EA2907 /* ChannelDetailsController+ParticipantsCollectionView.swift */; };
 		BC74922522CA17DD0088908B /* Participant.xib in Resources */ = {isa = PBXBuildFile; fileRef = BC74922422CA17DD0088908B /* Participant.xib */; };
 		BC74922B22CA91010088908B /* DetailsItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = BC74922A22CA91010088908B /* DetailsItem.xib */; };
@@ -178,6 +179,7 @@
 		BC74F2BC22D0ED2700B37801 /* PhoneController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC74F2BB22D0ED2700B37801 /* PhoneController.swift */; };
 		BC74F2BE22D26F1C00B37801 /* KeyboardLayoutConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC74F2BD22D26F1C00B37801 /* KeyboardLayoutConstraint.swift */; };
 		BC7AABD826250EFB0024A20D /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7AABD726250EFB0024A20D /* TabBarController.swift */; };
+		BC7D9D8E26514D82008CBF8F /* DateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7D9D8D26514D82008CBF8F /* DateCell.swift */; };
 		BC81DDBC253B2475001C24BC /* ContactsDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC81DDBB253B2475001C24BC /* ContactsDetailController.swift */; };
 		BC81DDC1253B382A001C24BC /* ContactsController+SearchHandlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC81DDC0253B382A001C24BC /* ContactsController+SearchHandlers.swift */; };
 		BC82CF9823778C10003B2360 /* MessagesFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC82CF9723778C10003B2360 /* MessagesFetcher.swift */; };
@@ -232,6 +234,10 @@
 		BCBBC290253886FC0010F39E /* ContactsFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBBC28F253886FC0010F39E /* ContactsFetcher.swift */; };
 		BCBBC29525388C2D0010F39E /* CustomNavigationItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBBC29425388C2D0010F39E /* CustomNavigationItem.swift */; };
 		BCBBC29A25388C5A0010F39E /* ActivityTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBBC29925388C5A0010F39E /* ActivityTitleView.swift */; };
+		BCBD55D32646D19600AE32C6 /* CreateChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBD55D22646D19600AE32C6 /* CreateChannelController.swift */; };
+		BCBD55D52646D1EA00AE32C6 /* UpdateChannelController_.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBD55D42646D1EA00AE32C6 /* UpdateChannelController_.swift */; };
+		BCBD55D82650032500AE32C6 /* CreateChannelController+ChannelNameHeaderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBD55D72650032500AE32C6 /* CreateChannelController+ChannelNameHeaderDelegate.swift */; };
+		BCBD55DA2650038700AE32C6 /* CreateChannelController+TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBD55D92650038700AE32C6 /* CreateChannelController+TableView.swift */; };
 		BCBD859525977DF000303A25 /* MapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBD859425977DF000303A25 /* MapController.swift */; };
 		BCBD859A25977FA100303A25 /* MapSearchContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBD859925977FA100303A25 /* MapSearchContainerView.swift */; };
 		BCBD859F2597842300303A25 /* SearchTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBD859E2597842300303A25 /* SearchTableController.swift */; };
@@ -246,7 +252,7 @@
 		BCBD866A259A8D4300303A25 /* MapController+FloatingPanelControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBD8669259A8D4300303A25 /* MapController+FloatingPanelControllerDelegate.swift */; };
 		BCBD866F259A8D6F00303A25 /* MapController+MKLocalSearchCompleterDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBD866E259A8D6F00303A25 /* MapController+MKLocalSearchCompleterDelegate.swift */; };
 		BCBD8674259A8DD100303A25 /* MapController+SearchBarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBD8673259A8DD100303A25 /* MapController+SearchBarDelegate.swift */; };
-		BCBDA162254DE6820051A183 /* CreateChannelController+TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA161254DE6820051A183 /* CreateChannelController+TableView.swift */; };
+		BCBDA162254DE6820051A183 /* CreateChannelController+TableView_.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA161254DE6820051A183 /* CreateChannelController+TableView_.swift */; };
 		BCBDA167254DF0510051A183 /* ChannelsController+ContactsUpdatesDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA166254DF0510051A183 /* ChannelsController+ContactsUpdatesDelegate.swift */; };
 		BCBDA16C254DF0730051A183 /* ChannelsController+UsersUpdatesDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA16B254DF0730051A183 /* ChannelsController+UsersUpdatesDelegate.swift */; };
 		BCBDA17F254E27A80051A183 /* SelectParticipantsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA17E254E27A80051A183 /* SelectParticipantsController.swift */; };
@@ -257,11 +263,11 @@
 		BCBDA19A254E2C800051A183 /* SelectedParticipantsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA199254E2C800051A183 /* SelectedParticipantsCollectionView.swift */; };
 		BCBDA19F254E2D220051A183 /* SelectedParticipantsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA19E254E2D220051A183 /* SelectedParticipantsCollectionViewCell.swift */; };
 		BCBDA1AA254E2E850051A183 /* SelectChannelParticipantsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA1A9254E2E850051A183 /* SelectChannelParticipantsController.swift */; };
-		BCBDA1B3254EFF810051A183 /* CreateChannelController+Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA1B2254EFF810051A183 /* CreateChannelController+Map.swift */; };
-		BCBDA1BB254F001E0051A183 /* CreateChannelController+Description.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA1BA254F001E0051A183 /* CreateChannelController+Description.swift */; };
-		BCBDA1C5254F008D0051A183 /* CreateChannelController+DatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA1C4254F008D0051A183 /* CreateChannelController+DatePicker.swift */; };
-		BCBDA1DC254F109D0051A183 /* CreateChannelController+HeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA1DB254F109D0051A183 /* CreateChannelController+HeaderCell.swift */; };
-		BCBDA1E4254F22710051A183 /* CreateChannelController+AvatarOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA1E3254F22710051A183 /* CreateChannelController+AvatarOpener.swift */; };
+		BCBDA1B3254EFF810051A183 /* CreateChannelController+Map_.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA1B2254EFF810051A183 /* CreateChannelController+Map_.swift */; };
+		BCBDA1BB254F001E0051A183 /* CreateChannelController+Description_.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA1BA254F001E0051A183 /* CreateChannelController+Description_.swift */; };
+		BCBDA1C5254F008D0051A183 /* CreateChannelController+DatePicker_.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA1C4254F008D0051A183 /* CreateChannelController+DatePicker_.swift */; };
+		BCBDA1DC254F109D0051A183 /* CreateChannelController+HeaderCell_.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA1DB254F109D0051A183 /* CreateChannelController+HeaderCell_.swift */; };
+		BCBDA1E4254F22710051A183 /* CreateChannelController+AvatarOpener_.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA1E3254F22710051A183 /* CreateChannelController+AvatarOpener_.swift */; };
 		BCBEAC6B23B0888300E52850 /* DynamicLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBEAC6A23B0888300E52850 /* DynamicLabel.swift */; };
 		BCC1A27B22D3C47000766AF9 /* PhoneContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A27A22D3C47000766AF9 /* PhoneContainerView.swift */; };
 		BCC1A27F22D4826900766AF9 /* PhotoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A27E22D4826900766AF9 /* PhotoController.swift */; };
@@ -511,13 +517,14 @@
 		BC6849A922A9CF0A002097AC /* UsersService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersService.swift; sourceTree = "<group>"; };
 		BC68C0BC258A9BD500D3A730 /* ChannelLogController+ChannelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelLogController+ChannelManager.swift"; sourceTree = "<group>"; };
 		BC6A821124731D1100FA1F93 /* LocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationView.swift; sourceTree = "<group>"; };
-		BC6B9AE22489CC2500157725 /* CreateChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateChannelController.swift; sourceTree = "<group>"; };
+		BC6B9AE22489CC2500157725 /* CreateChannelController_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateChannelController_.swift; sourceTree = "<group>"; };
 		BC6B9AE42489CD6800157725 /* CreateChannelHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateChannelHeaderCell.swift; sourceTree = "<group>"; };
 		BC6B9AE62489CD7900157725 /* CreateChannelCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateChannelCell.swift; sourceTree = "<group>"; };
 		BC6B9AE82489CD8700157725 /* CreateChannelExtendedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateChannelExtendedCell.swift; sourceTree = "<group>"; };
 		BC6C60B123843C20003DBB53 /* MessageSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSender.swift; sourceTree = "<group>"; };
 		BC6C60B323843FFB003DBB53 /* UploadProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadProgress.swift; sourceTree = "<group>"; };
 		BC6C60B52384507D003DBB53 /* ChannelLogController+MessageSenderDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelLogController+MessageSenderDelegate.swift"; sourceTree = "<group>"; };
+		BC710870263C341C00875FF9 /* ExploreController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreController.swift; sourceTree = "<group>"; };
 		BC71ACF9253685B900EA2907 /* ChannelDetailsController+ParticipantsCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelDetailsController+ParticipantsCollectionView.swift"; sourceTree = "<group>"; };
 		BC74922422CA17DD0088908B /* Participant.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Participant.xib; sourceTree = "<group>"; };
 		BC74922A22CA91010088908B /* DetailsItem.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DetailsItem.xib; sourceTree = "<group>"; };
@@ -529,6 +536,7 @@
 		BC74F2BB22D0ED2700B37801 /* PhoneController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneController.swift; sourceTree = "<group>"; };
 		BC74F2BD22D26F1C00B37801 /* KeyboardLayoutConstraint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardLayoutConstraint.swift; sourceTree = "<group>"; };
 		BC7AABD726250EFB0024A20D /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		BC7D9D8D26514D82008CBF8F /* DateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateCell.swift; sourceTree = "<group>"; };
 		BC81DDBB253B2475001C24BC /* ContactsDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsDetailController.swift; sourceTree = "<group>"; };
 		BC81DDC0253B382A001C24BC /* ContactsController+SearchHandlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContactsController+SearchHandlers.swift"; sourceTree = "<group>"; };
 		BC82CF9723778C10003B2360 /* MessagesFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesFetcher.swift; sourceTree = "<group>"; };
@@ -583,6 +591,10 @@
 		BCBBC28F253886FC0010F39E /* ContactsFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsFetcher.swift; sourceTree = "<group>"; };
 		BCBBC29425388C2D0010F39E /* CustomNavigationItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationItem.swift; sourceTree = "<group>"; };
 		BCBBC29925388C5A0010F39E /* ActivityTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityTitleView.swift; sourceTree = "<group>"; };
+		BCBD55D22646D19600AE32C6 /* CreateChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateChannelController.swift; sourceTree = "<group>"; };
+		BCBD55D42646D1EA00AE32C6 /* UpdateChannelController_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateChannelController_.swift; sourceTree = "<group>"; };
+		BCBD55D72650032500AE32C6 /* CreateChannelController+ChannelNameHeaderDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelController+ChannelNameHeaderDelegate.swift"; sourceTree = "<group>"; };
+		BCBD55D92650038700AE32C6 /* CreateChannelController+TableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelController+TableView.swift"; sourceTree = "<group>"; };
 		BCBD859425977DF000303A25 /* MapController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapController.swift; sourceTree = "<group>"; };
 		BCBD859925977FA100303A25 /* MapSearchContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapSearchContainerView.swift; sourceTree = "<group>"; };
 		BCBD859E2597842300303A25 /* SearchTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTableController.swift; sourceTree = "<group>"; };
@@ -597,7 +609,7 @@
 		BCBD8669259A8D4300303A25 /* MapController+FloatingPanelControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapController+FloatingPanelControllerDelegate.swift"; sourceTree = "<group>"; };
 		BCBD866E259A8D6F00303A25 /* MapController+MKLocalSearchCompleterDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapController+MKLocalSearchCompleterDelegate.swift"; sourceTree = "<group>"; };
 		BCBD8673259A8DD100303A25 /* MapController+SearchBarDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapController+SearchBarDelegate.swift"; sourceTree = "<group>"; };
-		BCBDA161254DE6820051A183 /* CreateChannelController+TableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelController+TableView.swift"; sourceTree = "<group>"; };
+		BCBDA161254DE6820051A183 /* CreateChannelController+TableView_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelController+TableView_.swift"; sourceTree = "<group>"; };
 		BCBDA166254DF0510051A183 /* ChannelsController+ContactsUpdatesDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelsController+ContactsUpdatesDelegate.swift"; sourceTree = "<group>"; };
 		BCBDA16B254DF0730051A183 /* ChannelsController+UsersUpdatesDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelsController+UsersUpdatesDelegate.swift"; sourceTree = "<group>"; };
 		BCBDA17E254E27A80051A183 /* SelectParticipantsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectParticipantsController.swift; sourceTree = "<group>"; };
@@ -608,11 +620,11 @@
 		BCBDA199254E2C800051A183 /* SelectedParticipantsCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedParticipantsCollectionView.swift; sourceTree = "<group>"; };
 		BCBDA19E254E2D220051A183 /* SelectedParticipantsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedParticipantsCollectionViewCell.swift; sourceTree = "<group>"; };
 		BCBDA1A9254E2E850051A183 /* SelectChannelParticipantsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectChannelParticipantsController.swift; sourceTree = "<group>"; };
-		BCBDA1B2254EFF810051A183 /* CreateChannelController+Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelController+Map.swift"; sourceTree = "<group>"; };
-		BCBDA1BA254F001E0051A183 /* CreateChannelController+Description.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelController+Description.swift"; sourceTree = "<group>"; };
-		BCBDA1C4254F008D0051A183 /* CreateChannelController+DatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelController+DatePicker.swift"; sourceTree = "<group>"; };
-		BCBDA1DB254F109D0051A183 /* CreateChannelController+HeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelController+HeaderCell.swift"; sourceTree = "<group>"; };
-		BCBDA1E3254F22710051A183 /* CreateChannelController+AvatarOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelController+AvatarOpener.swift"; sourceTree = "<group>"; };
+		BCBDA1B2254EFF810051A183 /* CreateChannelController+Map_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelController+Map_.swift"; sourceTree = "<group>"; };
+		BCBDA1BA254F001E0051A183 /* CreateChannelController+Description_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelController+Description_.swift"; sourceTree = "<group>"; };
+		BCBDA1C4254F008D0051A183 /* CreateChannelController+DatePicker_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelController+DatePicker_.swift"; sourceTree = "<group>"; };
+		BCBDA1DB254F109D0051A183 /* CreateChannelController+HeaderCell_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelController+HeaderCell_.swift"; sourceTree = "<group>"; };
+		BCBDA1E3254F22710051A183 /* CreateChannelController+AvatarOpener_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelController+AvatarOpener_.swift"; sourceTree = "<group>"; };
 		BCBEAC6A23B0888300E52850 /* DynamicLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicLabel.swift; sourceTree = "<group>"; };
 		BCC1A27A22D3C47000766AF9 /* PhoneContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneContainerView.swift; sourceTree = "<group>"; };
 		BCC1A27E22D4826900766AF9 /* PhotoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoController.swift; sourceTree = "<group>"; };
@@ -772,7 +784,8 @@
 		BC0722E52377282100A4D476 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				BC6B9AE22489CC2500157725 /* CreateChannelController.swift */,
+				BCBD55D6264FFEA000AE32C6 /* newshit */,
+				BC6B9AE22489CC2500157725 /* CreateChannelController_.swift */,
 				BCE5ABFB249EE90E001172C4 /* Details Controllers */,
 			);
 			path = Controllers;
@@ -1251,6 +1264,22 @@
 			path = Support;
 			sourceTree = "<group>";
 		};
+		BC71086F263C340000875FF9 /* Explore */ = {
+			isa = PBXGroup;
+			children = (
+				BC710870263C341C00875FF9 /* ExploreController.swift */,
+				BC710872263C344400875FF9 /* Containers */,
+			);
+			path = Explore;
+			sourceTree = "<group>";
+		};
+		BC710872263C344400875FF9 /* Containers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Containers;
+			sourceTree = "<group>";
+		};
 		BC81DDF5253DDE2C001C24BC /* Participants */ = {
 			isa = PBXGroup;
 			children = (
@@ -1457,6 +1486,20 @@
 			path = Misc.;
 			sourceTree = "<group>";
 		};
+		BCBD55D6264FFEA000AE32C6 /* newshit */ = {
+			isa = PBXGroup;
+			children = (
+				BC4F9E08254A18400058BB94 /* DatePickerTableViewCell.swift */,
+				BC7D9D8D26514D82008CBF8F /* DateCell.swift */,
+				BCBD55D22646D19600AE32C6 /* CreateChannelController.swift */,
+				BCBD55D92650038700AE32C6 /* CreateChannelController+TableView.swift */,
+				BCBD55D72650032500AE32C6 /* CreateChannelController+ChannelNameHeaderDelegate.swift */,
+				BCBD55D42646D1EA00AE32C6 /* UpdateChannelController_.swift */,
+				BCBDA1A9254E2E850051A183 /* SelectChannelParticipantsController.swift */,
+			);
+			path = newshit;
+			sourceTree = "<group>";
+		};
 		BCBD85A32597842900303A25 /* Map search */ = {
 			isa = PBXGroup;
 			children = (
@@ -1575,12 +1618,12 @@
 		BCBDA1B1254EFF5C0051A183 /* Delegates */ = {
 			isa = PBXGroup;
 			children = (
-				BCBDA161254DE6820051A183 /* CreateChannelController+TableView.swift */,
-				BCBDA1B2254EFF810051A183 /* CreateChannelController+Map.swift */,
-				BCBDA1BA254F001E0051A183 /* CreateChannelController+Description.swift */,
-				BCBDA1C4254F008D0051A183 /* CreateChannelController+DatePicker.swift */,
-				BCBDA1DB254F109D0051A183 /* CreateChannelController+HeaderCell.swift */,
-				BCBDA1E3254F22710051A183 /* CreateChannelController+AvatarOpener.swift */,
+				BCBDA161254DE6820051A183 /* CreateChannelController+TableView_.swift */,
+				BCBDA1B2254EFF810051A183 /* CreateChannelController+Map_.swift */,
+				BCBDA1BA254F001E0051A183 /* CreateChannelController+Description_.swift */,
+				BCBDA1C4254F008D0051A183 /* CreateChannelController+DatePicker_.swift */,
+				BCBDA1DB254F109D0051A183 /* CreateChannelController+HeaderCell_.swift */,
+				BCBDA1E3254F22710051A183 /* CreateChannelController+AvatarOpener_.swift */,
 			);
 			path = Delegates;
 			sourceTree = "<group>";
@@ -1589,7 +1632,6 @@
 			isa = PBXGroup;
 			children = (
 				BC6B9AE42489CD6800157725 /* CreateChannelHeaderCell.swift */,
-				BC4F9E08254A18400058BB94 /* DatePickerTableViewCell.swift */,
 				BCB0E18925B9E04000390A5C /* SpecialSwitchCell.swift */,
 				BC6B9AE62489CD7900157725 /* CreateChannelCell.swift */,
 				BC5938E325071BEC007743C3 /* DescriptionCell.swift */,
@@ -1657,7 +1699,6 @@
 			isa = PBXGroup;
 			children = (
 				BC3AE88B24B9F27300619FCF /* Location */,
-				BCBDA1A9254E2E850051A183 /* SelectChannelParticipantsController.swift */,
 				BCE5ABFC249EE928001172C4 /* AddParticipantsTableViewController.swift */,
 				BC047000236376B900C235E1 /* DescriptionViewController.swift */,
 			);
@@ -1776,6 +1817,7 @@
 		BCF979FD229D5F6A0088C568 /* space-ios */ = {
 			isa = PBXGroup;
 			children = (
+				BC71086F263C340000875FF9 /* Explore */,
 				BC59273E22A04D2A006A5CEF /* Authentication */,
 				BC49303E253A15B400441F62 /* Contacts */,
 				BC0722E4237727B300A4D476 /* Channels */,
@@ -2207,7 +2249,7 @@
 				BC0C427A256AE94F000C740F /* ProfileController+AvatarOpenerDelegate.swift in Sources */,
 				BCE64DE7235B2D74001F27FD /* SelectUsersContainerView.swift in Sources */,
 				BC5187D825332DB700880418 /* Country.swift in Sources */,
-				BC6B9AE32489CC2500157725 /* CreateChannelController.swift in Sources */,
+				BC6B9AE32489CC2500157725 /* CreateChannelController_.swift in Sources */,
 				BCBD85E72598DE7600303A25 /* FloatingPanelLayout.swift in Sources */,
 				BC0EAF2F2511AC1100394898 /* KeyboardFrameObserver.swift in Sources */,
 				BC493052253A17EB00441F62 /* CurrentUserTableViewCell.swift in Sources */,
@@ -2256,13 +2298,14 @@
 				BCE5ABF8249EE74B001172C4 /* AddLocationContainerView.swift in Sources */,
 				BC08DF91236B335500A917D7 /* ParticipantCell.swift in Sources */,
 				BC49304D253A17DD00441F62 /* UsersTableViewCell.swift in Sources */,
-				BCBDA162254DE6820051A183 /* CreateChannelController+TableView.swift in Sources */,
+				BCBDA162254DE6820051A183 /* CreateChannelController+TableView_.swift in Sources */,
 				BC5BAFC125A24ACB00996DCB /* CustomAlertController.swift in Sources */,
 				BC0F42892358D5DC000D3DF0 /* MarginStackCell.swift in Sources */,
 				BCBBC29525388C2D0010F39E /* CustomNavigationItem.swift in Sources */,
 				BC3AE88F24B9F5C800619FCF /* RoundButton.swift in Sources */,
 				BC6849A822A9CDE7002097AC /* ChannelService.swift in Sources */,
 				BCF4828E238A08120017A6FB /* SettingsFooterContainerView.swift in Sources */,
+				BC7D9D8E26514D82008CBF8F /* DateCell.swift in Sources */,
 				BC0EAF312511AC6A00394898 /* KeyboardFrameObserversManager.swift in Sources */,
 				BCE94DC624A37407009EB9EF /* SelectionTableViewController+SearchHandlers.swift in Sources */,
 				BC1A780322A3F9F7005AC5CE /* UICollectionView+Extension.swift in Sources */,
@@ -2270,13 +2313,13 @@
 				BCF8EE142389D18700234160 /* INSScalingImageView.swift in Sources */,
 				BC6B9AE72489CD7900157725 /* CreateChannelCell.swift in Sources */,
 				BCF97A07229D5F6A0088C568 /* space_ios.xcdatamodeld in Sources */,
-				BCBDA1BB254F001E0051A183 /* CreateChannelController+Description.swift in Sources */,
+				BCBDA1BB254F001E0051A183 /* CreateChannelController+Description_.swift in Sources */,
 				BCBD85A62597845900303A25 /* SearchTableContainerView.swift in Sources */,
 				BC30D79A252FCB4D0013CD38 /* PhotoController+AvatarOpenerDelegate.swift in Sources */,
 				BC8C117725BB2F38000CBD25 /* UpdateChannelController+TableView.swift in Sources */,
 				BC98B105236E3B20009A45DA /* AnnoucementFactory.swift in Sources */,
 				BCE5ABFF249EEE6A001172C4 /* HeaderView.swift in Sources */,
-				BCBDA1B3254EFF810051A183 /* CreateChannelController+Map.swift in Sources */,
+				BCBDA1B3254EFF810051A183 /* CreateChannelController+Map_.swift in Sources */,
 				BCF48C8B2380A388004B8E21 /* SettingsCell.swift in Sources */,
 				BCCF55362620D85800AFBF7C /* CustomizedImageView.swift in Sources */,
 				BC5938E425071BEC007743C3 /* DescriptionCell.swift in Sources */,
@@ -2289,6 +2332,7 @@
 				BCEFCC0D25957773009D3482 /* VerificationChangeNumberController.swift in Sources */,
 				BC59274222A04D5F006A5CEF /* SigninViewController.swift in Sources */,
 				BC49305C253A194200441F62 /* ContactsTableViewHeader.swift in Sources */,
+				BC710871263C341C00875FF9 /* ExploreController.swift in Sources */,
 				BC44E6C522CCDCB400F50956 /* UserCell.swift in Sources */,
 				BCBDA195254E2BDE0051A183 /* SelectParticipantsTableView.swift in Sources */,
 				BC57BCB02509411800AAB5AC /* RealmKeychain.swift in Sources */,
@@ -2301,7 +2345,7 @@
 				BC5187BE25332D3400880418 /* CountriesTableViewController+Search.swift in Sources */,
 				BC98B103236E3AF5009A45DA /* AnnouncementShowing.swift in Sources */,
 				BC5C497D25474335007AF964 /* ChannelsContainerView.swift in Sources */,
-				BCBDA1C5254F008D0051A183 /* CreateChannelController+DatePicker.swift in Sources */,
+				BCBDA1C5254F008D0051A183 /* CreateChannelController+DatePicker_.swift in Sources */,
 				BC63314F25A3A4BF008A0C7A /* InteractiveModalPresentationController.swift in Sources */,
 				BC0EAF3C2512A08F00394898 /* MessageSection.swift in Sources */,
 				BCB027DD2568455B0082B318 /* SwitchTableViewCell.swift in Sources */,
@@ -2313,6 +2357,7 @@
 				BC4C95EF23752223000579F4 /* ThemeManager.swift in Sources */,
 				BC57BCAE25093F4E00AAB5AC /* RealmCGRect.swift in Sources */,
 				BC2047B7253DDF140064F7F8 /* ParticipantsController.swift in Sources */,
+				BCBD55DA2650038700AE32C6 /* CreateChannelController+TableView.swift in Sources */,
 				BCCF554026210CA200AFBF7C /* BaseMessageCell+Handlers.swift in Sources */,
 				BC8C117225BB29DC000CBD25 /* Validator.swift in Sources */,
 				BC74F2B822D0D72700B37801 /* Validators.swift in Sources */,
@@ -2331,6 +2376,7 @@
 				BCF8EDFF2389CF1900234160 /* AvatarOpener.swift in Sources */,
 				BCE5ABFD249EE928001172C4 /* AddParticipantsTableViewController.swift in Sources */,
 				BC1000C0238AF9EF00A0C5D8 /* ChannelDetailsContainerView.swift in Sources */,
+				BCBD55D82650032500AE32C6 /* CreateChannelController+ChannelNameHeaderDelegate.swift in Sources */,
 				BC089C972585598F00A42B7D /* PushNotificationSender.swift in Sources */,
 				BC0DC06222EB528100A27BC3 /* Reachability.swift in Sources */,
 				BCBD8674259A8DD100303A25 /* MapController+SearchBarDelegate.swift in Sources */,
@@ -2354,7 +2400,7 @@
 				BC01387C2379A93000C7291A /* UsersFetcher.swift in Sources */,
 				BCBD860E2598FB0D00303A25 /* MapItemSearchCell.swift in Sources */,
 				BCD6B9C725A92BF200482155 /* MainRoundButton.swift in Sources */,
-				BCBDA1E4254F22710051A183 /* CreateChannelController+AvatarOpener.swift in Sources */,
+				BCBDA1E4254F22710051A183 /* CreateChannelController+AvatarOpener_.swift in Sources */,
 				BC58C22D25617FA70088A304 /* ChannelLogHeaderView.swift in Sources */,
 				BC0EAF3A2512619600394898 /* InputTextView.swift in Sources */,
 				BC6B9AE52489CD6800157725 /* CreateChannelHeaderCell.swift in Sources */,
@@ -2386,12 +2432,13 @@
 				BC59274622A07694006A5CEF /* SigninContainerView.swift in Sources */,
 				BCF97A01229D5F6A0088C568 /* WelcomeViewController.swift in Sources */,
 				BC59276B22A133C1006A5CEF /* ChannelCell+ConfigureCell.swift in Sources */,
+				BCBD55D52646D1EA00AE32C6 /* UpdateChannelController_.swift in Sources */,
 				BC74F2BE22D26F1C00B37801 /* KeyboardLayoutConstraint.swift in Sources */,
 				BC493057253A17FB00441F62 /* ContactPhoneNumberTableViewCell.swift in Sources */,
 				BC6C60B423843FFB003DBB53 /* UploadProgress.swift in Sources */,
 				BCBDA18B254E29CF0051A183 /* ParticipantTableViewCell.swift in Sources */,
 				BC71ACFA253685B900EA2907 /* ChannelDetailsController+ParticipantsCollectionView.swift in Sources */,
-				BCBDA1DC254F109D0051A183 /* CreateChannelController+HeaderCell.swift in Sources */,
+				BCBDA1DC254F109D0051A183 /* CreateChannelController+HeaderCell_.swift in Sources */,
 				BC0EAF2D2511ABBC00394898 /* KeyboardLayoutGuide.swift in Sources */,
 				BC44E6C922CCE1F600F50956 /* CheckableTableViewCell.swift in Sources */,
 				BC1A780622A3FA2D005AC5CE /* BaseMessageCell.swift in Sources */,
@@ -2404,6 +2451,7 @@
 				BCA8815E25101061004D3ED7 /* ChannelCollectionView.swift in Sources */,
 				BC0F428B2358D643000D3DF0 /* StackCellBase.swift in Sources */,
 				BC8C116525BB273B000CBD25 /* UpdateChannelController+MapDelegate.swift in Sources */,
+				BCBD55D32646D19600AE32C6 /* CreateChannelController.swift in Sources */,
 				BC1A77FD22A3F8B6005AC5CE /* fChannelLogController+DataSource.swift in Sources */,
 				BCCF553B2620D87900AFBF7C /* InAppNotificationBanner.swift in Sources */,
 				BCEFCC132596ADF4009D3482 /* PermissionsController.swift in Sources */,

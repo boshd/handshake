@@ -55,8 +55,8 @@ class SelectChannelParticipantsController: SelectParticipantsController {
         navigationItem.rightBarButtonItem?.isEnabled = true
 
         if selectedUsers.count == 1 {
-            collectionViewHeightAnchor.constant = 85
-            UIView.animate(withDuration: 0.3) {
+            collectionViewHeightAnchor.constant = 120
+            UIView.animate(withDuration: 0.2) {
                 self.view.layoutIfNeeded()
             }
             return

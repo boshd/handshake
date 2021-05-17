@@ -75,21 +75,10 @@ extension ChannelCell {
             case .cancelled:
                 eventStatus.text = "Cancelled"
         }
-        
-        
+
         startTimer()
-        
-        
-        
+
         let badgeInt = channels[indexPath.row].badge.value ?? 0
-        
-        print("ffff")
-        print(badgeInt)
-        print(channels[indexPath.row].lastMessage?.messageUID)
-        print(channels[indexPath.row].lastMessage?.text)
-        print(channels[indexPath.row].lastMessage?.fromId)
-        print(Auth.auth().currentUser?.uid)
-        
         
         guard badgeInt > 0, channels[indexPath.row].lastMessage?.fromId != Auth.auth().currentUser?.uid else {
             updateBadge(0)

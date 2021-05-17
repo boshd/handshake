@@ -8,17 +8,17 @@
 
 import UIKit
 
-protocol CreateChannelHeaderCellDelegate: class {
-    func createChannelHeaderCell(_ cell: CreateChannelHeaderCell, didTapImageView: Bool)
-    func createChannelHeaderCell(_ cell: CreateChannelHeaderCell, updatedChannelName: String)
+protocol ChannelNameHeaderCellDelegate: class {
+    func channelNameHeaderCell(_ cell: ChannelNameHeaderCell, didTapImageView: Bool)
+    func channelNameHeaderCell(_ cell: ChannelNameHeaderCell, updatedChannelName: String)
 }
 
-class CreateChannelHeaderCell: UITableViewCell {
+class ChannelNameHeaderCell: UITableViewCell {
 
     var textChanged: ((String) -> Void)?
     let locationView = LocationView()
 
-    weak var createChannelHeaderCellDelegate: CreateChannelHeaderCellDelegate?
+    weak var delegate: ChannelNameHeaderCellDelegate?
     
     var channelImageView: UIImageView = {
         var imageView = UIImageView()
@@ -48,16 +48,16 @@ class CreateChannelHeaderCell: UITableViewCell {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.backgroundColor = .clear
-        textField.font = ThemeManager.currentTheme().secondaryFontBold(with: 18)
+        textField.font = ThemeManager.currentTheme().secondaryFont(with: 16)
         textField.textColor = ThemeManager.currentTheme().generalTitleColor
-        textField.placeholder = "What's the plan?"
+        textField.placeholder = "What's happening?"
         textField.returnKeyType = .done
         textField.autocorrectionType = .default
         textField.autocapitalizationType = .sentences
         textField.tintColor = ThemeManager.currentTheme().tintColor
         textField.returnKeyType = .done
         textField.keyboardAppearance = ThemeManager.currentTheme().keyboardAppearance
-        textField.attributedPlaceholder = NSAttributedString(string: "What's the plan?", attributes: [NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().placeholderTextColor])
+        textField.attributedPlaceholder = NSAttributedString(string: "What's happening?", attributes: [NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().placeholderTextColor])
         
         return textField
     }()
@@ -156,22 +156,20 @@ class CreateChannelHeaderCell: UITableViewCell {
         setColor()
     }
     
-    // delegates
-    
     @objc
     func imageTapped() {
-        createChannelHeaderCellDelegate?.createChannelHeaderCell(self, didTapImageView: true)
+        delegate?.channelNameHeaderCell(self, didTapImageView: true)
     }
     
     @objc
     func textFieldDidChange(_ textField: UITextField) {
         if let text = textField.text {
-            createChannelHeaderCellDelegate?.createChannelHeaderCell(self, updatedChannelName: text)
+            delegate?.channelNameHeaderCell(self, updatedChannelName: text)
         }
     }
 }
 
-extension CreateChannelHeaderCell: UITextFieldDelegate {
+extension ChannelNameHeaderCell: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let maxLength = 25
         let currentString: NSString = (textField.text ?? "") as NSString
@@ -185,48 +183,3 @@ extension CreateChannelHeaderCell: UITextFieldDelegate {
         return false
     }
 }
-
-// UITextView
-//extension CreateChannelHeaderCell:  UITextViewDelegate {
-//    func textViewDidChangeSelection(_ textView: UITextView) {
-//        if self.contentView.window != nil {
-//            if textView.textColor == UIColor.lightGray {
-//                textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
-//            }
-//        }
-//    }
-//
-//    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-//        let currentText:String = textView.text
-//        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: text)
-//        if text == "\n" {
-//            print("yes1")
-//            textView.resignFirstResponder()
-//            return false
-//        } else if updatedText.isEmpty {
-//            print("yes2")
-//            textView.text = "What's the plan?"
-//            textView.textColor = UIColor.lightGray
-//            textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
-//        } else if textView.textColor == UIColor.lightGray && !text.isEmpty {
-//            print("yes3")
-//            textView.textColor = UIColor.black
-//            textView.text = text
-//        }
-//
-//        print("default")
-////        let newText = (textView.text as NSString).replacingCharacters(in: range, with: text)
-//        let numberOfChars = updatedText.count
-//        return numberOfChars < 25
-////        return true
-//    }
-//
-//    func textViewDidBeginEditing(_ textView: UITextView) {
-//        if self.contentView.window != nil {
-//            if textView.textColor == UIColor.lightGray {
-//                textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
-//            }
-//        }
-//    }
-//}
-

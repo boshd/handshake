@@ -1,14 +1,14 @@
 ////
-////  UpdateChannelController+HeaderCell.swift
+////  CreateChannelController+HeaderCell.swift
 ////  space-ios
 ////
-////  Created by Kareem Arab on 2021-01-22.
-////  Copyright © 2021 Kareem Arab. All rights reserved.
+////  Created by Kareem Arab on 2020-11-01.
+////  Copyright © 2020 Kareem Arab. All rights reserved.
 ////
 //
 //import UIKit
 //
-//extension UpdateChannelController: CreateChannelHeaderCellDelegate {
+//extension CreateChannelController: CreateChannelHeaderCellDelegate {
 //    func createChannelHeaderCell(_ cell: CreateChannelHeaderCell, didTapImageView: Bool) {
 //        avatarOpener.delegate = self
 //        selectedImageOwningCellIndexPath = tableView.indexPath(for: cell)
