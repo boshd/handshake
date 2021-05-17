@@ -13,7 +13,6 @@ class SpecialSwitchCell: UITableViewCell {
 
     var switchAccessory: UISwitch = {
         var switchAccessory = UISwitch()
-        switchAccessory.translatesAutoresizingMaskIntoConstraints = false
         switchAccessory.isUserInteractionEnabled = true
         switchAccessory.onTintColor = ThemeManager.currentTheme().tintColor
         switchAccessory.isOn = false
@@ -30,18 +29,21 @@ class SpecialSwitchCell: UITableViewCell {
         
         backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         selectionStyle = .none
-        contentView.addSubview(switchAccessory)
+//        contentView.addSubview(switchAccessory)
         
         detailTextLabel?.numberOfLines = 0
         detailTextLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
-        textLabel?.font = ThemeManager.currentTheme().secondaryFontBold(with: 14)
+        detailTextLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 12)
+        textLabel?.font = ThemeManager.currentTheme().secondaryFontBold(with: 13)
         textLabel?.textColor = ThemeManager.currentTheme().generalTitleColor
         
         contentView.isUserInteractionEnabled = true
+        
+        accessoryView = switchAccessory
 
-        switchAccessory.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        switchAccessory.widthAnchor.constraint(equalToConstant: 60).isActive = true
-        switchAccessory.rightAnchor.constraint(equalTo: rightAnchor, constant: -5).isActive = true
+//        switchAccessory.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+//        switchAccessory.widthAnchor.constraint(equalToConstant: 60).isActive = true
+//        switchAccessory.rightAnchor.constraint(equalTo: rightAnchor, constant: -5).isActive = true
         
     }
   

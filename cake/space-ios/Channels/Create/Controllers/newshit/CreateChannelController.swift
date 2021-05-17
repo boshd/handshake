@@ -57,6 +57,7 @@ class CreateChannelController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
+        configureNavigationBar()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -91,7 +92,7 @@ class CreateChannelController: UITableViewController {
     }
     
     fileprivate func configureNavigationBar() {
-        
+        title = "New event"
     }
     
     // MARK: - Date Picker Logic
@@ -138,7 +139,7 @@ extension CreateChannelController {
             if indexPath.row == 0 {
                 let cell = tableView.dequeueReusableCell(withIdentifier: specialSwitchCellId, for: indexPath) as? SpecialSwitchCell ?? SpecialSwitchCell()
                 cell.textLabel?.text = secondSection[0]
-                cell.detailTextLabel?.text = "Hold a remote a event."
+                cell.detailTextLabel?.text = "Plan a remote event. Share any details in the description below."
                 
                 cell.switchAccessory.isOn = isVirtual
                 cell.switchTapAction = { isOn in
@@ -176,17 +177,7 @@ extension CreateChannelController {
                 cell.textLabel?.text = indexPath.row == 0 ? thirdSection[0] : thirdSection[1]
                 return cell
             }
-            
-//
-//            if datePickerIndexPath != nil {
-//                if datePickerIndexPath == indexPath {
-//                    let cell = tableView.dequeueReusableCell(withIdentifier: datePickerCellId, for: indexPath) as? DatePickerCell ?? DatePickerCell()
-//                    return cell
-//                }
-//            }
-//            print(indexPath.row)
         } else {
-            
             let cell = tableView.dequeueReusableCell(withIdentifier: descriptionCellId, for: indexPath) as? DescriptionCell ?? DescriptionCell()
             cell.textLabel?.text = fourthSection[0]
             return cell
@@ -195,7 +186,14 @@ extension CreateChannelController {
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.section == 0 {
-            return 125
+            return 120
+            
+        } else if indexPath.section == 1 {
+            if indexPath.row == 0 {
+                return UITableView.automaticDimension
+            } else {
+                return 50
+            }
         } else if indexPath.section == 2 {
             if let datePickerIndexPathRow = datePickerIndexPath?.row, datePickerIndexPath != nil && datePickerIndexPathRow + 1 == indexPath.row {
                 return DatePickerCell().datePickerHeight

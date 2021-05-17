@@ -14,7 +14,7 @@ class DateCell: UITableViewCell {
     let timeLabel: DynamicLabel = {
         let label = DynamicLabel(withInsets: 0, 0, 0, 0)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = ThemeManager.currentTheme().secondaryFont(with: 14)
+        label.font = ThemeManager.currentTheme().secondaryFont(with: 13)
         label.text = "11:00 AM"
         
         return label
@@ -23,7 +23,7 @@ class DateCell: UITableViewCell {
     let dateLabel: DynamicLabel = {
         let label = DynamicLabel(withInsets: 0, 0, 0, 0)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = ThemeManager.currentTheme().secondaryFont(with: 14)
+        label.font = ThemeManager.currentTheme().secondaryFont(with: 13)
         label.text = "May 19, 2021"
         
         return label
@@ -32,7 +32,7 @@ class DateCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         
-        textLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 14)
+        textLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 13)
         
         selectionStyle = .none
         

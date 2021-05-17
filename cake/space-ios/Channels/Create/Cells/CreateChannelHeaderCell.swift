@@ -48,7 +48,7 @@ class ChannelNameHeaderCell: UITableViewCell {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.backgroundColor = .clear
-        textField.font = ThemeManager.currentTheme().secondaryFont(with: 16)
+        textField.font = ThemeManager.currentTheme().secondaryFont(with: 18)
         textField.textColor = ThemeManager.currentTheme().generalTitleColor
         textField.placeholder = "What's happening?"
         textField.returnKeyType = .done

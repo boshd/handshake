@@ -16,11 +16,10 @@ class DescriptionCell: UITableViewCell, UITextViewDelegate {
     let nameTextView: UITextView = {
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.backgroundColor = .clear
+        textView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         textView.isScrollEnabled = false
-        textView.font = ThemeManager.currentTheme().secondaryFontBold(with: 17)
-        textView.text = "Description"
-        textView.textColor = .lightGray
+        textView.font = ThemeManager.currentTheme().secondaryFont(with: 13)
+        textView.textColor = ThemeManager.currentTheme().generalTitleColor
         textView.returnKeyType = .done
         textView.autocorrectionType = .no
         textView.autocapitalizationType = .none

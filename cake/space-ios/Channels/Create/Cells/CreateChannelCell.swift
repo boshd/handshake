@@ -24,8 +24,8 @@ class SelectLocationCell: UITableViewCell {
         
         detailTextLabel?.numberOfLines = 0
         
-        textLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 14)
-        detailTextLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 13)
+        textLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 13)
+        detailTextLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 12)
     }
   
 
@@ -36,7 +36,7 @@ class SelectLocationCell: UITableViewCell {
     fileprivate func setColor() {
         backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         contentView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
-        textLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
+        textLabel?.textColor = ThemeManager.currentTheme().generalTitleColor
         detailTextLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
     }
 
