@@ -21,6 +21,7 @@ class DatePickerCell: UITableViewCell {
         picker.datePickerMode = .dateAndTime
         picker.isUserInteractionEnabled = true
         picker.tintColor = ThemeManager.currentTheme().tintColor
+        picker.minimumDate = Date()
         
         return picker
     }()
@@ -49,7 +50,7 @@ class DatePickerCell: UITableViewCell {
         
         contentView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         
-//        datePicker.addTarget(self, action: #selector(dateDidChange), for: .valueChanged)
+        datePicker.addTarget(self, action: #selector(dateDidChange), for: .valueChanged)
 //
 //        textLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
 //        detailTextLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor

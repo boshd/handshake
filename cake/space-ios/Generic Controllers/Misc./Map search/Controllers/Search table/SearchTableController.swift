@@ -10,14 +10,14 @@ import UIKit
 import FloatingPanel
 import MapKit
 
-protocol SearchTableDelegate: class {
-    func clickSearchButton(searchBar: UISearchBar)
-    func didSelectMapItem(mapItem: MKMapItem)
-}
+//protocol SearchTableDelegate: class {
+//    func clickSearchButton(searchBar: UISearchBar)
+//    func didSelectMapItem(mapItem: MKMapItem)
+//}
 
 class SearchTableController: UIViewController {
     
-    var delegate: SearchTableDelegate?
+    var delegate: LocationSearchDelegate?
     
     var searchTableContainerView = SearchTableContainerView()
     let viewPlaceholder = ViewPlaceholder()
@@ -113,8 +113,8 @@ class SearchTableController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(changeTheme), name: .themeUpdated, object: nil)
         mapController = self.presentingViewController as? MapController
         
-        searchTableContainerView.tableView.delegate = self
-        searchTableContainerView.tableView.dataSource = self
+//        searchTableContainerView.tableView.delegate = self
+//        searchTableContainerView.tableView.dataSource = self
         
         searchTableContainerView.tableView.register(MapSearchCompletionCell.self, forCellReuseIdentifier: mapSearchCompletionCellId)
         searchTableContainerView.tableView.register(MapItemSearchCell.self, forCellReuseIdentifier: mapItemSearchCellId)

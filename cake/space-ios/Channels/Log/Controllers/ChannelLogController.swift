@@ -710,8 +710,8 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         if let locationName = channel.locationName {
             channelLogContainerView.channelLogHeaderView.locationNameLabel.text = "📍 \(locationName)"
         } else {
-            if let virtual = channel.isVirtual.value, virtual {
-                channelLogContainerView.channelLogHeaderView.locationNameLabel.text = "Virtual event"
+            if let remote = channel.isRemote.value, remote {
+                channelLogContainerView.channelLogHeaderView.locationNameLabel.text = "Remote event"
             }
         }
     }

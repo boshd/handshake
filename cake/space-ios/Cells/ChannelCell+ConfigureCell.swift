@@ -37,7 +37,7 @@ extension ChannelCell {
         if let locationName = channel.locationName {
             subTitle.text = locationName
         } else {
-            if let virtual = channel.isVirtual.value, virtual {
+            if let remote = channel.isRemote.value, remote {
                 subTitle.text = "Remote"
             }
         }

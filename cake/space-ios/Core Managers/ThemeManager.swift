@@ -277,7 +277,7 @@ enum Theme: Int {
     var imageViewBackground: UIColor {
         switch self {
             case .normal:
-                return .extraLight()
+                return UIColor(red: 0.95, green: 0.95, blue: 0.96, alpha: 1.00)
             case .dark:
                 return generalSubtitleColor
         }
@@ -435,7 +435,8 @@ enum Theme: Int {
     var generalBackgroundSecondaryColor: UIColor {
         switch self {
             case .normal:
-                return .extraLight()
+                // return .extraLight()
+                return UIColor(red: 0.95, green: 0.95, blue: 0.96, alpha: 1.00)
             case .dark:
                 return .defaultMediumDarkGray()
         }

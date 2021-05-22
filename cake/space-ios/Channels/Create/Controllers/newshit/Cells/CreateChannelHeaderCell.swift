@@ -26,7 +26,7 @@ class ChannelNameHeaderCell: UITableViewCell {
         imageView.backgroundColor = ThemeManager.currentTheme().imageViewBackground
         imageView.contentMode = .scaleAspectFill
         imageView.layer.masksToBounds = true
-        imageView.cornerRadius = 56 / 2
+        imageView.cornerRadius = 25
         imageView.isUserInteractionEnabled = true
         return imageView
     }()
@@ -50,14 +50,14 @@ class ChannelNameHeaderCell: UITableViewCell {
         textField.backgroundColor = .clear
         textField.font = ThemeManager.currentTheme().secondaryFont(with: 18)
         textField.textColor = ThemeManager.currentTheme().generalTitleColor
-        textField.placeholder = "What's happening?"
+        textField.placeholder = "What's the plan?"
         textField.returnKeyType = .done
         textField.autocorrectionType = .default
         textField.autocapitalizationType = .sentences
         textField.tintColor = ThemeManager.currentTheme().tintColor
         textField.returnKeyType = .done
         textField.keyboardAppearance = ThemeManager.currentTheme().keyboardAppearance
-        textField.attributedPlaceholder = NSAttributedString(string: "What's happening?", attributes: [NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().placeholderTextColor])
+        textField.attributedPlaceholder = NSAttributedString(string: "What's the plan?", attributes: [NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().placeholderTextColor])
         
         return textField
     }()
@@ -65,7 +65,7 @@ class ChannelNameHeaderCell: UITableViewCell {
     let channelNameDescriptionLabel: DynamicLabel = {
         let label = DynamicLabel(withInsets: 0, 0, 0, 0)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Events can't be modified after they begin."
+        label.text = "Events cannot be modified after they begin, end and are cancelled."
         label.textColor = ThemeManager.currentTheme().generalSubtitleColor
         label.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         label.numberOfLines = 0
@@ -111,8 +111,8 @@ class ChannelNameHeaderCell: UITableViewCell {
         NSLayoutConstraint.activate([
             channelImageView.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 20),
             channelImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
-            channelImageView.heightAnchor.constraint(equalToConstant: 56),
-            channelImageView.widthAnchor.constraint(equalToConstant: 56),
+            channelImageView.heightAnchor.constraint(equalToConstant: 50),
+            channelImageView.widthAnchor.constraint(equalToConstant: 50),
             
             channelImagePlaceholderLabel.topAnchor.constraint(equalTo: channelImageView.topAnchor, constant: 0),
             channelImagePlaceholderLabel.leadingAnchor.constraint(equalTo: channelImageView.leadingAnchor, constant: 0),

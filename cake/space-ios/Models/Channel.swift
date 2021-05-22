@@ -57,7 +57,7 @@ final class Channel: Object {
     
     var isMuted = RealmOptional<Bool>()
     var isEmpty = RealmOptional<Bool>()
-    var isVirtual = RealmOptional<Bool>()
+    var isRemote = RealmOptional<Bool>()
     
     var latitude = RealmOptional<Double>()
     var longitude = RealmOptional<Double>()
@@ -66,6 +66,8 @@ final class Channel: Object {
     
     var tmpStartDate: Date?
     var tmpEndDate: Date?
+    
+    var mapItem: MKMapItem?
     
     dynamic var placemark: MKPlacemark? // local
     
@@ -85,6 +87,7 @@ final class Channel: Object {
     }
     
     convenience init(dictionary: [String: AnyObject]?) {
+        
         self.init()
         
         self.id = dictionary?["id"] as? String
@@ -124,7 +127,7 @@ final class Channel: Object {
         self.locationName = dictionary?["locationName"] as? String
         
         self.isCancelled.value = dictionary?["isCancelled"] as? Bool
-        self.isVirtual.value = dictionary?["isVirtual"] as? Bool
+        self.isRemote.value = dictionary?["isRemote"] as? Bool
         
         self.shouldUpdateRealmRemotelyBeforeDisplaying.value = RealmKeychain.defaultRealm.object(ofType: Channel.self,
         forPrimaryKey: dictionary?["id"] as? String ?? "")?.shouldUpdateRealmRemotelyBeforeDisplaying.value

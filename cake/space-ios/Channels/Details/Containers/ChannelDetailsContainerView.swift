@@ -278,12 +278,12 @@ class ChannelDetailsContainerView: UIView {
         return view
     }()
     
-    var virtualEventLabel: DynamicLabel = {
+    var remoteEventLabel: DynamicLabel = {
         let label = DynamicLabel(withInsets: 2, 2, 2, 2)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = ThemeManager.currentTheme().secondaryFontBold(with: 16)
         label.textColor = .gray
-        label.text = "Virtual event"
+        label.text = "Remote event"
 
         return label
     }()
@@ -394,23 +394,23 @@ class ChannelDetailsContainerView: UIView {
         bioPlaceholderLabel.isHidden = !descriptionTextView.text.isEmpty
     }
 
-    func reloadOverlay(virtual: Bool) {
+    func reloadOverlay(remote: Bool) {
         
         if scrollView.contains(overlayView) {
             overlayView.removeFromSuperview()
         }
         
-        if virtual {
+        if remote {
             scrollView.addSubview(overlayView)
-            overlayView.addSubview(virtualEventLabel)
+            overlayView.addSubview(remoteEventLabel)
             NSLayoutConstraint.activate([
                 overlayView.topAnchor.constraint(equalTo: eventTypeCaptionLabel.bottomAnchor, constant: 13),
                 overlayView.heightAnchor.constraint(equalToConstant: 200),
                 overlayView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
                 overlayView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -40),
                 
-                virtualEventLabel.centerXAnchor.constraint(equalTo: overlayView.centerXAnchor, constant: 0),
-                virtualEventLabel.centerYAnchor.constraint(equalTo: overlayView.centerYAnchor, constant: 0)
+                remoteEventLabel.centerXAnchor.constraint(equalTo: overlayView.centerXAnchor, constant: 0),
+                remoteEventLabel.centerYAnchor.constraint(equalTo: overlayView.centerYAnchor, constant: 0)
             ])
         }
     }

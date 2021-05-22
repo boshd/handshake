@@ -62,9 +62,9 @@ extension ChannelLogController: ChannelManagerDelegate {
 //        }
     }
     
-    func isVirtualUpdated(_ isVirtual: Bool) {
+    func isRemoteUpdated(_ isRemote: Bool) {
         try! realm.safeWrite {
-            self.channel?.isVirtual = RealmOptional(isVirtual)
+            self.channel?.isRemote = RealmOptional(isRemote)
         }
         if self.isCurrentUserMemberOfCurrentGroup() {
             // configure virtuality

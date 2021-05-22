@@ -23,6 +23,7 @@ class SearchTableContainerView: UIView {
         searchBar.searchBarStyle = .minimal
         searchBar.showsCancelButton = true
         searchBar.keyboardAppearance = ThemeManager.currentTheme().keyboardAppearance
+        searchBar.becomeFirstResponder()
         return searchBar
     }()
     
@@ -36,6 +37,8 @@ class SearchTableContainerView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         
         addSubview(searchBar)
         addSubview(tableView)
@@ -62,6 +65,7 @@ class SearchTableContainerView: UIView {
         searchBar.searchBarStyle = .minimal
         searchBar.showsCancelButton = true
         searchBar.keyboardAppearance = ThemeManager.currentTheme().keyboardAppearance
+        backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
     }
     
     required init?(coder: NSCoder) {

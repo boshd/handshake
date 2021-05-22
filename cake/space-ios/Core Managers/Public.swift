@@ -1003,6 +1003,13 @@ extension Date {
         return calendar.date(byAdding: components, to: self) ?? self
     }
     
+    public var previousHour: Date {
+        let calendar = Calendar.current
+        let minutes = calendar.component(.minute, from: self)
+        let components = DateComponents(hour: 1, minute: minutes)
+        return calendar.date(byAdding: components, to: self) ?? self
+    }
+    
     func getShortDateStringFromUTC() -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium

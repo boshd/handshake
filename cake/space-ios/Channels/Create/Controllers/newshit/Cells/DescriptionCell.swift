@@ -9,7 +9,13 @@
 import UIKit
 import Foundation
 
-class DescriptionCell: UITableViewCell, UITextViewDelegate {
+protocol DescriptionCellDelegate: class {
+    func updateHeightOfRow(_ cell: UITableViewCell, _ textView: UITextView)
+}
+
+class DescriptionCell: UITableViewCell {
+    
+    weak var delegate: DescriptionCellDelegate?
 
     var textChanged: ((String) -> Void)?
     
@@ -18,12 +24,12 @@ class DescriptionCell: UITableViewCell, UITextViewDelegate {
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         textView.isScrollEnabled = false
-        textView.font = ThemeManager.currentTheme().secondaryFont(with: 13)
-        textView.textColor = ThemeManager.currentTheme().generalTitleColor
+        textView.font = ThemeManager.currentTheme().secondaryFont(with: 14)
+        textView.textColor = ThemeManager.currentTheme().generalSubtitleColor
         textView.returnKeyType = .done
-        textView.autocorrectionType = .no
-        textView.autocapitalizationType = .none
-        textView.tintColor = .black
+        textView.autocorrectionType = .default
+        textView.autocapitalizationType = .sentences
+        textView.tintColor = ThemeManager.currentTheme().tintColor
         textView.textContainer.lineFragmentPadding = 0
         
         return textView
@@ -42,23 +48,15 @@ class DescriptionCell: UITableViewCell, UITextViewDelegate {
         
         NSLayoutConstraint.activate([
             // nameTextView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: 0),
-            nameTextView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
-            nameTextView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0),
-            nameTextView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-            nameTextView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            nameTextView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            nameTextView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
+            nameTextView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
+            nameTextView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
         ])
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    func textChanged(action: @escaping (String) -> Void) {
-        self.textChanged = action
-    }
-    
-    func textViewDidChange(_ textView: UITextView) {
-        textChanged?(textView.text)
     }
 
     fileprivate func setColor() {
@@ -74,7 +72,8 @@ class DescriptionCell: UITableViewCell, UITextViewDelegate {
 }
 
 // UITextView
-extension DescriptionCell {
+extension DescriptionCell: UITextViewDelegate {
+    
     func textViewDidChangeSelection(_ textView: UITextView) {
         if self.contentView.window != nil {
             if textView.textColor == UIColor.lightGray {
@@ -92,7 +91,7 @@ extension DescriptionCell {
             return false
         } else if updatedText.isEmpty {
             textView.text = "Description"
-            textView.textColor = UIColor.lightGray
+            textView.textColor = ThemeManager.currentTheme().generalSubtitleColor
 
             textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
         } else if textView.textColor == UIColor.lightGray && !text.isEmpty {
@@ -103,6 +102,17 @@ extension DescriptionCell {
         }
 
         return false
+    }
+    
+    func textChanged(action: @escaping (String) -> Void) {
+        self.textChanged = action
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        if let deletate = delegate {
+            deletate.updateHeightOfRow(self, textView)
+        }
+        textChanged?(textView.text)
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {

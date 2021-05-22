@@ -10,6 +10,11 @@ import Foundation
 
 extension CreateChannelController: ChannelNameHeaderCellDelegate {
     func channelNameHeaderCell(_ cell: ChannelNameHeaderCell, didTapImageView: Bool) {
+        if didTapImageView {
+            avatarOpener.delegate = self
+            selectedImageOwningCellIndexPath = tableView.indexPath(for: cell)
+            avatarOpener.handleAvatarOpening(avatarView: cell.channelImageView, at: self, isEditButtonEnabled: true, title: .user)
+        }
     }
     
     func channelNameHeaderCell(_ cell: ChannelNameHeaderCell, updatedChannelName: String) {

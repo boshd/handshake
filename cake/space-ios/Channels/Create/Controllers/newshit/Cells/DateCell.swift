@@ -34,7 +34,7 @@ class DateCell: UITableViewCell {
         
         textLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 13)
         
-        selectionStyle = .none
+        selectionStyle = .default
         
         addSubview(timeLabel)
         addSubview(dateLabel)
@@ -54,3 +54,9 @@ class DateCell: UITableViewCell {
     }
     
 }
+
+//extension DateCell: DatePickerDelegate {
+//    func didChangeDate(cell: UITableViewCell, date: Date) {
+//        <#code#>
+//    }
+//}

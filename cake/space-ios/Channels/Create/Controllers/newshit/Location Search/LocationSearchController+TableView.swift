@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension SearchTableController: UITableViewDataSource {
+extension LocationSearchController: UITableViewDelegate {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         1
@@ -37,7 +37,7 @@ extension SearchTableController: UITableViewDataSource {
     }
 }
 
-extension SearchTableController: UITableViewDelegate {
+extension LocationSearchController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch tableViewType {
         case .searchCompletion:

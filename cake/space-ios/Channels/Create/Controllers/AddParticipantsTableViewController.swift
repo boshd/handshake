@@ -105,7 +105,7 @@ extension AddParticipantsController {
         if indexPath.section == 0 {
             let headerCell = tableView.dequeueReusableCell(withIdentifier: selectionHeaderCellID, for: indexPath) as? SelectionHeaderCell ?? SelectionHeaderCell()
             
-            headerCell.headerView.titleLabel.text = "Choose friends"
+            headerCell.headerView.titleLabel.text = "Select friends"
             headerCell.headerView.subtitleLabel.text = "Choose a place for your event. We don't send notifications when you edit the location."
             
             headerCell.isUserInteractionEnabled = false

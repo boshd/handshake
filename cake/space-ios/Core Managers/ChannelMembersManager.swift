@@ -17,7 +17,7 @@ import RealmSwift
     func endTimeUpdated(endTime: Int64)
     func locationUpdated(latitude: Double, longitude: Double, locationName: String)
     func adminsUpdated(admins: Array<String>)
-    func isVirtualUpdated(_: Bool)
+    func isRemoteUpdated(_: Bool)
     func isCancelledUpdated(_: Bool)
     
     func addMember(id: String)
@@ -109,8 +109,8 @@ class ChannelManager: NSObject {
             //delegate?.adminsUpdated(admins: new.admins)
         }
         
-        if let newIsVirtual = new.isVirtual.value, old.isVirtual.value != newIsVirtual {
-            delegate?.isVirtualUpdated(newIsVirtual)
+        if let newIsRemote = new.isRemote.value, old.isRemote.value != newIsRemote {
+            delegate?.isRemoteUpdated(newIsRemote)
         }
         
         if let newIsCancelled = new.isCancelled.value, old.isCancelled.value != newIsCancelled {

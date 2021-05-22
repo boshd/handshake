@@ -202,10 +202,10 @@ class ChannelDetailsController: UIViewController {
     // MARK:- CONFIG.
     
     func reloadLocationView() {
-        guard let isVirtual = channel?.isVirtual.value else { return }
+        guard let isRemote = channel?.isRemote.value else { return }
         if let currentView = self.view as? ChannelDetailsContainerView {
             DispatchQueue.main.async {
-                currentView.reloadOverlay(virtual: isVirtual)
+                currentView.reloadOverlay(remote: isRemote)
             }
         }
     }
@@ -375,7 +375,7 @@ class ChannelDetailsController: UIViewController {
     }
 
     func populateEventTypeView() {
-        if let isVirtual = channel?.isVirtual.value, isVirtual {
+        if let isRemote = channel?.isRemote.value, isRemote {
             channelDetailsContainerView.eventTypeCaptionLabel.text = "How to get there"
             channelDetailsContainerView.locationView.isUserInteractionEnabled = false
         } else {
@@ -536,22 +536,34 @@ class ChannelDetailsController: UIViewController {
             displayErrorAlert(title: basicErrorTitleForAlert, message: cannotDoThisState, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
             return
         }
+        
+        // note that this channel exists in realm, therefore ANY editing must run through realm too
+        
+        let destination = UpdateChannelController()
+        destination.channelName = channel.name ?? ""
+        
+        destination.startTime = Int64(channel.startTime.value ?? 0)
+        destination.endTime = Int64(channel.endTime.value ?? 0)
+        destination.startDate = Date(timeIntervalSince1970: TimeInterval(channel.startTime.value ?? 0))
+        destination.endDate = Date(timeIntervalSince1970: TimeInterval(channel.endTime.value ?? 0))
+        
+        destination.locationCoordinates = (channel.latitude.value ?? 0, channel.longitude.value ?? 0)
+        destination.locationName = channel.locationName ?? ""
+        destination.channelDescription = channel.description_
+        //destination.channel = channel
+        
+        destination.mapItem = channel.mapItem
+        print(channel.mapItem)
+        
+        if let remote = channel.isRemote.value {
+            destination.isRemote = remote
+        }
 //        
-//        let destination = UpdateChannelController()
-//        destination.channelName = channel.name ?? ""
-//        destination.startTime = Int(channel.startTime.value ?? 0)
-//        destination.endTime = Int(channel.endTime.value ?? 0)
-//        destination.location = (channel.latitude.value ?? 0, channel.longitude.value ?? 0)
-//        destination.locationName = channel.locationName ?? ""
-//        destination.channelDescription = channel.description_
-//        destination.channel = channel
-//        destination.isVirtual = channel.isVirtual.value ?? false
-//        
-//        if channel.imageUrl != nil {
-//            destination.selectedImage = channelDetailsContainerView.channelImageView.image
-//        }
+        if channel.imageUrl != nil {
+            destination.selectedImage = channelDetailsContainerView.channelImageView.image
+        }
 //
-//        navigationController?.pushViewController(destination, animated: true)
+        navigationController?.pushViewController(destination, animated: true)
     }
     
     @objc
@@ -723,7 +735,7 @@ class ChannelDetailsController: UIViewController {
         let description_ = unwrappedChannel.description_
         let locationName = unwrappedChannel.locationName
         let startTime = unwrappedChannel.startTime.value
-        let isVirtual = unwrappedChannel.isVirtual.value
+        let isRemote = unwrappedChannel.isRemote.value
         let lat = unwrappedChannel.latitude.value
         let lon = unwrappedChannel.longitude.value
         
@@ -737,8 +749,8 @@ class ChannelDetailsController: UIViewController {
                 event.notes = description_
                 
                 
-                if let isVirtual = isVirtual, isVirtual {
-                    event.location = "Virtual"
+                if let isRemote = isRemote, isRemote {
+                    event.location = "Remote"
                 } else {
                     if let lat = lat, let lon = lon, let locationName = locationName {
                         let location = CLLocation(latitude: lat, longitude: lon)

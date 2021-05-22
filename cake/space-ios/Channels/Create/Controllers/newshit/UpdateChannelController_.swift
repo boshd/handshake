@@ -10,6 +10,17 @@ import UIKit
 
 class UpdateChannelController: CreateChannelController {
     
+    override func createChannel() {
+        print("updating channel")
+    }
     
+    override func configureNavigationBar() {
+        title = "Update event"
+        
+        let doneEditingButton = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(createChannel))
+        navigationItem.rightBarButtonItem = doneEditingButton
+        navigationItem.rightBarButtonItem?.isEnabled = false
+        // navigationItem.rightBarButtonItem?.tintColor = .lightText
+    }
     
 }

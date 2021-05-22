@@ -142,7 +142,7 @@ class MapController: UIViewController {
         searchTableController.searchCompletionRequest = MKLocalSearchCompleter()
         searchTableController.searchTableContainerView.searchBar.delegate = self
         searchTableController.searchCompletionRequest?.delegate = self
-        searchTableController.delegate = self
+//        searchTableController.delegate = self
         searchTableController.searchCompletionRequest?.region = mapSearchContainerView.mapView.region
     }
     

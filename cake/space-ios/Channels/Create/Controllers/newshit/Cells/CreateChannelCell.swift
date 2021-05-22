@@ -13,7 +13,7 @@ class SelectLocationCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         
-        userInteractionEnabledWhileDragging = false
+        // userInteractionEnabledWhileDragging = false
         contentView.isUserInteractionEnabled = true
         selectionStyle = .none
         

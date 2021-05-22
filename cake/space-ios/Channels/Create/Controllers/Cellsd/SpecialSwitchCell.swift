@@ -23,7 +23,7 @@ class SpecialSwitchCell: UITableViewCell {
     var switchTapAction: ((Bool) -> Void)?
   
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
+        super.init(style: .default, reuseIdentifier: reuseIdentifier)
         
         switchAccessory.addTarget(self, action: #selector(switchStateDidChange(_:)), for: .valueChanged)
         

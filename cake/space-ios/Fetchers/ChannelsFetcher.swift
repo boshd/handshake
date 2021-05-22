@@ -11,6 +11,7 @@ import Firebase
 import FirebaseFirestore
 import SDWebImage
 import RealmSwift
+import MapKit
   
 protocol ChannelUpdatesDelegate: class {
     func channels(didStartFetching: Bool)
@@ -224,11 +225,20 @@ class ChannelsFetcher: NSObject {
             channel.locationName = metaInfo.locationName
             channel.latitude = metaInfo.latitude
             channel.longitude = metaInfo.longitude
-            channel.isVirtual = metaInfo.isVirtual
+            channel.isRemote = metaInfo.isRemote
             channel.isCancelled = metaInfo.isCancelled
             channel.startTime = metaInfo.startTime
             channel.endTime = metaInfo.endTime
             channel.fcmTokens = metaInfo.fcmTokens
+            
+            print("arrived here")
+            
+            let computedMapItem = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: metaInfo.latitude.value ?? 0, longitude: metaInfo.longitude.value ?? 0)))
+            
+            channel.mapItem = computedMapItem
+            
+            print(computedMapItem)
+            
             if let fcmTokensDict = dictionary["fcmTokens"] as? [String:String] {
                 channel.fcmTokens = convertRawFCMTokensToRealmCompatibleType(fcmTokensDict)
             }
