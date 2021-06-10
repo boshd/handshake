@@ -1,15 +1,3 @@
-//
-//  CustomNavigationController.swift
-//  space-ios
-//
-//  Created by Kareem Arab on 2021-01-27.
-//  Copyright © 2021 Kareem Arab. All rights reserved.
-//
-
-import UIKit
-
-final class CustomNavigationController: UINavigationController {
-    override var preferredStatusBarStyle : UIStatusBarStyle {
-        return ThemeManager.currentTheme().statusBarStyle
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:82d1418165d5133a67e2e7d9d3d1b5d52d2cbe04000c4c70ada60a52533d305b
+size 366

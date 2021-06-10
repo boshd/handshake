@@ -1,22 +1,3 @@
-//
-//  ServiceCell.swift
-//  space-ios
-//
-//  Created by Kareem Arab on 2021-01-20.
-//  Copyright © 2021 Kareem Arab. All rights reserved.
-//
-
-import UIKit
-
-class ServiceCell: InteractiveTableViewCell {
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
-        
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:379b6a19920c10e17460c6e37f186cab0ad5647135a0b209e958131273060e26
+size 495

@@ -1,23 +1,3 @@
-//
-//  MessageSection.swift
-//  space-ios
-//
-//  Created by Kareem Arab on 2020-09-16.
-//  Copyright © 2020 Kareem Arab. All rights reserved.
-//
-
-import RealmSwift
-
-final class MessageSection: Object {
-
-    @objc var title: String?
-    var messages: Results<Message>!
-    var notificationToken: NotificationToken?
-
-    convenience init(messages: Results<Message>, title: String) {
-        self.init()
-
-        self.title = title
-        self.messages = messages
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:1badb3a3ee9fa7ff4e8399d3bca7ef0387dc4068527d8eba6433ae712f461b91
+size 471

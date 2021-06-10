@@ -1,30 +1,3 @@
-//
-//  LocationViewCell.swift
-//  space-ios
-//
-//  Created by Kareem Arab on 2021-06-05.
-//  Copyright © 2021 Kareem Arab. All rights reserved.
-//
-
-import UIKit
-
-class LocationViewCell: UITableViewCell {
-    
-    let locationView = LocationView()
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        addSubview(locationView)
-        
-        locationView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15).isActive = true
-        locationView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15).isActive = true
-        locationView.topAnchor.constraint(equalTo: topAnchor, constant: 15).isActive = true
-        locationView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15).isActive = true
-        locationView.heightAnchor.constraint(equalToConstant: 250).isActive = true
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:fa51b63e20d44b697a9cf208bb5f70aa6f6242ae962c49aa3918b7965d4245a6
+size 1049

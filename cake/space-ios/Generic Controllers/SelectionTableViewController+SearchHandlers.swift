@@ -1,30 +1,3 @@
-//
-//  SelectionTableViewController+SearchHandlers.swift
-//  space-ios
-//
-//  Created by Kareem Arab on 2020-06-24.
-//  Copyright © 2020 Kareem Arab. All rights reserved.
-//
-
-import Foundation
-import UIKit
-
-extension SelectionTableViewController { /* hiding keyboard */
-
-    override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        searchBar.endEditing(true)
-    }
-
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.endEditing(true)
-    }
-    
-    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
-        guard #available(iOS 11.0, *) else {
-            searchBar.setShowsCancelButton(true, animated: true)
-            return true
-        }
-        return true
-    }
-    
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:758de33a822c436349062ea51d413f26d5ae3b3a34af7375790027ea9dbd8e3b
+size 752

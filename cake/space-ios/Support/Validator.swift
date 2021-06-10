@@ -1,27 +1,3 @@
-//
-//  Validator.swift
-//  space-ios
-//
-//  Created by Kareem Arab on 2021-01-22.
-//  Copyright © 2021 Kareem Arab. All rights reserved.
-//
-
-import Foundation
-
-struct ChannelValidator {
-    
-    public func isChannelNameGood(name: String) -> Bool {
-        if name.trimmingCharacters(in: .whitespaces).isEmpty || name.count > 25 {
-            return false
-        }
-        return true
-    }
-    
-    public func areDatesValid(start: Int, end: Int) -> Bool {
-        if start > end {
-            return false
-        }
-        return true
-    }
-    
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:1a88d8e26213f013a84443671b39d5515e678c44832d61e776a044d72e4589ea
+size 553

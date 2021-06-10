@@ -1,21 +1,3 @@
-{
-  "images" : [
-    {
-      "filename" : "Calendar.svg",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "universal",
-      "scale" : "3x"
-    }
-  ],
-  "info" : {
-    "author" : "xcode",
-    "version" : 1
-  }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:ca62694295fcd667c305803612ba29f7b9b8744da6f980f3f6ab30d7df93f4ee
+size 306

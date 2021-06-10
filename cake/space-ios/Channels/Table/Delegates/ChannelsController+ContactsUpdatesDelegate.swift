@@ -1,33 +1,3 @@
-//
-//  ChannelsController+ContactsUpdatesDelegate.swift
-//  space-ios
-//
-//  Created by Kareem Arab on 2020-10-31.
-//  Copyright © 2020 Kareem Arab. All rights reserved.
-////
-//
-//import UIKit
-//import Contacts
-//
-//extension ChannelsController: ContactsUpdatesDelegate {
-//    func contacts(shouldPerformSyncronization: Bool) {
-//        
-//        isSyncingUsers = true
-//        
-//        guard shouldPerformSyncronization else { print("stuck in return"); return }
-//        showActivityTitle(title: .updatingUsers)
-////        }
-//        DispatchQueue.global(qos: .userInteractive).async { [weak self] in
-//            self?.usersFetcher.loadAndSyncUsers()
-//        }
-//    }
-//
-//    func contacts(updateDatasource contacts: [CNContact]) {
-//        self.contacts = contacts
-//        self.filteredContacts = contacts
-//    }
-//
-//    func contacts(handleAccessStatus: Bool) {
-//        contactsPermissionGranted = true
-//    }
-//}
+version https://git-lfs.github.com/spec/v1
+oid sha256:2f95dff938c3baaa09995aec0a1ba9a8246ec9fe1ff271bd4c5b2046d9282948
+size 941

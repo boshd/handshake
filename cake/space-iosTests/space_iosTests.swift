@@ -1,34 +1,3 @@
-//
-//  space_iosTests.swift
-//  space-iosTests
-//
-//  Created by Kareem Arab on 2019-05-28.
-//  Copyright © 2019 Kareem Arab. All rights reserved.
-//
-
-import XCTest
-@testable import space_ios
-
-class space_iosTests: XCTestCase {
-
-    override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:5aded7a27acbc419ef6b098c1bdc845fdf88173955878c91dcfe6ac4f7db7cbe
+size 913

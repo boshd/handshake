@@ -1,22 +1,3 @@
-{
-  "images" : [
-    {
-      "filename" : "multiple-19@1x.png",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "multiple-19@2x.png",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "universal",
-      "scale" : "3x"
-    }
-  ],
-  "info" : {
-    "author" : "xcode",
-    "version" : 1
-  }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:089de77abf72f5c92ff5f3fd48aa18f356bcd139d80e9bba8cee3b16d4221174
+size 353

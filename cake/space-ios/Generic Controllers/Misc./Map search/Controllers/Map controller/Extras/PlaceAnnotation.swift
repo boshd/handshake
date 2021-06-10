@@ -1,22 +1,3 @@
-//
-//  PlaceAnnotation.swift
-//  space-ios
-//
-//  Created by Kareem Arab on 2020-12-28.
-//  Copyright © 2020 Kareem Arab. All rights reserved.
-//
-
-import MapKit
-
-class PlaceAnnotation: NSObject, MKAnnotation {
-    let mapItem: MKMapItem
-    let coordinate: CLLocationCoordinate2D
-    let title, subtitle: String?
-    
-    init(_ mapItem: MKMapItem) {
-        self.mapItem = mapItem
-        coordinate = mapItem.placemark.coordinate
-        title = mapItem.name
-        subtitle = nil
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:bf0d633b3d852ad10fc59599f38b0c636d67886e7492cbcdccdd30403506f8bd
+size 493

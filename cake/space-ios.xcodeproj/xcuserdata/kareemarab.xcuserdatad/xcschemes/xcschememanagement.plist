@@ -1,32 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>SchemeUserState</key>
-	<dict>
-		<key>space-ios.xcscheme_^#shared#^_</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>65</integer>
-		</dict>
-	</dict>
-	<key>SuppressBuildableAutocreation</key>
-	<dict>
-		<key>BCF979FA229D5F6A0088C568</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>BCF97A11229D5F6B0088C568</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>BCF97A1C229D5F6B0088C568</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-	</dict>
-</dict>
-</plist>
+version https://git-lfs.github.com/spec/v1
+oid sha256:f946ab8a2197eb6d8e9ae986f35982f8030b7cc77342a41f89f7b38d0c9274a9
+size 674

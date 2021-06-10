@@ -1,24 +1,3 @@
-////
-////  CreateChannelController+DatePicker.swift
-////  space-ios
-////
-////  Created by Kareem Arab on 2020-11-01.
-////  Copyright © 2020 Kareem Arab. All rights reserved.
-////
-//
-//import UIKit
-//
-//extension CreateChannelController: DatePickerDelegate {
-//    func didChangeDate(cell: UITableViewCell, date: Date) {
-//        let indexPath = tableView.indexPath(for: cell)
-//        
-//        let cell = cell as! DatePickerTableViewCell
-//        cell.datePicker.date = date
-//        tableView.reloadData()
-//        if indexPath?.row == 0 {
-//            startTime = Int(date.timeIntervalSince1970)
-//        } else {
-//            endTime = Int(date.timeIntervalSince1970)
-//        }
-//    }
-//}
+version https://git-lfs.github.com/spec/v1
+oid sha256:54f506cdca4dbb3314bcf8033f95cb90f6d847658d6446a046653c5461a49a5d
+size 706

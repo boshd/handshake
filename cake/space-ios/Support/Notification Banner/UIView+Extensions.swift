@@ -1,26 +1,3 @@
-//
-//  UIView+Extensions.swift
-//  space-ios
-//
-//  Created by Kareem Arab on 2019-11-02.
-//  Copyright © 2019 Kareem Arab. All rights reserved.
-//
-
-import UIKit
-
-extension UIView {
-  var safeYCoordinate: CGFloat {
-    let y: CGFloat
-    if #available(iOS 11.0, *) {
-      y = safeAreaInsets.top
-    } else {
-      y = 0
-    }
-
-    return y
-  }
-
-  var isiPhoneX: Bool {
-    return safeYCoordinate > 20
-  }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:de3be8d1cd7dacaa5a078b17445781559ea72f37fb4b81a4e1fee54c173cbc5f
+size 409

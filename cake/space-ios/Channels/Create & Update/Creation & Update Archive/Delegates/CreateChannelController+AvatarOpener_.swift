@@ -1,31 +1,3 @@
-////
-////  CreateChannelController+AvatarOpener.swift
-////  space-ios
-////
-////  Created by Kareem Arab on 2020-11-01.
-////  Copyright © 2020 Kareem Arab. All rights reserved.
-////
-//
-//import UIKit
-//
-//extension CreateChannelController: AvatarOpenerDelegate {
-//    func avatarOpener(avatarPickerDidPick image: UIImage) {
-//        guard let indexPath = selectedImageOwningCellIndexPath else { return }
-//        tableView.cellForRow(at: indexPath)
-//        let cell = tableView.cellForRow(at: indexPath) as! CreateChannelHeaderCell
-//        cell.channelImageView.image = image
-//        cell.channelImagePlaceholderLabel.isHidden = true
-//        tableView.reloadData()
-//        selectedImage = image
-//    }
-//  
-//    func avatarOpener(didPerformDeletionAction: Bool) {
-//        guard let indexPath = selectedImageOwningCellIndexPath else { return }
-//        tableView.cellForRow(at: indexPath)
-//        let cell = tableView.cellForRow(at: indexPath) as! CreateChannelHeaderCell
-//        cell.channelImageView.image = nil
-//        cell.channelImagePlaceholderLabel.isHidden = false
-//        tableView.reloadData()
-//        self.selectedImage = nil
-//    }
-//}
+version https://git-lfs.github.com/spec/v1
+oid sha256:460770aa6ff9d7f65d6136185ef42f0870a1d6167395856c3201ef9e3597b2d4
+size 1176

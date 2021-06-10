@@ -1,8 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>aps-environment</key>
-	<string>development</string>
-</dict>
-</plist>
+version https://git-lfs.github.com/spec/v1
+oid sha256:7bf8e813b39b5382f98ced7ed4953167133f1549202cfa1583ac9ec795151059
+size 246

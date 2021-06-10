@@ -1,25 +1,3 @@
-////
-////  CreateChannelController+HeaderCell.swift
-////  space-ios
-////
-////  Created by Kareem Arab on 2020-11-01.
-////  Copyright © 2020 Kareem Arab. All rights reserved.
-////
-//
-//import UIKit
-//
-//extension CreateChannelController: CreateChannelHeaderCellDelegate {
-//    func createChannelHeaderCell(_ cell: CreateChannelHeaderCell, didTapImageView: Bool) {
-//        avatarOpener.delegate = self
-//        selectedImageOwningCellIndexPath = tableView.indexPath(for: cell)
-//        avatarOpener.handleAvatarOpening(avatarView: cell.channelImageView, at: self, isEditButtonEnabled: true, title: .user)
-//    }
-//    
-//    func createChannelHeaderCell(_ cell: CreateChannelHeaderCell, updatedChannelName: String) {
-//        channelName = updatedChannelName
-//        DispatchQueue.main.async {
-//            self.tableView.beginUpdates()
-//            self.tableView.endUpdates()
-//        }
-//    }
-//}
+version https://git-lfs.github.com/spec/v1
+oid sha256:050ed295c46557519f0b3ab9ebabd86a749e80950729e9674ecbfe562b855d2e
+size 912

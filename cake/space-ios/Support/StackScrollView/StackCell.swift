@@ -1,21 +1,3 @@
-//
-//  StackCell.swift
-//  StackScrollView
-//
-//  Created by muukii on 5/2/17.
-//  Copyright © 2017 muukii. All rights reserved.
-//
-
-import Foundation
-import UIKit
-
-// MARK: Beta
-open class StackCell: UIView, StackCellType {
-  
-  open var shouldAnimateLayoutChanges: Bool = true
-  
-  open override func invalidateIntrinsicContentSize() {
-    super.invalidateIntrinsicContentSize()
-    updateLayout(animated: shouldAnimateLayoutChanges)
-  }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:8f8315b73efafcf73d3e4c76536603963cad629d4f42e198d75ed7592c96f2e1
+size 443

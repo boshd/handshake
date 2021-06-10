@@ -1,9 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14903" systemVersion="19A583" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="Channel" representedClassName=".Channel" syncable="YES">
-        <attribute name="channelName" optional="YES" attributeType="String"/>
-    </entity>
-    <elements>
-        <element name="Channel" positionX="-63" positionY="-18" width="128" height="58"/>
-    </elements>
-</model>
+version https://git-lfs.github.com/spec/v1
+oid sha256:34a70ebcebecc94e6bd58f978bfa63e1ea52f6950c22f82c39b80d11411f6e0e
+size 573

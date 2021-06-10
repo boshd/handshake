@@ -1,21 +1,3 @@
-{
-  "images" : [
-    {
-      "filename" : "blurPlaceholder.png",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "universal",
-      "scale" : "3x"
-    }
-  ],
-  "info" : {
-    "author" : "xcode",
-    "version" : 1
-  }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:f14e93dca0d93a6ed864d13cd97c7cb5dd283e2ccb07f712786606049a175af5
+size 313

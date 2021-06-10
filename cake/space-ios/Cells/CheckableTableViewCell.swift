@@ -1,25 +1,3 @@
-//
-//  CheckableTableViewCell.swift
-//  space-ios
-//
-//  Created by Kareem Arab on 2019-07-03.
-//  Copyright © 2019 Kareem Arab. All rights reserved.
-//
-
-import UIKit
-
-class CheckableTableViewCell: InteractiveTableViewCell {
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.selectionStyle = .none
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-    
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-        self.accessoryType = selected ? .checkmark : .none
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:641a9b7e72bd1ecc9d61ddb7b6cb2fd714911ccc6919a1789a7a4c6313b19ab8
+size 702

@@ -1,21 +1,3 @@
-//
-//  CreateChannelOptionsButtonView.swift
-//  space-ios
-//
-//  Created by Kareem Arab on 2019-10-24.
-//  Copyright © 2019 Kareem Arab. All rights reserved.
-//
-
-import UIKit
-
-class CreateChannelOptionsButtonView: UIView {
-
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
-    }
-    */
-
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:ab60854015929c65b9a7b7750ebaf0e8a87c33f186ebb9fb4c919038dccd3c23
+size 451

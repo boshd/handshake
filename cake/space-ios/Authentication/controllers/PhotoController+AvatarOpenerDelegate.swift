@@ -1,29 +1,3 @@
-//
-//  PhotoController+AvatarOpenerDelegate.swift
-//  space-ios
-//
-//  Created by Kareem Arab on 2020-10-08.
-//  Copyright © 2020 Kareem Arab. All rights reserved.
-//
-
-import UIKit
-
-extension PhotoController: AvatarOpenerDelegate {
-    func avatarOpener(avatarPickerDidPick image: UIImage) {
-        photoContainerView.imageView.showActivityIndicator()
-        userProfileDataDatabaseUpdater.updateUserProfile(with: image) { (isUpdated) in
-            self.photoContainerView.imageView.hideActivityIndicator()
-            guard isUpdated else {
-                basicErrorAlertWith(title: basicErrorTitleForAlert, message: thumbnailUploadError, controller: self)
-                return
-            }
-            self.photoContainerView.imageView.image = image
-            self.selectedImage = image
-        }
-    }
-  
-    func avatarOpener(didPerformDeletionAction: Bool) {
-        self.selectedImage = nil
-        self.photoContainerView.imageView.image = nil
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:0c1a3ca074143aaf142ef0ea40e64825c76e7ce3f7d483d9b069a9138314f15b
+size 969

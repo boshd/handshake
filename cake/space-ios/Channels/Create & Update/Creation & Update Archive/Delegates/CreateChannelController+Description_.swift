@@ -1,15 +1,3 @@
-////
-////  CreateChannelController+Description.swift
-////  space-ios
-////
-////  Created by Kareem Arab on 2020-11-01.
-////  Copyright © 2020 Kareem Arab. All rights reserved.
-////
-//
-//extension CreateChannelController: DescriptionDelegate {
-//    func didPressDone(description: String) {
-//        channelDescription = description
-//        mainSection[0] = (title: "Event description", secondaryTitle: description, type: "description")
-//        tableView.reloadData()
-//    }
-//}
+version https://git-lfs.github.com/spec/v1
+oid sha256:1af2f77d5e83e0438de9fae023b1104ca3dea0708a58eec1fde4b3638b19ac0f
+size 484

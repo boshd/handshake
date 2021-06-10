@@ -1,22 +1,3 @@
-////
-////  CreateChannelController+Map.swift
-////  space-ios
-////
-////  Created by Kareem Arab on 2020-11-01.
-////  Copyright © 2020 Kareem Arab. All rights reserved.
-////
-//
-//import MapKit
-//import UIKit
-//
-//extension CreateChannelController: LocationDelegate {
-//    func didPressDone(placemark: MKPlacemark) {
-//        guard let locationTitle = placemark.name else { return }
-//        
-//        location = (placemark.coordinate.latitude, placemark.coordinate.longitude)
-//        locationName = placemark.name
-//        
-////        mainSection[0] = (title: "", secondaryTitle: locationTitle, type: "location")
-//        tableView.reloadData()
-//    }
-//}
+version https://git-lfs.github.com/spec/v1
+oid sha256:7dba323f27f11f0df27358a6d0b8880952f094c349cfef479dcc282109858204
+size 665

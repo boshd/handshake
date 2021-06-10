@@ -1,21 +1,3 @@
-{
-  "images" : [
-    {
-      "filename" : "Discovery.svg",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "universal",
-      "scale" : "3x"
-    }
-  ],
-  "info" : {
-    "author" : "xcode",
-    "version" : 1
-  }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:d570d1bd95d0c4067edc63153687d9896157f5b89fb044ad5fa5d107c4bce312
+size 307

@@ -1,26 +1,3 @@
-{
-  "images" : [
-    {
-      "filename" : "round_close_black_24pt_1x.png",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "round_close_black_24pt_2x.png",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "round_close_black_24pt_3x.png",
-      "idiom" : "universal",
-      "scale" : "3x"
-    }
-  ],
-  "info" : {
-    "author" : "xcode",
-    "version" : 1
-  },
-  "properties" : {
-    "template-rendering-intent" : "template"
-  }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:0b3584740869d4447867284a59ec1c700ceb69942459d3e976fc49ee369b4992
+size 496

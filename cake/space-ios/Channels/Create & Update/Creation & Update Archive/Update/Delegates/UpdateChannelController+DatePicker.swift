@@ -1,26 +1,3 @@
-////
-////  UpdateChannelController+DatePicker.swift
-////  space-ios
-////
-////  Created by Kareem Arab on 2021-01-22.
-////  Copyright © 2021 Kareem Arab. All rights reserved.
-////
-//
-//import UIKit
-//
-//extension UpdateChannelController: DatePickerDelegate {
-//    func didChangeDate(cell: UITableViewCell, date: Date) {
-//        let indexPath = tableView.indexPath(for: cell)
-//        
-//        let cell = cell as! DatePickerTableViewCell
-//        cell.datePicker.date = date
-//        DispatchQueue.main.async { [weak self] in
-//            self?.tableView.reloadData()
-//        }
-//        if indexPath?.row == 0 {
-//            startTime = Int(date.timeIntervalSince1970)
-//        } else {
-//            endTime = Int(date.timeIntervalSince1970)
-//        }
-//    }
-//}
+version https://git-lfs.github.com/spec/v1
+oid sha256:f53edc0b7eb77a1ca19f746226941f961cb05a1a6529ff4edf77ab8dcd6457fd
+size 780
