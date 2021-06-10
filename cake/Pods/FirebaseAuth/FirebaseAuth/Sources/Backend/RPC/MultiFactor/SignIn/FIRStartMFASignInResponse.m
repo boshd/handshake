@@ -1,32 +1,3 @@
-/*
- * Copyright 2019 Google
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-#import "FirebaseAuth/Sources/Backend/RPC/MultiFactor/SignIn/FIRStartMFASignInResponse.h"
-
-@implementation FIRStartMFASignInResponse
-
-- (BOOL)setWithDictionary:(nonnull NSDictionary *)dictionary
-                    error:(NSError *__autoreleasing _Nullable *_Nullable)error {
-  if (dictionary[@"phoneResponseInfo"] != nil) {
-    NSDictionary *data = dictionary[@"phoneResponseInfo"];
-    _responseInfo = [[FIRAuthProtoStartMFAPhoneResponseInfo alloc] initWithDictionary:data];
-  } else {
-    return NO;
-  }
-  return YES;
-}
-
-@end
+version https://git-lfs.github.com/spec/v1
+oid sha256:dcc9df6f63be3ce642a07d4bfa8dd403d5094b0a0deb688480759a5e63174d06
+size 1120

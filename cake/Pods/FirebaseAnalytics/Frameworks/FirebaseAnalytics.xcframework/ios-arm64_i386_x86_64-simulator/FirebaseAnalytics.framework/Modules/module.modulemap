@@ -1,13 +1,3 @@
-framework module FirebaseAnalytics {
-umbrella header "FirebaseAnalytics.h"
-export *
-module * { export * }
-  link framework "CoreTelephony"
-  link framework "Foundation"
-  link framework "Security"
-  link framework "SystemConfiguration"
-  link framework "UIKit"
-  link "c++"
-  link "sqlite3"
-  link "z"
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:f38589dc87e6bb12ac79687e1c669d60f946bf63cd9bce57a0d10361fd8889ee
+size 304

@@ -1,28 +1,3 @@
-/*
- * Copyright 2019 Google
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-#import "FirebaseAuth/Sources/Backend/FIRAuthRPCResponse.h"
-#import "FirebaseAuth/Sources/Backend/RPC/Proto/Phone/FIRAuthProtoStartMFAPhoneResponseInfo.h"
-
-NS_ASSUME_NONNULL_BEGIN
-
-@interface FIRStartMFASignInResponse : NSObject <FIRAuthRPCResponse>
-
-@property(nonatomic, copy, readonly, nullable) FIRAuthProtoStartMFAPhoneResponseInfo *responseInfo;
-
-@end
-
-NS_ASSUME_NONNULL_END
+version https://git-lfs.github.com/spec/v1
+oid sha256:bf5ab5df1d6c062b5f9e7f8ded8a9c9895bd8d20539169409973b08318017b89
+size 971

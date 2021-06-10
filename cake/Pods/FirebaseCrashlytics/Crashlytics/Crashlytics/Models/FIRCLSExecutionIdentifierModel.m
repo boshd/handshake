@@ -1,33 +1,3 @@
-// Copyright 2019 Google
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-#import "Crashlytics/Crashlytics/Models/FIRCLSExecutionIdentifierModel.h"
-
-#import "Crashlytics/Shared/FIRCLSUUID.h"
-
-@implementation FIRCLSExecutionIdentifierModel
-
-- (instancetype)init {
-  self = [super init];
-  if (!self) {
-    return nil;
-  }
-
-  _executionID = [[FIRCLSGenerateUUID() stringByReplacingOccurrencesOfString:@"-"
-                                                                  withString:@""] lowercaseString];
-
-  return self;
-}
-
-@end
+version https://git-lfs.github.com/spec/v1
+oid sha256:bebb8f541f6082aa725c8c76a595159806abd9e3db9d15f2ca44814ca98177ea
+size 1039

@@ -1,20 +1,3 @@
-
-#include <realm/sync/config.hpp>
-
-#ifndef REALM_SYNC_CHANGESET_COOKER_HPP
-#define REALM_SYNC_CHANGESET_COOKER_HPP
-
-namespace realm {
-namespace sync {
-
-/// Copy raw changesets unmodified.
-class TrivialChangesetCooker : public ChangesetCooker {
-public:
-    bool cook_changeset(const Group&, const char* changeset, std::size_t changeset_size,
-                        util::AppendBuffer<char>&) override;
-};
-
-} // namespace sync
-} // namespace realm
-
-#endif // REALM_SYNC_CHANGESET_COOKER_HPP
+version https://git-lfs.github.com/spec/v1
+oid sha256:132f410d88eaa5280d92e94d0d2753d65b057ceef442c2404b7fe3d296d38fc6
+size 490

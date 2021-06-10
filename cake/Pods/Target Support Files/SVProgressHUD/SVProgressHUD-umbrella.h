@@ -1,20 +1,3 @@
-#ifdef __OBJC__
-#import <UIKit/UIKit.h>
-#else
-#ifndef FOUNDATION_EXPORT
-#if defined(__cplusplus)
-#define FOUNDATION_EXPORT extern "C"
-#else
-#define FOUNDATION_EXPORT extern
-#endif
-#endif
-#endif
-
-#import "SVIndefiniteAnimatedView.h"
-#import "SVProgressAnimatedView.h"
-#import "SVProgressHUD.h"
-#import "SVRadialGradientLayer.h"
-
-FOUNDATION_EXPORT double SVProgressHUDVersionNumber;
-FOUNDATION_EXPORT const unsigned char SVProgressHUDVersionString[];
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:2a6a8b3dbe989de48a90d7620b6334f34de0bab0b9537c825602e2aa2863a878
+size 450

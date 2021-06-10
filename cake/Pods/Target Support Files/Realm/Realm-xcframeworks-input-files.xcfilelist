@@ -1,2 +1,3 @@
-${PODS_ROOT}/Target Support Files/Realm/Realm-xcframeworks.sh
-${PODS_ROOT}/Realm/core/realm-monorepo.xcframework
+version https://git-lfs.github.com/spec/v1
+oid sha256:785437989cf11c8aed9840850cbea5da098160d3da163042ae316ccda3aa8545
+size 112

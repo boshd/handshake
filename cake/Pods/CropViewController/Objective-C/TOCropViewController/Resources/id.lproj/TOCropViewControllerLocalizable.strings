@@ -1,8 +1,3 @@
-"Done" = "Selesai";
-"Cancel" = "Batalkan";
-"Reset" = "Atur Ulang";
-"Original" = "Asli";
-"Square" = "Persegi";
-"Delete Changes" = "Hapus Perubahan";
-"Yes" = "Ya";
-"No" = "Tidak";
+version https://git-lfs.github.com/spec/v1
+oid sha256:fdaeeed707df9287a38abf8f87cb72ed2df3499dcf6a1ef617dc7f3ba0dc0cbb
+size 178

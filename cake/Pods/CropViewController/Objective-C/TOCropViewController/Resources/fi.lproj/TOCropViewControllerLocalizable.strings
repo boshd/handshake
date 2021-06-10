@@ -1,8 +1,3 @@
-"Done" = "Valmis";
-"Cancel" = "Kumoa";
-"Reset" = "Palauta";
-"Original" = "Alkuperäinen";
-"Square" = "Neliö";
-"Delete Changes" = "Peru muutokset";
-"Yes" = "Kyllä";
-"No" = "Ei";
+version https://git-lfs.github.com/spec/v1
+oid sha256:830cd8107cada3bef8c2b124e407a8cef43efcb4aa87eed597398f7d61185cf3
+size 179

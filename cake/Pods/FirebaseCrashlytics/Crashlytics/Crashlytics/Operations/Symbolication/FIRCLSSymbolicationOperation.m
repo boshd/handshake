@@ -1,27 +1,3 @@
-// Copyright 2019 Google
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-#import "Crashlytics/Crashlytics/Operations/Symbolication/FIRCLSSymbolicationOperation.h"
-
-#import "Crashlytics/Crashlytics/Models/FIRCLSSymbolResolver.h"
-
-@implementation FIRCLSSymbolicationOperation
-
-- (void)main {
-  [self enumerateFramesWithBlock:^(FIRStackFrame *frame) {
-    [self.symbolResolver updateStackFrame:frame];
-  }];
-}
-
-@end
+version https://git-lfs.github.com/spec/v1
+oid sha256:f711f90c3597e5090e32e2ccd34db4291cf206c22fd0ec4afb342803aaa51e98
+size 925

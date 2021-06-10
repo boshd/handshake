@@ -1,6 +1,3 @@
-  framework module openssl {
-    umbrella header "umbrella.h"
-    textual header "arm_arch.h"
-    export *
-    module * { export * }
-  }
+version https://git-lfs.github.com/spec/v1
+oid sha256:9b1808aacd1e5b5ecbc4c1089aa2fc6146a58e64355b348886aa1b3c95961277
+size 137

@@ -1,20 +1,3 @@
-//
-//  UIScreen+Frame.swift
-//  FTPopOverMenu_Swift
-//
-//  Created by Abdullah Selek on 27/07/2017.
-//  Copyright © 2016 LiuFengting (https://github.com/liufengting) . All rights reserved.
-//
-
-import UIKit
-
-extension UIScreen {
-    
-    public static func ft_width() -> CGFloat {
-        return self.main.bounds.size.width
-    }
-    public static func ft_height() -> CGFloat {
-        return self.main.bounds.size.height
-    }
-    
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:feeffbc2b9d18cf117c9c37f5a93a84305925fe1c199d717caae22eddcd58f0d
+size 435

@@ -1,6 +1,3 @@
-framework module absl {
-  umbrella header "abseil-umbrella.h"
-
-  export *
-  module * { export * }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:c5d556c41cfe7dee3376e68e8bf255e30ec5f6dea7b0ace389963fe7cd7740aa
+size 100

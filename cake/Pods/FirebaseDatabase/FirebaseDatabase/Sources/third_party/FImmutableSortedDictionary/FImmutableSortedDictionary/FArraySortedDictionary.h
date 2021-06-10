@@ -1,21 +1,3 @@
-#import <Foundation/Foundation.h>
-#import "FirebaseDatabase/Sources/third_party/FImmutableSortedDictionary/FImmutableSortedDictionary/FImmutableSortedDictionary.h"
-
-/**
- * This is an array backed implementation of FImmutableSortedDictionary. It uses arrays and linear lookups to achieve
- * good memory efficiency while maintaining good performance for small collections. It also uses less allocations than
- * a comparable red black tree. To avoid degrading performance with increasing collection size it will automatically
- * convert to a FTreeSortedDictionary after an insert call above a certain threshold.
- */
-@interface FArraySortedDictionary : FImmutableSortedDictionary
-
-+ (FArraySortedDictionary *)fromDictionary:(NSDictionary *)dictionary withComparator:(NSComparator)comparator;
-
-- (id)initWithComparator:(NSComparator)comparator;
-
-#pragma mark -
-#pragma mark Properties
-
-@property (nonatomic, copy, readonly) NSComparator comparator;
-
-@end
+version https://git-lfs.github.com/spec/v1
+oid sha256:217a20fee9aeec1206ce649a13a21e7af5f58afd49988dd9ab21f7e4b144f49b
+size 950

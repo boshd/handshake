@@ -1,19 +1,3 @@
-#ifdef __OBJC__
-#import <UIKit/UIKit.h>
-#else
-#ifndef FOUNDATION_EXPORT
-#if defined(__cplusplus)
-#define FOUNDATION_EXPORT extern "C"
-#else
-#define FOUNDATION_EXPORT extern
-#endif
-#endif
-#endif
-
-#import "FirebaseMessaging.h"
-#import "FIRMessaging.h"
-#import "FIRMessagingExtensionHelper.h"
-
-FOUNDATION_EXPORT double FirebaseMessagingVersionNumber;
-FOUNDATION_EXPORT const unsigned char FirebaseMessagingVersionString[];
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:1726a5d5999cac87cc8824100cf4a1208f62f69ad39c84d6d2de51232f9be043
+size 421

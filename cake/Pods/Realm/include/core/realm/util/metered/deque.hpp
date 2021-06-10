@@ -1,17 +1,3 @@
-#ifndef REALM_UTIL_METERED_DEQUE_HPP
-#define REALM_UTIL_METERED_DEQUE_HPP
-
-#include <deque>
-#include <realm/util/allocation_metrics.hpp>
-
-namespace realm {
-namespace util {
-namespace metered {
-/// Vector with metered allocation
-template <class T, class Alloc = MeteredSTLAllocator<T>>
-using deque = std::deque<T, Alloc>;
-} // namespace metered
-} // namespace util
-} // namespace realm
-
-#endif // REALM_UTIL_METERED_DEQUE_HPP
+version https://git-lfs.github.com/spec/v1
+oid sha256:895d5adb0a249865804ce5f9e5363ba982292442d8ea364ccb7d1c8fe160f74f
+size 425

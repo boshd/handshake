@@ -1,31 +1,3 @@
-// Copyright 2019 Google
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-#import "Crashlytics/Crashlytics/Operations/Symbolication/FIRCLSThreadArrayOperation.h"
-
-@implementation FIRCLSThreadArrayOperation
-
-- (void)enumerateFramesWithBlock:(void (^)(FIRStackFrame *frame))block {
-  for (NSArray *frameArray in self.threadArray) {
-    for (FIRStackFrame *frame in frameArray) {
-      block(frame);
-
-      if ([self isCancelled]) {
-        break;
-      }
-    }
-  }
-}
-
-@end
+version https://git-lfs.github.com/spec/v1
+oid sha256:420b4f81b8904ea70f05dbed1443ad24de6d7732e1f675774140419bf6145903
+size 982

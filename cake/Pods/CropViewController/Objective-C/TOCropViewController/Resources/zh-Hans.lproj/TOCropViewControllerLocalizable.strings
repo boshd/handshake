@@ -1,9 +1,3 @@
-"Done" = "完成";
-"Cancel" = "取消";
-"Reset" = "重设";
-"Original" = "原有";
-"Square" = "正方形";
-"Delete Changes" = "删除更改";
-"Yes" = "是";
-"No" = "否";
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:b0e59e719003736e7d61ea775c66c97136e09a7d895ef54f921ed2eae697b754
+size 172

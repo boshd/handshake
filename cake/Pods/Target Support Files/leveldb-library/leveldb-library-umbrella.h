@@ -1,31 +1,3 @@
-#ifdef __OBJC__
-#import <UIKit/UIKit.h>
-#else
-#ifndef FOUNDATION_EXPORT
-#if defined(__cplusplus)
-#define FOUNDATION_EXPORT extern "C"
-#else
-#define FOUNDATION_EXPORT extern
-#endif
-#endif
-#endif
-
-#import "c.h"
-#import "cache.h"
-#import "comparator.h"
-#import "db.h"
-#import "dumpfile.h"
-#import "env.h"
-#import "export.h"
-#import "filter_policy.h"
-#import "iterator.h"
-#import "options.h"
-#import "slice.h"
-#import "status.h"
-#import "table.h"
-#import "table_builder.h"
-#import "write_batch.h"
-
-FOUNDATION_EXPORT double leveldbVersionNumber;
-FOUNDATION_EXPORT const unsigned char leveldbVersionString[];
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:003271fa25a0d1a984a0c3448c121e83ee0a0bed23214ba818770a3f492842da
+size 604

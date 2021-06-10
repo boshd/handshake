@@ -1,9 +1,3 @@
-"Done" = "تم";
-"Cancel" = "إلغاء";
-"Reset" = "إعادة تعيين";
-"Original" = "أصلي";
-"Square" = "مربع";
-"Delete Changes" = "حذف التغييرات";
-"Yes" = "نعم";
-"No" = "لا";
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:463845d6fed5919e691cd5b0ab8ab609eb35d7f9e3f4716c8ed6d536f9ab2151
+size 207

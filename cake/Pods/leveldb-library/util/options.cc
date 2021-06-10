@@ -1,14 +1,3 @@
-// Copyright (c) 2011 The LevelDB Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file. See the AUTHORS file for names of contributors.
-
-#include "leveldb/options.h"
-
-#include "leveldb/comparator.h"
-#include "leveldb/env.h"
-
-namespace leveldb {
-
-Options::Options() : comparator(BytewiseComparator()), env(Env::Default()) {}
-
-}  // namespace leveldb
+version https://git-lfs.github.com/spec/v1
+oid sha256:55a86bd92585dbb035c9d28847dd44071ddaa62cdce5554e51b41763c4c88a86
+size 429

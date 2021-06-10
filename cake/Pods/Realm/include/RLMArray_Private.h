@@ -1,32 +1,3 @@
-////////////////////////////////////////////////////////////////////////////
-//
-// Copyright 2014 Realm Inc.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//
-////////////////////////////////////////////////////////////////////////////
-
-#import <Realm/RLMArray.h>
-#import <Realm/RLMConstants.h>
-
-NS_ASSUME_NONNULL_BEGIN
-
-@interface RLMArray ()
-- (instancetype)initWithObjectClassName:(NSString *)objectClassName;
-- (instancetype)initWithObjectType:(RLMPropertyType)type optional:(BOOL)optional;
-- (NSString *)descriptionWithMaxDepth:(NSUInteger)depth;
-@end
-
-void RLMArrayValidateMatchingObjectType(RLMArray *array, id value);
-
-NS_ASSUME_NONNULL_END
+version https://git-lfs.github.com/spec/v1
+oid sha256:75075fde33b6319df418cf3a72ee3263312c2cef93a30143553b49e7e29fe34a
+size 1156

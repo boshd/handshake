@@ -1,16 +1,3 @@
-#ifdef __OBJC__
-#import <UIKit/UIKit.h>
-#else
-#ifndef FOUNDATION_EXPORT
-#if defined(__cplusplus)
-#define FOUNDATION_EXPORT extern "C"
-#else
-#define FOUNDATION_EXPORT extern
-#endif
-#endif
-#endif
-
-
-FOUNDATION_EXPORT double RealmSwiftVersionNumber;
-FOUNDATION_EXPORT const unsigned char RealmSwiftVersionString[];
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:a0b0d5688ff3695497761108856ffb93b9224959f432b06da520db78c8693d60
+size 312

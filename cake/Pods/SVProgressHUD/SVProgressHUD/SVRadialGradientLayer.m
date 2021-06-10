@@ -1,25 +1,3 @@
-//
-//  SVRadialGradientLayer.m
-//  SVProgressHUD, https://github.com/SVProgressHUD/SVProgressHUD
-//
-//  Copyright (c) 2014-2018 Tobias Tiemerding. All rights reserved.
-//
-
-#import "SVRadialGradientLayer.h"
-
-@implementation SVRadialGradientLayer
-
-- (void)drawInContext:(CGContextRef)context {
-    size_t locationsCount = 2;
-    CGFloat locations[2] = {0.0f, 1.0f};
-    CGFloat colors[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.75f};
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, colors, locations, locationsCount);
-    CGColorSpaceRelease(colorSpace);
-
-    float radius = MIN(self.bounds.size.width , self.bounds.size.height);
-    CGContextDrawRadialGradient (context, gradient, self.gradientCenter, 0, self.gradientCenter, radius, kCGGradientDrawsAfterEndLocation);
-    CGGradientRelease(gradient);
-}
-
-@end
+version https://git-lfs.github.com/spec/v1
+oid sha256:1116f297d9fd831dd297563fe36654b21989a4c59b043c3070363090732b0c3e
+size 909

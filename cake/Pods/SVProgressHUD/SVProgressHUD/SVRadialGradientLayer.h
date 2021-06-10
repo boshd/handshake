@@ -1,14 +1,3 @@
-//
-//  SVRadialGradientLayer.h
-//  SVProgressHUD, https://github.com/SVProgressHUD/SVProgressHUD
-//
-//  Copyright (c) 2014-2018 Tobias Tiemerding. All rights reserved.
-//
-
-#import <QuartzCore/QuartzCore.h>
-
-@interface SVRadialGradientLayer : CALayer
-
-@property (nonatomic) CGPoint gradientCenter;
-
-@end
+version https://git-lfs.github.com/spec/v1
+oid sha256:7ccd3d1d541e1dfbdadb8ea491f68981f785d41652dbd684a6280818bbe4d947
+size 303

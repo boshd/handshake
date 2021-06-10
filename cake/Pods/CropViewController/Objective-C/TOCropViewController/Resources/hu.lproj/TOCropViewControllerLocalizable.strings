@@ -1,9 +1,3 @@
-"Done" = "Kész";
-"Cancel" = "Mégse";
-"Reset" = "Visszaállítás";
-"Original" = "Eredeti";
-"Square" = "Négyzet";
-"Delete Changes" = "Módosítások törlése";
-"Yes" = "Igen";
-"No" = "Nem";
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:3c8358f131898d2bae71fdf8d563355587839b1796ee65a154b6312a026a3d0d
+size 194

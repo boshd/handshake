@@ -1,18 +1,3 @@
-#ifndef REALM_UTIL_METERED_MAP_HPP
-#define REALM_UTIL_METERED_MAP_HPP
-
-#include <map>
-#include <realm/util/allocation_metrics.hpp>
-
-namespace realm {
-namespace util {
-namespace metered {
-/// Map with metered allocation. Additionally, the default Compare is changed to
-/// `std::less<>` instead of `std::less<K>`, which allows heterogenous lookup.
-template <class K, class V, class Compare = std::less<>, class Alloc = MeteredSTLAllocator<std::pair<const K, V>>>
-using map = std::map<K, V, Compare, Alloc>;
-} // namespace metered
-} // namespace util
-} // namespace realm
-
-#endif // REALM_UTIL_METERED_MAP_HPP
+version https://git-lfs.github.com/spec/v1
+oid sha256:4847ecda830775aacc4d22d71cf2b104c60af9113d3674350aca2c37bad90b7d
+size 608

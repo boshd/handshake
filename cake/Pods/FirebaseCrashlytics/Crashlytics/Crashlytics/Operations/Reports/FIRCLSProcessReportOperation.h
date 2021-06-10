@@ -1,30 +1,3 @@
-// Copyright 2019 Google
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-#import <Foundation/Foundation.h>
-
-@class FIRCLSInternalReport;
-@class FIRCLSSymbolResolver;
-
-@interface FIRCLSProcessReportOperation : NSOperation
-
-- (instancetype)init NS_UNAVAILABLE;
-+ (instancetype)new NS_UNAVAILABLE;
-- (instancetype)initWithReport:(FIRCLSInternalReport *)report
-                      resolver:(FIRCLSSymbolResolver *)resolver NS_DESIGNATED_INITIALIZER;
-
-@property(nonatomic, readonly) FIRCLSSymbolResolver *symbolResolver;
-@property(nonatomic, readonly) FIRCLSInternalReport *report;
-
-@end
+version https://git-lfs.github.com/spec/v1
+oid sha256:b407b303b38e5f23d698fc787b3e846e6d2ef42940e5fbb8c28bdefd53d9a331
+size 1097

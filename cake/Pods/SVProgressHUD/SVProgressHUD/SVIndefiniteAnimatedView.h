@@ -1,17 +1,3 @@
-//
-//  SVIndefiniteAnimatedView.h
-//  SVProgressHUD, https://github.com/SVProgressHUD/SVProgressHUD
-//
-//  Copyright (c) 2014-2018 Guillaume Campagna. All rights reserved.
-//
-
-#import <UIKit/UIKit.h>
-
-@interface SVIndefiniteAnimatedView : UIView
-
-@property (nonatomic, assign) CGFloat strokeThickness;
-@property (nonatomic, assign) CGFloat radius;
-@property (nonatomic, strong) UIColor *strokeColor;
-
-@end
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:8162e5a0b9458f52d10cd537313c035755bc4f14d6437fe8e411e0248f02ed9f
+size 407

@@ -1,8 +1,3 @@
-"Done" = "完了";
-"Cancel" = "戻る";
-"Reset" = "リセット";
-"Original" = "オリジナル";
-"Square" = "スクエア";
-"Delete Changes" = "変更を削除";
-"Yes" = "はい";
-"No" = "いいえ";
+version https://git-lfs.github.com/spec/v1
+oid sha256:834f173b09c27dbcac1df2e20df76aaa1cc369f93f8e6b032a249cf0e83b2379
+size 201

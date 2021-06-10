@@ -1,10 +1,3 @@
-
-import Foundation
-
-// This extension is required as part of supporting resources in SPM.
-// It's included in all other buid products.
-extension Bundle {
-    static var module: Bundle = {
-        Bundle(for: PhoneNumberKit.self)
-    }()
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:d019375fece792468df25afaaa87594cae93c2c16d734ea5cfa22b1de057d269
+size 239

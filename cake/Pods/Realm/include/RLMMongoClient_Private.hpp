@@ -1,34 +1,3 @@
-////////////////////////////////////////////////////////////////////////////
-//
-// Copyright 2020 Realm Inc.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//
-////////////////////////////////////////////////////////////////////////////
-
-#import <Realm/RLMMongoClient.h>
-
-NS_ASSUME_NONNULL_BEGIN
-
-@class RLMUser;
-
-@interface RLMMongoClient ()
-
-@property (nonatomic, strong) RLMUser *user;
-
-- (instancetype)initWithUser:(RLMUser *)user serviceName:(NSString *)serviceName;
-
-@end
-
-NS_ASSUME_NONNULL_END
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:d84cc30ba4eea0bb9394e45c0bc7ab25cd9ef009afe21ce8c6291a97d8562036
+size 1008

@@ -1,27 +1,3 @@
-#import <Foundation/Foundation.h>
-#import "FirebaseDatabase/Sources/third_party/FImmutableSortedDictionary/FImmutableSortedDictionary/FLLRBNode.h"
-
-@interface FLLRBEmptyNode : NSObject <FLLRBNode>
-
-+ (id)emptyNode;
-
-- (id)copyWith:(id) aKey withValue:(id) aValue withColor:(FLLRBColor*) aColor withLeft:(id<FLLRBNode>)aLeft withRight:(id<FLLRBNode>)aRight;
-- (id<FLLRBNode>) insertKey:(id) aKey forValue:(id)aValue withComparator:(NSComparator)aComparator;
-- (id<FLLRBNode>) remove:(id) aKey withComparator:(NSComparator)aComparator;
-- (int) count;
-- (BOOL) isEmpty;
-- (BOOL) inorderTraversal:(BOOL (^)(id key, id value))action;
-- (BOOL) reverseTraversal:(BOOL (^)(id key, id value))action;
-- (id<FLLRBNode>) min;
-- (id) minKey;
-- (id) maxKey;
-- (BOOL) isRed;
-- (int) check;
-
-@property (nonatomic, strong) id key;
-@property (nonatomic, strong) id value;
-@property (nonatomic, strong) FLLRBColor* color;
-@property (nonatomic, strong) id<FLLRBNode> left;
-@property (nonatomic, strong) id<FLLRBNode> right;
-
-@end
+version https://git-lfs.github.com/spec/v1
+oid sha256:199ee1981660bcfb4b93aef87349debb59670e8ef645ab53b9624e1ab817bdb5
+size 1010

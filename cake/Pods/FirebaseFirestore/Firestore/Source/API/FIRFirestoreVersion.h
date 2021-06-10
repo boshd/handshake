@@ -1,22 +1,3 @@
-/*
- * Copyright 2017 Google
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/** Version for Firestore. */
-
-#import <Foundation/Foundation.h>
-
-/** Version string for the Firebase Firestore SDK. */
-FOUNDATION_EXPORT const char *const FIRFirestoreVersionString;
+version https://git-lfs.github.com/spec/v1
+oid sha256:cf7a8d34e3ecbd83e357a24f773b11c37fd918540311353d5fe3983c41308a5d
+size 775

@@ -1,30 +1,3 @@
-/*
- * Copyright 2020 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-#import "Crashlytics/Crashlytics/Models/Record/FIRCLSRecordIdentity.h"
-
-@implementation FIRCLSRecordIdentity
-
-- (instancetype)initWithDict:(NSDictionary *)dict {
-  self = [super initWithDict:dict];
-  if (self) {
-    _build_version = dict[@"build_version"];
-    _install_id = dict[@"install_id"];
-  }
-  return self;
-}
-
-@end
+version https://git-lfs.github.com/spec/v1
+oid sha256:3ccfe21ce7d2ae01f67e3a27e668df5f2c70d48dd3d92d8574454aa9a4c61a0f
+size 919

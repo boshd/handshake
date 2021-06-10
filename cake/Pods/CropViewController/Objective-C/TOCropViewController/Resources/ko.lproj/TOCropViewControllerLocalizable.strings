@@ -1,8 +1,3 @@
-"Done" = "완료";
-"Cancel" = "취소";
-"Reset" = "재설정";
-"Original" = "원본";
-"Square" = "정방형";
-"Delete Changes" = "변경사항 삭제";
-"Yes" = "예";
-"No" = "아니요";
+version https://git-lfs.github.com/spec/v1
+oid sha256:60f97accb9d7b4a9e8dd3358fc1223d16e88f6696a67b62148e6bfeafe101d58
+size 187

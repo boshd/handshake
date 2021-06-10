@@ -1,6 +1,3 @@
-framework module SVProgressHUD {
-  umbrella header "SVProgressHUD-umbrella.h"
-
-  export *
-  module * { export * }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:fff866918288e4a328d990724d28a931d404d3f6da442d68960be273a26023b4
+size 116

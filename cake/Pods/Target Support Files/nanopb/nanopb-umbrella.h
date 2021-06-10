@@ -1,26 +1,3 @@
-#ifdef __OBJC__
-#import <UIKit/UIKit.h>
-#else
-#ifndef FOUNDATION_EXPORT
-#if defined(__cplusplus)
-#define FOUNDATION_EXPORT extern "C"
-#else
-#define FOUNDATION_EXPORT extern
-#endif
-#endif
-#endif
-
-#import "pb.h"
-#import "pb_common.h"
-#import "pb_decode.h"
-#import "pb_encode.h"
-#import "pb.h"
-#import "pb_decode.h"
-#import "pb_common.h"
-#import "pb.h"
-#import "pb_encode.h"
-#import "pb_common.h"
-
-FOUNDATION_EXPORT double nanopbVersionNumber;
-FOUNDATION_EXPORT const unsigned char nanopbVersionString[];
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:b9ad2cc10742c3d36a769cd6d6f9f27e9e927a9eea71a16b0724714fc068958d
+size 503

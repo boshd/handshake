@@ -1,21 +1,3 @@
-#ifdef __OBJC__
-#import <UIKit/UIKit.h>
-#else
-#ifndef FOUNDATION_EXPORT
-#if defined(__cplusplus)
-#define FOUNDATION_EXPORT extern "C"
-#else
-#define FOUNDATION_EXPORT extern
-#endif
-#endif
-#endif
-
-#import "FIRCrashlytics.h"
-#import "FIRCrashlyticsReport.h"
-#import "FirebaseCrashlytics.h"
-#import "FIRExceptionModel.h"
-#import "FIRStackFrame.h"
-
-FOUNDATION_EXPORT double FirebaseCrashlyticsVersionNumber;
-FOUNDATION_EXPORT const unsigned char FirebaseCrashlyticsVersionString[];
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:549f3396cb25aa65c4395bff5265d3da284128261b2b3b38c8cb82883e719395
+size 478

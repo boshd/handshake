@@ -1,8 +1,3 @@
-"Done" = "Hotovo";
-"Cancel" = "Zrušiť";
-"Reset" = "Reset";
-"Original" = "Originál";
-"Square" = "Štvorec";
-"Delete Changes" = "Zmazať zmeny";
-"Yes" = "Áno";
-"No" = "Nie";
+version https://git-lfs.github.com/spec/v1
+oid sha256:d4056c0ec6621e1fb50390096034b463b7a3c9d205af6164e9f756ec92bbc393
+size 176

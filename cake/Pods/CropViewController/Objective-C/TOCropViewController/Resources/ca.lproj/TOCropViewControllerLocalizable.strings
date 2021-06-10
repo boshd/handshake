@@ -1,8 +1,3 @@
-"Done" = "Fet";
-"Cancel" = "Cancel·lar";
-"Reset" = "Restablir";
-"Original" = "Original";
-"Square" = "Quadrat";
-"Delete Changes" = "Esborrar Canvis";
-"Yes" = "Si";
-"No" = "No";
+version https://git-lfs.github.com/spec/v1
+oid sha256:483a0ec24343e4c9f1a615bf08614aaf024df42ca7d2e8a4cafadf25896ead4a
+size 177

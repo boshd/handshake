@@ -1,24 +1,3 @@
-/*
- * Copyright 2017 Google
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-#import "FirebaseDatabase/Sources/Api/Private/FTypedefs_Private.h"
-#import <Foundation/Foundation.h>
-
-@interface FTupleCallbackStatus : NSObject
-@property(nonatomic, copy) fbt_void_nsstring_nsstring block;
-@property(nonatomic) NSString *status;
-@property(nonatomic) NSString *errorReason;
-@end
+version https://git-lfs.github.com/spec/v1
+oid sha256:6dd008aa6215d200463f3b2f02d60bd9f6cc8c0fdddc64a38b31f110b49e1b10
+size 886

@@ -1,16 +1,3 @@
-#ifndef REALM_UTIL_METERED_STRING_HPP
-#define REALM_UTIL_METERED_STRING_HPP
-
-#include <string>
-#include <realm/util/allocation_metrics.hpp>
-
-namespace realm {
-namespace util {
-namespace metered {
-/// String with metered allocation
-using string = std::basic_string<char, std::char_traits<char>, MeteredSTLAllocator<char>>;
-} // namespace metered
-} // namespace util
-} // namespace realm
-
-#endif // REALM_UTIL_METERED_STRING_HPP
+version https://git-lfs.github.com/spec/v1
+oid sha256:be602566e816e3f4a635d5e8d012326c885548b7aea3d2c04bc26d8cc24d84bb
+size 427

@@ -1,36 +1,3 @@
-#ifdef __OBJC__
-#import <UIKit/UIKit.h>
-#else
-#ifndef FOUNDATION_EXPORT
-#if defined(__cplusplus)
-#define FOUNDATION_EXPORT extern "C"
-#else
-#define FOUNDATION_EXPORT extern
-#endif
-#endif
-#endif
-
-#import "FIRCollectionReference.h"
-#import "FIRDocumentChange.h"
-#import "FIRDocumentReference.h"
-#import "FIRDocumentSnapshot.h"
-#import "FirebaseFirestore.h"
-#import "FIRFieldPath.h"
-#import "FIRFieldValue.h"
-#import "FIRFirestore.h"
-#import "FIRFirestoreErrors.h"
-#import "FIRFirestoreSettings.h"
-#import "FIRFirestoreSource.h"
-#import "FIRGeoPoint.h"
-#import "FIRListenerRegistration.h"
-#import "FIRLoadBundleTask.h"
-#import "FIRQuery.h"
-#import "FIRQuerySnapshot.h"
-#import "FIRSnapshotMetadata.h"
-#import "FIRTimestamp.h"
-#import "FIRTransaction.h"
-#import "FIRWriteBatch.h"
-
-FOUNDATION_EXPORT double FirebaseFirestoreVersionNumber;
-FOUNDATION_EXPORT const unsigned char FirebaseFirestoreVersionString[];
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:154620bbae8a8953c17623cb8a61a199f95f0352c00d2dee5042e831dd29611a
+size 907

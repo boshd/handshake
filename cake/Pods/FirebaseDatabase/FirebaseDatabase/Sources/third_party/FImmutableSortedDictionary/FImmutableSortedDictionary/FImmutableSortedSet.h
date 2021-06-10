@@ -1,22 +1,3 @@
-#import <Foundation/Foundation.h>
-
-@interface FImmutableSortedSet : NSObject
-
-+ (FImmutableSortedSet *)setWithKeysFromDictionary:(NSDictionary *)array comparator:(NSComparator)comparator;
-
-- (BOOL)containsObject:(id)object;
-- (FImmutableSortedSet *)addObject:(id)object;
-- (FImmutableSortedSet *)removeObject:(id)object;
-- (id)firstObject;
-- (id)lastObject;
-- (NSUInteger)count;
-- (BOOL)isEmpty;
-
-- (id)predecessorEntry:(id)entry;
-
-- (void)enumerateObjectsUsingBlock:(void (^)(id obj, BOOL *stop))block;
-- (void)enumerateObjectsReverse:(BOOL)reverse usingBlock:(void (^)(id obj, BOOL *stop))block;
-
-- (NSEnumerator *)objectEnumerator;
-
-@end
+version https://git-lfs.github.com/spec/v1
+oid sha256:eadcb1a4bc088f2a78d395c9ef8fdfda4d8871858692845ef7d75cb8545fe54b
+size 641

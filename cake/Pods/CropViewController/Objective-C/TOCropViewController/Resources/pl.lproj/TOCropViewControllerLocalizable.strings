@@ -1,8 +1,3 @@
-"Done" = "Gotowe";
-"Cancel" = "Anuluj";
-"Reset" = "Wyzeruj";
-"Original" = "Orygin.";
-"Square" = "Kwadrat";
-"Delete Changes" = "Usuń zmiany";
-"Yes" = "Tak";
-"No" = "Nie";
+version https://git-lfs.github.com/spec/v1
+oid sha256:60af26124f227706113e384ed23fc814eba123b33a0c852c7a66bfddefa42149
+size 171

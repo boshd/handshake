@@ -1,17 +1,3 @@
-#ifndef REALM_UTIL_METERED_VECTOR_HPP
-#define REALM_UTIL_METERED_VECTOR_HPP
-
-#include <vector>
-#include <realm/util/allocation_metrics.hpp>
-
-namespace realm {
-namespace util {
-namespace metered {
-/// Vector with metered allocation
-template <class T, class Alloc = MeteredSTLAllocator<T>>
-using vector = std::vector<T, Alloc>;
-} // namespace metered
-} // namespace util
-} // namespace realm
-
-#endif // REALM_UTIL_METERED_VECTOR_HPP
+version https://git-lfs.github.com/spec/v1
+oid sha256:cc9f367b2670a652523a5f02e0e42d418d8703db3f653a61dda3284da593606d
+size 431

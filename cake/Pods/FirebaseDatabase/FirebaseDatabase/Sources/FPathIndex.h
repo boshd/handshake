@@ -1,23 +1,3 @@
-/*
- * Copyright 2017 Google
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-#import "FirebaseDatabase/Sources/Core/Utilities/FPath.h"
-#import "FirebaseDatabase/Sources/FIndex.h"
-#import <Foundation/Foundation.h>
-
-@interface FPathIndex : NSObject <FIndex>
-- (id)initWithPath:(FPath *)path;
-@end
+version https://git-lfs.github.com/spec/v1
+oid sha256:eddbab084ccdaa9bc23c04ec66b7e7ecc5da62f54f35a88f7a2184bbe826d7b0
+size 810

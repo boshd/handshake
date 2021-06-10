@@ -1,35 +1,3 @@
-/*
- * Copyright 2017 Google
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-#import <Foundation/Foundation.h>
-
-#import "FirebaseAuth/Sources/Backend/FIRAuthRPCResponse.h"
-
-NS_ASSUME_NONNULL_BEGIN
-
-/** @class FIRGetOOBConfirmationCodeResponse
-    @brief Represents the response from the getOobConfirmationCode endpoint.
- */
-@interface FIRGetOOBConfirmationCodeResponse : NSObject <FIRAuthRPCResponse>
-
-/** @property OOBCode
-    @brief The OOB code returned by the server in some cases.
- */
-@property(nonatomic, copy, readonly, nullable) NSString *OOBCode;
-
-@end
-
-NS_ASSUME_NONNULL_END
+version https://git-lfs.github.com/spec/v1
+oid sha256:15750a9b44af759302213fa0550b23bcebb05e6dcb273eed632a577a02d619a2
+size 1100

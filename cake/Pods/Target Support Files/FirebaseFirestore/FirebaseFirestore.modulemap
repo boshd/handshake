@@ -1,6 +1,3 @@
-framework module FirebaseFirestore {
-  umbrella header "FirebaseFirestore-umbrella.h"
-
-  export *
-  module * { export * }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:67cf16a1edc93dedf4d687b82ff19705c1f1555ec4917ebaf46e1d8dd7814a20
+size 124
