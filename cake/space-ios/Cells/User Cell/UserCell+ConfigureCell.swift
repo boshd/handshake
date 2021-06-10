@@ -18,7 +18,7 @@ extension UserCell {
             
             imageView?.sd_setImage(with: URL(string: imageUrl), placeholderImage: UIImage(named: "UserpicIcon"))
             
-            let itemSize = CGSize.init(width: 50, height: 50)
+            let itemSize = CGSize.init(width: 40, height: 40)
             UIGraphicsBeginImageContextWithOptions(itemSize, false, UIScreen.main.scale)
             let imageRect = CGRect.init(origin: CGPoint.zero, size: itemSize)
             imageView?.image!.draw(in: imageRect)
@@ -31,7 +31,7 @@ extension UserCell {
         } else {
             imageView?.image = UIImage(named: "UserpicIcon")
             
-            let itemSize = CGSize.init(width: 50, height: 50)
+            let itemSize = CGSize.init(width: 40, height: 40)
             UIGraphicsBeginImageContextWithOptions(itemSize, false, UIScreen.main.scale)
             let imageRect = CGRect.init(origin: CGPoint.zero, size: itemSize)
             imageView?.image!.draw(in: imageRect)
@@ -54,14 +54,14 @@ extension UserCell {
             textLabel?.text = "You"
         } else {
             print(RealmKeychain.realmUsersArray().map({ $0.id }))
-            print("\n\n \(users[indexPath.row].localName)")
             if let realmUser = RealmKeychain.realmUsersArray().first(where: { $0.id == users[indexPath.row].id }),
                let name = realmUser.localName {
                 textLabel?.text = name
             } else {
                 let username = users[indexPath.row].name
                 let phoneNumber = users[indexPath.row].phoneNumber
-                textLabel?.text = "\(phoneNumber ?? "phone") ~ \(username ?? "name")"
+                textLabel?.text = "\(phoneNumber ?? "phone")"
+                rightLabel.text = "~ \(username ?? "name")"
             }
         }
         

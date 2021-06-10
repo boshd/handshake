@@ -18,13 +18,16 @@ class InformationMessageCell: RevealableCollectionViewCell {
     }
     
     lazy var information: DynamicLabel = {
-        var information = DynamicLabel(withInsets: 3, 3, 3, 3)
-        information.font = ThemeManager.currentTheme().secondaryFont(with: 11)
+        var information = DynamicLabel(withInsets: 6, 6, 16, 10)
+        information.font = ThemeManager.currentTheme().secondaryFontBold(with: 10)
         information.textAlignment = .center
         information.textColor = ThemeManager.currentTheme().informationMessageTextColor
         information.numberOfLines = 0
         information.translatesAutoresizingMaskIntoConstraints = false
         information.layer.masksToBounds = true
+//        information.cornerRadius = 10
+//        information.layer.cornerCurve = .continuous
+//        information.backgroundColor = ThemeManager.currentTheme().informationMessageBackgroundColor
 
         return information
     }()
@@ -37,13 +40,14 @@ class InformationMessageCell: RevealableCollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame.integral)
         backgroundColor = .clear
-
+        
         addSubview(information)
 
         NSLayoutConstraint.activate([
             information.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0),
-            information.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),
-            information.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15)
+            information.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 0),
+//            information.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -100),
+//            information.widthAnchor.constraint(equalToConstant: information.frame.width)
         ])
     }
     

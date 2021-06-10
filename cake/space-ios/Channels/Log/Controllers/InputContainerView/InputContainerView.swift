@@ -17,7 +17,7 @@ final class InputContainerView: UIControl {
     func setColors() {
         placeholderLabel.textColor = ThemeManager.currentTheme().generalSubtitleColor
         
-        sendButton.setTitleColor(ThemeManager.currentTheme().buttonTextColor, for: .normal)
+        sendButton.setTitleColor(ThemeManager.currentTheme().tintColor, for: .normal)
         sendButton.setTitleColor(.lightGray, for: .disabled)
         sendButton.backgroundColor = .clear
     }
@@ -49,11 +49,11 @@ final class InputContainerView: UIControl {
     let sendButton: InteractiveButton = {
         let sendButton = InteractiveButton(type: .custom)
         sendButton.translatesAutoresizingMaskIntoConstraints = false
-//        sendButton.setImage(UIImage(named: "send"), for: .normal)
-         sendButton.setTitle("Send", for: .normal)
-        sendButton.titleLabel?.font = ThemeManager.currentTheme().secondaryFontBold(with: 14)
+        sendButton.setImage(UIImage(named: "Send"), for: .normal)
+//         sendButton.setTitle("SEND", for: .normal)
+        sendButton.titleLabel?.font = ThemeManager.currentTheme().secondaryFontVeryBold(with: 13)
         sendButton.isEnabled = false
-//        sendButton.tintColor = .black
+        sendButton.tintColor = ThemeManager.currentTheme().tintColor
         sendButton.setTitleColor(ThemeManager.currentTheme().tintColor, for: .normal)
         sendButton.setTitleColor(.lightGray, for: .disabled)
         sendButton.backgroundColor = .clear

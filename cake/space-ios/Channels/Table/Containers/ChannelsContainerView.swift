@@ -16,7 +16,9 @@ class ChannelsContainerView: UIView {
         let button = MainRoundButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.cornerRadius = 30
-        button.setImage(UIImage(named: "add")?.withRenderingMode(.alwaysTemplate), for: .normal)
+//        button.setImage(UIImage(named: "Plus"), for: .normal)
+//        button.backgroundColor = ThemeManager.currentTheme().secondaryButtonBackgroundColor
+        button.tintColor = ThemeManager.currentTheme().tintColor
         return button
     }()
     

@@ -19,6 +19,7 @@ extension CreateChannelController: ChannelNameHeaderCellDelegate {
     
     func channelNameHeaderCell(_ cell: ChannelNameHeaderCell, updatedChannelName: String) {
         channelName = updatedChannelName
+        newChannel?.name = updatedChannelName
         DispatchQueue.main.async {
             self.tableView.beginUpdates()
             self.tableView.endUpdates()

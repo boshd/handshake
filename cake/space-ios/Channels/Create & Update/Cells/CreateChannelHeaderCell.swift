@@ -65,7 +65,7 @@ class ChannelNameHeaderCell: UITableViewCell {
     let channelNameDescriptionLabel: DynamicLabel = {
         let label = DynamicLabel(withInsets: 0, 0, 0, 0)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Events cannot be modified after they begin, end and are cancelled."
+        label.text = "Enter a name for your event and an optional event icon."
         label.textColor = ThemeManager.currentTheme().generalSubtitleColor
         label.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         label.numberOfLines = 0
@@ -125,7 +125,7 @@ class ChannelNameHeaderCell: UITableViewCell {
 //            nameTextView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0),
             
             channelNameDescriptionLabel.topAnchor.constraint(equalTo: channelImageView.bottomAnchor, constant: 10),
-            channelNameDescriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),
+            channelNameDescriptionLabel.leadingAnchor.constraint(equalTo: channelNameField.leadingAnchor, constant: 0),
             channelNameDescriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
             channelNameDescriptionLabel.bottomAnchor.constraint(equalTo: paddingView.topAnchor, constant: 0),
             

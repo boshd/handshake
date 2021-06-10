@@ -1047,6 +1047,53 @@ extension Date {
     }
 }
 
+func getDateString(startTime: Int64, endTime: Int64) -> String {
+    // format start date
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "MMM d • h:mm a"
+    dateFormatter.timeZone = .current
+    
+    let startDate = Date(timeIntervalSince1970: TimeInterval(startTime))
+    let endDate = Date(timeIntervalSince1970: TimeInterval(endTime))
+    
+    // event didn't start
+    var text = dateFormatter.string(from: startDate)
+    
+    // event starts today
+    if startDate.isInToday {
+        dateFormatter.dateFormat = "h:mm a"
+        text = "Today at \(dateFormatter.string(from: startDate))"
+    }
+    
+    // event starts tmrw
+    if startDate.isInTomorrow {
+        dateFormatter.dateFormat = "h:mm a"
+        text = "Tomorrow at \(dateFormatter.string(from: startDate))"
+    }
+    
+    let shortDateFormatter = DateFormatter()
+    shortDateFormatter.dateFormat = "MMM d"
+    shortDateFormatter.timeZone = .current
+    // event ended
+    if endDate.isInThePast { text = "Occured, \(shortDateFormatter.string(from: startDate))" }
+    
+    let yearDateFormatter = DateFormatter()
+    yearDateFormatter.dateFormat = "MMM d, yyyy"
+    yearDateFormatter.timeZone = .current
+    if !endDate.isInThisYear { text = "Occured, \(yearDateFormatter.string(from: startDate))" }
+    return text
+}
+
+public func getPlacemark(with lat: Double, lon: Double, completion: @escaping([CLPlacemark]?)->()) {
+    let location = CLLocation(latitude: lat, longitude: lon)
+    CLGeocoder().reverseGeocodeLocation(location, preferredLocale: nil) { (placemarks: [CLPlacemark]?, error: Error?) in
+        if error != nil {
+            print(error ?? "error fetching location from coordinates")
+        }
+        completion(placemarks)
+    }
+}
+
 func timestampOfLastMessage(_ date: Date) -> String {
     let calendar = NSCalendar.current
     let unitFlags: Set<Calendar.Component> = [ .day, .weekOfYear, .weekday]

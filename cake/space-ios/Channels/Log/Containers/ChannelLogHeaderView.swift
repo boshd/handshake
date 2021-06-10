@@ -8,13 +8,13 @@
 
 import UIKit
 
-class ChannelLogHeaderView: UIView {
+class ChannelLogHeaderView: BlurView {
     
     var timeLabel: DynamicLabel = {
         var label = DynamicLabel(withInsets: 0, 0, 0, 0)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
-        label.textColor = ThemeManager.currentTheme().generalTitleColor
+        label.textColor = .handshakeDarkGray
         label.font = ThemeManager.currentTheme().secondaryFontBold(with: 12)
         
         return label
@@ -24,20 +24,19 @@ class ChannelLogHeaderView: UIView {
         var label = DynamicLabel(withInsets: 0, 0, 0, 0)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
-        label.textColor = ThemeManager.currentTheme().generalTitleColor
+        label.textColor = .handshakeDarkGray
         label.font = ThemeManager.currentTheme().secondaryFontBold(with: 12)
         
         return label
     }()
     
-    let eventStatus: DynamicLabel = {
+    let dateLabel: DynamicLabel = {
         let label = DynamicLabel(withInsets: 2, 2, 3, 3)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .defaultHotGreen()
+        label.textColor = .handshakeDarkGray
         label.textAlignment = .right
-        label.font = ThemeManager.currentTheme().secondaryFontBold(with: 10)
+        label.font = ThemeManager.currentTheme().secondaryFontBold(with: 12)
         label.cornerRadius = 3
-        label.backgroundColor = .greenEventStatusBackground()
         
         return label
     }()
@@ -78,35 +77,38 @@ class ChannelLogHeaderView: UIView {
         isUserInteractionEnabled = true
         backgroundColor = ThemeManager.currentTheme().chatLogHeaderBackgroundColor
         
+        cornerRadius = 65/3
+        layer.cornerCurve = .continuous
+        
         layer.shadowColor = ThemeManager.currentTheme().buttonTextColor.cgColor
-        layer.shadowOpacity = 0.1
+        layer.shadowOpacity = 0.05
         layer.shadowRadius = 5
         layer.shadowOffset = CGSize(width: -1, height: 2)
         
 //        addSubview(channelImageView)
-        addSubview(eventStatus)
+//        addSubview(dateLabel)
         addSubview(timeLabel)
         addSubview(locationNameLabel)
         addSubview(viewDetails)
-        addSubview(seperator)
+//        addSubview(seperator)
         
         NSLayoutConstraint.activate([
-            timeLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),
-            timeLabel.bottomAnchor.constraint(equalTo: locationNameLabel.topAnchor, constant: -8),
+            timeLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            timeLabel.topAnchor.constraint(equalTo: topAnchor, constant: 15),
             
-            locationNameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),
-            locationNameLabel.bottomAnchor.constraint(equalTo: eventStatus.topAnchor, constant: -8),
+            locationNameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            locationNameLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15),
             
-            eventStatus.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12),
-            eventStatus.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),
+//            dateLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12),
+//            dateLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),
             
-            viewDetails.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15),
-            viewDetails.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12),
+            viewDetails.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            viewDetails.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0),
             
-            seperator.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0),
-            seperator.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
-            seperator.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
-            seperator.heightAnchor.constraint(equalToConstant: 0.5)
+//            seperator.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0),
+//            seperator.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
+//            seperator.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
+//            seperator.heightAnchor.constraint(equalToConstant: 0.5)
         ])
     }
     

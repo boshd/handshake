@@ -31,7 +31,7 @@ class CustomAlertButton: UIButton {
         backgroundColor = ThemeManager.currentTheme().alertControllerBackgroundColor
         titleLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 14)
         titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
-        setTitleColor(ThemeManager.currentTheme().buttonTextColor, for: .normal)
+        setTitleColor(ThemeManager.currentTheme().secondaryButtonTitleColor, for: .normal)
         setTitleColor(.lightGray, for: .disabled)
         
         layer.cornerCurve = .continuous

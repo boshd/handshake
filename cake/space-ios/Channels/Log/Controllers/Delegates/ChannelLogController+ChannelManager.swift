@@ -71,14 +71,14 @@ extension ChannelLogController: ChannelManagerDelegate {
         }
     }
     
-    func isCancelledUpdated(_ isCancelled: Bool) {
-        try! realm.safeWrite {
-            self.channel?.isCancelled = RealmOptional(isCancelled)
-        }
-        if self.isCurrentUserMemberOfCurrentGroup() {
-            // configure cancellation
-        }
-    }
+//    func isCancelledUpdated(_ isCancelled: Bool) {
+//        try! realm.safeWrite {
+//            self.channel?.isCancelled = RealmOptional(isCancelled)
+//        }
+//        if self.isCurrentUserMemberOfCurrentGroup() {
+//            // configure cancellation
+//        }
+//    }
     
     func channelDeleted(channelID: String) {
         guard let currentChannelID = channel?.id else { return }

@@ -9,6 +9,9 @@
 import UIKit
 
 class InteractiveButton: UIButton {
+    
+    var scaler: CGFloat = 0.95
+    
     override var isHighlighted: Bool {
         didSet {
             shrink(down: isHighlighted)
@@ -18,7 +21,7 @@ class InteractiveButton: UIButton {
     func shrink(down: Bool) {
         UIView.animate(withDuration: 0.2, delay: 0.0, options: [.allowUserInteraction], animations: {
             if down {
-                self.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+                self.transform = CGAffineTransform(scaleX: self.scaler, y: self.scaler)
             } else {
                 self.transform = .identity
             }

@@ -20,7 +20,6 @@ extension ChannelsController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: channelCellId, for: indexPath) as? ChannelCell ?? ChannelCell()
-//        let cell: ChannelCell = tableView.dequeueReusableCell(withIdentifier: channelCellId, for: indexPath) as! ChannelCell
         guard let realmChannels = theRealmChannels else { return cell }
         cell.configureCell(for: indexPath, channels: realmChannels)
         
@@ -28,18 +27,13 @@ extension ChannelsController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //tableView.deselectRow(at: indexPath, animated: true)
-        
         guard let theRealmChannels = theRealmChannels else  { return }
-//        hapticFeedback(style: .selectionChanged)
         
         let channel = theRealmChannels[indexPath.row]
-        let _ = channel.updateAndReturnStatus()
-        channelLogPresenter.open(channel, controller: self)
+        // let _ = channel.updateAndReturnStatus()
         
-//        let destination = ChannelLogController()
-//        print("pre-push \(navigationController)")
-//        self.navigationController?.pushViewController(destination, animated: true)
+        print("jnkjkjnkjj \(channel.locationName, channel.locationDescription, channel.latitude, channel.longitude)")
+        channelLogPresenter.open(channel, controller: self)
         
     }
     
@@ -56,25 +50,7 @@ extension ChannelsController {
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        guard let theRealmChannels = theRealmChannels
-        else { return 0 }
-        
-        if section == 0 {
-//            if inProgressRealmChannels.count == 0 {
-//                return 0
-//            }
-            return 0
-        } else if section == 1 {
-//            if upcomingRealmChannels.count == 0 {
-//                return 0
-//            }
-            return 0
-        } else {
-//            if pastRealmChannels.count == 0 {
-//                return 0
-//            }
-            return 0
-        }
+        return 0
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -104,15 +80,12 @@ extension ChannelsController {
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 
         let delete = setupDeleteAction(at: indexPath)
-//        let mute = setupMuteAction(at: indexPath)
 
         let configuration = UISwipeActionsConfiguration(actions: [delete])
 
 
         if #available(iOS 11.0, *) {
             if navigationItem.searchController?.searchBar.text != "" { return configuration }
-        } else {
-            // if searchBar?.text != "" { return configuration }
         }
 
         if (tableView.cellForRow(at: indexPath) as? UserCell) != nil {

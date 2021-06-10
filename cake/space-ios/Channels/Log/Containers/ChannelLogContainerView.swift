@@ -67,6 +67,7 @@ class ChannelLogContainerView: UIView {
     }()
     
     var headerHeightConstraint: NSLayoutConstraint?
+    var headerTopConstraint: NSLayoutConstraint?
     fileprivate var bottomConstraint_: NSLayoutConstraint!
     
     override init(frame: CGRect) {
@@ -80,18 +81,21 @@ class ChannelLogContainerView: UIView {
         addSubview(backgroundView)
         addSubview(channelLogHeaderView)
         
-        channelLogHeaderView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
-        channelLogHeaderView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0).isActive = true
-        channelLogHeaderView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0).isActive = true
-        headerHeightConstraint = channelLogHeaderView.heightAnchor.constraint(equalToConstant: 85)
+//        channelLogHeaderView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
+        channelLogHeaderView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10).isActive = true
+        channelLogHeaderView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
+        headerHeightConstraint = channelLogHeaderView.heightAnchor.constraint(equalToConstant: 65)
         headerHeightConstraint?.isActive = true
+        
+        headerTopConstraint = channelLogHeaderView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10)
+        headerTopConstraint?.isActive = true
         
         backgroundView.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
         backgroundView.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
         backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         backgroundView.topAnchor.constraint(equalTo: inputViewContainer.bottomAnchor).isActive = true
         
-        collectionViewContainer.topAnchor.constraint(equalTo: channelLogHeaderView.bottomAnchor).isActive = true
+        collectionViewContainer.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor).isActive = true
         if #available(iOS 11.0, *) {
             collectionViewContainer.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor).isActive = true
             collectionViewContainer.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor).isActive = true

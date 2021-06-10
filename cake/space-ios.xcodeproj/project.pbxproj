@@ -16,7 +16,7 @@
 		BC047001236376B900C235E1 /* DescriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC047000236376B900C235E1 /* DescriptionViewController.swift */; };
 		BC04B8C0236F1BE0008FDF60 /* ChannelLogController+ChannelHistoryFetcherDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC04B8BF236F1BE0008FDF60 /* ChannelLogController+ChannelHistoryFetcherDelegate.swift */; };
 		BC072302237777DF00A4D476 /* ChannelLogContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC072301237777DF00A4D476 /* ChannelLogContainerView.swift */; };
-		BC08717E238AF84B0055E109 /* ChannelDetailsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC08717D238AF84B0055E109 /* ChannelDetailsController.swift */; };
+		BC08717E238AF84B0055E109 /* ChannelDetailsController__.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC08717D238AF84B0055E109 /* ChannelDetailsController__.swift */; };
 		BC089C922585578000A42B7D /* PushNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC089C912585578000A42B7D /* PushNotificationManager.swift */; };
 		BC089C972585598F00A42B7D /* PushNotificationSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC089C962585598F00A42B7D /* PushNotificationSender.swift */; };
 		BC08DF91236B335500A917D7 /* ParticipantCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC08DF90236B335500A917D7 /* ParticipantCell.swift */; };
@@ -44,7 +44,7 @@
 		BC0F42892358D5DC000D3DF0 /* MarginStackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0F42882358D5DC000D3DF0 /* MarginStackCell.swift */; };
 		BC0F428B2358D643000D3DF0 /* StackCellBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0F428A2358D643000D3DF0 /* StackCellBase.swift */; };
 		BC0F428D2359450C000D3DF0 /* CreateChannelOptionsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0F428C2359450C000D3DF0 /* CreateChannelOptionsContainerView.swift */; };
-		BC1000C0238AF9EF00A0C5D8 /* ChannelDetailsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1000BF238AF9EF00A0C5D8 /* ChannelDetailsContainerView.swift */; };
+		BC1000C0238AF9EF00A0C5D8 /* ChannelDetailsContainerView_.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1000BF238AF9EF00A0C5D8 /* ChannelDetailsContainerView_.swift */; };
 		BC11962525C1B55300BAD03F /* CustomNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC11962425C1B55300BAD03F /* CustomNavigationController.swift */; };
 		BC17473325F30C630011BF91 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BC17473225F30C630011BF91 /* GoogleService-Info.plist */; };
 		BC1A77FB22A2C71D005AC5CE /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1A77FA22A2C71D005AC5CE /* Colors.swift */; };
@@ -66,6 +66,14 @@
 		BC23D2BA259B9659004AE1CF /* ParticipantProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC23D2B9259B9659004AE1CF /* ParticipantProfileController.swift */; };
 		BC23D2C5259BADFE004AE1CF /* MapController+SearchTableDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC23D2C4259BADFE004AE1CF /* MapController+SearchTableDelegate.swift */; };
 		BC23D2CD259C0CDB004AE1CF /* ButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC23D2CC259C0CDB004AE1CF /* ButtonCell.swift */; };
+		BC306C20266C345000CBB507 /* ChannelDetailsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC306C1F266C345000CBB507 /* ChannelDetailsController.swift */; };
+		BC306C22266C39C000CBB507 /* ChannelDetailsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC306C21266C39C000CBB507 /* ChannelDetailsContainerView.swift */; };
+		BC306C24266C52CE00CBB507 /* ChannelDetailsController+TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC306C23266C52CE00CBB507 /* ChannelDetailsController+TableView.swift */; };
+		BC306C26266C55C200CBB507 /* ChannelNameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC306C25266C55C200CBB507 /* ChannelNameCell.swift */; };
+		BC306C28266C581400CBB507 /* LocationViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC306C27266C581400CBB507 /* LocationViewCell.swift */; };
+		BC306C2A266C5A1A00CBB507 /* AttendeesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC306C29266C5A1A00CBB507 /* AttendeesCell.swift */; };
+		BC306C2E266C5BB300CBB507 /* ChannelDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC306C2D266C5BB300CBB507 /* ChannelDescriptionCell.swift */; };
+		BC306C30266C5D4600CBB507 /* ChannelDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC306C2F266C5D4600CBB507 /* ChannelDetailsCell.swift */; };
 		BC30D79A252FCB4D0013CD38 /* PhotoController+AvatarOpenerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC30D799252FCB4D0013CD38 /* PhotoController+AvatarOpenerDelegate.swift */; };
 		BC31A87622E4DCC60012C73D /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC31A87522E4DCC60012C73D /* MainController.swift */; };
 		BC31A88822E5F1B80012C73D /* PlayfairDisplay-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BC31A88222E5F1B70012C73D /* PlayfairDisplay-Bold.ttf */; };
@@ -168,7 +176,7 @@
 		BC6C60B423843FFB003DBB53 /* UploadProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6C60B323843FFB003DBB53 /* UploadProgress.swift */; };
 		BC6C60B62384507D003DBB53 /* ChannelLogController+MessageSenderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6C60B52384507D003DBB53 /* ChannelLogController+MessageSenderDelegate.swift */; };
 		BC710871263C341C00875FF9 /* ExploreController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC710870263C341C00875FF9 /* ExploreController.swift */; };
-		BC71ACFA253685B900EA2907 /* ChannelDetailsController+ParticipantsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC71ACF9253685B900EA2907 /* ChannelDetailsController+ParticipantsCollectionView.swift */; };
+		BC71ACFA253685B900EA2907 /* ChannelDetailsController+ParticipantsCollectionView_.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC71ACF9253685B900EA2907 /* ChannelDetailsController+ParticipantsCollectionView_.swift */; };
 		BC74922522CA17DD0088908B /* Participant.xib in Resources */ = {isa = PBXBuildFile; fileRef = BC74922422CA17DD0088908B /* Participant.xib */; };
 		BC74922B22CA91010088908B /* DetailsItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = BC74922A22CA91010088908B /* DetailsItem.xib */; };
 		BC74DF5E2375BD170015F081 /* PushPopAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC74DF5D2375BD170015F081 /* PushPopAnimator.swift */; };
@@ -181,12 +189,17 @@
 		BC7AABD826250EFB0024A20D /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7AABD726250EFB0024A20D /* TabBarController.swift */; };
 		BC7D9D8E26514D82008CBF8F /* DateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7D9D8D26514D82008CBF8F /* DateCell.swift */; };
 		BC7D9D90265328C9008CBF8F /* CreateChannelController+DatePickerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7D9D8F265328C9008CBF8F /* CreateChannelController+DatePickerDelegate.swift */; };
-		BC7D9D9226545E16008CBF8F /* LocationSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7D9D9126545E16008CBF8F /* LocationSearchController.swift */; };
 		BC7D9D95265465BC008CBF8F /* LocationSearchController+Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7D9D94265465BC008CBF8F /* LocationSearchController+Search.swift */; };
 		BC7D9D9726546C46008CBF8F /* LocationSearchController+SearchCompletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7D9D9626546C46008CBF8F /* LocationSearchController+SearchCompletion.swift */; };
 		BC7D9D9B265591A7008CBF8F /* CreateChannelController+DescriptionCellDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7D9D9A265591A7008CBF8F /* CreateChannelController+DescriptionCellDelegate.swift */; };
 		BC7D9D9D26571E9C008CBF8F /* CreateChannelController+LocationSearchDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7D9D9C26571E9C008CBF8F /* CreateChannelController+LocationSearchDelegate.swift */; };
 		BC7D9D9F265888CA008CBF8F /* CreateChannelContoller+AvatarOpenerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7D9D9E265888CA008CBF8F /* CreateChannelContoller+AvatarOpenerDelegate.swift */; };
+		BC7D9DB2265C0C48008CBF8F /* LocationSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7D9DAD265C0C48008CBF8F /* LocationSearchController.swift */; };
+		BC7D9DB3265C0C48008CBF8F /* UpdateChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7D9DAE265C0C48008CBF8F /* UpdateChannelController.swift */; };
+		BC7D9DB4265C0C48008CBF8F /* CreateChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7D9DAF265C0C48008CBF8F /* CreateChannelController.swift */; };
+		BC7D9DB5265C0C48008CBF8F /* AddParticipantsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7D9DB0265C0C48008CBF8F /* AddParticipantsTableViewController.swift */; };
+		BC7D9DB6265C0C48008CBF8F /* SelectChannelParticipantsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7D9DB1265C0C48008CBF8F /* SelectChannelParticipantsController.swift */; };
+		BC7D9DB826616F8A008CBF8F /* LocationPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7D9DB726616F8A008CBF8F /* LocationPoint.swift */; };
 		BC81DDBC253B2475001C24BC /* ContactsDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC81DDBB253B2475001C24BC /* ContactsDetailController.swift */; };
 		BC81DDC1253B382A001C24BC /* ContactsController+SearchHandlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC81DDC0253B382A001C24BC /* ContactsController+SearchHandlers.swift */; };
 		BC82CF9823778C10003B2360 /* MessagesFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC82CF9723778C10003B2360 /* MessagesFetcher.swift */; };
@@ -194,7 +207,7 @@
 		BC82CF9E2377A236003B2360 /* ChannelLogController+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC82CF9D2377A236003B2360 /* ChannelLogController+DataSource.swift */; };
 		BC82CFA02378538D003B2360 /* ChannelLogController+ChannelLogHistoryFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC82CF9F2378538D003B2360 /* ChannelLogController+ChannelLogHistoryFetcher.swift */; };
 		BC8C115725BA30D7000CBD25 /* FacetimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8C115625BA30D7000CBD25 /* FacetimeView.swift */; };
-		BC8C116025BB216C000CBD25 /* UpdateChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8C115F25BB216C000CBD25 /* UpdateChannelController.swift */; };
+		BC8C116025BB216C000CBD25 /* UpdateChannelController__.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8C115F25BB216C000CBD25 /* UpdateChannelController__.swift */; };
 		BC8C116525BB273B000CBD25 /* UpdateChannelController+MapDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8C116425BB273B000CBD25 /* UpdateChannelController+MapDelegate.swift */; };
 		BC8C116A25BB2894000CBD25 /* UpdateChannelController+DescriptionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8C116925BB2894000CBD25 /* UpdateChannelController+DescriptionDelegate.swift */; };
 		BC8C117225BB29DC000CBD25 /* Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8C117125BB29DC000CBD25 /* Validator.swift */; };
@@ -217,8 +230,8 @@
 		BCA8815E25101061004D3ED7 /* ChannelCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA8815D25101061004D3ED7 /* ChannelCollectionView.swift */; };
 		BCA881612510117F004D3ED7 /* ChannelLogViewControllerSupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA881602510117F004D3ED7 /* ChannelLogViewControllerSupplementaryView.swift */; };
 		BCA88163251012AE004D3ED7 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA88162251012AE004D3ED7 /* UserDefaultsManager.swift */; };
-		BCA9CEFB238B0306002FE100 /* ChannelDetailsControllerAvatarOpenerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA9CEFA238B0306002FE100 /* ChannelDetailsControllerAvatarOpenerDelegate.swift */; };
-		BCA9CEFD238B03B5002FE100 /* ChannelDetailsDataDatabaseUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA9CEFC238B03B5002FE100 /* ChannelDetailsDataDatabaseUpdater.swift */; };
+		BCA9CEFB238B0306002FE100 /* ChannelDetailsControllerAvatarOpenerDelegate_.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA9CEFA238B0306002FE100 /* ChannelDetailsControllerAvatarOpenerDelegate_.swift */; };
+		BCA9CEFD238B03B5002FE100 /* ChannelDetailsDataDatabaseUpdater_.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA9CEFC238B03B5002FE100 /* ChannelDetailsDataDatabaseUpdater_.swift */; };
 		BCAC057022AD4A0C006D0C24 /* ContactsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAC056F22AD4A0C006D0C24 /* ContactsService.swift */; };
 		BCB027CC256844F00082B318 /* AppearanceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB027CB256844F00082B318 /* AppearanceController.swift */; };
 		BCB027D52568453B0082B318 /* MenuControlsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB027D42568453B0082B318 /* MenuControlsTableViewController.swift */; };
@@ -241,8 +254,6 @@
 		BCBBC290253886FC0010F39E /* ContactsFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBBC28F253886FC0010F39E /* ContactsFetcher.swift */; };
 		BCBBC29525388C2D0010F39E /* CustomNavigationItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBBC29425388C2D0010F39E /* CustomNavigationItem.swift */; };
 		BCBBC29A25388C5A0010F39E /* ActivityTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBBC29925388C5A0010F39E /* ActivityTitleView.swift */; };
-		BCBD55D32646D19600AE32C6 /* CreateChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBD55D22646D19600AE32C6 /* CreateChannelController.swift */; };
-		BCBD55D52646D1EA00AE32C6 /* UpdateChannelController_.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBD55D42646D1EA00AE32C6 /* UpdateChannelController_.swift */; };
 		BCBD55D82650032500AE32C6 /* CreateChannelController+ChannelNameHeaderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBD55D72650032500AE32C6 /* CreateChannelController+ChannelNameHeaderDelegate.swift */; };
 		BCBD859525977DF000303A25 /* MapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBD859425977DF000303A25 /* MapController.swift */; };
 		BCBD859A25977FA100303A25 /* MapSearchContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBD859925977FA100303A25 /* MapSearchContainerView.swift */; };
@@ -268,7 +279,6 @@
 		BCBDA195254E2BDE0051A183 /* SelectParticipantsTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA194254E2BDE0051A183 /* SelectParticipantsTableView.swift */; };
 		BCBDA19A254E2C800051A183 /* SelectedParticipantsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA199254E2C800051A183 /* SelectedParticipantsCollectionView.swift */; };
 		BCBDA19F254E2D220051A183 /* SelectedParticipantsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA19E254E2D220051A183 /* SelectedParticipantsCollectionViewCell.swift */; };
-		BCBDA1AA254E2E850051A183 /* SelectChannelParticipantsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA1A9254E2E850051A183 /* SelectChannelParticipantsController.swift */; };
 		BCBDA1B3254EFF810051A183 /* CreateChannelController+Map_.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA1B2254EFF810051A183 /* CreateChannelController+Map_.swift */; };
 		BCBDA1BB254F001E0051A183 /* CreateChannelController+Description_.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA1BA254F001E0051A183 /* CreateChannelController+Description_.swift */; };
 		BCBDA1C5254F008D0051A183 /* CreateChannelController+DatePicker_.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA1C4254F008D0051A183 /* CreateChannelController+DatePicker_.swift */; };
@@ -299,13 +309,13 @@
 		BCDE18652558220000A64499 /* ParticipantsController+SelectedUsersDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDE18642558220000A64499 /* ParticipantsController+SelectedUsersDelegate.swift */; };
 		BCE5ABF8249EE74B001172C4 /* AddLocationContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE5ABF7249EE74B001172C4 /* AddLocationContainerView.swift */; };
 		BCE5ABFA249EE75C001172C4 /* AddDescriptionContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE5ABF9249EE75C001172C4 /* AddDescriptionContainerView.swift */; };
-		BCE5ABFD249EE928001172C4 /* AddParticipantsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE5ABFC249EE928001172C4 /* AddParticipantsTableViewController.swift */; };
 		BCE5ABFF249EEE6A001172C4 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE5ABFE249EEE6A001172C4 /* HeaderView.swift */; };
 		BCE5AC01249FDBFB001172C4 /* AddLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE5AC00249FDBFB001172C4 /* AddLocationViewController.swift */; };
 		BCE64DE7235B2D74001F27FD /* SelectUsersContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE64DE6235B2D74001F27FD /* SelectUsersContainerView.swift */; };
 		BCE8147622F02A21008040A4 /* BlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE8147522F02A21008040A4 /* BlurView.swift */; };
 		BCE94DC624A37407009EB9EF /* SelectionTableViewController+SearchHandlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE94DC524A37407009EB9EF /* SelectionTableViewController+SearchHandlers.swift */; };
 		BCEA4FE925AD1E32008D35CC /* InputBlockerContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEA4FE825AD1E32008D35CC /* InputBlockerContainerView.swift */; };
+		BCEBBC4E267155FB0082D6DB /* LoadMoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEBBC4D267155FB0082D6DB /* LoadMoreCell.swift */; };
 		BCEDCD072592425800337B3C /* notification.caf in Resources */ = {isa = PBXBuildFile; fileRef = BCEDCD062592425800337B3C /* notification.caf */; };
 		BCEDCD0C2592427000337B3C /* sent.caf in Resources */ = {isa = PBXBuildFile; fileRef = BCEDCD0B2592427000337B3C /* sent.caf */; };
 		BCEDCD12259243DF00337B3C /* NotificationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEDCD11259243DF00337B3C /* NotificationsController.swift */; };
@@ -376,7 +386,7 @@
 		BC047000236376B900C235E1 /* DescriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionViewController.swift; sourceTree = "<group>"; };
 		BC04B8BF236F1BE0008FDF60 /* ChannelLogController+ChannelHistoryFetcherDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelLogController+ChannelHistoryFetcherDelegate.swift"; sourceTree = "<group>"; };
 		BC072301237777DF00A4D476 /* ChannelLogContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelLogContainerView.swift; sourceTree = "<group>"; };
-		BC08717D238AF84B0055E109 /* ChannelDetailsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDetailsController.swift; sourceTree = "<group>"; };
+		BC08717D238AF84B0055E109 /* ChannelDetailsController__.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDetailsController__.swift; sourceTree = "<group>"; };
 		BC089C912585578000A42B7D /* PushNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationManager.swift; sourceTree = "<group>"; };
 		BC089C962585598F00A42B7D /* PushNotificationSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationSender.swift; sourceTree = "<group>"; };
 		BC08DF90236B335500A917D7 /* ParticipantCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantCell.swift; sourceTree = "<group>"; };
@@ -405,7 +415,7 @@
 		BC0F42882358D5DC000D3DF0 /* MarginStackCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarginStackCell.swift; sourceTree = "<group>"; };
 		BC0F428A2358D643000D3DF0 /* StackCellBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackCellBase.swift; sourceTree = "<group>"; };
 		BC0F428C2359450C000D3DF0 /* CreateChannelOptionsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateChannelOptionsContainerView.swift; sourceTree = "<group>"; };
-		BC1000BF238AF9EF00A0C5D8 /* ChannelDetailsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDetailsContainerView.swift; sourceTree = "<group>"; };
+		BC1000BF238AF9EF00A0C5D8 /* ChannelDetailsContainerView_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDetailsContainerView_.swift; sourceTree = "<group>"; };
 		BC11962425C1B55300BAD03F /* CustomNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationController.swift; sourceTree = "<group>"; };
 		BC17473225F30C630011BF91 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		BC1A77FA22A2C71D005AC5CE /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
@@ -427,6 +437,14 @@
 		BC23D2B9259B9659004AE1CF /* ParticipantProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantProfileController.swift; sourceTree = "<group>"; };
 		BC23D2C4259BADFE004AE1CF /* MapController+SearchTableDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapController+SearchTableDelegate.swift"; sourceTree = "<group>"; };
 		BC23D2CC259C0CDB004AE1CF /* ButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonCell.swift; sourceTree = "<group>"; };
+		BC306C1F266C345000CBB507 /* ChannelDetailsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDetailsController.swift; sourceTree = "<group>"; };
+		BC306C21266C39C000CBB507 /* ChannelDetailsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDetailsContainerView.swift; sourceTree = "<group>"; };
+		BC306C23266C52CE00CBB507 /* ChannelDetailsController+TableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelDetailsController+TableView.swift"; sourceTree = "<group>"; };
+		BC306C25266C55C200CBB507 /* ChannelNameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelNameCell.swift; sourceTree = "<group>"; };
+		BC306C27266C581400CBB507 /* LocationViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewCell.swift; sourceTree = "<group>"; };
+		BC306C29266C5A1A00CBB507 /* AttendeesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendeesCell.swift; sourceTree = "<group>"; };
+		BC306C2D266C5BB300CBB507 /* ChannelDescriptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDescriptionCell.swift; sourceTree = "<group>"; };
+		BC306C2F266C5D4600CBB507 /* ChannelDetailsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDetailsCell.swift; sourceTree = "<group>"; };
 		BC30D799252FCB4D0013CD38 /* PhotoController+AvatarOpenerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhotoController+AvatarOpenerDelegate.swift"; sourceTree = "<group>"; };
 		BC31A87522E4DCC60012C73D /* MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
 		BC31A88222E5F1B70012C73D /* PlayfairDisplay-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PlayfairDisplay-Bold.ttf"; sourceTree = "<group>"; };
@@ -531,7 +549,7 @@
 		BC6C60B323843FFB003DBB53 /* UploadProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadProgress.swift; sourceTree = "<group>"; };
 		BC6C60B52384507D003DBB53 /* ChannelLogController+MessageSenderDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelLogController+MessageSenderDelegate.swift"; sourceTree = "<group>"; };
 		BC710870263C341C00875FF9 /* ExploreController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreController.swift; sourceTree = "<group>"; };
-		BC71ACF9253685B900EA2907 /* ChannelDetailsController+ParticipantsCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelDetailsController+ParticipantsCollectionView.swift"; sourceTree = "<group>"; };
+		BC71ACF9253685B900EA2907 /* ChannelDetailsController+ParticipantsCollectionView_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelDetailsController+ParticipantsCollectionView_.swift"; sourceTree = "<group>"; };
 		BC74922422CA17DD0088908B /* Participant.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Participant.xib; sourceTree = "<group>"; };
 		BC74922A22CA91010088908B /* DetailsItem.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DetailsItem.xib; sourceTree = "<group>"; };
 		BC74DF5D2375BD170015F081 /* PushPopAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushPopAnimator.swift; sourceTree = "<group>"; };
@@ -544,12 +562,17 @@
 		BC7AABD726250EFB0024A20D /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		BC7D9D8D26514D82008CBF8F /* DateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateCell.swift; sourceTree = "<group>"; };
 		BC7D9D8F265328C9008CBF8F /* CreateChannelController+DatePickerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelController+DatePickerDelegate.swift"; sourceTree = "<group>"; };
-		BC7D9D9126545E16008CBF8F /* LocationSearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchController.swift; sourceTree = "<group>"; };
 		BC7D9D94265465BC008CBF8F /* LocationSearchController+Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocationSearchController+Search.swift"; sourceTree = "<group>"; };
 		BC7D9D9626546C46008CBF8F /* LocationSearchController+SearchCompletion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocationSearchController+SearchCompletion.swift"; sourceTree = "<group>"; };
 		BC7D9D9A265591A7008CBF8F /* CreateChannelController+DescriptionCellDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelController+DescriptionCellDelegate.swift"; sourceTree = "<group>"; };
 		BC7D9D9C26571E9C008CBF8F /* CreateChannelController+LocationSearchDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelController+LocationSearchDelegate.swift"; sourceTree = "<group>"; };
 		BC7D9D9E265888CA008CBF8F /* CreateChannelContoller+AvatarOpenerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelContoller+AvatarOpenerDelegate.swift"; sourceTree = "<group>"; };
+		BC7D9DAD265C0C48008CBF8F /* LocationSearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationSearchController.swift; sourceTree = "<group>"; };
+		BC7D9DAE265C0C48008CBF8F /* UpdateChannelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateChannelController.swift; sourceTree = "<group>"; };
+		BC7D9DAF265C0C48008CBF8F /* CreateChannelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateChannelController.swift; sourceTree = "<group>"; };
+		BC7D9DB0265C0C48008CBF8F /* AddParticipantsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddParticipantsTableViewController.swift; sourceTree = "<group>"; };
+		BC7D9DB1265C0C48008CBF8F /* SelectChannelParticipantsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectChannelParticipantsController.swift; sourceTree = "<group>"; };
+		BC7D9DB726616F8A008CBF8F /* LocationPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPoint.swift; sourceTree = "<group>"; };
 		BC81DDBB253B2475001C24BC /* ContactsDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsDetailController.swift; sourceTree = "<group>"; };
 		BC81DDC0253B382A001C24BC /* ContactsController+SearchHandlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContactsController+SearchHandlers.swift"; sourceTree = "<group>"; };
 		BC82CF9723778C10003B2360 /* MessagesFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesFetcher.swift; sourceTree = "<group>"; };
@@ -557,7 +580,7 @@
 		BC82CF9D2377A236003B2360 /* ChannelLogController+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelLogController+DataSource.swift"; sourceTree = "<group>"; };
 		BC82CF9F2378538D003B2360 /* ChannelLogController+ChannelLogHistoryFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelLogController+ChannelLogHistoryFetcher.swift"; sourceTree = "<group>"; };
 		BC8C115625BA30D7000CBD25 /* FacetimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacetimeView.swift; sourceTree = "<group>"; };
-		BC8C115F25BB216C000CBD25 /* UpdateChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateChannelController.swift; sourceTree = "<group>"; };
+		BC8C115F25BB216C000CBD25 /* UpdateChannelController__.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateChannelController__.swift; sourceTree = "<group>"; };
 		BC8C116425BB273B000CBD25 /* UpdateChannelController+MapDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UpdateChannelController+MapDelegate.swift"; sourceTree = "<group>"; };
 		BC8C116925BB2894000CBD25 /* UpdateChannelController+DescriptionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UpdateChannelController+DescriptionDelegate.swift"; sourceTree = "<group>"; };
 		BC8C117125BB29DC000CBD25 /* Validator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Validator.swift; sourceTree = "<group>"; };
@@ -580,8 +603,8 @@
 		BCA8815D25101061004D3ED7 /* ChannelCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelCollectionView.swift; sourceTree = "<group>"; };
 		BCA881602510117F004D3ED7 /* ChannelLogViewControllerSupplementaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelLogViewControllerSupplementaryView.swift; sourceTree = "<group>"; };
 		BCA88162251012AE004D3ED7 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
-		BCA9CEFA238B0306002FE100 /* ChannelDetailsControllerAvatarOpenerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDetailsControllerAvatarOpenerDelegate.swift; sourceTree = "<group>"; };
-		BCA9CEFC238B03B5002FE100 /* ChannelDetailsDataDatabaseUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDetailsDataDatabaseUpdater.swift; sourceTree = "<group>"; };
+		BCA9CEFA238B0306002FE100 /* ChannelDetailsControllerAvatarOpenerDelegate_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDetailsControllerAvatarOpenerDelegate_.swift; sourceTree = "<group>"; };
+		BCA9CEFC238B03B5002FE100 /* ChannelDetailsDataDatabaseUpdater_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDetailsDataDatabaseUpdater_.swift; sourceTree = "<group>"; };
 		BCAC056F22AD4A0C006D0C24 /* ContactsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsService.swift; sourceTree = "<group>"; };
 		BCB027CB256844F00082B318 /* AppearanceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceController.swift; sourceTree = "<group>"; };
 		BCB027D42568453B0082B318 /* MenuControlsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuControlsTableViewController.swift; sourceTree = "<group>"; };
@@ -604,8 +627,6 @@
 		BCBBC28F253886FC0010F39E /* ContactsFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsFetcher.swift; sourceTree = "<group>"; };
 		BCBBC29425388C2D0010F39E /* CustomNavigationItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationItem.swift; sourceTree = "<group>"; };
 		BCBBC29925388C5A0010F39E /* ActivityTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityTitleView.swift; sourceTree = "<group>"; };
-		BCBD55D22646D19600AE32C6 /* CreateChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateChannelController.swift; sourceTree = "<group>"; };
-		BCBD55D42646D1EA00AE32C6 /* UpdateChannelController_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateChannelController_.swift; sourceTree = "<group>"; };
 		BCBD55D72650032500AE32C6 /* CreateChannelController+ChannelNameHeaderDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelController+ChannelNameHeaderDelegate.swift"; sourceTree = "<group>"; };
 		BCBD859425977DF000303A25 /* MapController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapController.swift; sourceTree = "<group>"; };
 		BCBD859925977FA100303A25 /* MapSearchContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapSearchContainerView.swift; sourceTree = "<group>"; };
@@ -631,7 +652,6 @@
 		BCBDA194254E2BDE0051A183 /* SelectParticipantsTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectParticipantsTableView.swift; sourceTree = "<group>"; };
 		BCBDA199254E2C800051A183 /* SelectedParticipantsCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedParticipantsCollectionView.swift; sourceTree = "<group>"; };
 		BCBDA19E254E2D220051A183 /* SelectedParticipantsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedParticipantsCollectionViewCell.swift; sourceTree = "<group>"; };
-		BCBDA1A9254E2E850051A183 /* SelectChannelParticipantsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectChannelParticipantsController.swift; sourceTree = "<group>"; };
 		BCBDA1B2254EFF810051A183 /* CreateChannelController+Map_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelController+Map_.swift"; sourceTree = "<group>"; };
 		BCBDA1BA254F001E0051A183 /* CreateChannelController+Description_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelController+Description_.swift"; sourceTree = "<group>"; };
 		BCBDA1C4254F008D0051A183 /* CreateChannelController+DatePicker_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelController+DatePicker_.swift"; sourceTree = "<group>"; };
@@ -663,13 +683,13 @@
 		BCDE5661252F5A010013C978 /* space-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "space-ios.entitlements"; sourceTree = "<group>"; };
 		BCE5ABF7249EE74B001172C4 /* AddLocationContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddLocationContainerView.swift; sourceTree = "<group>"; };
 		BCE5ABF9249EE75C001172C4 /* AddDescriptionContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDescriptionContainerView.swift; sourceTree = "<group>"; };
-		BCE5ABFC249EE928001172C4 /* AddParticipantsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddParticipantsTableViewController.swift; sourceTree = "<group>"; };
 		BCE5ABFE249EEE6A001172C4 /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		BCE5AC00249FDBFB001172C4 /* AddLocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddLocationViewController.swift; sourceTree = "<group>"; };
 		BCE64DE6235B2D74001F27FD /* SelectUsersContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectUsersContainerView.swift; sourceTree = "<group>"; };
 		BCE8147522F02A21008040A4 /* BlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurView.swift; sourceTree = "<group>"; };
 		BCE94DC524A37407009EB9EF /* SelectionTableViewController+SearchHandlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SelectionTableViewController+SearchHandlers.swift"; sourceTree = "<group>"; };
 		BCEA4FE825AD1E32008D35CC /* InputBlockerContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputBlockerContainerView.swift; sourceTree = "<group>"; };
+		BCEBBC4D267155FB0082D6DB /* LoadMoreCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadMoreCell.swift; sourceTree = "<group>"; };
 		BCEDCD062592425800337B3C /* notification.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = notification.caf; sourceTree = "<group>"; };
 		BCEDCD0B2592427000337B3C /* sent.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = sent.caf; sourceTree = "<group>"; };
 		BCEDCD11259243DF00337B3C /* NotificationsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsController.swift; sourceTree = "<group>"; };
@@ -786,23 +806,10 @@
 				BCECF52B24884CD100D38AE1 /* Table */,
 				BC1A77E522A2AE07005AC5CE /* Log */,
 				BC81DDF5253DDE2C001C24BC /* Participants */,
-				BCD9577422C13B130065DE5F /* Create */,
+				BCD9577422C13B130065DE5F /* Create & Update */,
 				BC08717B238AF7370055E109 /* Details */,
-				BC8C115B25BB2132000CBD25 /* Update */,
 			);
 			path = Channels;
-			sourceTree = "<group>";
-		};
-		BC0722E52377282100A4D476 /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				BCBD55D6264FFEA000AE32C6 /* newshit */,
-				BC6B9AE22489CC2500157725 /* CreateChannelController_.swift */,
-				BCE5ABFC249EE928001172C4 /* AddParticipantsTableViewController.swift */,
-				BCCB59F5248C57F6004AA4AA /* Cellsd */,
-				BCE5ABFB249EE90E001172C4 /* Details Controllers */,
-			);
-			path = Controllers;
 			sourceTree = "<group>";
 		};
 		BC0722E62377282C00A4D476 /* Containers */ = {
@@ -851,10 +858,8 @@
 		BC08717B238AF7370055E109 /* Details */ = {
 			isa = PBXGroup;
 			children = (
-				BC08717D238AF84B0055E109 /* ChannelDetailsController.swift */,
-				BC99B5A12534F06900918856 /* Delegates */,
-				BC8C119125BB744B000CBD25 /* Containers */,
-				BC8C119525BB7459000CBD25 /* Support */,
+				BC306C1E266C343300CBB507 /* newdetails */,
+				BCEBBC4A267004070082D6DB /* olddetails */,
 			);
 			path = Details;
 			sourceTree = "<group>";
@@ -969,6 +974,38 @@
 				BC1A780222A3F9F7005AC5CE /* UICollectionView+Extension.swift */,
 			);
 			path = RevealableCell;
+			sourceTree = "<group>";
+		};
+		BC306C1E266C343300CBB507 /* newdetails */ = {
+			isa = PBXGroup;
+			children = (
+				BC306C1F266C345000CBB507 /* ChannelDetailsController.swift */,
+				BC306C23266C52CE00CBB507 /* ChannelDetailsController+TableView.swift */,
+				BC306C2C266C5B9D00CBB507 /* Cells & Views */,
+				BC306C21266C39C000CBB507 /* ChannelDetailsContainerView.swift */,
+			);
+			path = newdetails;
+			sourceTree = "<group>";
+		};
+		BC306C2B266C5B2100CBB507 /* Attendees Table Cell */ = {
+			isa = PBXGroup;
+			children = (
+				BC306C29266C5A1A00CBB507 /* AttendeesCell.swift */,
+			);
+			path = "Attendees Table Cell";
+			sourceTree = "<group>";
+		};
+		BC306C2C266C5B9D00CBB507 /* Cells & Views */ = {
+			isa = PBXGroup;
+			children = (
+				BC306C25266C55C200CBB507 /* ChannelNameCell.swift */,
+				BC306C27266C581400CBB507 /* LocationViewCell.swift */,
+				BC306C2F266C5D4600CBB507 /* ChannelDetailsCell.swift */,
+				BCEBBC4D267155FB0082D6DB /* LoadMoreCell.swift */,
+				BC306C2D266C5BB300CBB507 /* ChannelDescriptionCell.swift */,
+				BC306C2B266C5B2100CBB507 /* Attendees Table Cell */,
+			);
+			path = "Cells & Views";
 			sourceTree = "<group>";
 		};
 		BC31A88122E5F1AE0012C73D /* fonts */ = {
@@ -1104,6 +1141,7 @@
 			children = (
 				BC59273622A0157D006A5CEF /* User.swift */,
 				BC59273822A0159E006A5CEF /* Channel.swift */,
+				BC7D9DB726616F8A008CBF8F /* LocationPoint.swift */,
 				BC59273C22A01B41006A5CEF /* Message.swift */,
 				BC57BCAD25093F4E00AAB5AC /* RealmCGRect.swift */,
 				BC0EAF3B2512A08F00394898 /* MessageSection.swift */,
@@ -1294,17 +1332,6 @@
 			path = Containers;
 			sourceTree = "<group>";
 		};
-		BC7D9D932654659C008CBF8F /* Location Search */ = {
-			isa = PBXGroup;
-			children = (
-				BC7D9D9126545E16008CBF8F /* LocationSearchController.swift */,
-				BC7D9D9626546C46008CBF8F /* LocationSearchController+SearchCompletion.swift */,
-				BCBD85FC2598F4D000303A25 /* LocationSearchController+TableView.swift */,
-				BC7D9D94265465BC008CBF8F /* LocationSearchController+Search.swift */,
-			);
-			path = "Location Search";
-			sourceTree = "<group>";
-		};
 		BC7D9D9826558D57008CBF8F /* Delegates */ = {
 			isa = PBXGroup;
 			children = (
@@ -1313,6 +1340,9 @@
 				BCBD55D72650032500AE32C6 /* CreateChannelController+ChannelNameHeaderDelegate.swift */,
 				BC7D9D9E265888CA008CBF8F /* CreateChannelContoller+AvatarOpenerDelegate.swift */,
 				BC7D9D9C26571E9C008CBF8F /* CreateChannelController+LocationSearchDelegate.swift */,
+				BCBD85FC2598F4D000303A25 /* LocationSearchController+TableView.swift */,
+				BC7D9D9626546C46008CBF8F /* LocationSearchController+SearchCompletion.swift */,
+				BC7D9D94265465BC008CBF8F /* LocationSearchController+Search.swift */,
 			);
 			path = Delegates;
 			sourceTree = "<group>";
@@ -1320,6 +1350,7 @@
 		BC7D9D9926558D67008CBF8F /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				BCB0E18925B9E04000390A5C /* SpecialSwitchCell.swift */,
 				BC6B9AE62489CD7900157725 /* CreateChannelCell.swift */,
 				BC6B9AE42489CD6800157725 /* CreateChannelHeaderCell.swift */,
 				BC5938E325071BEC007743C3 /* DescriptionCell.swift */,
@@ -1327,6 +1358,32 @@
 				BC7D9D8D26514D82008CBF8F /* DateCell.swift */,
 			);
 			path = Cells;
+			sourceTree = "<group>";
+		};
+		BC7D9DA0265C0A70008CBF8F /* Creation & Update Archive */ = {
+			isa = PBXGroup;
+			children = (
+				BCCB59F5248C57F6004AA4AA /* Cellsd */,
+				BC8C115B25BB2132000CBD25 /* Update */,
+				BC0722E62377282C00A4D476 /* Containers */,
+				BCBDA1B1254EFF5C0051A183 /* Delegates */,
+				BC6B9AE22489CC2500157725 /* CreateChannelController_.swift */,
+				BC047000236376B900C235E1 /* DescriptionViewController.swift */,
+				BC3AE88B24B9F27300619FCF /* Location */,
+			);
+			path = "Creation & Update Archive";
+			sourceTree = "<group>";
+		};
+		BC7D9DAC265C0C09008CBF8F /* Rollers */ = {
+			isa = PBXGroup;
+			children = (
+				BC7D9DB0265C0C48008CBF8F /* AddParticipantsTableViewController.swift */,
+				BC7D9DAF265C0C48008CBF8F /* CreateChannelController.swift */,
+				BC7D9DAE265C0C48008CBF8F /* UpdateChannelController.swift */,
+				BC7D9DAD265C0C48008CBF8F /* LocationSearchController.swift */,
+				BC7D9DB1265C0C48008CBF8F /* SelectChannelParticipantsController.swift */,
+			);
+			path = Rollers;
 			sourceTree = "<group>";
 		};
 		BC81DDF5253DDE2C001C24BC /* Participants */ = {
@@ -1344,7 +1401,7 @@
 		BC8C115B25BB2132000CBD25 /* Update */ = {
 			isa = PBXGroup;
 			children = (
-				BC8C115F25BB216C000CBD25 /* UpdateChannelController.swift */,
+				BC8C115F25BB216C000CBD25 /* UpdateChannelController__.swift */,
 				BC8C117E25BB38BE000CBD25 /* Delegates */,
 			);
 			path = Update;
@@ -1366,7 +1423,7 @@
 		BC8C119125BB744B000CBD25 /* Containers */ = {
 			isa = PBXGroup;
 			children = (
-				BC1000BF238AF9EF00A0C5D8 /* ChannelDetailsContainerView.swift */,
+				BC1000BF238AF9EF00A0C5D8 /* ChannelDetailsContainerView_.swift */,
 			);
 			path = Containers;
 			sourceTree = "<group>";
@@ -1374,7 +1431,7 @@
 		BC8C119525BB7459000CBD25 /* Support */ = {
 			isa = PBXGroup;
 			children = (
-				BCA9CEFC238B03B5002FE100 /* ChannelDetailsDataDatabaseUpdater.swift */,
+				BCA9CEFC238B03B5002FE100 /* ChannelDetailsDataDatabaseUpdater_.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -1393,8 +1450,8 @@
 		BC99B5A12534F06900918856 /* Delegates */ = {
 			isa = PBXGroup;
 			children = (
-				BC71ACF9253685B900EA2907 /* ChannelDetailsController+ParticipantsCollectionView.swift */,
-				BCA9CEFA238B0306002FE100 /* ChannelDetailsControllerAvatarOpenerDelegate.swift */,
+				BC71ACF9253685B900EA2907 /* ChannelDetailsController+ParticipantsCollectionView_.swift */,
+				BCA9CEFA238B0306002FE100 /* ChannelDetailsControllerAvatarOpenerDelegate_.swift */,
 			);
 			path = Delegates;
 			sourceTree = "<group>";
@@ -1535,19 +1592,6 @@
 			path = Misc.;
 			sourceTree = "<group>";
 		};
-		BCBD55D6264FFEA000AE32C6 /* newshit */ = {
-			isa = PBXGroup;
-			children = (
-				BC7D9D9826558D57008CBF8F /* Delegates */,
-				BC7D9D932654659C008CBF8F /* Location Search */,
-				BC7D9D9926558D67008CBF8F /* Cells */,
-				BCBD55D22646D19600AE32C6 /* CreateChannelController.swift */,
-				BCBD55D42646D1EA00AE32C6 /* UpdateChannelController_.swift */,
-				BCBDA1A9254E2E850051A183 /* SelectChannelParticipantsController.swift */,
-			);
-			path = newshit;
-			sourceTree = "<group>";
-		};
 		BCBD85A32597842900303A25 /* Map search */ = {
 			isa = PBXGroup;
 			children = (
@@ -1678,7 +1722,6 @@
 		BCCB59F5248C57F6004AA4AA /* Cellsd */ = {
 			isa = PBXGroup;
 			children = (
-				BCB0E18925B9E04000390A5C /* SpecialSwitchCell.swift */,
 				BC6B9AE82489CD8700157725 /* CreateChannelExtendedCell.swift */,
 			);
 			path = Cellsd;
@@ -1707,14 +1750,15 @@
 			path = InAppBanner;
 			sourceTree = "<group>";
 		};
-		BCD9577422C13B130065DE5F /* Create */ = {
+		BCD9577422C13B130065DE5F /* Create & Update */ = {
 			isa = PBXGroup;
 			children = (
-				BC0722E52377282100A4D476 /* Controllers */,
-				BCBDA1B1254EFF5C0051A183 /* Delegates */,
-				BC0722E62377282C00A4D476 /* Containers */,
+				BC7D9DAC265C0C09008CBF8F /* Rollers */,
+				BC7D9D9826558D57008CBF8F /* Delegates */,
+				BC7D9D9926558D67008CBF8F /* Cells */,
+				BC7D9DA0265C0A70008CBF8F /* Creation & Update Archive */,
 			);
-			path = Create;
+			path = "Create & Update";
 			sourceTree = "<group>";
 		};
 		BCDB2BF322FDE13E002FC6A2 /* Settings */ = {
@@ -1738,22 +1782,24 @@
 			path = "Detail Containers";
 			sourceTree = "<group>";
 		};
-		BCE5ABFB249EE90E001172C4 /* Details Controllers */ = {
+		BCEBBC4A267004070082D6DB /* olddetails */ = {
 			isa = PBXGroup;
 			children = (
-				BC3AE88B24B9F27300619FCF /* Location */,
-				BC047000236376B900C235E1 /* DescriptionViewController.swift */,
+				BC08717D238AF84B0055E109 /* ChannelDetailsController__.swift */,
+				BC99B5A12534F06900918856 /* Delegates */,
+				BC8C119125BB744B000CBD25 /* Containers */,
+				BC8C119525BB7459000CBD25 /* Support */,
 			);
-			path = "Details Controllers";
+			path = olddetails;
 			sourceTree = "<group>";
 		};
 		BCECF52B24884CD100D38AE1 /* Table */ = {
 			isa = PBXGroup;
 			children = (
+				BC5C4984254744ED007AF964 /* ChannelsController.swift */,
 				BC5C49782547431B007AF964 /* Containers */,
 				BCEF08982545F8F20069C6F5 /* Delegates */,
 				BCEF08A52545F9150069C6F5 /* Handlers */,
-				BC5C4984254744ED007AF964 /* ChannelsController.swift */,
 			);
 			path = Table;
 			sourceTree = "<group>";
@@ -2236,7 +2282,9 @@
 				BC67F63D252FA0C000E7D274 /* VerificationContainerView.swift in Sources */,
 				BC00A26A250A471300EB1E7B /* ChannelsRealmManager.swift in Sources */,
 				BC8C118D25BB3973000CBD25 /* UpdateChannelController+AvatarOpener.swift in Sources */,
+				BC306C20266C345000CBB507 /* ChannelDetailsController.swift in Sources */,
 				BCBDA16C254DF0730051A183 /* ChannelsController+UsersUpdatesDelegate.swift in Sources */,
+				BC306C2E266C5BB300CBB507 /* ChannelDescriptionCell.swift in Sources */,
 				BC00A26C250A539700EB1E7B /* ChannelLogPresenter.swift in Sources */,
 				BC047001236376B900C235E1 /* DescriptionViewController.swift in Sources */,
 				BCEF08AD2545F93A0069C6F5 /* ChannelsHeaderView.swift in Sources */,
@@ -2263,6 +2311,7 @@
 				BC1A780A22A3FCB3005AC5CE /* MessageTextView.swift in Sources */,
 				BC35EF25247323420021056B /* RSVPView.swift in Sources */,
 				BC04B8C0236F1BE0008FDF60 /* ChannelLogController+ChannelHistoryFetcherDelegate.swift in Sources */,
+				BC7D9DB5265C0C48008CBF8F /* AddParticipantsTableViewController.swift in Sources */,
 				BCBD864E259A7FE100303A25 /* MapController+MKMapViewDelegate.swift in Sources */,
 				BC5C498D25474D55007AF964 /* ChannelsController+TableViewDelegate.swift in Sources */,
 				BCF73E0922D92BD000C690D2 /* ContentViewController.swift in Sources */,
@@ -2280,16 +2329,19 @@
 				BC6C60B223843C20003DBB53 /* MessageSender.swift in Sources */,
 				BC1A780C22A3FDFE005AC5CE /* OutgoingMessageCell.swift in Sources */,
 				BC4F145125B8B9FE00490ACC /* SetupMeetingController.swift in Sources */,
+				BC306C26266C55C200CBB507 /* ChannelNameCell.swift in Sources */,
 				BCF8EE0F2389D18700234160 /* INSPhotosDataSource.swift in Sources */,
 				BC44E6C722CCDD4E00F50956 /* UserCell+ConfigureCell.swift in Sources */,
 				BCE8147622F02A21008040A4 /* BlurView.swift in Sources */,
 				BC63314725A3A47B008A0C7A /* InteractiveModalTransitioningDelegate.swift in Sources */,
+				BCEBBC4E267155FB0082D6DB /* LoadMoreCell.swift in Sources */,
 				BCB0E18A25B9E04000390A5C /* SpecialSwitchCell.swift in Sources */,
 				BCBD866F259A8D6F00303A25 /* MapController+MKLocalSearchCompleterDelegate.swift in Sources */,
 				BCE5ABFA249EE75C001172C4 /* AddDescriptionContainerView.swift in Sources */,
 				BC82CFA02378538D003B2360 /* ChannelLogController+ChannelLogHistoryFetcher.swift in Sources */,
 				BC0C427A256AE94F000C740F /* ProfileController+AvatarOpenerDelegate.swift in Sources */,
 				BCE64DE7235B2D74001F27FD /* SelectUsersContainerView.swift in Sources */,
+				BC306C28266C581400CBB507 /* LocationViewCell.swift in Sources */,
 				BC5187D825332DB700880418 /* Country.swift in Sources */,
 				BC6B9AE32489CC2500157725 /* CreateChannelController_.swift in Sources */,
 				BCBD85E72598DE7600303A25 /* FloatingPanelLayout.swift in Sources */,
@@ -2299,8 +2351,9 @@
 				BCA13DFD23886D9A00311D69 /* InformationMessageSender.swift in Sources */,
 				BC74F2B622D0A67000B37801 /* CreateAccountController.swift in Sources */,
 				BC63314125A397B7008A0C7A /* CustomAlertControllerMainContainerView.swift in Sources */,
+				BC7D9DB4265C0C48008CBF8F /* CreateChannelController.swift in Sources */,
 				BCBD86062598FAFD00303A25 /* MapSearchCompletionCell.swift in Sources */,
-				BC08717E238AF84B0055E109 /* ChannelDetailsController.swift in Sources */,
+				BC08717E238AF84B0055E109 /* ChannelDetailsController__.swift in Sources */,
 				BC5BAFDF25A254A900996DCB /* CustomAlertAction.swift in Sources */,
 				BC31A87622E4DCC60012C73D /* MainController.swift in Sources */,
 				BC81DDC1253B382A001C24BC /* ContactsController+SearchHandlers.swift in Sources */,
@@ -2319,9 +2372,11 @@
 				BC5187B925332D1000880418 /* CountriesTableViewController.swift in Sources */,
 				BC23D2C5259BADFE004AE1CF /* MapController+SearchTableDelegate.swift in Sources */,
 				BCDE184C2554BA5900A64499 /* ChannelsController+RowActions.swift in Sources */,
+				BC7D9DB2265C0C48008CBF8F /* LocationSearchController.swift in Sources */,
 				BC38704825A74DC200FBA1B8 /* CustomAlertTextField.swift in Sources */,
 				BC493C4C25AA2C1E006E5C99 /* InteractiveButton.swift in Sources */,
 				BCB027CC256844F00082B318 /* AppearanceController.swift in Sources */,
+				BC306C22266C39C000CBB507 /* ChannelDetailsContainerView.swift in Sources */,
 				BCF8EE162389D18700234160 /* INSPhotoViewController.swift in Sources */,
 				BCF8EE012389CF2D00234160 /* AvatarOpenerOverlay.swift in Sources */,
 				BCC1A28122D482BB00766AF9 /* PhotoContainerView.swift in Sources */,
@@ -2329,7 +2384,6 @@
 				BC59276922A1321D006A5CEF /* AutoSizingCollectionViewFlowLayout.swift in Sources */,
 				BCBEAC6B23B0888300E52850 /* DynamicLabel.swift in Sources */,
 				BC5BAFDA25A24F2C00996DCB /* AlertContainerView.swift in Sources */,
-				BC7D9D9226545E16008CBF8F /* LocationSearchController.swift in Sources */,
 				BC1A781622A43C23005AC5CE /* dChannelLogController+CollectionDelegate.swift in Sources */,
 				BC0F42872358C2A6000D3DF0 /* StackCell.swift in Sources */,
 				BC74F2B422D0A62E00B37801 /* CreateAccountContainerView.swift in Sources */,
@@ -2362,6 +2416,7 @@
 				BCBDA1BB254F001E0051A183 /* CreateChannelController+Description_.swift in Sources */,
 				BCBD85A62597845900303A25 /* SearchTableContainerView.swift in Sources */,
 				BC30D79A252FCB4D0013CD38 /* PhotoController+AvatarOpenerDelegate.swift in Sources */,
+				BC7D9DB826616F8A008CBF8F /* LocationPoint.swift in Sources */,
 				BC8C117725BB2F38000CBD25 /* UpdateChannelController+TableView.swift in Sources */,
 				BC98B105236E3B20009A45DA /* AnnoucementFactory.swift in Sources */,
 				BCE5ABFF249EEE6A001172C4 /* HeaderView.swift in Sources */,
@@ -2417,12 +2472,12 @@
 				BC82CF9C2377A104003B2360 /* ChannelLogController+CollectionDelegate.swift in Sources */,
 				BC59276122A0EDAF006A5CEF /* ChannelCell.swift in Sources */,
 				BC59273D22A01B41006A5CEF /* Message.swift in Sources */,
-				BCA9CEFD238B03B5002FE100 /* ChannelDetailsDataDatabaseUpdater.swift in Sources */,
+				BCA9CEFD238B03B5002FE100 /* ChannelDetailsDataDatabaseUpdater_.swift in Sources */,
 				BC8C116A25BB2894000CBD25 /* UpdateChannelController+DescriptionDelegate.swift in Sources */,
 				BCF8EDFF2389CF1900234160 /* AvatarOpener.swift in Sources */,
-				BCE5ABFD249EE928001172C4 /* AddParticipantsTableViewController.swift in Sources */,
-				BC1000C0238AF9EF00A0C5D8 /* ChannelDetailsContainerView.swift in Sources */,
+				BC1000C0238AF9EF00A0C5D8 /* ChannelDetailsContainerView_.swift in Sources */,
 				BCBD55D82650032500AE32C6 /* CreateChannelController+ChannelNameHeaderDelegate.swift in Sources */,
+				BC306C30266C5D4600CBB507 /* ChannelDetailsCell.swift in Sources */,
 				BC089C972585598F00A42B7D /* PushNotificationSender.swift in Sources */,
 				BC0DC06222EB528100A27BC3 /* Reachability.swift in Sources */,
 				BCBD8674259A8DD100303A25 /* MapController+SearchBarDelegate.swift in Sources */,
@@ -2433,6 +2488,7 @@
 				BCCF551426209A1900AFBF7C /* TypingBubble.swift in Sources */,
 				BCBDA17F254E27A80051A183 /* SelectParticipantsController.swift in Sources */,
 				BCAC057022AD4A0C006D0C24 /* ContactsService.swift in Sources */,
+				BC7D9DB6265C0C48008CBF8F /* SelectChannelParticipantsController.swift in Sources */,
 				BCB0281C256AE30B0082B318 /* ProfileController.swift in Sources */,
 				BC089C922585578000A42B7D /* PushNotificationManager.swift in Sources */,
 				BCF8EE182389D18700234160 /* UIVIew+INSPhotoViewer.swift in Sources */,
@@ -2445,6 +2501,7 @@
 				BC23D2BA259B9659004AE1CF /* ParticipantProfileController.swift in Sources */,
 				BC01387C2379A93000C7291A /* UsersFetcher.swift in Sources */,
 				BCBD860E2598FB0D00303A25 /* MapItemSearchCell.swift in Sources */,
+				BC306C2A266C5A1A00CBB507 /* AttendeesCell.swift in Sources */,
 				BCD6B9C725A92BF200482155 /* MainRoundButton.swift in Sources */,
 				BCBDA1E4254F22710051A183 /* CreateChannelController+AvatarOpener_.swift in Sources */,
 				BC7D9D9F265888CA008CBF8F /* CreateChannelContoller+AvatarOpenerDelegate.swift in Sources */,
@@ -2457,18 +2514,18 @@
 				BCF8AC3F2551B0EA0045B2C5 /* VerticalTitleSubtitleView.swift in Sources */,
 				BC6B9AE92489CD8700157725 /* CreateChannelExtendedCell.swift in Sources */,
 				BCB0280C256848AB0082B318 /* ControlButton.swift in Sources */,
-				BC8C116025BB216C000CBD25 /* UpdateChannelController.swift in Sources */,
+				BC8C116025BB216C000CBD25 /* UpdateChannelController__.swift in Sources */,
 				BC32F49B236C6A1200867D85 /* spaces.xcdatamodeld in Sources */,
 				BCBD8658259A8C6B00303A25 /* MapController+LocationManagerDelegate.swift in Sources */,
 				BC92077A2387715C006BA82C /* ViewPlaceholder.swift in Sources */,
 				BC57BCB22509453400AAB5AC /* GlobalVariables.swift in Sources */,
 				BC4F9E09254A18400058BB94 /* DatePickerTableViewCell.swift in Sources */,
 				BCBDA19A254E2C800051A183 /* SelectedParticipantsCollectionView.swift in Sources */,
-				BCBDA1AA254E2E850051A183 /* SelectChannelParticipantsController.swift in Sources */,
 				BCBD85FD2598F4D000303A25 /* LocationSearchController+TableView.swift in Sources */,
 				BC2047C1253DE9BA0064F7F8 /* ParticipantsContainerView.swift in Sources */,
 				BC38705225A755A600FBA1B8 /* CustomAlertController+TransitioningDelegate.swift in Sources */,
 				BCC9A5F1237FD29F0052446A /* InAppNotificationManager.swift in Sources */,
+				BC7D9DB3265C0C48008CBF8F /* UpdateChannelController.swift in Sources */,
 				BCBDA190254E2B800051A183 /* SelectParticipantsController+SearchHandler.swift in Sources */,
 				BCF8EE112389D18700234160 /* INSPhotosTransitionAnimator.swift in Sources */,
 				BC2047BC253DDFE00064F7F8 /* CustomSegmentedControl.swift in Sources */,
@@ -2477,14 +2534,14 @@
 				BC59276D22A135AC006A5CEF /* Public.swift in Sources */,
 				BC1A780822A3FC3D005AC5CE /* TimestampView.swift in Sources */,
 				BC59274622A07694006A5CEF /* SigninContainerView.swift in Sources */,
+				BC306C24266C52CE00CBB507 /* ChannelDetailsController+TableView.swift in Sources */,
 				BCF97A01229D5F6A0088C568 /* WelcomeViewController.swift in Sources */,
 				BC59276B22A133C1006A5CEF /* ChannelCell+ConfigureCell.swift in Sources */,
-				BCBD55D52646D1EA00AE32C6 /* UpdateChannelController_.swift in Sources */,
 				BC74F2BE22D26F1C00B37801 /* KeyboardLayoutConstraint.swift in Sources */,
 				BC493057253A17FB00441F62 /* ContactPhoneNumberTableViewCell.swift in Sources */,
 				BC6C60B423843FFB003DBB53 /* UploadProgress.swift in Sources */,
 				BCBDA18B254E29CF0051A183 /* ParticipantTableViewCell.swift in Sources */,
-				BC71ACFA253685B900EA2907 /* ChannelDetailsController+ParticipantsCollectionView.swift in Sources */,
+				BC71ACFA253685B900EA2907 /* ChannelDetailsController+ParticipantsCollectionView_.swift in Sources */,
 				BCBDA1DC254F109D0051A183 /* CreateChannelController+HeaderCell_.swift in Sources */,
 				BC0EAF2D2511ABBC00394898 /* KeyboardLayoutGuide.swift in Sources */,
 				BC44E6C922CCE1F600F50956 /* CheckableTableViewCell.swift in Sources */,
@@ -2498,7 +2555,6 @@
 				BCA8815E25101061004D3ED7 /* ChannelCollectionView.swift in Sources */,
 				BC0F428B2358D643000D3DF0 /* StackCellBase.swift in Sources */,
 				BC8C116525BB273B000CBD25 /* UpdateChannelController+MapDelegate.swift in Sources */,
-				BCBD55D32646D19600AE32C6 /* CreateChannelController.swift in Sources */,
 				BC1A77FD22A3F8B6005AC5CE /* fChannelLogController+DataSource.swift in Sources */,
 				BCCF553B2620D87900AFBF7C /* InAppNotificationBanner.swift in Sources */,
 				BCEFCC132596ADF4009D3482 /* PermissionsController.swift in Sources */,
@@ -2506,7 +2562,7 @@
 				BC9E02B02482FAA2002CA4AE /* SelectUsersButtonView.swift in Sources */,
 				BC59276322A11CAB006A5CEF /* IncomingMessageCell.swift in Sources */,
 				BCCF55312620D83E00AFBF7C /* CustomizedView.swift in Sources */,
-				BCA9CEFB238B0306002FE100 /* ChannelDetailsControllerAvatarOpenerDelegate.swift in Sources */,
+				BCA9CEFB238B0306002FE100 /* ChannelDetailsControllerAvatarOpenerDelegate_.swift in Sources */,
 				BCB02807256847420082B318 /* UIIncrementSliderDotView.swift in Sources */,
 				BCC1A27B22D3C47000766AF9 /* PhoneContainerView.swift in Sources */,
 				BC037E8F257057F800D56BF8 /* AddChannelParticipantsContoroller.swift in Sources */,

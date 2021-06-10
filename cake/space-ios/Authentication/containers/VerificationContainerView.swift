@@ -64,6 +64,9 @@ class VerificationContainerView: UIView, UITextFieldDelegate {
         button.setImage(image, for: .normal)
         button.tintColor = ThemeManager.currentTheme().buttonIconColor
         
+        button.cornerRadius = 30
+        button.layer.cornerCurve = .circular
+        
         return button
     }()
     

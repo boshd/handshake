@@ -14,7 +14,7 @@ class WelcomeContainerView: UIView {
         let button = InteractiveButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Get started", for: .normal)
-        button.setTitleColor(ThemeManager.currentTheme().buttonIconColor, for: .normal)
+        button.setTitleColor(ThemeManager.currentTheme().buttonTextColor, for: .normal)
         button.titleLabel?.font = ThemeManager.currentTheme().secondaryFontBold(with: 17)
         button.addTarget(self, action: #selector(WelcomeViewController.toSignup), for: .touchUpInside)
         button.backgroundColor = ThemeManager.currentTheme().buttonColor
@@ -45,7 +45,8 @@ class WelcomeContainerView: UIView {
         label.font = ThemeManager.currentTheme().secondaryFontBold(with: 22)
         label.numberOfLines = 0
         label.textAlignment = .left
-        label.text = "Seamlessly plan private events with your favourite people."
+        //label.text = "Seamlessly plan private events with your favourite people."
+        label.text = "Private events — only with those you love."
         
         return label
     }()

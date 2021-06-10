@@ -90,10 +90,11 @@ class AccountSettingsController: UITableViewController, MFMailComposeViewControl
     }
     
     fileprivate func configureTableView() {
-        tableView = UITableView(frame: tableView.frame, style: .grouped)
+        tableView = UITableView(frame: tableView.frame, style: .insetGrouped)
         tableView.separatorStyle = .none
         tableView.sectionHeaderHeight = 0
         tableView.indicatorStyle = ThemeManager.currentTheme().scrollBarStyle
+//        tableView.contentInset = UIEdgeInsets(top: 0, left: 25, bottom: 0, right: -25)
 //        tableView.tableFooterView?.backgroundColor = .green
 //        tableView.tableFooterView = settingsFooterContainerView
 //        settingsFooterContainerView.backgroundColor = .red
@@ -110,7 +111,7 @@ class AccountSettingsController: UITableViewController, MFMailComposeViewControl
     }
     
     fileprivate func setupNavigationbar() {
-        title = "Account"
+        navigationItem.title = "Account"
         
 //        let dismissButton = UIBarButtonItem(image: UIImage(named: "i-remove"), style: .plain, target: self, action: #selector(dismissController))
 //        dismissButton.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -10)
@@ -372,7 +373,7 @@ extension AccountSettingsController {
         if section == 0 {
             return "Account"
         } else if section == 1 {
-            return "Preferences"
+            return "Your Preferences"
         } else if section == 2 {
             return "About"
         } else {
@@ -386,18 +387,18 @@ extension AccountSettingsController {
         } else if section == 0 {
             return 0
         } else {
-            return 35
+            return 45
         }
     }
     
     override func tableView(_  tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         let header = view as! UITableViewHeaderFooterView
-        header.textLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 9)
+        header.textLabel?.font = ThemeManager.currentTheme().secondaryFontVeryBold(with: 10)
         header.textLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
         
-        let attributedString = NSMutableAttributedString(string: (header.textLabel?.text)!)
-        attributedString.addAttribute(NSAttributedString.Key.kern, value: CGFloat(3), range: NSRange(location: 0, length: attributedString.length))
-        header.textLabel?.attributedText = attributedString
+//        let attributedString = NSMutableAttributedString(string: (header.textLabel?.text)!)
+//        attributedString.addAttribute(NSAttributedString.Key.kern, value: CGFloat(3), range: NSRange(location: 0, length: attributedString.length))
+//        header.textLabel?.attributedText = attributedString
     }
     
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {

@@ -64,10 +64,13 @@ class TabBarController: UITabBarController {
         UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().barTextColor],
         for: .normal)
         tabBar.unselectedItemTintColor = ThemeManager.currentTheme().unselectedButtonTintColor
+        tabBar.tintColor = ThemeManager.currentTheme().selectedButtonTintColor
         tabBar.isTranslucent = false
         tabBar.clipsToBounds = true
-        UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFont(with: 9)], for: .normal)
-        UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFontBold(with: 9)], for: .selected)
+        
+        
+        
+        UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().selectedButtonTintColor], for: .selected)
         
         setTabs()
     }
@@ -94,14 +97,13 @@ class TabBarController: UITabBarController {
     let settingsController = AccountSettingsController()
     
     fileprivate func setTabs() {
-        contactsController.navigationItem.title = "Contacts"
-        channelsController.navigationItem.title = "Events"
+        contactsController.navigationItem.title = "CONTACTS"
+        channelsController.navigationItem.title = "EVENTS"
         exploreController.navigationItem.title = "Explore"
-        settingsController.navigationItem.title = "Account"
+        settingsController.navigationItem.title = "ACCOUNT"
 
         let contactsNavigationController = UINavigationController(rootViewController: contactsController)
         let channelsNavigationController = UINavigationController(rootViewController: channelsController)
-        let exploreNavigationController = UINavigationController(rootViewController: exploreController)
         let settingsNavigationController = UINavigationController(rootViewController: settingsController)
         settingsNavigationController.navigationBar.setValue(true, forKey: "hidesShadow")
 
@@ -117,25 +119,28 @@ class TabBarController: UITabBarController {
 //            
 //        }
         
-        let contactsImage =  UIImage(named: "Contacts")
-        let eventsImage = UIImage(named: "Calendar")
-        let exploreImage = UIImage(named: "Explore")
-        let settingsImage = UIImage(named: "Setting")
+        let contactsImage =  UIImage(named: "Contacts-fill")
+        let eventsImage = UIImage(named: "Explore-fill")
+        let settingsImage = UIImage(named: "Setting-fill")
         
         let contactsImageSelected =  UIImage(named: "Contacts-fill")
-        let eventsImageSelected = UIImage(named: "Calendar-fill")
-        let exploreImageSelected = UIImage(named: "Explore-fill")
+        let eventsImageSelected = UIImage(named: "Explore-fill")
         let settingsImageSelected = UIImage(named: "Setting-fill")
 
         let contactsTabItem = UITabBarItem(title: contactsController.navigationItem.title, image: contactsImage, selectedImage: contactsImageSelected)
         let eventsTabItem = UITabBarItem(title: channelsController.navigationItem.title, image: eventsImage, selectedImage: eventsImageSelected)
-        let exploreTabItem = UITabBarItem(title: exploreController.navigationItem.title, image: exploreImage, selectedImage: exploreImageSelected)
         let settingsTabItem = UITabBarItem(title: settingsController.navigationItem.title, image: settingsImage, selectedImage: settingsImageSelected)
 
         contactsController.tabBarItem = contactsTabItem
         channelsController.tabBarItem = eventsTabItem
-        exploreController.tabBarItem = exploreTabItem
         settingsController.tabBarItem = settingsTabItem
+        
+        contactsTabItem.setTitleTextAttributes([NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFontVeryBold(with: 8)] as [NSAttributedString.Key : Any], for: .normal)
+        contactsTabItem.setTitleTextAttributes([NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFontVeryBold(with: 8)] as [NSAttributedString.Key : Any], for: .selected)
+        eventsTabItem.setTitleTextAttributes([NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFontVeryBold(with: 8)] as [NSAttributedString.Key : Any], for: .normal)
+        eventsTabItem.setTitleTextAttributes([NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFontVeryBold(with: 8)] as [NSAttributedString.Key : Any], for: .selected)
+        settingsTabItem.setTitleTextAttributes([NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFontVeryBold(with: 8)] as [NSAttributedString.Key : Any], for: .normal)
+        settingsTabItem.setTitleTextAttributes([NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFontVeryBold(with: 8)] as [NSAttributedString.Key : Any], for: .selected)
 
         let tabBarControllers = [contactsNavigationController, channelsNavigationController, settingsNavigationController]
         viewControllers = tabBarControllers

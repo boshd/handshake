@@ -290,30 +290,38 @@ extension ContactsController {
             if users?.count == 0 {
                 return ""
             } else {
-                return "Available"
+                return "AVAILABLE ON HANDSHAKE"
             }
         }
         guard section == 1, filteredContacts.count != 0 else { return " " }
-        return "Contacts - Not signed up"
+        return "CONTACTS"
     }
     
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-
-        let myLabel = UILabel()
-        myLabel.frame = CGRect(x: 15, y: 3, width: 320, height: 22)
-        myLabel.font = .boldSystemFont(ofSize: 10)
-        myLabel.text = self.tableView(tableView, titleForHeaderInSection: section)
-        myLabel.textColor = .gray
-        
-//        let attributedString = NSMutableAttributedString(string: myLabel.text!)
-//        attributedString.addAttribute(NSAttributedString.Key.kern, value: CGFloat(1.5), range: NSRange(location: 0, length: attributedString.length))
-//        myLabel.attributedText = attributedString
-
-        let headerView = UIView()
-        headerView.addSubview(myLabel)
-        headerView.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
-
-        return headerView
+//    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//
+//        let myLabel = UILabel()
+//        myLabel.frame = CGRect(x: 15, y: 3, width: 320, height: 22)
+//        myLabel.font = .boldSystemFont(ofSize: 10)
+//        myLabel.text = self.tableView(tableView, titleForHeaderInSection: section)
+//        myLabel.textColor = .gray
+//
+////        let attributedString = NSMutableAttributedString(string: myLabel.text!)
+////        attributedString.addAttribute(NSAttributedString.Key.kern, value: CGFloat(1.5), range: NSRange(location: 0, length: attributedString.length))
+////        myLabel.attributedText = attributedString
+//
+//        let headerView = UIView()
+//        headerView.addSubview(myLabel)
+//        headerView.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
+//
+//        return headerView
+//    }
+    
+    override func tableView(_  tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        let header = view as! UITableViewHeaderFooterView
+        header.textLabel?.font = ThemeManager.currentTheme().secondaryFontVeryBold(with: 10)
+        header.textLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
+        header.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+        view.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
     }
 
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -328,11 +336,11 @@ extension ContactsController {
         return 25
     }
 
-    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        view.tintColor = ThemeManager.currentTheme().tintColor
-        guard section == 1 else { return }
-        view.tintColor = ThemeManager.currentTheme().tintColor
-    }
+//    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+//        view.tintColor = ThemeManager.currentTheme().tintColor
+//        guard section == 1 else { return }
+//        view.tintColor = ThemeManager.currentTheme().tintColor
+//    }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: usersCellID,

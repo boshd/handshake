@@ -31,11 +31,8 @@ final class Channel: Object {
     @objc dynamic var lastMessageId: String?
     @objc dynamic var description_: String?
     @objc dynamic var locationName: String?
-    
-    
-    var status: EventStatus?
-    
-    var isCancelled = RealmOptional<Bool>()
+    @objc dynamic var locationDescription: String?
+    @objc dynamic var location: Location?
     
     var createdAt = RealmOptional<Int64>()
     var lastMessageTimestamp = RealmOptional<Int64>()
@@ -55,21 +52,12 @@ final class Channel: Object {
     
     var fcmTokens = List<FCMToken>()
     
-    var isMuted = RealmOptional<Bool>()
-    var isEmpty = RealmOptional<Bool>()
     var isRemote = RealmOptional<Bool>()
     
     var latitude = RealmOptional<Double>()
     var longitude = RealmOptional<Double>()
     
     var lastMessageRuntime: Message?
-    
-    var tmpStartDate: Date?
-    var tmpEndDate: Date?
-    
-    var mapItem: MKMapItem?
-    
-    dynamic var placemark: MKPlacemark? // local
     
     var messages = LinkingObjects(fromType: Message.self, property: "channel")
     let shouldUpdateRealmRemotelyBeforeDisplaying = RealmOptional<Bool>()
@@ -112,49 +100,66 @@ final class Channel: Object {
         self.maybeIds.assign(dictionary?["maybeIds"] as? [String])
         self.notGoingIds.assign(dictionary?["notGoingIds"] as? [String])
         
-//        self.fcmTokens.assign(dictionary?["fcmTokens"] as? [FCMToken])
+        // self.fcmTokens.assign(dictionary?["fcmTokens"] as? [FCMToken])
         
         if let fcmTokensDict = dictionary?["fcmTokens"] as? [String:String] {
             self.fcmTokens = convertRawFCMTokensToRealmCompatibleType(fcmTokensDict)
         }
         
-        self.isMuted.value = dictionary?["isMuted"] as? Bool
-        self.isEmpty.value = dictionary?["isEmpty"] as? Bool
-        
         self.latitude.value = dictionary?["latitude"] as? Double
         self.longitude.value = dictionary?["longitude"] as? Double
         
-        self.locationName = dictionary?["locationName"] as? String
+        self.locationDescription = dictionary?["locationDescription"] as? String
         
-        self.isCancelled.value = dictionary?["isCancelled"] as? Bool
+        
+        self.location = dictionary?["location"] as? Location
+        
+        self.locationName = dictionary?["locationName"] as? String
+
         self.isRemote.value = dictionary?["isRemote"] as? Bool
         
         self.shouldUpdateRealmRemotelyBeforeDisplaying.value = RealmKeychain.defaultRealm.object(ofType: Channel.self,
         forPrimaryKey: dictionary?["id"] as? String ?? "")?.shouldUpdateRealmRemotelyBeforeDisplaying.value
     }
     
-    func updateAndReturnStatus() -> EventStatus? {
-        guard Auth.auth().currentUser != nil,
-              !self.isInvalidated,
-              let startTime = startTime.value,
-              let endTime = endTime.value
-        else { return nil }
-        
-        if let isCancelled = isCancelled.value, isCancelled {
-            status = .cancelled
-            return .cancelled
+    /*
+     
+     
+     */
+    
+    static func == (lhs: Channel, rhs: Channel) -> Bool {
+        if lhs.id == rhs.id,
+           lhs.name == rhs.name,
+           lhs.imageUrl == rhs.imageUrl,
+//           lhs.author == rhs.author,
+           lhs.thumbnailImageUrl == rhs.thumbnailImageUrl,
+//           lhs.lastMessageId == rhs.lastMessageId,
+           lhs.description_ == rhs.description_,
+           lhs.locationName == rhs.locationName,
+           lhs.locationDescription == rhs.locationDescription,
+           lhs.location == rhs.location,
+//           lhs.createdAt == rhs.createdAt,
+//           lhs.lastMessageTimestamp == rhs.lastMessageTimestamp,
+//           lhs.isTyping == rhs.isTyping,
+           lhs.startTime == rhs.startTime,
+           lhs.endTime == rhs.endTime,
+//           lhs.badge == rhs.badge,
+//           lhs.participantIds == rhs.participantIds,
+//           lhs.admins == rhs.admins,
+//           lhs.goingIds == rhs.goingIds,
+//           lhs.maybeIds == rhs.maybeIds,
+//           lhs.notGoingIds == rhs.notGoingIds,
+//           lhs.fcmTokens == rhs.fcmTokens,
+           lhs.isRemote == rhs.isRemote,
+           lhs.latitude == rhs.latitude,
+           lhs.longitude == rhs.longitude
+//           lhs.lastMessageRuntime == rhs.lastMessageRuntime,
+//           lhs.shouldUpdateRealmRemotelyBeforeDisplaying == rhs.shouldUpdateRealmRemotelyBeforeDisplaying,
+//           lhs.lastMessage == rhs.lastMessage
+        {
+            return true
         } else {
-            let currentDateInt64 = Int64(Int(Date().timeIntervalSince1970))
-            if startTime > currentDateInt64 && endTime > currentDateInt64 {
-                status = .upcoming
-                return .upcoming
-            } else if startTime <= currentDateInt64 && endTime > currentDateInt64 {
-                status = .inProgress
-                return .inProgress
-            } else {
-                status = .expired
-                return .expired
-            }
+            return false
         }
     }
     

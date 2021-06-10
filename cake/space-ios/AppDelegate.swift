@@ -32,7 +32,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         print("\nAPP DELEGATE realm channel count: \(RealmKeychain.defaultRealm.objects(Channel.self).count)\n")
-        
         FirebaseConfiguration.shared.setLoggerLevel(.min)
         FirebaseApp.configure()
         Database.database().isPersistenceEnabled = true

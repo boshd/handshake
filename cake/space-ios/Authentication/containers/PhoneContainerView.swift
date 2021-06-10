@@ -90,6 +90,9 @@ class PhoneContainerView: UIView {
         button.setImage(image, for: .normal)
         button.tintColor = ThemeManager.currentTheme().buttonIconColor
         
+        button.cornerRadius = 30
+        button.layer.cornerCurve = .circular
+        
         return button
     }()
     
@@ -126,8 +129,8 @@ class PhoneContainerView: UIView {
             infoLabel.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: 0),
             
             doneButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            doneButton.heightAnchor.constraint(equalToConstant: 55),
-            doneButton.widthAnchor.constraint(equalToConstant: 55),
+            doneButton.heightAnchor.constraint(equalToConstant: 60),
+            doneButton.widthAnchor.constraint(equalToConstant: 60),
             
             phoneNumberField.heightAnchor.constraint(equalTo: stackView.heightAnchor),
             countryCode.heightAnchor.constraint(equalTo: stackView.heightAnchor),

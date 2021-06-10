@@ -26,12 +26,8 @@ extension ChannelCell {
         // channel name
         title.text = "\(channel.name ?? "")"
         
-        // format start date
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMM d • h:mm a"
-        dateFormatter.timeZone = .current
-        if let startTime = channel.startTime.value {
-            dateTitle.text = dateFormatter.string(from: Date(timeIntervalSince1970: Double(startTime))).uppercased()
+        if let startTime = channel.startTime.value, let endTime = channel.endTime.value {
+            dateTitle.text = getDateString(startTime: startTime, endTime: endTime)
         }
         
         if let locationName = channel.locationName {
@@ -50,33 +46,6 @@ extension ChannelCell {
                 print(error?.localizedDescription ?? "")
             })
         }
-        
-        guard let channelStatus = channel.updateAndReturnStatus() else { return }
-        switch channelStatus {
-            case .upcoming:
-                let startDate = Date(timeIntervalSince1970: Double(integerLiteral: (channel.startTime.value ?? 0)))
-                let calendar = Calendar.current
-                let date1 = calendar.startOfDay(for: Date())
-                let date2 = calendar.startOfDay(for: startDate)
-                let components = calendar.dateComponents([.day], from: date1, to: date2)
-                if let days = components.day {
-                    if days == 1 {
-                        eventStatus.text = "Tomorrow"
-                    } else if days == 0 {
-                        eventStatus.text = "Today"
-                    } else {
-                        eventStatus.text = "In \(days) days"
-                    }
-                }
-            case .inProgress:
-                eventStatus.text = "In progress"
-            case .expired:
-                eventStatus.text = "Expired"
-            case .cancelled:
-                eventStatus.text = "Cancelled"
-        }
-
-        startTimer()
 
         let badgeInt = channels[indexPath.row].badge.value ?? 0
         

@@ -13,11 +13,18 @@ import Firebase
 class CreateChannelController: UITableViewController {
 
     var channelName: String?
-    var locationName: String?
     var startTime: Int64?
     var endTime: Int64?
+    
     var locationCoordinates: (Double, Double)?
+    var locationName: String?
+    var locationDescription: String?
     var mapItem: MKMapItem?
+    
+    var location: Location?
+    
+    var newChannel: Channel?
+    
     var channelDescription: String?
     var selectedImage: UIImage?
     
@@ -90,7 +97,15 @@ class CreateChannelController: UITableViewController {
     
     // MARK: - Controller setup/config.
     
-    fileprivate func configureTableView() {
+    override init(style: UITableView.Style) {
+        super.init(style: .insetGrouped)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configureTableView() {
         configureDates()
         
         tableView.register(ChannelNameHeaderCell.self, forCellReuseIdentifier: channelNameHeaderCellId)
@@ -211,6 +226,7 @@ extension CreateChannelController {
             "latitude": locationCoordinates?.0 as AnyObject,
             "longitude": locationCoordinates?.1 as AnyObject,
             "locationName": locationName as AnyObject,
+            "locationDescription": locationDescription as AnyObject,
             "maybeIds": memberIDs.0 as AnyObject,
             "isCancelled": false as AnyObject,
             "isRemote": isRemote as AnyObject
@@ -263,10 +279,7 @@ extension CreateChannelController {
 
     func uploadImage(reference: DocumentReference, image: UIImage?) {
         guard let image = selectedImage else {
-            reference.updateData([
-                "imageUrl": "",
-                "thumbnailImageUrl": ""
-            ]) { [weak self] (error) in
+            reference.updateData([:]) { [weak   self] (error) in
                 self?.channelCreatingGroup.leave()
                 if error != nil {
                     print("error // ", error?.localizedDescription as Any)
@@ -418,10 +431,11 @@ extension CreateChannelController {
                 return cell
             } else {
                 let cell = tableView.dequeueReusableCell(withIdentifier: selectLocationCellId, for: indexPath) as? SelectLocationCell ?? SelectLocationCell()
-                cell.textLabel?.text = secondSection[1]
-                cell.textLabel?.text = mapItem != nil ? mapItem?.name : secondSection[1]
+                cell.textLabel?.text = locationName != nil ? location?.name : secondSection[1]
                 
-                if mapItem != nil { cell.detailTextLabel?.text = mapItem?.placemark.title }
+                    
+                
+                if location != nil { cell.detailTextLabel?.text = location?.locationDescription }
                 return cell
             }
         } else if indexPath.section == 2 {

@@ -139,7 +139,7 @@ class SelectParticipantsController: UIViewController {
     }
 
     func CreateChannel() {
-        let destination = CreateChannelController()
+        let destination = CreateChannelController(style: .insetGrouped)
         destination.selectedUsers = selectedUsers
         navigationController?.pushViewController(destination, animated: true)
     }

@@ -83,6 +83,19 @@ extension ChannelLogController: UICollectionViewDelegateFlowLayout, UICollection
         return nil
     }
 
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+//
+//////        let totalCellWidth = CellWidth * CellCount
+//////        let totalSpacingWidth = CellSpacing * (CellCount - 1)
+//////
+//////        let leftInset = (collectionViewWidth - CGFloat(totalCellWidth + totalSpacingWidth)) / 2
+//////        let rightInset = leftInset
+//
+//
+//
+//        return UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
+//    }
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return selectSize(indexPath: indexPath)
     }

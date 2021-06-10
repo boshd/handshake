@@ -6,4 +6,11 @@
 //  Copyright © 2021 Kareem Arab. All rights reserved.
 //
 
-import Foundation
+import RealmSwift
+
+class Location: Object {
+    @objc dynamic var name: String = ""
+    @objc dynamic var locationDescription: String = ""
+    @objc dynamic var latitude: Double = 0.0
+    @objc dynamic var longitude: Double = 0.0
+}

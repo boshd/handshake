@@ -7,17 +7,19 @@
 //
 
 import MapKit
+import Firebase
 
 extension CreateChannelController: LocationSearchDelegate {
-    func clickSearchButton(searchBar: UISearchBar) {
-        //
-    }
+    func clickSearchButton(searchBar: UISearchBar) {}
     
     func didSelectMapItem(mapItem: MKMapItem) {
         self.dismiss(animated: true, completion: nil)
         self.mapItem = mapItem
+        
         self.locationName = mapItem.name
+        self.locationDescription = mapItem.placemark.title
         self.locationCoordinates = (mapItem.placemark.coordinate.latitude, mapItem.placemark.coordinate.longitude)
+        
         DispatchQueue.main.async { [weak self] in
             self?.tableView.reloadData()
         }

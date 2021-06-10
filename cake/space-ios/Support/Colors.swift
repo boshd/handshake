@@ -10,6 +10,33 @@ import UIKit
 
 extension UIColor {
     
+    
+    // handshake colours
+    
+    open class var handshakeBlue: UIColor {
+        get { return UIColor(red: 0.12, green: 0.00, blue: 0.96, alpha: 1.00) }
+    }
+    
+    open class var handshakeLightPurple: UIColor {
+        get { return UIColor(red: 0.91, green: 0.89, blue: 0.99, alpha: 1.00) }
+    }
+    
+    open class var handshakeLightGray: UIColor {
+        get { return UIColor(red: 0.97, green: 0.97, blue: 0.98, alpha: 1.00) }
+    }
+    
+    open class var handshakeMediumGray: UIColor {
+        get { return UIColor(red: 0.85, green: 0.86, blue: 0.93, alpha: 1.00) }
+    }
+    
+    open class var handshakeDarkGray: UIColor {
+        get { return UIColor(red: 0.66, green: 0.64, blue: 0.71, alpha: 1.00) }
+    }
+    
+    open class var handshakeGreen: UIColor {
+        get { return UIColor(red: 0.30, green: 0.96, blue: 0.49, alpha: 1.00) }
+    }
+    
     static func greenEventStatusBackground() -> UIColor {
         return UIColor(red: 0.47, green: 1.00, blue: 0.88, alpha: 1.00)
     }

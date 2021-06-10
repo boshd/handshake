@@ -18,7 +18,7 @@ import RealmSwift
     func locationUpdated(latitude: Double, longitude: Double, locationName: String)
     func adminsUpdated(admins: Array<String>)
     func isRemoteUpdated(_: Bool)
-    func isCancelledUpdated(_: Bool)
+    // func isCancelledUpdated(_: Bool)
     
     func addMember(id: String)
     func removeMember(id: String)
@@ -113,9 +113,9 @@ class ChannelManager: NSObject {
             delegate?.isRemoteUpdated(newIsRemote)
         }
         
-        if let newIsCancelled = new.isCancelled.value, old.isCancelled.value != newIsCancelled {
-            delegate?.isCancelledUpdated(newIsCancelled)
-        }
+//        if let newIsCancelled = new.isCancelled.value, old.isCancelled.value != newIsCancelled {
+//            delegate?.isCancelledUpdated(newIsCancelled)
+//        }
     }
     
 //    static func == (lhs: Car, rhs: Car) -> Bool {

@@ -130,6 +130,7 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         initializeDataSource()
         initializeUsersDataSource()
         continiousUIUpdate()
+        setDate()
         
 //        if let navigationBar = navigationController?.navigationBar {
 //            ThemeManager.setNavigationBarAppearance(navigationBar)
@@ -183,17 +184,37 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
     }
     
     fileprivate func configureNavigationBar() {
-        
+        navigationItem.title = "Events"
         if #available(iOS 11.0, *) {
              navigationController?.navigationBar.prefersLargeTitles = true
              navigationItem.largeTitleDisplayMode = .always
          }
 
-        let newChatBarButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(presentCreateChannelController))
+        let newChatBarButton = UIBarButtonItem(image: UIImage(named: "add"), style: .plain, target: self, action: #selector(presentCreateChannelController))
         navigationItem.rightBarButtonItem = newChatBarButton
         
-//        navigationItem.title = "Events"
+        // setUpMenuButton()
 
+    }
+    
+    private func setUpMenuButton(){
+        let menuBtn = UIButton(type: .custom)
+        menuBtn.frame = CGRect(x: 0.0, y: 0.0, width: 30, height: 30)
+        menuBtn.setImage(UIImage(named:"add"), for: .normal)
+        menuBtn.addTarget(self, action: #selector(presentCreateChannelController), for: .touchUpInside)
+        menuBtn.backgroundColor = .handshakeLightGray
+        menuBtn.tintColor = ThemeManager.currentTheme().buttonIconColor
+        menuBtn.layer.cornerRadius = 15
+        menuBtn.layer.cornerCurve = .circular
+
+        let menuBarItem = UIBarButtonItem(customView: menuBtn)
+        let currWidth = menuBarItem.customView?.widthAnchor.constraint(equalToConstant: 36)
+        currWidth?.isActive = true
+        let currHeight = menuBarItem.customView?.heightAnchor.constraint(equalToConstant: 36)
+        currHeight?.isActive = true
+         
+        self.navigationItem.rightBarButtonItem = menuBarItem
+        self.navigationItem.rightBarButtonItem?.tintColor = ThemeManager.currentTheme().tintColor
     }
     
     // MARK: - Observers
@@ -270,13 +291,16 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         realmChannels = objects
         theRealmChannels = theObjects
         
+    }
+    
+    private func setDate() {
         // date
-        dateFormatter.dateFormat = "EEEE, MMMM d"
+        dateFormatter.dateFormat = "EEE, MMMM d"
         
         let dateLabel = UILabel()
-        dateLabel.text = dateFormatter.string(from: Date())
-        dateLabel.font = ThemeManager.currentTheme().secondaryFontBold(with: 13)
-        dateLabel.textColor = ThemeManager.currentTheme().generalTitleColor
+        dateLabel.text = dateFormatter.string(from: Date()).uppercased()
+        dateLabel.font = ThemeManager.currentTheme().secondaryFontVeryBold(with: 10)
+        dateLabel.textColor = ThemeManager.currentTheme().tintColor
         dateLabel.sizeToFit()
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: dateLabel)
     }

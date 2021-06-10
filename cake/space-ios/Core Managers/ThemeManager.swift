@@ -30,7 +30,8 @@ struct ThemeManager {
         UINavigationBar.appearance().scrollEdgeAppearance = coloredAppearance
         UINavigationBar.appearance().compactAppearance = coloredAppearance
         
-        UITabBar.appearance().tintColor = theme.tabBarTintColor
+//        UITabBar.appearance().tintColor = theme.tabBarTintColor
+        
 //        let tabBarAppearance = UITabBarItem.appearance()
 //        let attributes = [NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFontBold(with: 6)]
 //        tabBarAppearance.setTitleTextAttributes(attributes, for: .normal)
@@ -109,6 +110,11 @@ enum Theme: Int {
         return UIFont.boldSystemFont(ofSize: fontSize)
     }
     
+    func secondaryFontVeryBold(with fontSize: CGFloat) -> UIFont {
+//        return UIFont(name: "HelveticaNeue-Bold", size: fontSize)!
+        return UIFont.systemFont(ofSize: fontSize, weight: .heavy)
+    }
+    
     func secondaryFontItalic(with fontSize: CGFloat) -> UIFont {
 //        return UIFont(name: "HelveticaNeue-Italic", size: fontSize)!
         return UIFont.italicSystemFont(ofSize: fontSize)
@@ -142,9 +148,9 @@ enum Theme: Int {
     var tintColor: UIColor {
         switch self {
             case .normal:
-                return .systemBlue
+                return .handshakeBlue
             case .dark:
-                return .systemBlue
+                return .handshakeBlue
         }
     }
     
@@ -184,12 +190,39 @@ enum Theme: Int {
         }
     }
     
+    var secondaryButtonBackgroundColor: UIColor {
+        switch self {
+            case .normal:
+                return .handshakeLightGray
+            case .dark:
+                return .offBlack()
+        }
+    }
+    
+    var secondaryButtonTintColor: UIColor {
+        switch self {
+            case .normal:
+                return tintColor
+            case .dark:
+                return tintColor
+        }
+    }
+    
+    var secondaryButtonTitleColor: UIColor {
+        switch self {
+            case .normal:
+                return tintColor
+            case .dark:
+                return tintColor
+        }
+    }
+    
     var buttonColor: UIColor {
         switch self {
             case .normal:
-                return .black
+                return tintColor
             case .dark:
-                return .offBlack()
+                return tintColor
         }
     }
     
@@ -198,14 +231,14 @@ enum Theme: Int {
             case .normal:
                 return .white
             case .dark:
-                return tintColor
+                return .white
         }
     }
     
     var buttonTextColor: UIColor {
         switch self {
             case .normal:
-                return .black
+                return .white
             case .dark:
                 return .white
         }
@@ -214,7 +247,7 @@ enum Theme: Int {
     var tabBarTintColor: UIColor {
         switch self {
             case .normal:
-                return .black
+                return tintColor
             case .dark:
                 return tintColor
         }
@@ -223,16 +256,16 @@ enum Theme: Int {
     var unselectedButtonTintColor: UIColor {
         switch self {
             case .normal:
-                return UIColor(red: 0.67, green: 0.67, blue: 0.67, alpha: 1.0)
+                return .handshakeMediumGray
             case .dark:
-                return UIColor(red: 0.67, green: 0.67, blue: 0.67, alpha: 1.0)
+                return .handshakeMediumGray
         }
     }
     
     var selectedButtonTintColor: UIColor {
         switch self {
             case .normal:
-                return tintColor
+                return .black
             case .dark:
                 return tintColor
         }
@@ -293,6 +326,15 @@ enum Theme: Int {
         }
     }
     
+    var groupedInsetCellBackgroundColor: UIColor {
+        switch self {
+            case .normal:
+                return .handshakeLightGray
+            case .dark:
+                return .handshakeLightGray
+        }
+    }
+    
     
     var barBackgroundColor: UIColor {
         switch self {
@@ -315,7 +357,7 @@ enum Theme: Int {
     var chatLogHeaderBackgroundColor: UIColor {
         switch self {
             case .normal:
-                return .white
+                return .handshakeLightGray
             case .dark:
                 return .black
         }
@@ -387,9 +429,9 @@ enum Theme: Int {
     var generalSubtitleColor: UIColor {
         switch self {
             case .normal:
-                return .lightGray
+                return .handshakeDarkGray
             case .dark:
-                return UIColor(red: 0.60, green: 0.60, blue: 0.60, alpha: 1.00)
+                return .handshakeDarkGray
                 //return .defaultLightGray()
         }
     }
@@ -426,9 +468,18 @@ enum Theme: Int {
     var informationMessageTextColor: UIColor {
         switch self {
             case .normal:
-                return generalSubtitleColor
+                return tintColor
             case .dark:
-                return generalSubtitleColor
+                return .black
+        }
+    }
+    
+    var informationMessageBackgroundColor: UIColor {
+        switch self {
+            case .normal:
+                return .handshakeLightPurple
+            case .dark:
+                return .handshakeLightPurple
         }
     }
     
@@ -554,9 +605,9 @@ enum Theme: Int {
     var outgoingMessageBackgroundColor: UIColor {
         switch self {
             case .normal:
-                return .systemBlue
+                return tintColor
             case .dark:
-                return .systemBlue
+                return tintColor
         }
     }
     

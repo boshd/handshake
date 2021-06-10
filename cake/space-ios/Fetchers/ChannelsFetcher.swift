@@ -102,10 +102,10 @@ class ChannelsFetcher: NSObject {
                     return
                 }
 
-                if first {
-                    first = false
-                    return
-                }
+//                if first {
+//                    first = false
+//                    return
+//                }
                 
                 guard let snap = snapshot else { return }
                 snap.documentChanges.forEach { (diff) in
@@ -184,7 +184,6 @@ class ChannelsFetcher: NSObject {
                 print(error?.localizedDescription as Any)
                 return
             }
-            print("here2")
             guard var dictionary = snapshot?.data() as [String: AnyObject]? else { return }
             dictionary.updateValue(messageID as AnyObject, forKey: "messageUID")
             
@@ -226,23 +225,32 @@ class ChannelsFetcher: NSObject {
             channel.latitude = metaInfo.latitude
             channel.longitude = metaInfo.longitude
             channel.isRemote = metaInfo.isRemote
-            channel.isCancelled = metaInfo.isCancelled
             channel.startTime = metaInfo.startTime
             channel.endTime = metaInfo.endTime
             channel.fcmTokens = metaInfo.fcmTokens
             
-            print("arrived here")
+            channel.locationName = metaInfo.locationName
+            channel.latitude = metaInfo.latitude
+            channel.longitude = metaInfo.longitude
             
-            let computedMapItem = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: metaInfo.latitude.value ?? 0, longitude: metaInfo.longitude.value ?? 0)))
+            let location = Location()
+            location.name = metaInfo.locationName ?? ""
+            location.locationDescription = metaInfo.locationDescription ?? ""
+            location.latitude = metaInfo.latitude.value ?? 0.0
+            location.longitude = metaInfo.longitude.value ?? 0.0
+            channel.location = location
             
-            channel.mapItem = computedMapItem
-            
-            print(computedMapItem)
+//            print("\n\n\n\narrived here: \(metaInfo.latitude) ... \(metaInfo.longitude)\n\n\n\n\n\n")
+//            
+//            if let latVal = metaInfo.latitude.value, let lonVal = metaInfo.longitude.value {
+//                let computedMapItem = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: latVal, longitude: lonVal)))
+//                channel.mapItem = computedMapItem
+//                print(computedMapItem)
+//            }
             
             if let fcmTokensDict = dictionary["fcmTokens"] as? [String:String] {
                 channel.fcmTokens = convertRawFCMTokensToRealmCompatibleType(fcmTokensDict)
             }
-            print("here3")
             prefetchThumbnail(from: channel.thumbnailImageUrl == nil ? channel.imageUrl : channel.thumbnailImageUrl)
             self.updateConversationArrays(with: channel)
         }
@@ -258,14 +266,11 @@ class ChannelsFetcher: NSObject {
     
     fileprivate func updateConversationArrays(with channel: Channel) {
         guard let channelID = channel.id else { return }
-        print("here4")
         if let index = channels.firstIndex(where: { (channel) -> Bool in
             return channel.id == channelID
         }) {
             update(channel: channel, at: index)
-            print("here5")
         } else {
-            print("here6")
             channels.append(channel)
             handleGroupOrReloadTable()
         }
@@ -282,17 +287,13 @@ class ChannelsFetcher: NSObject {
             delegate?.channels(update: channels[index], reloadNeeded: true)
             return
         }
-        print("here9")
         channels[index] = channel
         handleGroupOrReloadTable()
         return
     }
     
     fileprivate func handleGroupOrReloadTable() {
-        print("here10")
         guard isGroupAlreadyFinished else {
-            print("here11")
-            print("LOCKED HERE")
             guard group != nil else {
                 delegate?.channels(didFinishFetching: true, channels: channels)
                 return
@@ -300,8 +301,6 @@ class ChannelsFetcher: NSObject {
             group.leave()
             return
         }
-        print("OUT HERE")
-        print("here12")
         delegate?.channels(didFinishFetching: true, channels: channels)
     }
     

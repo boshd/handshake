@@ -195,21 +195,23 @@ class ParticipantsController: UIViewController {
     }
     
     fileprivate func setupNavigationBar() {
+        let count = channel?.participantIds.count
+        
         navigationItem.title = "Attendees"
+        
+        let title = count == 1 ? "1 attendee" : "\(count ?? 0) attendees"
+        
+        navigationItem.title = title
+        
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
         navigationController?.navigationBar.shadowImage = UIImage()
-        let backButton = UIBarButtonItem(image: UIImage(named: "ctrl-left"), style: .plain, target: self, action:  #selector(goBack))
-        backButton.tintColor = .black
-        navigationItem.leftBarButtonItem = backButton
+        let dismissButton = UIBarButtonItem(image: UIImage(named: "i-remove"), style: .plain, target: self, action:  #selector(dismissController))
+        dismissButton.imageInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 0)
+        navigationItem.leftBarButtonItem = dismissButton
         
         guard let currentUserID = Auth.auth().currentUser?.uid, let channelAdminIDs = channel?.admins else { return }
-        
-        guard let channel = channel,
-              let state = channelState(channel: channel),
-              let cancelled = channel.isCancelled.value
-        else { return }
 
-        if channelAdminIDs.contains(currentUserID), !cancelled, state != .Past {
+        if channelAdminIDs.contains(currentUserID) {
             let addMemberButton = UIBarButtonItem(image: UIImage(named: "add"), style: .plain, target: self, action:  #selector(addMember))
             addMemberButton.tintColor = .black
             navigationItem.rightBarButtonItem = addMemberButton
@@ -218,9 +220,8 @@ class ParticipantsController: UIViewController {
     
     // MARK: - @objc methods
     
-    @objc func goBack() {
-        hapticFeedback(style: .impact)
-        navigationController?.popViewController(animated: true)
+    @objc func dismissController() {
+        dismiss(animated: true, completion: nil)
     }
     
     @objc fileprivate func addMember() {
@@ -233,12 +234,12 @@ class ParticipantsController: UIViewController {
             return
         }
         
-        guard let status = channel?.updateAndReturnStatus() else { return }
+//        guard let status = channel?.updateAndReturnStatus() else { return }
         
-        if status == .inProgress || status == .expired || status == .cancelled {
-            displayErrorAlert(title: basicErrorTitleForAlert, message: cannotDoThisState, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
-            return
-        }
+//        if status == .inProgress || status == .expired || status == .cancelled {
+//            displayErrorAlert(title: basicErrorTitleForAlert, message: cannotDoThisState, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+//            return
+//        }
         
         hapticFeedback(style: .impact)
         
@@ -528,21 +529,20 @@ extension ParticipantsController: UITableViewDelegate, UITableViewDataSource {
             navigationController?.pushViewController(destination, animated: true)
         }))
         
-        guard let channel = channel,
-              let state = channelState(channel: channel),
-              let cancelled = channel.isCancelled.value
+        guard let channelAdminIds = channel?.admins,
+              let channelAuthor = channel?.author
         else { return }
 
-        guard channel.admins.contains(currentUserID), !cancelled, state != .Past else {
+        guard channelAdminIds.contains(currentUserID) else {
             self.present(alert, animated: true, completion: {})
             return
         }
         
         guard let memberID = member.id else { return }
         if memberID != currentUserID {
-            if channel.admins.contains(memberID) {
+            if channelAdminIds.contains(memberID) {
                 alert.addAction(CustomAlertAction(title: "Dismiss as admin", style: .default , handler: { [unowned self] in
-                    if memberID == channel.author {
+                    if memberID == channelAuthor {
                         displayErrorAlert(title: "Not Allowed", message: "You cannot dismiss this person as admin because they created the event", preferredStyle: .alert, actionTitle: "Got it", controller: self)
                     } else {
                         self.removeAdmin(memberID: memberID)
@@ -564,7 +564,7 @@ extension ParticipantsController: UITableViewDelegate, UITableViewDataSource {
                         basicErrorAlertWith(title: basicErrorTitleForAlert, message: noInternetError, controller: self)
                         return
                     }
-                    if memberID == channel.author && channel.admins.contains(memberID) {
+                    if memberID == channelAuthor && channelAdminIds.contains(memberID) {
                         displayErrorAlert(title: "Not Allowed", message: "You cannot remove this person because they created the channel", preferredStyle: .alert, actionTitle: "Got it", controller: self)
                     } else {
                         self.removeMember_(memberID: memberID)

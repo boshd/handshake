@@ -9,6 +9,11 @@
 import UIKit
 
 class AccountSettingsTableViewCell: InteractiveTableViewCell {
+    
+    var topInset: CGFloat = 0
+    var leftInset: CGFloat = 20
+    var bottomInset: CGFloat = 0
+    var rightInset: CGFloat = 20
   
     var icon: UIImageView = {
         var icon = UIImageView()
@@ -21,7 +26,7 @@ class AccountSettingsTableViewCell: InteractiveTableViewCell {
     var title: UILabel = {
         var title = UILabel()
         title.translatesAutoresizingMaskIntoConstraints = false
-        title.font = ThemeManager.currentTheme().secondaryFont(with: 14)
+        title.font = ThemeManager.currentTheme().secondaryFontMedium(with: 13)
         title.textColor = ThemeManager.currentTheme().generalTitleColor
 
         return title
@@ -35,6 +40,11 @@ class AccountSettingsTableViewCell: InteractiveTableViewCell {
 
         return separator
     }()
+    
+    override func layoutMarginsDidChange() {
+        super.layoutMarginsDidChange()
+        self.layoutMargins = UIEdgeInsets(top: topInset, left: leftInset, bottom: bottomInset, right: rightInset)
+    }
   
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
@@ -43,7 +53,13 @@ class AccountSettingsTableViewCell: InteractiveTableViewCell {
         contentView.isUserInteractionEnabled = false
         selectionStyle = .none
         
-        setColor()
+        
+        
+//        setColor()
+        
+//        contentView.backgroundColor = .red
+        backgroundColor = ThemeManager.currentTheme().groupedInsetCellBackgroundColor
+        
         contentView.addSubview(icon)
         
         icon.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: 0).isActive = true
@@ -57,11 +73,11 @@ class AccountSettingsTableViewCell: InteractiveTableViewCell {
         title.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15).isActive = true
         title.heightAnchor.constraint(equalToConstant: 30).isActive = true
         
-        addSubview(separator)
-        separator.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
-        separator.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16).isActive = true
-        separator.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15).isActive = true
-        separator.heightAnchor.constraint(equalToConstant: 0.4).isActive = true
+//        addSubview(separator)
+//        separator.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
+//        separator.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16).isActive = true
+//        separator.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15).isActive = true
+//        separator.heightAnchor.constraint(equalToConstant: 0.4).isActive = true
     }
   
 
@@ -70,7 +86,7 @@ class AccountSettingsTableViewCell: InteractiveTableViewCell {
     }
   
     fileprivate func setColor() {
-        backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
+        backgroundColor = ThemeManager.currentTheme().groupedInsetCellBackgroundColor
         accessoryView?.backgroundColor = backgroundColor
         title.backgroundColor = backgroundColor
         icon.backgroundColor = backgroundColor

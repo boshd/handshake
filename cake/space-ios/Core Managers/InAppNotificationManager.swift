@@ -143,7 +143,8 @@ class InAppNotificationManager: NSObject {
         if let index = channels.firstIndex(where: { (chan) -> Bool in
             return chan.id == channel.id
         }) {
-            if let muted = channels[index].isMuted.value, !muted, let channelName = channels[index].name {
+            
+            if let channelName = channels[index].name {
                 self.playNotificationSound()
                 if userDefaults.currentBoolObjectState(for: userDefaults.inAppNotifications) {
                     var title = ""
@@ -154,18 +155,31 @@ class InAppNotificationManager: NSObject {
                     }
                     self.showInAppNotification(channel: channels[index], title: title, subtitle: self.subtitleForMessage(message: message), resource: channelAvatar(resource: channels[index].thumbnailImageUrl), placeholder: channelPlaceholder() )
                 }
-            } else if let channelName = channels[index].name, channels[index].isMuted.value == nil {
-                self.playNotificationSound()
-                if userDefaults.currentBoolObjectState(for: userDefaults.inAppNotifications) {
-                    var title = ""
-                    if message.historicSenderName != nil {
-                        title = "\(message.historicSenderName ?? "") @ \(channelName)"
-                    } else {
-                        title = channelName
-                    }
-                    self.showInAppNotification(channel: channels[index], title: title, subtitle: self.subtitleForMessage(message: message), resource: channelAvatar(resource: channels[index].thumbnailImageUrl), placeholder: channelPlaceholder())
-                }
             }
+            
+//            if let muted = channels[index].isMuted.value, !muted, let channelName = channels[index].name {
+//                self.playNotificationSound()
+//                if userDefaults.currentBoolObjectState(for: userDefaults.inAppNotifications) {
+//                    var title = ""
+//                    if message.historicSenderName != nil {
+//                        title = "\(message.historicSenderName ?? "") @ \(channelName)"
+//                    } else {
+//                        title = channelName
+//                    }
+//                    self.showInAppNotification(channel: channels[index], title: title, subtitle: self.subtitleForMessage(message: message), resource: channelAvatar(resource: channels[index].thumbnailImageUrl), placeholder: channelPlaceholder() )
+//                }
+//            } else if let channelName = channels[index].name, channels[index].isMuted.value == nil {
+//                self.playNotificationSound()
+//                if userDefaults.currentBoolObjectState(for: userDefaults.inAppNotifications) {
+//                    var title = ""
+//                    if message.historicSenderName != nil {
+//                        title = "\(message.historicSenderName ?? "") @ \(channelName)"
+//                    } else {
+//                        title = channelName
+//                    }
+//                    self.showInAppNotification(channel: channels[index], title: title, subtitle: self.subtitleForMessage(message: message), resource: channelAvatar(resource: channels[index].thumbnailImageUrl), placeholder: channelPlaceholder())
+//                }
+//            }
         }
     }
     

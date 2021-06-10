@@ -127,10 +127,10 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     @objc func goToChannelDetails() {
         hapticFeedback(style: .selectionChanged)
-        guard let channel = channel else { return }
+        guard let channelID = channel?.id else { return }
 
         let destination = ChannelDetailsController()
-        destination.channel = channel
+        destination.channel = RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: channelID)
         navigationController?.pushViewController(destination, animated: true)
     }
     
@@ -170,22 +170,15 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         
-        guard let channel = channel, let state = channelState(channel: channel) else { return }
+        guard let channel = channel else { return }
         
         if let uid = Auth.auth().currentUser?.uid,
-           let isCancelled = channel.isCancelled.value,
-           !isCancelled,
-           state != .Past,
            channel.participantIds.contains(uid) {
             if let navigationBarTitleGestureRecognizer = navigationBarTitleGestureRecognizer {
                 self.navigationController?.navigationBar.addGestureRecognizer(navigationBarTitleGestureRecognizer)
             }
         }
     }
-    
-    override func willMove(toParent parent: UIViewController?) {
-    }
-    
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -369,27 +362,21 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         view.add(collectionView)
         collectionView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         
-        guard let channel = channel, let state = channelState(channel: channel) else { return }
+        guard let channel = channel else { return }
 
         if let uid = Auth.auth().currentUser?.uid,
-           let isCancelled = channel.isCancelled.value,
-           !isCancelled,
-           state != .Past,
            channel.participantIds.contains(uid) {
             view.add(inputContainerView)
             channelLogContainerView.channelLogHeaderView.isUserInteractionEnabled = true
             channelLogContainerView.channelLogHeaderView.viewDetails.isHidden = false
             navigationBarTitleGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(goToChannelDetails))
-//            self.navigationController?.navigationBar.isUserInteractionEnabled = true
             configurePlaceholderTitleView()
         } else {
             messagesFetcher?.removeListener()
             view.add(inputBlockerContainerView)
-//            navigationBarTitleGestureRecognizer = nil
             if let navigationBarTitleGestureRecognizer = navigationBarTitleGestureRecognizer {
                 self.navigationController?.navigationBar.removeGestureRecognizer(navigationBarTitleGestureRecognizer)
             }
-//            self.navigationController?.navigationBar.isUserInteractionEnabled = false
             channelLogContainerView.channelLogHeaderView.isUserInteractionEnabled = false
             channelLogContainerView.channelLogHeaderView.viewDetails.isHidden = true
         }
@@ -397,27 +384,20 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func checkChannelStateAndPermissions() {
-        guard let channel = channel, let state = channel.updateAndReturnStatus() else { return }
+        guard let channel = channel else { return }
         
         if let uid = Auth.auth().currentUser?.uid,
-           let isCancelled = channel.isCancelled.value,
-           !isCancelled,
-           state != .expired,
            channel.participantIds.contains(uid) {
-//            listenToChannelChanges()
             reloadInputView(view: inputContainerView)
             channelLogContainerView.channelLogHeaderView.isUserInteractionEnabled = true
             channelLogContainerView.channelLogHeaderView.viewDetails.isHidden = false
-//            self.navigationController?.navigationBar.isUserInteractionEnabled = true
             configurePlaceholderTitleView()
         } else {
             messagesFetcher?.removeListener()
-//            removeChannelListener()
             reloadInputView(view: inputBlockerContainerView)
             if let navigationBarTitleGestureRecognizer = navigationBarTitleGestureRecognizer {
                 self.navigationController?.navigationBar.removeGestureRecognizer(navigationBarTitleGestureRecognizer)
             }
-//            self.navigationController?.navigationBar.isUserInteractionEnabled = false
             channelLogContainerView.channelLogHeaderView.isUserInteractionEnabled = false
             channelLogContainerView.channelLogHeaderView.viewDetails.isHidden = true
         }
@@ -478,14 +458,26 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     fileprivate func setupNavigationBar() {
-//        let backButton = UIBarButtonItem(image: UIImage(named: "ctrl-left"), style: .plain, target: self, action:  #selector(pleasePopController))
-//        backButton.tintColor = .black
-//        navigationItem.leftBarButtonItem = backButton
+        let backButton = UIBarButtonItem(image: UIImage(named: "ctrl-left"), style: .plain, target: self, action:  #selector(pleasePopController))
+////        backButton.tintColor = ThemeManager.currentTheme().tintColor
+        navigationItem.leftBarButtonItem = backButton
         navigationController?.interactivePopGestureRecognizer?.delegate = self
-        
-        if let navigationBar = navigationController?.navigationBar {
+//
+//        if let navigationBar = navigationController?.navigationBar {
 //            ThemeManager.setNavigationBarAppearance(navigationBar)
-        }
+//        }
+        
+//        let btnProfile = UIButton(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+////        btnProfile.setTitle("SY", for: .normal)
+//        btnProfile.setImage(UIImage(named: "ctrl-left"), for: .normal)
+//        btnProfile.backgroundColor = .handshakeLightPurple
+//        btnProfile.layer.cornerRadius = 20
+//        btnProfile.layer.cornerCurve = .circular
+//        btnProfile.tintColor = ThemeManager.currentTheme().buttonIconColor
+//        btnProfile.layer.masksToBounds = true
+////        Now create the UIBarButtonItem from that button and set it with the rightBarButtonItems.
+//
+//        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: btnProfile)
     }
 
     private func setupBottomScrollButton() {
@@ -512,7 +504,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
             navigationItem.largeTitleDisplayMode = .never
         }
         
-//        setupNavigationBar()
+        setupNavigationBar()
 
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -557,9 +549,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
                     unwrappedSelf.setupTitleName()
                 }
 
-                if (newChannel.startTime != oldChannel?.startTime) ||
-                    (newChannel.locationName != oldChannel?.locationName) ||
-                    (newChannel.isCancelled != oldChannel?.isCancelled) {
+                if (newChannel.startTime != oldChannel?.startTime) || (newChannel.locationName != oldChannel?.locationName) {
                     unwrappedSelf.setupHeaderView()
                 }
             }
@@ -661,54 +651,19 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         
         let startDate = Date(timeIntervalSince1970: Double(integerLiteral: (channel.startTime.value ?? 0)))
         
-        let calendar = Calendar.current
-        
         fullDateFormatter.dateFormat = "EEEE, MMM d • h:mm a"
         monthFormatter.dateFormat = "MMM"
         dayFormatter.dateFormat = "EEEE"
         timeFormatter.dateFormat = "h:mm a"
         
-        channelLogContainerView.channelLogHeaderView.timeLabel.text = "📅 \(fullDateFormatter.string(from: startDate))"
-
-        // Replace the hour (time) of both dates with 00:00
-        let date1 = calendar.startOfDay(for: Date())
-        let date2 = calendar.startOfDay(for: startDate)
-
-        let components = calendar.dateComponents([.day], from: date1, to: date2)
+        channelLogContainerView.channelLogHeaderView.timeLabel.text = "\(fullDateFormatter.string(from: startDate))"
         
-        guard let state = channel.updateAndReturnStatus() else { return }
-        
-        if state == .cancelled {
-            channelLogContainerView.channelLogHeaderView.eventStatus.textColor = .priorityRed()
-            channelLogContainerView.channelLogHeaderView.eventStatus.backgroundColor = .redEventStatusBackground()
-            channelLogContainerView.channelLogHeaderView.eventStatus.text = "Cancelled"
-        } else {
-            
-            if state == .upcoming {
-                channelLogContainerView.channelLogHeaderView.eventStatus.textColor = .priorityGreen()
-                channelLogContainerView.channelLogHeaderView.eventStatus.backgroundColor = .greenEventStatusBackground()
-                if let days = components.day {
-                    if days == 1 {
-                        channelLogContainerView.channelLogHeaderView.eventStatus.text = "Tomorrow"
-                    } else if days == 0 {
-                        channelLogContainerView.channelLogHeaderView.eventStatus.text = "Today"
-                    } else {
-                        channelLogContainerView.channelLogHeaderView.eventStatus.text = "\(days) days"
-                    }
-                }
-            } else if state == .inProgress {
-                channelLogContainerView.channelLogHeaderView.eventStatus.textColor = .priorityGreen()
-                channelLogContainerView.channelLogHeaderView.eventStatus.backgroundColor = .greenEventStatusBackground()
-                channelLogContainerView.channelLogHeaderView.eventStatus.text = "In progress"
-            } else {
-                channelLogContainerView.channelLogHeaderView.eventStatus.textColor = .priorityRed()
-                channelLogContainerView.channelLogHeaderView.eventStatus.backgroundColor = .redEventStatusBackground()
-                channelLogContainerView.channelLogHeaderView.eventStatus.text = "Expired"
-            }
-        }
+//        if let startTime = channel.startTime.value, let endTime = channel.endTime.value {
+//            channelLogContainerView.channelLogHeaderView.dateLabel.text = getDateString(startTime: startTime, endTime: endTime)
+//        }
         
         if let locationName = channel.locationName {
-            channelLogContainerView.channelLogHeaderView.locationNameLabel.text = "📍 \(locationName)"
+            channelLogContainerView.channelLogHeaderView.locationNameLabel.text = "\(locationName)"
         } else {
             if let remote = channel.isRemote.value, remote {
                 channelLogContainerView.channelLogHeaderView.locationNameLabel.text = "Remote event"
@@ -823,7 +778,9 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
             collectionView.scrollToBottom(animated: false)
         }
 
-        channelLogContainerView.headerHeightConstraint?.constant = 1
+//        channelLogContainerView.headerHeightConstraint?.constant = 1
+        
+        channelLogContainerView.headerTopConstraint?.constant = -75
 
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
             self.view.layoutIfNeeded()
@@ -832,8 +789,8 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     }
 
     @objc open dynamic func keyboardWillHide(_ notification: Notification) {
-        if channelLogContainerView.headerHeightConstraint?.constant == 1 {
-            channelLogContainerView.headerHeightConstraint?.constant = 85
+        if channelLogContainerView.headerTopConstraint?.constant == -75 {
+            channelLogContainerView.headerTopConstraint?.constant = 10
 
             UIView.animate(withDuration: 0.1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
                 self.view.layoutIfNeeded()
