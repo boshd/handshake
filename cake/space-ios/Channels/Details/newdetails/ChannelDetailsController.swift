@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class ChannelDetailsController: UIViewController {
+class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     
     var channel: Channel?
     
@@ -30,10 +30,15 @@ class ChannelDetailsController: UIViewController {
     
     let tableSectionHeaderHeight: CGFloat = 45.0
     
-    let initialNumberOfAttendees = 1
+    let initialNumberOfAttendees = 5
     
     var allAttendeesLoaded = false
     var initialAttendeesLoaded = false
+    
+    let fullDateFormatter = DateFormatter()
+    let timeFormatter = DateFormatter()
+    
+    var expandedCells = Set<Int>()
     
     // MARK: - Lifecycle
     
@@ -49,6 +54,11 @@ class ChannelDetailsController: UIViewController {
         observeChannelAttendees()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        removeListeners()
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
     }
@@ -61,6 +71,13 @@ class ChannelDetailsController: UIViewController {
     
     fileprivate func configureNaviationBar() {
         navigationItem.title = "Event details"
+        
+        let backButton = UIBarButtonItem(image: UIImage(named: "ctrl-left"), style: .plain, target: self, action:  #selector(popController))
+        navigationItem.leftBarButtonItem = backButton
+        navigationController?.interactivePopGestureRecognizer?.delegate = self
+        
+        let moreButton = UIBarButtonItem(image: UIImage(named: "More Square"), style: .plain, target: self, action:  #selector(presentOptions))
+        navigationItem.rightBarButtonItem = moreButton
     }
 
     fileprivate func configureTableView() {
@@ -73,6 +90,10 @@ class ChannelDetailsController: UIViewController {
         channelDetailsContainerView.tableView.register(ChannelDescriptionCell.self, forCellReuseIdentifier: channelDescriptionCellId)
         channelDetailsContainerView.tableView.register(ChannelDetailsCell.self, forCellReuseIdentifier: channelDetailsCellId)
         channelDetailsContainerView.tableView.register(LoadMoreCell.self, forCellReuseIdentifier: loadMoreCellId)
+        
+//        configureChannelImageHeaderView()
+        configureFooterView()
+        
     }
     
     fileprivate func removeListeners() {
@@ -87,8 +108,145 @@ class ChannelDetailsController: UIViewController {
         }
     }
     
-    // observe actual channel
-    // make segmented observations
+    func configureChannelImageHeaderView() {
+        let channelImageView = UIImageView(frame: CGRect(x: 0, y:0, width: channelDetailsContainerView.tableView.frame.width, height: 200))
+        channelImageView.backgroundColor = .handshakeLightPurple
+        channelImageView.contentMode = .scaleAspectFill
+//        channelImageView.translatesAutoresizingMaskIntoConstraints = false
+//        let header = UIView(frame : CGRect(x : 0, y:0, width: channelDetailsContainerView.tableView.frame.width, height: 220))
+//        header.addSubview(channelImageView)
+//        NSLayoutConstraint.activate([
+//            channelImageView.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 0),
+//            channelImageView.trailingAnchor.constraint(equalTo: header.trailingAnchor, constant: 0),
+//            channelImageView.topAnchor.constraint(equalTo: header.topAnchor, constant: 0),
+//            channelImageView.heightAnchor.constraint(equalToConstant: 220),
+//        ])
+        
+        if let url = channel?.imageUrl {
+            channelImageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "GroupIcon"), options: [.continueInBackground, .scaleDownLargeImages], completed: { (_, error, _, _) in
+                print(error?.localizedDescription ?? "")
+            })
+        }
+        
+        channelDetailsContainerView.tableView.tableHeaderView = channelImageView
+    }
+    
+    func configureFooterView() {
+        let footerView = ChannelDetailsFooterView()
+        footerView.translatesAutoresizingMaskIntoConstraints = false
+        
+        guard let currentUserID = Auth.auth().currentUser?.uid, let authorID = channel?.author else { return }
+        fullDateFormatter.dateFormat = "MMM d @ h:mm a"
+        let createdAt = fullDateFormatter.string(from: Date(timeIntervalSince1970: Double(channel?.createdAt.value ?? 0)))
+        
+        if authorID == currentUserID {
+            footerView.primaryLabel.text = "You created this event"
+        } else {
+            if let realmUser = RealmKeychain.realmUsersArray().first(where: { $0.id == authorID }),
+               let name = realmUser.localName {
+                footerView.primaryLabel.text = "Created by \(name)"
+            } else {
+                Firestore.firestore().collection("users").document(authorID).getDocument { (snapshot, error) in
+                    guard let data = snapshot?.data() as [String:AnyObject]?, error == nil else { return }
+                    let user = User(dictionary: data)
+                    if let name = user.name {
+                        footerView.primaryLabel.text = "Created by \(name)"
+                    }
+                }
+            }
+        }
+        footerView.secondaryLabel.text = "Created \(createdAt)"
+        
+        
+        let footer = UIView(frame : CGRect(x : 0,y:0, width : channelDetailsContainerView.tableView.frame.width , height : 105))
+        footer.addSubview(footerView)
+        NSLayoutConstraint.activate([
+            footerView.leadingAnchor.constraint(equalTo: footer.leadingAnchor, constant: 0),
+            footerView.trailingAnchor.constraint(equalTo: footer.trailingAnchor, constant: 0),
+            footerView.topAnchor.constraint(equalTo: footer.topAnchor, constant: 0),
+            footerView.heightAnchor.constraint(equalToConstant: 35),
+        ])
+ 
+        channelDetailsContainerView.tableView.tableFooterView = footer
+        
+    }
+    
+    // MARK: - Navigation
+    
+    @objc func popController() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func presentOptions() {
+        guard Auth.auth().currentUser != nil, currentReachabilityStatus != .notReachable else {
+            basicErrorAlertWith(title: basicErrorTitleForAlert, message: noInternetError, controller: self)
+            return
+        }
+
+        guard let channel = channel,
+              let currentUserID = Auth.auth().currentUser?.uid
+        else { return }
+
+        hapticFeedback(style: .impact)
+        let alert = CustomAlertController(title_: nil, message: nil, preferredStyle: .actionSheet)
+        if channel.admins.contains(currentUserID) {
+
+            let editEventAction = CustomAlertAction(title: "Edit event", style: .default , handler: {
+                //self.handleEditEvent()
+
+            })
+            alert.addAction(editEventAction)
+
+        }
+        let addToCalendarAction = CustomAlertAction(title: "Add to calendar", style: .default , handler: { [weak self] in
+            //self?.addToCalendar()
+        })
+        alert.addAction(addToCalendarAction)
+        let deleteAction = CustomAlertAction(title: "Delete and exit", style: .destructive , handler: {
+            //self.deleteAndExitHandler()
+        })
+        alert.addAction(deleteAction)
+        self.present(alert, animated: true)
+    }
+    
+    @objc func presentRSVPList() {
+        guard let channelID = channel?.id, let currentUserID = Auth.auth().currentUser?.uid, let admins = channel?.admins else { return }
+        let destination = ParticipantsController()
+        destination.participants = attendees
+        destination.channel = RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: channelID)
+        destination.admin = admins.contains(currentUserID)
+        let newNavigationController = UINavigationController(rootViewController: destination)
+        newNavigationController.modalPresentationStyle = .formSheet
+        newNavigationController.navigationBar.isHidden = false
+        present(newNavigationController, animated: true, completion: nil)
+    }
+    
+    @objc func presentRSVPOptions() {
+        
+    }
+    
+    // MARK: - Cell Interaction Handlers
+    
+    @objc
+    func presentLocationActions() {
+        hapticFeedback(style: .impact)
+        let alert = CustomAlertController(title_: nil, message: nil, preferredStyle: .actionSheet)
+
+        alert.addAction(CustomAlertAction(title: "Maps", style: .default , handler: { [weak self] in
+            //self?.openInMaps(type: "apple")
+        }))
+
+        alert.addAction(CustomAlertAction(title: "Google Maps", style: .default , handler: { [weak self] in
+            //self?.openInMaps(type: "google")
+        }))
+
+        self.present(alert, animated: true, completion: {
+            print("completion block")
+        })
+    }
+    
+    // MARK: - Datasourcing
+    
     fileprivate func observeChannel() {
         guard let channelID = channel?.id else { return }
         channelListener = Firestore.firestore().collection("channels").document(channelID).addSnapshotListener({ snapshot, error in
@@ -96,94 +254,105 @@ class ChannelDetailsController: UIViewController {
                 print(error?.localizedDescription ?? "error")
                 return
             }
-            
-            
-            
         })
-    
     }
     
     func loadAllAttendees(at indexPath: IndexPath) {
         guard let attendeeIds = channel?.participantIds else { return }
-        let group = DispatchGroup()
+        
+        // load realm users
+        
+    
+        
+        
+//        let group = DispatchGroup()
         var allUsers = [User]()
-        for id in attendeeIds {
-            group.enter()
-            fetchUser(id: id) { user, error in
-                group.leave()
-                if error != nil {
-                    print(error?.localizedDescription ?? "error")
-                    return
-                }
-                if let user = user {
-                    allUsers.append(user)
-                    allUsers.append(user)
-                    allUsers.append(user)
-                    allUsers.append(user)
-                    allUsers.append(user)
-                }
+        
+        allUsers = RealmKeychain.realmUsersArray()
+        
+        print(allUsers.map({ $0.name }))
+        
+//        for id in attendeeIds {
+//            group.enter()
+//            fetchUser(id: id) { user, error in
+//                group.leave()
+//                if error != nil {
+//                    print(error?.localizedDescription ?? "error")
+//                    return
+//                }
+//                if let user = user {
+//                    allUsers.append(user)
+//                }
+//            }
+//        }
+//
+//        group.notify(queue: .main, execute: { [weak self] in
+//            self?.attendees = allUsers
+//            self?.allAttendeesLoaded = true
+//
+//            self?.channelDetailsContainerView.tableView.beginUpdates()
+//            self?.channelDetailsContainerView.tableView.insertRows(at: [indexPath], with: .middle)
+//            self?.channelDetailsContainerView.tableView.deleteRows(at: [indexPath], with: .none)
+//            self?.channelDetailsContainerView.tableView.endUpdates()
+//
+//        })
+    }
+    
+    fileprivate func observeChannelAttendees() {
+        
+        // we know all the participants
+        guard let currentUser = globalCurrentUser, let currentUserID = Auth.auth().currentUser?.uid, let channelID = channel?.id, let channelParticipantIds = channel?.participantIds else { return }
+        attendees.append(currentUser)
+        attendees += RealmKeychain.realmUsersArray().filter({ channelParticipantIds.contains($0.id ?? "") })
+        
+        print("bout to print")
+        print(attendees.map({$0.localName}))
+        
+        // sort users
+        
+        let attendeesNotInRealm = RealmKeychain.realmUsersArray().filter({ !channelParticipantIds.contains($0.id ?? "") && $0.id != currentUserID })
+        
+        if attendeesNotInRealm.count > 0 {
+//            channelPartiticapntsListener = Firestore.firestore().collection("channels").document(channelID).collection("participantIds").limit(to: initialNumberOfAttendees).addSnapshotListener({ [weak self] snapshot, error in
+//                guard error != nil, let docs = snapshot?.documents else { print(error?.localizedDescription ?? "error"); return }
+//                let group = DispatchGroup()
+//                for doc in docs {
+//                    group.enter()
+//                    self?.fetchUser(id: doc.documentID) { user, error in
+//                        group.leave()
+//                        if let user = user {
+//                            self?.attendees.append(user)
+//                        }
+//                    }
+//                }
+//                group.notify(queue: .main) { [weak self] in
+//                    self?.doneFetchingReloadTable()
+//                }
+//            })
+        } else {
+            DispatchQueue.main.async { [weak self] in
+                self?.doneFetchingReloadTable()
             }
         }
         
-        group.notify(queue: .main, execute: { [weak self] in
-            self?.attendees = allUsers
-            self?.allAttendeesLoaded = true
-            
-//            self?.channelDetailsContainerView.tableView.beginUpdates()
-//            self?.channelDetailsContainerView.tableView.reloadData()
-//            self?.channelDetailsContainerView.tableView.endUpdates()
-            
-            self?.channelDetailsContainerView.tableView.beginUpdates()
-            self?.channelDetailsContainerView.tableView.deleteRows(at: [indexPath], with: .none)
-            self?.channelDetailsContainerView.tableView.insertRows(at: [indexPath], with: .middle)
-            self?.channelDetailsContainerView.tableView.endUpdates()
-            
-        })
-    }
-    
-    // observe users
-    fileprivate func observeChannelAttendees() {
-        // APPEND SELF MANUALLY + DON'T RRETURN SELF
-        guard let channelID = channel?.id else { return }
-        channelPartiticapntsListener = Firestore.firestore().collection("channels").document(channelID).collection("participantIds").limit(to: initialNumberOfAttendees).addSnapshotListener({ [weak self] snapshot, error in
-            if error != nil {
-                print(error?.localizedDescription ?? "error")
-                return
-            }
-            
-            guard let docs = snapshot?.documents else { return }
-            
-            let group = DispatchGroup()
+        
+        
 
-            for doc in docs {
-                group.enter()
-                self?.fetchUser(id: doc.documentID) { user, error in
-                    group.leave()
-                    if let user = user {
-                        self?.attendees.append(user)
-                    }
-                }
-            }
-
-            group.notify(queue: .main) { [weak self] in
-                
-                self?.initialAttendeesLoaded = true
-                
-                if let participantIdCount = self?.channel?.participantIds.count {
-                    if self?.attendees.count == (participantIdCount + 3) {
-                        self?.allAttendeesLoaded = true
-                    } else {
-                        self?.allAttendeesLoaded = false
-                    }
-                }
-                
-                self?.channelDetailsContainerView.tableView.reloadData()
-            }
-            
-        })
     }
     
     // MARK: - Helper methods
+    
+    fileprivate func doneFetchingReloadTable() {
+        self.initialAttendeesLoaded = true
+        if let participantIdCount = self.channel?.participantIds.count {
+            if self.attendees.count == participantIdCount {
+                self.allAttendeesLoaded = true
+            } else {
+                self.allAttendeesLoaded = false
+            }
+        }
+        self.channelDetailsContainerView.tableView.reloadData()
+    }
     
     // user fetching method
     func fetchUser(id: String, completion: @escaping (User?, Error?) -> ()) {
