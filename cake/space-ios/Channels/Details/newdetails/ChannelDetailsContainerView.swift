@@ -18,6 +18,14 @@ class ChannelDetailsContainerView: UIView {
         return imageView
     }()
     
+//    let channelImageHeaderView: UIImageView = {
+//        let channelImageHeaderView = UIImageView()
+//        channelImageHeaderView.translatesAutoresizingMaskIntoConstraints = false
+//        channelImageHeaderView.backgroundColor = .red
+//        
+//        return channelImageHeaderView
+//    }()
+    
     let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -54,12 +62,18 @@ class ChannelDetailsContainerView: UIView {
         
         backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         
+//        addSubview(channelImageHeaderView)
         addSubview(tableView)
         addSubview(rsvpView)
         rsvpView.addSubview(rsvpButton)
         bringSubviewToFront(rsvpView)
         
         NSLayoutConstraint.activate([
+//            channelImageHeaderView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 0),
+//            channelImageHeaderView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
+//            channelImageHeaderView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
+//            channelImageHeaderView.heightAnchor.constraint(equalToConstant: 230),
+            
             tableView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 0),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),

@@ -80,6 +80,9 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
         } else if indexPath.section == 2 {
             let cell = tableView.dequeueReusableCell(withIdentifier: channelDescriptionCellId, for: indexPath) as? ChannelDescriptionCell ?? ChannelDescriptionCell()
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
+            cell.textView.text = "No description available."
+            guard let desc = channel?.description_ else { return cell }
+            cell.textView.text = desc
             return cell
         } else if indexPath.section == 3 {
             if indexPath.row == attendees.count && !allAttendeesLoaded {

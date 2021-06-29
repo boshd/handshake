@@ -29,7 +29,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     let channelDetailsCellId = "channelDetailsCellId"
     let loadMoreCellId = "loadMoreCellId"
     
-    let tableSectionHeaderHeight: CGFloat = 25.0
+    let tableSectionHeaderHeight: CGFloat = 30.0
     
     let initialNumberOfAttendees = 5
     
@@ -113,21 +113,11 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func configureChannelImageHeaderView() {
-        let channelImageView = UIImageView(frame: CGRect(x: 0, y:0, width: channelDetailsContainerView.tableView.frame.width, height: 200))
+        let channelImageView = UIImageView(frame: CGRect(x: 0, y:0, width: channelDetailsContainerView.tableView.frame.width, height: 250))
         channelImageView.backgroundColor = .handshakeLightPurple
         channelImageView.contentMode = .scaleAspectFill
-//        channelImageView.translatesAutoresizingMaskIntoConstraints = false
-//        let header = UIView(frame: CGRect(x: 0, y: 0, width: channelDetailsContainerView.tableView.frame.width, height: 220))
-//        header.addSubview(channelImageView)
-//        NSLayoutConstraint.activate([
-//            channelImageView.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 0),
-//            channelImageView.trailingAnchor.constraint(equalTo: header.trailingAnchor, constant: 0),
-//            channelImageView.topAnchor.constraint(equalTo: header.topAnchor, constant: 0),
-//            channelImageView.heightAnchor.constraint(equalToConstant: 220),
-//        ])
-        
-        channelDetailsContainerView.tableView.tableHeaderView?.addSubview(channelImageView)
-        
+        channelImageView.clipsToBounds = true
+        channelDetailsContainerView.tableView.tableHeaderView = channelImageView
         if let url = channel?.imageUrl {
             channelImageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "GroupIcon"), options: [.continueInBackground, .scaleDownLargeImages], completed: { (_, error, _, _) in
                 print(error?.localizedDescription ?? "")
