@@ -13,9 +13,23 @@ final class RealmKeychain {
     
     static let defaultRealm = try! Realm(configuration: RealmKeychain.realmDefaultConfiguration())
     static let usersRealm = try! Realm(configuration: RealmKeychain.realmUsersConfiguration())
+    static let nonLocalUsersRealm = try! Realm(configuration: RealmKeychain.realmNonLocalUsersConfiguration())
     
     static func realmUsersArray() -> [User] {
         return Array(RealmKeychain.usersRealm.objects(User.self))
+    }
+    
+    static func realmNonLocalUsersArray() -> [User] {
+        return Array(RealmKeychain.nonLocalUsersRealm.objects(User.self))
+    }
+    
+    static func realmNonLocalUsersConfiguration() -> Realm.Configuration {
+        var config = Realm.Configuration()
+        // is this safe?
+        // config.deleteRealmIfMigrationNeeded = true
+        config.fileURL = config.fileURL!.deletingLastPathComponent().appendingPathComponent("nonLocalUsers.realm")
+        config.encryptionKey = RealmKeychain.getKey() as Data
+        return config
     }
     
     static func realmUsersConfiguration() -> Realm.Configuration {

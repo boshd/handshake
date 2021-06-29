@@ -127,10 +127,14 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     @objc func goToChannelDetails() {
         hapticFeedback(style: .selectionChanged)
-        guard let channelID = channel?.id else { return }
+        guard let channelID = channel?.id, let channelParticipantIds = channel?.participantIds, let globalCurrentUser = globalCurrentUser else { return }
 
         let destination = ChannelDetailsController()
+        destination.attendees.append(globalCurrentUser)
         destination.channel = RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: channelID)
+        destination.attendees += RealmKeychain.realmNonLocalUsersArray().filter({ channelParticipantIds.contains($0.id ?? "") })
+        
+        
         navigationController?.pushViewController(destination, animated: true)
     }
     

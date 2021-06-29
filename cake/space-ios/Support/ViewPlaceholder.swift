@@ -30,7 +30,7 @@ enum ViewPlaceholderTitle: String {
 
 enum ViewPlaceholderSubtitle: String {
     case noChannels = "Start by creating a new event. Tap the + button above."
-    case noUsers = "Looks like none of your contacts are signed up and that's okay. Invite them through the contacts page."
+    case noUsers = "Looks like none of your contacts are signed up for Handshake. Invite them through the contacts page."
     case deniedContacts = "Please go to your iPhone Settings –– Privacy –– Contacts. Then select ON for Handshake."
     case nothingHere = "Seriously, nothing to see here."
     case empty = ""

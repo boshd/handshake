@@ -47,7 +47,6 @@ class ChannelDetailsFooterView: UIView {
             secondaryLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
         ])
         
-        
     }
     
     required init?(coder: NSCoder) {

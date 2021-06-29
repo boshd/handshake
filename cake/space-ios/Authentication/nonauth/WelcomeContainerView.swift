@@ -24,6 +24,19 @@ class WelcomeContainerView: UIView {
         return button
     }()
     
+    var emojiLabel: DynamicLabel = {
+        var label = DynamicLabel(withInsets: 0, 0, 0, 0)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .left
+        label.textColor = ThemeManager.currentTheme().generalTitleColor
+        label.numberOfLines = 0
+        label.textAlignment = .left
+        label.backgroundColor = .clear
+        label.font = ThemeManager.currentTheme().secondaryFontVeryBold(with: 40)
+        label.text = "🤝"
+        return label
+    }()
+    
     var titleLabel: DynamicLabel = {
         var label = DynamicLabel(withInsets: 0, 0, 0, 0)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -91,6 +104,7 @@ class WelcomeContainerView: UIView {
 //        titleLabel.addCharacterSpacing(kernValue: 3)
 //        addSubview(imageView)
 //        addSubview(halfView)
+        addSubview(emojiLabel)
         addSubview(titleLabel)
         addSubview(detailsLabel)
         addSubview(disclaimerTextView)
@@ -104,7 +118,11 @@ class WelcomeContainerView: UIView {
 //            halfView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
 //            halfView.heightAnchor.constraint(equalToConstant: (UIScreen.main.bounds.height / 2) - 30),
 //
-            titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -150),
+            emojiLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 35),
+            emojiLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            emojiLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            
+            titleLabel.topAnchor.constraint(equalTo: emojiLabel.bottomAnchor, constant: 115),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             

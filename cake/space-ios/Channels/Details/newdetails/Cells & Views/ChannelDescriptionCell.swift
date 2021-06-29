@@ -32,8 +32,8 @@ class ChannelDescriptionCell: UITableViewCell {
 //        textView.isSelectable = true
 //        textView.isEditable = false
 //        textView.onSizeChange = { _ in }
-        textView.shouldTrim = true
-        textView.maximumNumberOfLines = 3
+//        textView.shouldTrim = true
+//        textView.maximumNumberOfLines = 3
         let readMoreTextAttributes: [NSAttributedString.Key: Any] = [
             NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().tintColor,
             NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFont(with: 12)

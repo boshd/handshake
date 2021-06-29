@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MapKit
 
 class LocationViewCell: UITableViewCell {
     
@@ -27,4 +28,35 @@ class LocationViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+}
+
+extension LocationViewCell {
+    func configureCell(title: String, subtitle: String?, lat: Double, lon: Double) {
+        locationView.locationNameLabel.text = title
+        locationView.locationLabel.text = subtitle
+        
+            let location = CLLocation(latitude: lat, longitude: lon)
+            let geoCoder = CLGeocoder()
+            geoCoder.reverseGeocodeLocation(location, completionHandler: { [weak self] placemarks, error -> Void in
+                if error != nil {
+                    print(error?.localizedDescription ?? "")
+                    return
+                }
+                guard let placeMark = placemarks?.first else { return }
+                let item = MKPlacemark(placemark: placeMark)
+
+//                if let channel = self?.channel {
+//                    self?.realmChannelsManager.update(channel: channel)
+//                }
+                
+                if subtitle == nil {
+                    self?.locationView.locationLabel.text = parseAddress(selectedItem: item)
+                }
+
+                let annotation = MKPointAnnotation()
+                annotation.coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+                self?.locationView.mapView.addAnnotation(annotation)
+                self?.locationView.mapView.showAnnotations([annotation], animated: false)
+            })
+    }
 }

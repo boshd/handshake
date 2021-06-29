@@ -1,3 +1,27 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:681e58f417e3f135a44e62e1a8550d4e325a09566ef5b21dddd5d0de172c442a
-size 944
+//
+//  CreateChannelController+DescriptionCellDelegate.swift
+//  space-ios
+//
+//  Created by Kareem Arab on 2021-05-19.
+//  Copyright © 2021 Kareem Arab. All rights reserved.
+//
+
+import UIKit
+
+extension CreateChannelController: DescriptionCellDelegate {
+    
+    func updateHeightOfRow(_ cell: UITableViewCell, _ textView: UITextView) {
+        let size = textView.bounds.size
+        let newSize = tableView.sizeThatFits(CGSize(width: size.width,
+                                                        height: CGFloat.greatestFiniteMagnitude))
+        if size.height != newSize.height {
+            UIView.setAnimationsEnabled(false)
+            tableView?.beginUpdates()
+            tableView?.endUpdates()
+            UIView.setAnimationsEnabled(true)
+            if let thisIndexPath = tableView.indexPath(for: cell) {
+                tableView.scrollToRow(at: thisIndexPath, at: .bottom, animated: false)
+            }
+        }
+    }
+}

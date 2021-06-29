@@ -95,8 +95,19 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
             }
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: locationViewCellId, for: indexPath) as? LocationViewCell ?? LocationViewCell()
-            cell.locationView.locationNameLabel.text = "Billings Bridge Shopping Centre"
-            cell.locationView.locationLabel.text = "2277 Riverside Dr., Ottawa, ON K1H 7X6"
+            
+            cell.locationView.locationNameLabel.text = ""
+            cell.locationView.locationLabel.text = ""
+            
+            guard let locationName = channel?.locationName,
+                  let lat = channel?.latitude.value,
+                  let lon = channel?.longitude.value
+            else { return cell }
+            
+            print("wee passed")
+            
+            cell.configureCell(title: locationName, subtitle: channel?.locationDescription, lat: lat, lon: lon)
+            
             return cell
         }
         
@@ -156,8 +167,8 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
         } else if section == 2 {
             label.text = "About"
         } else if section == 3 {
-            let count = attendees.count
-            label.text = count == 1 ? "\(count) attendee" : "\(count) attendees"
+            let count = channel?.participantIds.count ?? 0
+            label.text = count == 1 ? "Just you" : "\(count) attendees"
         } else if section == 4 {
             label.text = "How to get there"
         } else {
@@ -211,7 +222,7 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
         } else if indexPath.section == 2 {
             return UITableView.automaticDimension
         } else if indexPath.section == 3 {
-            return 65
+            return 50
         } else {
             return UITableView.automaticDimension
         }

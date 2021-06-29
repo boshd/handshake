@@ -467,6 +467,7 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         }
 
         let destination = SelectChannelParticipantsController()
+        print("skdncskjdncjksdjc sdkjc \(RealmKeychain.realmUsersArray().count)")
         // remove blocked users
         let users = RealmKeychain.realmUsersArray()
         destination.users = users
