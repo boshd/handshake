@@ -20,8 +20,8 @@ class LocationViewCell: UITableViewCell {
         locationView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15).isActive = true
         locationView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15).isActive = true
         locationView.topAnchor.constraint(equalTo: topAnchor, constant: 15).isActive = true
-        locationView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15).isActive = true
-        locationView.heightAnchor.constraint(equalToConstant: 250).isActive = true
+        locationView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
+        locationView.heightAnchor.constraint(equalToConstant: 230).isActive = true
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -45,10 +45,6 @@ extension LocationViewCell {
                 guard let placeMark = placemarks?.first else { return }
                 let item = MKPlacemark(placemark: placeMark)
 
-//                if let channel = self?.channel {
-//                    self?.realmChannelsManager.update(channel: channel)
-//                }
-                
                 if subtitle == nil {
                     self?.locationView.locationLabel.text = parseAddress(selectedItem: item)
                 }

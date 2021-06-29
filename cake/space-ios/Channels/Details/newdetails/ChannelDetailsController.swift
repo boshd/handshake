@@ -29,7 +29,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     let channelDetailsCellId = "channelDetailsCellId"
     let loadMoreCellId = "loadMoreCellId"
     
-    let tableSectionHeaderHeight: CGFloat = 30.0
+    let tableSectionHeaderHeight: CGFloat = 27.5
     
     let initialNumberOfAttendees = 5
     
@@ -158,10 +158,11 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
             footerView.leadingAnchor.constraint(equalTo: footer.leadingAnchor, constant: 0),
             footerView.trailingAnchor.constraint(equalTo: footer.trailingAnchor, constant: 0),
             footerView.topAnchor.constraint(equalTo: footer.topAnchor, constant: 0),
-            footerView.heightAnchor.constraint(equalToConstant: 55),
+            footerView.heightAnchor.constraint(equalToConstant: 50),
         ])
  
         channelDetailsContainerView.tableView.tableFooterView = footer
+        channelDetailsContainerView.backgroundColor = .red
         
     }
     
