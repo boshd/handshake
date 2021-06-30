@@ -19,7 +19,7 @@ class DescriptionCell: UITableViewCell {
 
     var textChanged: ((String) -> Void)?
     
-    let nameTextView: UITextView = {
+    let textView: UITextView = {
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
@@ -41,17 +41,17 @@ class DescriptionCell: UITableViewCell {
         contentView.isUserInteractionEnabled = true
         selectionStyle = .none
         
-        nameTextView.delegate = self
+        textView.delegate = self
         
         setColor()
-        contentView.addSubview(nameTextView)
+        contentView.addSubview(textView)
         
         NSLayoutConstraint.activate([
             // nameTextView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: 0),
-            nameTextView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-            nameTextView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
-            nameTextView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
-            nameTextView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
+            textView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            textView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
+            textView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
+            textView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
         ])
     }
     

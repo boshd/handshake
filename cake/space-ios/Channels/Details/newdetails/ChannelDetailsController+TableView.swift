@@ -107,8 +107,6 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
                   let lon = channel?.longitude.value
             else { return cell }
             
-            print("wee passed")
-            
             cell.configureCell(title: locationName, subtitle: channel?.locationDescription, lat: lat, lon: lon)
             
             return cell
@@ -151,7 +149,7 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
             if indexPath.row == attendees.count {
                 loadAllAttendees(at: indexPath)
             } else {
-                presentLocationActions()
+                //presentLocationActions()
             }
         } else if indexPath.section == 3 {
             print("detected")

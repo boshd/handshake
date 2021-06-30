@@ -357,9 +357,9 @@ enum Theme: Int {
     var chatLogHeaderBackgroundColor: UIColor {
         switch self {
             case .normal:
-                return .handshakeLightGray
+                return .handshakeLightPurple
             case .dark:
-                return .black
+                return tintColor
         }
     }
     

@@ -27,7 +27,7 @@ class ChannelDescriptionCell: UITableViewCell {
 //        textView.autocapitalizationType = .sentences
 //        textView.tintColor = ThemeManager.currentTheme().tintColor
 //        textView.textContainer.lineFragmentPadding = 0
-        //textView.text = originalText
+        textView.text = ""
 //        textView.isUserInteractionEnabled = true
 //        textView.isSelectable = true
 //        textView.isEditable = false

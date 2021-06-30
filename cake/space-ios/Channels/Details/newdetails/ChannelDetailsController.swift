@@ -13,6 +13,7 @@ import RealmSwift
 class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     
     var channel: Channel?
+    var channelImage: UIImage?
     
     var attendees = [User]()
     
@@ -119,8 +120,9 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         channelImageView.clipsToBounds = true
         channelDetailsContainerView.tableView.tableHeaderView = channelImageView
         if let url = channel?.imageUrl {
-            channelImageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "GroupIcon"), options: [.continueInBackground, .scaleDownLargeImages], completed: { (_, error, _, _) in
+            channelImageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "GroupIcon"), options: [.continueInBackground, .scaleDownLargeImages], completed: { (image, error, _, _) in
                 print(error?.localizedDescription ?? "")
+                self.channelImage = image
             })
         }
     }
@@ -179,15 +181,24 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         }
 
         guard let channel = channel,
+              let channelID = channel.id,
               let currentUserID = Auth.auth().currentUser?.uid
         else { return }
 
         hapticFeedback(style: .impact)
         let alert = CustomAlertController(title_: nil, message: nil, preferredStyle: .actionSheet)
         if channel.admins.contains(currentUserID) {
-
             let editEventAction = CustomAlertAction(title: "Edit event", style: .default , handler: {
-                //self.handleEditEvent()
+                let destination = UpdateChannelController(style: .plain)
+                destination.channel = RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: channelID)
+//                self.navigationController?.pushViewController(destination, animated: true)
+                if let channelImage = self.channelImage {
+                    destination.selectedImage = channelImage
+                }
+                let navController = UINavigationController(rootViewController: destination)
+                
+                navController.isModalInPresentation = true
+                self.present(navController, animated: true, completion: nil)
 
             })
             alert.addAction(editEventAction)

@@ -228,6 +228,7 @@ class ChannelsFetcher: NSObject {
             channel.startTime = metaInfo.startTime
             channel.endTime = metaInfo.endTime
             channel.fcmTokens = metaInfo.fcmTokens
+            channel.description_ = metaInfo.description_
             
             channel.locationName = metaInfo.locationName
             channel.latitude = metaInfo.latitude
