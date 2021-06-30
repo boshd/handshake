@@ -18,6 +18,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     var attendees = [User]()
     
     let channelDetailsContainerView = ChannelDetailsContainerView()
+    var channelImageView: UIImageView?
     
     var channelListener: ListenerRegistration?
     var channelPartiticapntsListener: ListenerRegistration?
@@ -39,6 +40,8 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     
     let fullDateFormatter = DateFormatter()
     let timeFormatter = DateFormatter()
+    let avatarOpener = AvatarOpener()
+    let channelDetailsDataDatabaseUpdater = ChannelDetailsDataDatabaseUpdater()
     
     var expandedCells = Set<Int>()
     
@@ -86,8 +89,11 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     }
 
     fileprivate func configureTableView() {
+        avatarOpener.delegate = self
+        
         channelDetailsContainerView.tableView.delegate = self
         channelDetailsContainerView.tableView.dataSource = self
+        channelDetailsContainerView.tableView.tableHeaderView?.isUserInteractionEnabled = true
         channelDetailsContainerView.tableView.register(AccountSettingsTableViewCell.self, forCellReuseIdentifier: accountSettingsCellId)
         channelDetailsContainerView.tableView.register(ChannelNameCell.self, forCellReuseIdentifier: channelNameCellId)
         channelDetailsContainerView.tableView.register(LocationViewCell.self, forCellReuseIdentifier: locationViewCellId)
@@ -95,6 +101,8 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         channelDetailsContainerView.tableView.register(ChannelDescriptionCell.self, forCellReuseIdentifier: channelDescriptionCellId)
         channelDetailsContainerView.tableView.register(ChannelDetailsCell.self, forCellReuseIdentifier: channelDetailsCellId)
         channelDetailsContainerView.tableView.register(LoadMoreCell.self, forCellReuseIdentifier: loadMoreCellId)
+        
+        channelImageView = UIImageView(frame: CGRect(x: 0, y:0, width: channelDetailsContainerView.tableView.frame.width, height: 250))
         
         configureChannelImageHeaderView()
         configureFooterView()
@@ -114,10 +122,14 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func configureChannelImageHeaderView() {
-        let channelImageView = UIImageView(frame: CGRect(x: 0, y:0, width: channelDetailsContainerView.tableView.frame.width, height: 250))
+        
+        guard let channelImageView = channelImageView else { return }
+        
         channelImageView.backgroundColor = .handshakeLightPurple
         channelImageView.contentMode = .scaleAspectFill
         channelImageView.clipsToBounds = true
+        channelImageView.isUserInteractionEnabled = true
+        channelImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(openChannelProfilePicture)))
         channelDetailsContainerView.tableView.tableHeaderView = channelImageView
         if let url = channel?.imageUrl {
             channelImageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "GroupIcon"), options: [.continueInBackground, .scaleDownLargeImages], completed: { (image, error, _, _) in
@@ -234,15 +246,27 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     // MARK: - Cell Interaction Handlers
     
     @objc
+    fileprivate func openChannelProfilePicture() {
+        guard currentReachabilityStatus != .notReachable,
+              let currentUserID = Auth.auth().currentUser?.uid,
+              let channelImageView = channelImageView,
+              let allowed = channel?.admins.contains(currentUserID) else {
+            basicErrorAlertWith(title: basicErrorTitleForAlert, message: noInternetError, controller: self)
+            return
+        }
+        avatarOpener.handleAvatarOpening(avatarView: channelImageView, at: self, isEditButtonEnabled: allowed, title: .group)
+    }
+    
+    @objc
     func presentLocationActions() {
         hapticFeedback(style: .impact)
         let alert = CustomAlertController(title_: nil, message: nil, preferredStyle: .actionSheet)
 
-        alert.addAction(CustomAlertAction(title: "Maps", style: .default , handler: { [weak self] in
+        alert.addAction(CustomAlertAction(title: "Maps", style: .default, handler: { [weak self] in
             //self?.openInMaps(type: "apple")
         }))
 
-        alert.addAction(CustomAlertAction(title: "Google Maps", style: .default , handler: { [weak self] in
+        alert.addAction(CustomAlertAction(title: "Google Maps", style: .default, handler: { [weak self] in
             //self?.openInMaps(type: "google")
         }))
 
@@ -265,48 +289,12 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     
     func loadAllAttendees(at indexPath: IndexPath) {
         guard let attendeeIds = channel?.participantIds else { return }
-        
         // load realm users
-        
-    
-        
-        
-//        let group = DispatchGroup()
         var allUsers = [User]()
         
         allUsers = RealmKeychain.realmUsersArray()
         
         print(allUsers.map({ $0.name }))
-        
-//        for id in attendeeIds {
-//            group.enter()
-//            fetchUser(id: id) { user, error in
-//                group.leave()
-//                if error != nil {
-//                    print(error?.localizedDescription ?? "error")
-//                    return
-//                }
-//                if let user = user {
-//                    allUsers.append(user)
-//                }
-//            }
-//        }
-//
-//        group.notify(queue: .main, execute: { [weak self] in
-//            self?.attendees = allUsers
-//            self?.allAttendeesLoaded = true
-//
-//            self?.channelDetailsContainerView.tableView.beginUpdates()
-//            self?.channelDetailsContainerView.tableView.insertRows(at: [indexPath], with: .middle)
-//            self?.channelDetailsContainerView.tableView.deleteRows(at: [indexPath], with: .none)
-//            self?.channelDetailsContainerView.tableView.endUpdates()
-//
-//        })
-    }
-    
-    fileprivate func sdkmsd() {
-
-        
     }
     
     fileprivate func fetchChannelAttendees() {
@@ -340,7 +328,6 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
                                         self?.attendees.append(user)
                                     }
                                 } else {
-                                    print("OUTHEYAAAAA")
                                     // user AVAILABLE in non-local users realm
                                     // if diff, replace existing (if any)
                                     if let realmUser = RealmKeychain.realmNonLocalUsersArray().first(where: { $0.id == user.id }) {

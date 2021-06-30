@@ -90,7 +90,8 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
                 return cell
             } else {
                 let cell = UITableViewCell(style: .value2, reuseIdentifier: userCellId) as? UserCell ?? UserCell(style: .subtitle, reuseIdentifier: userCellId)
-                cell.configureCell(for: indexPath, users: attendees, admin: true)
+                guard let userID = attendees[indexPath.row].id else { return cell }
+                cell.configureCell(for: indexPath, users: attendees, admin: channel?.admins.contains(userID) ?? false)
                 cell.selectionStyle = .none
                 cell.accessoryView = .none
                 cell.accessoryType = .none

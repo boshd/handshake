@@ -113,6 +113,7 @@
 		BC457B3222EEDC140020AC74 /* Roboto-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BC457B2622EEDC140020AC74 /* Roboto-ThinItalic.ttf */; };
 		BC457B3322EEDC140020AC74 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BC457B2722EEDC140020AC74 /* Roboto-Medium.ttf */; };
 		BC457B3522EEEA990020AC74 /* DAExpandAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC457B3422EEEA990020AC74 /* DAExpandAnimation.swift */; };
+		BC473748268CCB8700F43A2C /* ChannelDetailsController+AvatarOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC473747268CCB8700F43A2C /* ChannelDetailsController+AvatarOpener.swift */; };
 		BC493040253A15EA00441F62 /* ContactsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC49303F253A15EA00441F62 /* ContactsController.swift */; };
 		BC493045253A163900441F62 /* CustomTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC493044253A163900441F62 /* CustomTableViewController.swift */; };
 		BC49304D253A17DD00441F62 /* UsersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC49304C253A17DD00441F62 /* UsersTableViewCell.swift */; };
@@ -233,7 +234,7 @@
 		BCA881612510117F004D3ED7 /* ChannelLogViewControllerSupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA881602510117F004D3ED7 /* ChannelLogViewControllerSupplementaryView.swift */; };
 		BCA88163251012AE004D3ED7 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA88162251012AE004D3ED7 /* UserDefaultsManager.swift */; };
 		BCA9CEFB238B0306002FE100 /* ChannelDetailsControllerAvatarOpenerDelegate_.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA9CEFA238B0306002FE100 /* ChannelDetailsControllerAvatarOpenerDelegate_.swift */; };
-		BCA9CEFD238B03B5002FE100 /* ChannelDetailsDataDatabaseUpdater_.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA9CEFC238B03B5002FE100 /* ChannelDetailsDataDatabaseUpdater_.swift */; };
+		BCA9CEFD238B03B5002FE100 /* ChannelDetailsDataDatabaseUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA9CEFC238B03B5002FE100 /* ChannelDetailsDataDatabaseUpdater.swift */; };
 		BCAC057022AD4A0C006D0C24 /* ContactsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAC056F22AD4A0C006D0C24 /* ContactsService.swift */; };
 		BCB027CC256844F00082B318 /* AppearanceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB027CB256844F00082B318 /* AppearanceController.swift */; };
 		BCB027D52568453B0082B318 /* MenuControlsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB027D42568453B0082B318 /* MenuControlsTableViewController.swift */; };
@@ -488,6 +489,7 @@
 		BC457B2622EEDC140020AC74 /* Roboto-ThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-ThinItalic.ttf"; sourceTree = "<group>"; };
 		BC457B2722EEDC140020AC74 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		BC457B3422EEEA990020AC74 /* DAExpandAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DAExpandAnimation.swift; sourceTree = "<group>"; };
+		BC473747268CCB8700F43A2C /* ChannelDetailsController+AvatarOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelDetailsController+AvatarOpener.swift"; sourceTree = "<group>"; };
 		BC49303F253A15EA00441F62 /* ContactsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsController.swift; sourceTree = "<group>"; };
 		BC493044253A163900441F62 /* CustomTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableViewController.swift; sourceTree = "<group>"; };
 		BC49304C253A17DD00441F62 /* UsersTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersTableViewCell.swift; sourceTree = "<group>"; };
@@ -608,7 +610,7 @@
 		BCA881602510117F004D3ED7 /* ChannelLogViewControllerSupplementaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelLogViewControllerSupplementaryView.swift; sourceTree = "<group>"; };
 		BCA88162251012AE004D3ED7 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		BCA9CEFA238B0306002FE100 /* ChannelDetailsControllerAvatarOpenerDelegate_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDetailsControllerAvatarOpenerDelegate_.swift; sourceTree = "<group>"; };
-		BCA9CEFC238B03B5002FE100 /* ChannelDetailsDataDatabaseUpdater_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDetailsDataDatabaseUpdater_.swift; sourceTree = "<group>"; };
+		BCA9CEFC238B03B5002FE100 /* ChannelDetailsDataDatabaseUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDetailsDataDatabaseUpdater.swift; sourceTree = "<group>"; };
 		BCAC056F22AD4A0C006D0C24 /* ContactsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsService.swift; sourceTree = "<group>"; };
 		BCB027CB256844F00082B318 /* AppearanceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceController.swift; sourceTree = "<group>"; };
 		BCB027D42568453B0082B318 /* MenuControlsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuControlsTableViewController.swift; sourceTree = "<group>"; };
@@ -985,6 +987,8 @@
 			children = (
 				BC306C1F266C345000CBB507 /* ChannelDetailsController.swift */,
 				BC306C23266C52CE00CBB507 /* ChannelDetailsController+TableView.swift */,
+				BC473747268CCB8700F43A2C /* ChannelDetailsController+AvatarOpener.swift */,
+				BCA9CEFC238B03B5002FE100 /* ChannelDetailsDataDatabaseUpdater.swift */,
 				BC306C2C266C5B9D00CBB507 /* Cells & Views */,
 				BC306C21266C39C000CBB507 /* ChannelDetailsContainerView.swift */,
 			);
@@ -1436,7 +1440,6 @@
 		BC8C119525BB7459000CBD25 /* Support */ = {
 			isa = PBXGroup;
 			children = (
-				BCA9CEFC238B03B5002FE100 /* ChannelDetailsDataDatabaseUpdater_.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -2479,7 +2482,7 @@
 				BC82CF9C2377A104003B2360 /* ChannelLogController+CollectionDelegate.swift in Sources */,
 				BC59276122A0EDAF006A5CEF /* ChannelCell.swift in Sources */,
 				BC59273D22A01B41006A5CEF /* Message.swift in Sources */,
-				BCA9CEFD238B03B5002FE100 /* ChannelDetailsDataDatabaseUpdater_.swift in Sources */,
+				BCA9CEFD238B03B5002FE100 /* ChannelDetailsDataDatabaseUpdater.swift in Sources */,
 				BC8C116A25BB2894000CBD25 /* UpdateChannelController+DescriptionDelegate.swift in Sources */,
 				BCF8EDFF2389CF1900234160 /* AvatarOpener.swift in Sources */,
 				BC1000C0238AF9EF00A0C5D8 /* ChannelDetailsContainerView_.swift in Sources */,
@@ -2555,6 +2558,7 @@
 				BC44E6C922CCE1F600F50956 /* CheckableTableViewCell.swift in Sources */,
 				BC1A780622A3FA2D005AC5CE /* BaseMessageCell.swift in Sources */,
 				BCF979FF229D5F6A0088C568 /* AppDelegate.swift in Sources */,
+				BC473748268CCB8700F43A2C /* ChannelDetailsController+AvatarOpener.swift in Sources */,
 				BCBDA186254E28030051A183 /* CollectionViewLeftAlignFlowLayout.swift in Sources */,
 				BC0DC06722EE2B9E00A27BC3 /* PageControl.swift in Sources */,
 				BCEFCC0525956485009D3482 /* ChangePhoneNumberController.swift in Sources */,
