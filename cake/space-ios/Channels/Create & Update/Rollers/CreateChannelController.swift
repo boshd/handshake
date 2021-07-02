@@ -280,34 +280,46 @@ extension CreateChannelController {
 
     func uploadImage(reference: DocumentReference, image: UIImage?) {
         guard let image = selectedImage else {
-            reference.updateData([:]) { [weak   self] (error) in
-                self?.channelCreatingGroup.leave()
-                if error != nil {
-                    print("error // ", error?.localizedDescription as Any)
-                    return
-                }
-            }
+//            reference.updateData([:]) { [weak self] (error) in
+//                self?.channelCreatingGroup.leave()
+//                if error != nil {
+//                    print("error // ", error?.localizedDescription as Any)
+//                    return
+//                }
+//            }
+            self.channelCreatingGroup.leave()
             return
         }
+        
+        let imageUploadingGroup = DispatchGroup()
 
         let thumbnailImage = createImageThumbnail(image)
         var images = [(image: UIImage, quality: CGFloat, key: String)]()
         images.append((image: image, quality: 0.5, key: "imageUrl"))
         images.append((image: thumbnailImage, quality: 1, key: "thumbnailImageUrl"))
         
-        guard let image = images.first else { channelCreatingGroup.leave(); return }
+        // guard let image = images.first else { channelCreatingGroup.leave(); return }
         
-        uploadImageForChannelToFirebaseStorageUsingImage(image.image, quality: image.quality) { [weak self] (url) in
-            reference.updateData([
-                image.key: url
-            ]) { (error) in
-                self?.channelCreatingGroup.leave()
-                if error != nil {
-                    print("error // ", error?.localizedDescription as Any)
-                    return
+        for image in images {
+            imageUploadingGroup.enter()
+            uploadImageForChannelToFirebaseStorageUsingImage(image.image, quality: image.quality) { (url) in
+                reference.updateData([
+                    image.key: url
+                ]) { (error) in
+                    imageUploadingGroup.leave()
+                    if error != nil {
+                        print("error // ", error?.localizedDescription as Any)
+                        return
+                    }
                 }
             }
         }
+        
+        imageUploadingGroup.notify(queue: .main, execute: {
+            self.channelCreatingGroup.leave()
+        })
+        
+        
     }
 
     func fetchAndUpdateMemeberFCMTokens(reference: DocumentReference) {
@@ -318,9 +330,9 @@ extension CreateChannelController {
         for _ in selectedUsers { fcmFetchingGroup.enter() }
 
         fcmFetchingGroup.notify(queue: DispatchQueue.main, execute: {
+            self.channelCreatingGroup.leave()
             reference.updateData(["fcmTokens": membersFCMTokensDict]) { [weak self] (error) in
                 self?.localChannelData["fcmTokens"] = membersFCMTokensDict as AnyObject
-                self?.channelCreatingGroup.leave()
             }
         })
         membersFCMTokensDict[currentUserID] = userDefaults.currentStringObjectState(for: userDefaults.fcmToken)

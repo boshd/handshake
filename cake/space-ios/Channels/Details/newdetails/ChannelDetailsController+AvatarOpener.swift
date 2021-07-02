@@ -28,15 +28,14 @@ extension ChannelDetailsController: AvatarOpenerDelegate {
 
     func avatarOpener(didPerformDeletionAction: Bool) {
         guard let channelID  = channel?.id else { return }
-
-        channelDetailsContainerView.channelImageView.showActivityIndicator()
+        self.channelImageView?.showActivityIndicator()
         channelDetailsDataDatabaseUpdater.deleteCurrentPhoto(with: channelID) { [weak self] (isDeleted) in
-            self?.channelDetailsContainerView.channelImageView.hideActivityIndicator()
+            self?.channelImageView?.hideActivityIndicator()
             guard isDeleted else {
                 basicErrorAlertWith(title: basicErrorTitleForAlert, message: deletionErrorMessage, controller: self!)
                 return
             }
-            self?.channelDetailsContainerView.channelImageView.image = nil
+            self?.channelImageView?.image = nil
         }
     }
 }
