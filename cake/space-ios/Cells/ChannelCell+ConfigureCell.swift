@@ -45,6 +45,8 @@ extension ChannelCell {
             channelImageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "GroupIcon"), options: [.continueInBackground, .scaleDownLargeImages], completed: { (_, error, _, _) in
                 print(error?.localizedDescription ?? "")
             })
+        } else {
+            channelImageView.image = UIImage(named: "GroupIcon")
         }
 
         let badgeInt = channels[indexPath.row].badge.value ?? 0

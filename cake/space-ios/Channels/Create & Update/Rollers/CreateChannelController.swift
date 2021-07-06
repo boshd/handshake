@@ -196,6 +196,24 @@ class CreateChannelController: UITableViewController {
         return true
     }
     
+    func constructHeaderCell(indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: channelNameHeaderCellId, for: indexPath) as? ChannelNameHeaderCell ?? ChannelNameHeaderCell()
+        cell.delegate = self
+        
+        if channelName != nil {
+            cell.channelNameField.text = channelName
+        }
+        
+        if selectedImage != nil {
+            cell.channelImageView.image = selectedImage
+            cell.channelImagePlaceholderLabel.isHidden = true
+        } else {
+            cell.channelImagePlaceholderLabel.isHidden = false
+        }
+        
+        return cell
+    }
+    
 }
 
 // MARK: - Channel Creation
@@ -404,21 +422,7 @@ extension CreateChannelController {
         }
         
         if indexPath.section == 0 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: channelNameHeaderCellId, for: indexPath) as? ChannelNameHeaderCell ?? ChannelNameHeaderCell()
-            cell.delegate = self
-            
-            if channelName != nil {
-                cell.channelNameField.text = channelName
-            }
-            
-            if selectedImage != nil {
-                cell.channelImageView.image = selectedImage
-                cell.channelImagePlaceholderLabel.isHidden = true
-            } else {
-                cell.channelImagePlaceholderLabel.isHidden = false
-            }
-            
-            return cell
+            return constructHeaderCell(indexPath: indexPath)
         } else if indexPath.section == 1 {
             if indexPath.row == 0 {
                 let cell = tableView.dequeueReusableCell(withIdentifier: specialSwitchCellId, for: indexPath) as? SpecialSwitchCell ?? SpecialSwitchCell()
@@ -500,7 +504,7 @@ extension CreateChannelController {
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.section == 0 {
-            return 130
+            return 120
         } else if indexPath.section == 1 {
             if indexPath.row == 1 {
                 return 50

@@ -18,7 +18,7 @@ class WelcomeContainerView: UIView {
         button.titleLabel?.font = ThemeManager.currentTheme().secondaryFontBold(with: 17)
         button.addTarget(self, action: #selector(WelcomeViewController.toSignup), for: .touchUpInside)
         button.backgroundColor = ThemeManager.currentTheme().buttonColor
-        button.cornerRadius = 30
+        button.cornerRadius = 25
         button.layer.cornerCurve = .continuous
         
         return button
@@ -135,9 +135,9 @@ class WelcomeContainerView: UIView {
             disclaimerTextView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             disclaimerTextView.heightAnchor.constraint(equalToConstant: 50),
             
-            signupButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -50),
+            signupButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -20),
             signupButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 0),
-            signupButton.heightAnchor.constraint(equalToConstant: 60),
+            signupButton.heightAnchor.constraint(equalToConstant: 50),
             signupButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             signupButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
         ])

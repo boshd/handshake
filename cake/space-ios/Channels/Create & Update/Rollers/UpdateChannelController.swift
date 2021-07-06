@@ -110,4 +110,46 @@ class UpdateChannelController: CreateChannelController {
         dateFormatter.dateFormat = "MMMM d, yyyy"
         timeFormatter.dateFormat = "h:mm a"
     }
+    
+    override func constructHeaderCell(indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: channelNameHeaderCellId, for: indexPath) as? ChannelNameHeaderCell ?? ChannelNameHeaderCell()
+        cell.delegate = self
+        
+        if channelName != nil {
+            cell.channelNameField.text = channelName
+        }
+        
+        cell.channelImageView.removeFromSuperview()
+        cell.channelImagePlaceholderLabel.removeFromSuperview()
+        
+        NSLayoutConstraint.activate([
+            
+            cell.channelNameField.topAnchor.constraint(equalTo: cell.safeAreaLayoutGuide.topAnchor, constant: 15),
+            cell.channelNameField.leadingAnchor.constraint(equalTo: cell.leadingAnchor, constant: 15),
+            cell.channelNameField.trailingAnchor.constraint(equalTo: cell.trailingAnchor, constant: -15),
+//            nameTextView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0),
+            
+            cell.channelNameDescriptionLabel.topAnchor.constraint(equalTo: cell.channelNameField.bottomAnchor, constant: 0),
+            cell.channelNameDescriptionLabel.leadingAnchor.constraint(equalTo: cell.channelNameField.leadingAnchor, constant: 0),
+            cell.channelNameDescriptionLabel.trailingAnchor.constraint(equalTo: cell.contentView.trailingAnchor, constant: -15),
+//            cell.channelNameDescriptionLabel.bottomAnchor.constraint(equalTo: cell.paddingView.topAnchor, constant: 0),
+            
+//            paddingView.topAnchor.constraint(equalTo: channelNameDescriptionLabel.bottomAnchor, constant: 0),
+            cell.paddingView.bottomAnchor.constraint(equalTo: cell.contentView.bottomAnchor, constant: 0),
+            cell.paddingView.heightAnchor.constraint(equalToConstant: 5),
+            cell.paddingView.leadingAnchor.constraint(equalTo: cell.contentView.leadingAnchor, constant: 15),
+            cell.paddingView.trailingAnchor.constraint(equalTo: cell.contentView.trailingAnchor, constant: -15),
+        ])
+        
+        
+        
+//        if selectedImage != nil {
+//            cell.channelImageView.image = selectedImage
+//            cell.channelImagePlaceholderLabel.isHidden = true
+//        } else {
+//            cell.channelImagePlaceholderLabel.isHidden = false
+//        }
+        
+        return cell
+    }
 }
