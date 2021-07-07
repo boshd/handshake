@@ -117,6 +117,8 @@ class CreateChannelController: UITableViewController {
         tableView.register(SelectLocationCell.self, forCellReuseIdentifier: selectLocationCellId)
         tableView.register(DescriptionCell.self, forCellReuseIdentifier: descriptionCellId)
         
+        UITableView.appearance().separatorColor = ThemeManager.currentTheme().seperatorColor
+        
         tableView.separatorStyle = .singleLine
         tableView.tableFooterView = UIView()
         // tableView.keyboardDismissMode = .onDrag
@@ -162,12 +164,14 @@ class CreateChannelController: UITableViewController {
             } else {
                 ThemeManager.applyTheme(theme: .dark)
             }
+            UITableView.appearance().separatorColor = ThemeManager.currentTheme().seperatorColor
             setNeedsStatusBarAppearanceUpdate()
         }
     }
     
     @objc fileprivate func changeTheme() {
         view.backgroundColor = ThemeManager.currentTheme().generalBackgroundSecondaryColor
+        UITableView.appearance().separatorColor = ThemeManager.currentTheme().seperatorColor
         tableView.indicatorStyle = ThemeManager.currentTheme().scrollBarStyle
         tableView.sectionIndexBackgroundColor = view.backgroundColor
         tableView.backgroundColor = view.backgroundColor
@@ -527,7 +531,7 @@ extension CreateChannelController {
             if indexPath.row == 1 {
                 return 50
             } else {
-                return UITableView.automaticDimension
+                return 50
             }
         } else if indexPath.section == 2 {
             if let datePickerIndexPathRow = datePickerIndexPath?.row, datePickerIndexPath != nil && datePickerIndexPathRow + 1 == indexPath.row {

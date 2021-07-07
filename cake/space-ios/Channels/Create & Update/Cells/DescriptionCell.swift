@@ -22,9 +22,9 @@ class DescriptionCell: UITableViewCell {
     let textView: UITextView = {
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
-//        textView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+        textView.backgroundColor = .clear
         textView.isScrollEnabled = false
-        textView.font = ThemeManager.currentTheme().secondaryFont(with: 14)
+        textView.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         textView.textColor = ThemeManager.currentTheme().generalSubtitleColor
         textView.returnKeyType = .done
         textView.autocorrectionType = .default

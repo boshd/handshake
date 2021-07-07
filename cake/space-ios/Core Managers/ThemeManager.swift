@@ -310,9 +310,9 @@ enum Theme: Int {
     var imageViewBackground: UIColor {
         switch self {
             case .normal:
-                return UIColor(red: 0.95, green: 0.95, blue: 0.96, alpha: 1.00)
+                return .handshakeMediumGray
             case .dark:
-                return generalSubtitleColor
+                return .handshakeDarkGray
         }
     }
     
@@ -359,7 +359,7 @@ enum Theme: Int {
             case .normal:
                 return .handshakeLightPurple
             case .dark:
-                return tintColor
+                return .defaultMediumDarkGray()
         }
     }
     

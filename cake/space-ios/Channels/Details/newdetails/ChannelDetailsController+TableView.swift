@@ -75,7 +75,8 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
             cell.textLabel?.attributedText = mutableAttributedString
             
             cell.detailTextLabel?.text = "Event dates are subject to change by organizer."
-            cell.imageView?.image = UIImage(named: "Time Square")
+            cell.imageView?.image = UIImage(named: "Time Square")?.withRenderingMode(.alwaysTemplate)
+            cell.imageView?.tintColor = ThemeManager.currentTheme().generalTitleColor
             return cell
         } else if indexPath.section == 2 {
             let cell = tableView.dequeueReusableCell(withIdentifier: channelDescriptionCellId, for: indexPath) as? ChannelDescriptionCell ?? ChannelDescriptionCell()

@@ -55,6 +55,7 @@ class SpecialSwitchCell: UITableViewCell {
         super.prepareForReuse()
 //        backgroundColor = ThemeManager.currentTheme().generalBackgroundSecondaryColor
         switchAccessory.onTintColor = ThemeManager.currentTheme().tintColor
+        textLabel?.textColor = ThemeManager.currentTheme().generalTitleColor
     }
   
     @objc func switchStateDidChange(_ sender: UISwitch) {
