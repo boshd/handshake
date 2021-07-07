@@ -1,6 +1,6 @@
-# handshake
+# handshake 🤝
 
-private events with only those you like
+Private events — featuring rsvp, group chat, location, and more.
 
 ## Structure
 
