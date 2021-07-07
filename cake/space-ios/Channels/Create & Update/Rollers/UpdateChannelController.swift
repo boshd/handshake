@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import Firebase
 
 class UpdateChannelController: CreateChannelController {
     
@@ -45,10 +46,6 @@ class UpdateChannelController: CreateChannelController {
         }
     }
     
-    override func createChannel() {
-        print("updating channel")
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -61,7 +58,7 @@ class UpdateChannelController: CreateChannelController {
     override func configureNavigationBar() {
         title = "Edit event"
         
-        let doneEditingButton = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(createChannel))
+        let doneEditingButton = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(doneAction))
         navigationItem.rightBarButtonItem = doneEditingButton
         navigationItem.rightBarButtonItem?.isEnabled = false
         
@@ -143,6 +140,80 @@ class UpdateChannelController: CreateChannelController {
         dateFormatter.dateFormat = "MMMM d, yyyy"
         timeFormatter.dateFormat = "h:mm a"
     }
+    
+    // MARK: - Updating
+    
+    override func doneAction() {
+        guard let channelID = channel?.id, checkInputsAndReachability() else { return }
+        resignFirstResponder()
+        globalIndicator.show()
+
+        let channelReference = Firestore.firestore().collection("channels").document(channelID)
+        
+        channelReference.updateData([
+            "name": channelName as AnyObject,
+            "isRemote": isRemote as AnyObject,
+            "startTime": startTime as AnyObject,
+            "endTime": endTime as AnyObject,
+            "description": channelDescription as AnyObject
+        ]) { error in
+            guard error == nil else {
+                displayErrorAlert(title: basicErrorTitleForAlert, message: "Something went wrong", preferredStyle: .alert, actionTitle: "Dismiss", controller: self)
+                print(error?.localizedDescription ?? "error");
+                globalIndicator.dismiss();
+                return
+            }
+            globalIndicator.showSuccess(withStatus: "Event updated")
+            hapticFeedback(style: .success)
+            self.dismiss(animated: true, completion: nil)
+        }
+
+    }
+    
+    // MARK: - Helper Methods
+    
+    fileprivate func checkInputsAndReachability() -> Bool {
+        
+        func datesAreGood(start: Int64, end: Int64) -> Bool {
+            if start > end {
+                return false
+            }
+            return true
+        }
+        
+        guard currentReachabilityStatus != .notReachable else {
+            displayErrorAlert(title: basicErrorTitleForAlert, message: noInternetError, preferredStyle: .alert, actionTitle: "Dismiss", controller: self)
+            return false
+        }
+
+        guard let start = startTime, let end = endTime, datesAreGood(start: start, end: end) else {
+            displayErrorAlert(title: basicErrorTitleForAlert, message: datesError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+            return false
+        }
+        guard let channelName = channelName, !channelName.trimmingCharacters(in: .whitespaces).isEmpty else {
+            displayErrorAlert(title: basicErrorTitleForAlert, message: "Please provide a name for the event", preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+            return false
+        }
+
+        if isRemote {
+            if locationCoordinates != nil {
+                locationCoordinates = nil
+            }
+            
+            if locationName != nil {
+                locationName = nil
+            }
+        } else {
+            guard locationName != nil else {
+                displayErrorAlert(title: basicErrorTitleForAlert, message: "Please provide a location for the event", preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+                return false
+            }
+        }
+
+        return true
+    }
+    
+    // MARK: - Tableview
     
     override func constructHeaderCell(indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: channelNameHeaderCellId, for: indexPath) as? ChannelNameHeaderCell ?? ChannelNameHeaderCell()

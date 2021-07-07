@@ -94,18 +94,12 @@ class ChannelsFetcher: NSObject {
     }
     
     func observeChannelAddedOrRemoved() {
-        var first = true
         if currentUserChannelIDsReference != nil {
             userChannelIdsCollectionListener = currentUserChannelIDsReference.addSnapshotListener({ [weak self] (snapshot, error) in
                 if error != nil {
                     print(error?.localizedDescription ?? "")
                     return
                 }
-
-//                if first {
-//                    first = false
-//                    return
-//                }
                 
                 guard let snap = snapshot else { return }
                 snap.documentChanges.forEach { (diff) in
@@ -131,6 +125,7 @@ class ChannelsFetcher: NSObject {
                         self?.delegate?.channels(didRemove: true, channelID: channelID)
                     } else if (diff.type == .modified) {
                         // CHANNEL MODIFIED
+                        print("CHANNEL HAS BEEN MODIIFIED!!")
                         var dictionary = diff.document.data() as [String: AnyObject]
                         dictionary.updateValue(diff.document.documentID as AnyObject, forKey: "id")
 

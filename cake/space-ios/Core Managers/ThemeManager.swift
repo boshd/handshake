@@ -31,12 +31,12 @@ struct ThemeManager {
         UINavigationBar.appearance().compactAppearance = coloredAppearance
         
 //        UITabBar.appearance().tintColor = theme.tabBarTintColor
-        
+
 //        let tabBarAppearance = UITabBarItem.appearance()
 //        let attributes = [NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFontBold(with: 6)]
 //        tabBarAppearance.setTitleTextAttributes(attributes, for: .normal)
-//
-
+        
+        
 
         UITableViewCell.appearance().selectionColor = ThemeManager.currentTheme().cellSelectionColor
         UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes =  [
@@ -258,7 +258,7 @@ enum Theme: Int {
             case .normal:
                 return .handshakeMediumGray
             case .dark:
-                return .handshakeMediumGray
+                return .handshakeDarkGray
         }
     }
     
@@ -267,7 +267,7 @@ enum Theme: Int {
             case .normal:
                 return .black
             case .dark:
-                return tintColor
+                return .white
         }
     }
     

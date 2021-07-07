@@ -22,7 +22,7 @@ class DescriptionCell: UITableViewCell {
     let textView: UITextView = {
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+//        textView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         textView.isScrollEnabled = false
         textView.font = ThemeManager.currentTheme().secondaryFont(with: 14)
         textView.textColor = ThemeManager.currentTheme().generalSubtitleColor
@@ -60,7 +60,7 @@ class DescriptionCell: UITableViewCell {
     }
 
     fileprivate func setColor() {
-        backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+//        backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         accessoryView?.backgroundColor = backgroundColor
         selectionColor = ThemeManager.currentTheme().cellSelectionColor
     }

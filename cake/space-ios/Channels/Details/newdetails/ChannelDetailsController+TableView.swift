@@ -216,7 +216,7 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
         if section != 0 {
             return tableSectionHeaderHeight
         } else {
-            return 0
+            return 10
         }
     }
     

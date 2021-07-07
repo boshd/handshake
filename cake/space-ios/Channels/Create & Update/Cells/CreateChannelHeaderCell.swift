@@ -85,7 +85,7 @@ class ChannelNameHeaderCell: UITableViewCell {
     let paddingView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+        view.backgroundColor = ThemeManager.currentTheme().generalBackgroundSecondaryColor
         
         return view
     }()
@@ -105,7 +105,7 @@ class ChannelNameHeaderCell: UITableViewCell {
         contentView.addSubview(channelImagePlaceholderLabel)
         contentView.addSubview(channelNameField)
         contentView.addSubview(channelNameDescriptionLabel)
-        contentView.addSubview(paddingView)
+//        contentView.addSubview(paddingView)
         
         NSLayoutConstraint.activate([
             channelImageView.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 20),
@@ -123,16 +123,16 @@ class ChannelNameHeaderCell: UITableViewCell {
             channelNameField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
 //            nameTextView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0),
             
-            channelNameDescriptionLabel.topAnchor.constraint(equalTo: channelImageView.bottomAnchor, constant: 10),
+            channelNameDescriptionLabel.topAnchor.constraint(equalTo: channelImageView.bottomAnchor, constant: 5),
             channelNameDescriptionLabel.leadingAnchor.constraint(equalTo: channelNameField.leadingAnchor, constant: 0),
             channelNameDescriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
-            channelNameDescriptionLabel.bottomAnchor.constraint(equalTo: paddingView.topAnchor, constant: 0),
+            channelNameDescriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0),
             
 //            paddingView.topAnchor.constraint(equalTo: channelNameDescriptionLabel.bottomAnchor, constant: 0),
-            paddingView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0),
-            paddingView.heightAnchor.constraint(equalToConstant: 15),
-            paddingView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
-            paddingView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
+//            paddingView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0),
+//            paddingView.heightAnchor.constraint(equalToConstant: 15),
+//            paddingView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
+//            paddingView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
         ])
     }
     
@@ -141,11 +141,12 @@ class ChannelNameHeaderCell: UITableViewCell {
     }
 
     fileprivate func setColor() {
-        backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+        backgroundColor = ThemeManager.currentTheme().generalBackgroundSecondaryColor
         accessoryView?.backgroundColor = backgroundColor
         selectionColor = ThemeManager.currentTheme().cellSelectionColor
         channelImageView.backgroundColor = ThemeManager.currentTheme().imageViewBackground
         channelNameField.textColor = ThemeManager.currentTheme().generalTitleColor
+        paddingView.backgroundColor = ThemeManager.currentTheme().secondaryButtonBackgroundColor
         channelNameDescriptionLabel.textColor = ThemeManager.currentTheme().generalSubtitleColor
         channelNameField.keyboardAppearance = ThemeManager.currentTheme().keyboardAppearance
     }

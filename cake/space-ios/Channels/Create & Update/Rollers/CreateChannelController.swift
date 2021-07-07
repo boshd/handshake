@@ -77,6 +77,7 @@ class CreateChannelController: UITableViewController {
         super.viewDidLoad()
         configureTableView()
         configureNavigationBar()
+        addObservers()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -98,7 +99,7 @@ class CreateChannelController: UITableViewController {
     // MARK: - Controller setup/config.
     
     override init(style: UITableView.Style) {
-        super.init(style: .plain)
+        super.init(style: .insetGrouped)
     }
     
     required init?(coder: NSCoder) {
@@ -130,11 +131,53 @@ class CreateChannelController: UITableViewController {
         endTime = Int64(nearestHour.nextHour.timeIntervalSince1970)
     }
     
+    func addObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(changeTheme), name: .themeUpdated, object: nil)
+    }
+    
     func configureNavigationBar() {
         title = "New event"
-        let createButton = UIBarButtonItem(title: "Create", style: .plain, target: self, action: #selector(createChannel))
+        
+        let backButtonItem = UIBarButtonItem(image: UIImage(named: "ctrl-left"), style: .plain, target: self, action: #selector(goBack))
+        navigationItem.leftBarButtonItem = backButtonItem
+        
+        let createButton = UIBarButtonItem(title: "Create", style: .plain, target: self, action: #selector(doneAction))
         createButton.tintColor = ThemeManager.currentTheme().tintColor
         navigationItem.rightBarButtonItem = createButton
+    }
+    
+    @objc func goBack() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    // MARK: - Themeing
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        print(userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme))
+        if #available(iOS 13, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) &&
+            userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme) {
+            if traitCollection.userInterfaceStyle == .light {
+                ThemeManager.applyTheme(theme: .normal)
+            } else {
+                ThemeManager.applyTheme(theme: .dark)
+            }
+            setNeedsStatusBarAppearanceUpdate()
+        }
+    }
+    
+    @objc fileprivate func changeTheme() {
+        view.backgroundColor = ThemeManager.currentTheme().generalBackgroundSecondaryColor
+        tableView.indicatorStyle = ThemeManager.currentTheme().scrollBarStyle
+        tableView.sectionIndexBackgroundColor = view.backgroundColor
+        tableView.backgroundColor = view.backgroundColor
+        tableView.isOpaque = true
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.reloadData()
+        }
+        if let navigationBar = navigationController?.navigationBar {
+            ThemeManager.setSecondaryNavigationBarAppearance(navigationBar)
+        }
     }
     
     // MARK: - Date Picker Logic
@@ -215,7 +258,7 @@ class CreateChannelController: UITableViewController {
     }
     
     func returnHeaderHeight() -> CGFloat {
-        return 120
+        return UITableView.automaticDimension
     }
     
 }
@@ -225,7 +268,7 @@ class CreateChannelController: UITableViewController {
 extension CreateChannelController {
    
     @objc
-    func createChannel() {
+    func doneAction() {
 
         guard let currentUserID = Auth.auth().currentUser?.uid, checkInputsAndReachability() else { return }
         resignFirstResponder()
@@ -368,32 +411,6 @@ extension CreateChannelController {
         }
     }
 
-//    typealias UpdateUserProfileCompletionHandler = (_ success: Bool) -> Void
-//    func fetchMemeberFCMTokens_(completion: @escaping (_ fcmTokenMap: [String:String]) -> Void) {
-//        var membersFCMTokensDict = [String:String]()
-//        let fcmFetchingGroup = DispatchGroup()
-//
-//        guard let currentUserID = Auth.auth().currentUser?.uid else { completion(membersFCMTokensDict) }
-//
-//        membersFCMTokensDict[currentUserID] = userDefaults.currentStringObjectState(for: userDefaults.fcmToken)
-//        fcmFetchingGroup.enter()
-//        for selectedUser in selectedUsers {
-//            guard let userId = selectedUser.id else { continue }
-//            Firestore.firestore().collection("fcmTokens").document(userId).getDocument { (snapshot, error) in
-//                fcmFetchingGroup.leave()
-//                guard let fcmDict = snapshot?.data(), let fcmToken = fcmDict["fcmToken"] as? String else { return }
-//                membersFCMTokensDict[userId] = fcmToken
-//            }
-//        }
-//
-//        fcmFetchingGroup.notify(queue: .global(qos: .userInteractive)) {
-//            completion(membersFCMTokensDict)
-//        }
-//
-////        return membersFCMTokensDict
-//
-//    }
-
     func fetchMemeberIDs() -> ([String], [String: AnyObject]) {
         var membersIDs = [String]()
         var membersIDsDictionary = [String: AnyObject]()
@@ -453,9 +470,6 @@ extension CreateChannelController {
             } else {
                 let cell = tableView.dequeueReusableCell(withIdentifier: selectLocationCellId, for: indexPath) as? SelectLocationCell ?? SelectLocationCell()
                 cell.textLabel?.text = locationName != nil ? location?.name : secondSection[1]
-                
-                    
-                
                 if location != nil { cell.detailTextLabel?.text = location?.locationDescription }
                 return cell
             }

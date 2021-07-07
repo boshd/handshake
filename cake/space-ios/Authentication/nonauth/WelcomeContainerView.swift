@@ -45,7 +45,7 @@ class WelcomeContainerView: UIView {
         label.numberOfLines = 0
         label.textAlignment = .left
         label.backgroundColor = .clear
-        label.font = ThemeManager.currentTheme().secondaryFontVeryBold(with: 40)
+        label.font = ThemeManager.currentTheme().secondaryFontVeryBold(with: 33)
         label.text = "Handshake"
         return label
     }()
@@ -55,7 +55,7 @@ class WelcomeContainerView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
         label.textColor = ThemeManager.currentTheme().tintColor
-        label.font = ThemeManager.currentTheme().secondaryFontBold(with: 22)
+        label.font = ThemeManager.currentTheme().secondaryFontBold(with: 17)
         label.numberOfLines = 0
         label.textAlignment = .left
         //label.text = "Seamlessly plan private events with your favourite people."

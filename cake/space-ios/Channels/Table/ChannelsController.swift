@@ -72,12 +72,7 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
     fileprivate var updateUITimer: DispatchSourceTimer?
     
     // MARK: - Controller life-cycle
-    
-    override func loadView() {
-        super.loadView()
-//        loadViews()
-    }
-    
+
     // responsible for changing theme based on system theme
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
@@ -132,9 +127,9 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         continiousUIUpdate()
         setDate()
         
-//        if let navigationBar = navigationController?.navigationBar {
-//            ThemeManager.setNavigationBarAppearance(navigationBar)
-//        }
+        if let navigationBar = navigationController?.navigationBar {
+            ThemeManager.setNavigationBarAppearance(navigationBar)
+        }
     }
     
     override var preferredStatusBarStyle : UIStatusBarStyle {
@@ -264,6 +259,9 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         tableView.isOpaque = true
         DispatchQueue.main.async { [weak self] in
             self?.tableView.reloadData()
+        }
+        if let navigationBar = navigationController?.navigationBar {
+            ThemeManager.setNavigationBarAppearance(navigationBar)
         }
     }
     

@@ -1359,9 +1359,9 @@
 		BC7D9D9926558D67008CBF8F /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				BC6B9AE42489CD6800157725 /* CreateChannelHeaderCell.swift */,
 				BCB0E18925B9E04000390A5C /* SpecialSwitchCell.swift */,
 				BC6B9AE62489CD7900157725 /* CreateChannelCell.swift */,
-				BC6B9AE42489CD6800157725 /* CreateChannelHeaderCell.swift */,
 				BC5938E325071BEC007743C3 /* DescriptionCell.swift */,
 				BC4F9E08254A18400058BB94 /* DatePickerTableViewCell.swift */,
 				BC7D9D8D26514D82008CBF8F /* DateCell.swift */,
