@@ -214,6 +214,10 @@ class CreateChannelController: UITableViewController {
         return cell
     }
     
+    func returnHeaderHeight() -> CGFloat {
+        return 120
+    }
+    
 }
 
 // MARK: - Channel Creation
@@ -504,7 +508,7 @@ extension CreateChannelController {
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.section == 0 {
-            return 120
+            return returnHeaderHeight()
         } else if indexPath.section == 1 {
             if indexPath.row == 1 {
                 return 50

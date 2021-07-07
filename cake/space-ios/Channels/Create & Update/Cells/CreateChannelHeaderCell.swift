@@ -58,7 +58,6 @@ class ChannelNameHeaderCell: UITableViewCell {
         textField.returnKeyType = .done
         textField.keyboardAppearance = ThemeManager.currentTheme().keyboardAppearance
         textField.attributedPlaceholder = NSAttributedString(string: "What's the plan?", attributes: [NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().placeholderTextColor])
-        textField.backgroundColor = .blue
         return textField
     }()
     
@@ -70,7 +69,7 @@ class ChannelNameHeaderCell: UITableViewCell {
         label.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         label.numberOfLines = 0
         label.textAlignment = .left
-        label.backgroundColor = .red
+        label.backgroundColor = .clear
         return label
     }()
     

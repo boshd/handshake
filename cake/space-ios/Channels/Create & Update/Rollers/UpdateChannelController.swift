@@ -13,6 +13,30 @@ class UpdateChannelController: CreateChannelController {
     
     var channel: Channel?
     
+    override var isRemote: Bool {
+        didSet {
+            checkDifference()
+        }
+    }
+    
+    override var channelName: String? {
+        didSet {
+            checkDifference()
+        }
+    }
+    
+    override var channelDescription: String? {
+        didSet {
+            checkDifference()
+        }
+    }
+    
+    override var startTime: Int64? {
+        didSet {
+            checkDifference()
+        }
+    }
+    
     // overriden vars
     override var newChannel: Channel? {
         didSet {
@@ -55,6 +79,10 @@ class UpdateChannelController: CreateChannelController {
             self.channelName = channelName
         }
         
+        if let isRemote = channel.isRemote.value {
+            self.isRemote = isRemote
+        }
+        
         if let locationName = channel.locationName {
             self.locationName = locationName
         }
@@ -81,13 +109,18 @@ class UpdateChannelController: CreateChannelController {
     }
     
     func checkDifference() {
-        guard let channel = channel, let newChannel = newChannel else { dismissController(); return }
+        guard let channel = channel else { dismissController(); return }
         
-        if channel == newChannel {
-            print("difference NOT observed")
-        } else {
+        if channel.isRemote.value != isRemote ||
+            channel.name != channelName ||
+            channel.description_ != channelDescription ||
+            channel.startTime.value != startTime ||
+            channel.endTime.value != endTime {
             print("difference observed")
-            print(channel.name, newChannel.name)
+            navigationItem.rightBarButtonItem?.isEnabled = true
+        } else {
+            print("difference NOT observed")
+            navigationItem.rightBarButtonItem?.isEnabled = false
         }
         
     }
@@ -119,37 +152,28 @@ class UpdateChannelController: CreateChannelController {
             cell.channelNameField.text = channelName
         }
         
+        cell.channelNameDescriptionLabel.text = "Update skdmclks dclks dlkc slk dckls dc."
+        
         cell.channelImageView.removeFromSuperview()
         cell.channelImagePlaceholderLabel.removeFromSuperview()
         
         NSLayoutConstraint.activate([
-            
             cell.channelNameField.topAnchor.constraint(equalTo: cell.safeAreaLayoutGuide.topAnchor, constant: 15),
             cell.channelNameField.leadingAnchor.constraint(equalTo: cell.leadingAnchor, constant: 15),
             cell.channelNameField.trailingAnchor.constraint(equalTo: cell.trailingAnchor, constant: -15),
-//            nameTextView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0),
-            
             cell.channelNameDescriptionLabel.topAnchor.constraint(equalTo: cell.channelNameField.bottomAnchor, constant: 0),
             cell.channelNameDescriptionLabel.leadingAnchor.constraint(equalTo: cell.channelNameField.leadingAnchor, constant: 0),
             cell.channelNameDescriptionLabel.trailingAnchor.constraint(equalTo: cell.contentView.trailingAnchor, constant: -15),
-//            cell.channelNameDescriptionLabel.bottomAnchor.constraint(equalTo: cell.paddingView.topAnchor, constant: 0),
-            
-//            paddingView.topAnchor.constraint(equalTo: channelNameDescriptionLabel.bottomAnchor, constant: 0),
             cell.paddingView.bottomAnchor.constraint(equalTo: cell.contentView.bottomAnchor, constant: 0),
             cell.paddingView.heightAnchor.constraint(equalToConstant: 5),
             cell.paddingView.leadingAnchor.constraint(equalTo: cell.contentView.leadingAnchor, constant: 15),
             cell.paddingView.trailingAnchor.constraint(equalTo: cell.contentView.trailingAnchor, constant: -15),
         ])
         
-        
-        
-//        if selectedImage != nil {
-//            cell.channelImageView.image = selectedImage
-//            cell.channelImagePlaceholderLabel.isHidden = true
-//        } else {
-//            cell.channelImagePlaceholderLabel.isHidden = false
-//        }
-        
         return cell
+    }
+    
+    override func returnHeaderHeight() -> CGFloat {
+        return 75
     }
 }

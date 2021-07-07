@@ -134,35 +134,18 @@ final class Channel: Object {
         return false
     }
     
-    static func == (lhs: Channel, rhs: Channel) -> Bool {
-        if lhs.id == rhs.id,
-           lhs.name == rhs.name,
-           lhs.imageUrl == rhs.imageUrl,
-//           lhs.author == rhs.author,
-           lhs.thumbnailImageUrl == rhs.thumbnailImageUrl,
-//           lhs.lastMessageId == rhs.lastMessageId,
-           lhs.description_ == rhs.description_,
-           lhs.locationName == rhs.locationName,
-           lhs.locationDescription == rhs.locationDescription,
-           lhs.location == rhs.location,
-//           lhs.createdAt == rhs.createdAt,
-//           lhs.lastMessageTimestamp == rhs.lastMessageTimestamp,
-//           lhs.isTyping == rhs.isTyping,
-           lhs.startTime == rhs.startTime,
-           lhs.endTime == rhs.endTime,
-//           lhs.badge == rhs.badge,
-//           lhs.participantIds == rhs.participantIds,
-//           lhs.admins == rhs.admins,
-//           lhs.goingIds == rhs.goingIds,
-//           lhs.maybeIds == rhs.maybeIds,
-//           lhs.notGoingIds == rhs.notGoingIds,
-//           lhs.fcmTokens == rhs.fcmTokens,
-           lhs.isRemote == rhs.isRemote,
-           lhs.latitude == rhs.latitude,
-           lhs.longitude == rhs.longitude
-//           lhs.lastMessageRuntime == rhs.lastMessageRuntime,
-//           lhs.shouldUpdateRealmRemotelyBeforeDisplaying == rhs.shouldUpdateRealmRemotelyBeforeDisplaying,
-//           lhs.lastMessage == rhs.lastMessage
+    func isEqual_(to newChannel: Channel) -> Bool {
+        if self.id == newChannel.id,
+           self.name == newChannel.name,
+           self.description_ == newChannel.description_,
+           self.locationName == newChannel.locationName,
+           self.locationDescription == newChannel.locationDescription,
+//           self.location == newChannel.location,
+           self.startTime == newChannel.startTime,
+           self.endTime == newChannel.endTime,
+           self.isRemote == newChannel.isRemote
+//           self.latitude == newChannel.latitude,
+//           self.longitude == newChannel.longitude
         {
             return true
         } else {
