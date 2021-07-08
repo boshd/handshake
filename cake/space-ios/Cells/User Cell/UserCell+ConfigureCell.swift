@@ -16,13 +16,11 @@ extension UserCell {
         
         if admin {
             detailTextLabel?.isHidden = false
-            detailTextLabel?.text = "Admin"
+            detailTextLabel?.text = "Organizer"
         } else {
             detailTextLabel?.isHidden = true
             detailTextLabel?.text = ""
         }
-        
-        print(RealmKeychain.realmUsersArray().first(where: { $0.id == users[indexPath.row].id })?.localName)
         
         if users[indexPath.row].id == currentUserID {
             textLabel?.text = "You"

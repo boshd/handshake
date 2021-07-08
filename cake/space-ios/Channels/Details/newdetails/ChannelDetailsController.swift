@@ -61,6 +61,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         observeChannel()
         observeChannelAttendeesChanges()
         fetchChannelAttendees()
+        addObservers()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -110,6 +111,10 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         
     }
     
+    fileprivate func addObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(changeTheme), name: .themeUpdated, object: nil)
+    }
+    
     fileprivate func removeListeners() {
         if channelListener != nil {
             channelListener = nil
@@ -140,8 +145,10 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         }
     }
     
+    let footerView = ChannelDetailsFooterView()
+    
     func configureFooterView() {
-        let footerView = ChannelDetailsFooterView()
+        
         footerView.translatesAutoresizingMaskIntoConstraints = false
         
         guard let currentUserID = Auth.auth().currentUser?.uid, let authorID = channel?.author else { return }
@@ -159,7 +166,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
                     guard let data = snapshot?.data() as [String:AnyObject]?, error == nil else { return }
                     let user = User(dictionary: data)
                     if let name = user.name {
-                        footerView.primaryLabel.text = "Created by \(name)"
+                        self.footerView.primaryLabel.text = "Created by \(name)"
                     }
                 }
             }
@@ -180,6 +187,42 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         channelDetailsContainerView.backgroundColor = .red
         
     }
+    
+    // MARK: - Theme
+    
+    // responsible for changing theme based on system theme
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        print(userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme))
+        if #available(iOS 13, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) &&
+            userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme) {
+            if traitCollection.userInterfaceStyle == .light {
+                ThemeManager.applyTheme(theme: .normal)
+            } else {
+                ThemeManager.applyTheme(theme: .dark)
+            }
+            setNeedsStatusBarAppearanceUpdate()
+        }
+    }
+    
+    @objc fileprivate func changeTheme() {
+        view.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+        channelDetailsContainerView.tableView.sectionIndexBackgroundColor = view.backgroundColor
+        channelDetailsContainerView.tableView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+        channelDetailsContainerView.tableView.indicatorStyle = ThemeManager.currentTheme().scrollBarStyle
+        channelDetailsContainerView.setColors()
+        footerView.setColors()
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.window!.backgroundColor = ThemeManager.currentTheme().windowBackground
+        if let navigationBar = navigationController?.navigationBar {
+            ThemeManager.setNavigationBarAppearance(navigationBar)
+        }
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.channelDetailsContainerView.tableView.reloadData()
+        }
+    }
+    
     
     // MARK: - Navigation
     

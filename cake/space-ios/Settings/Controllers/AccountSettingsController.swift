@@ -71,9 +71,26 @@ class AccountSettingsController: UITableViewController, MFMailComposeViewControl
         NotificationCenter.default.addObserver(self, selector: #selector(changeTheme), name: .themeUpdated, object: nil)
     }
     
+    // MARK: - Theme
+    
+    // responsible for changing theme based on system theme
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        print(userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme))
+        if #available(iOS 13, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) &&
+            userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme) {
+            if traitCollection.userInterfaceStyle == .light {
+                ThemeManager.applyTheme(theme: .normal)
+            } else {
+                ThemeManager.applyTheme(theme: .dark)
+            }
+            setNeedsStatusBarAppearanceUpdate()
+        }
+    }
+    
     @objc fileprivate func changeTheme() {
-        view.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
-        tableView.backgroundColor = view.backgroundColor
+        view.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+        tableView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         navigationController?.navigationBar.barTintColor = ThemeManager.currentTheme().barTintColor
         tableView.indicatorStyle = ThemeManager.currentTheme().scrollBarStyle
         settingsFooterContainerView.setColor()
@@ -81,7 +98,7 @@ class AccountSettingsController: UITableViewController, MFMailComposeViewControl
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.window!.backgroundColor = ThemeManager.currentTheme().windowBackground
         if let navigationBar = navigationController?.navigationBar {
-            ThemeManager.setSecondaryNavigationBarAppearance(navigationBar)
+            ThemeManager.setNavigationBarAppearance(navigationBar)
         }
         
         DispatchQueue.main.async { [weak self] in
@@ -117,7 +134,7 @@ class AccountSettingsController: UITableViewController, MFMailComposeViewControl
 //        dismissButton.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -10)
 //        navigationItem.rightBarButtonItem = dismissButton
         if let navigationController = navigationController {
-            ThemeManager.setSecondaryNavigationBarAppearance(navigationController.navigationBar)
+            ThemeManager.setNavigationBarAppearance(navigationController.navigationBar)
         }
     }
     

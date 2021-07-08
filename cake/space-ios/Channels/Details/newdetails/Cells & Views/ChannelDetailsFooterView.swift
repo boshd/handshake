@@ -49,6 +49,10 @@ class ChannelDetailsFooterView: UIView {
         
     }
     
+    func setColors() {
+        backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

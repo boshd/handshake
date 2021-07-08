@@ -93,6 +93,14 @@ class ChannelDetailsContainerView: UIView {
         
     }
     
+    func setColors() {
+        rsvpButton.backgroundColor = ThemeManager.currentTheme().buttonColor
+        rsvpButton.titleLabel?.textColor = ThemeManager.currentTheme().buttonTextColor
+        rsvpView.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
+        tableView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+        channelImageView.backgroundColor = ThemeManager.currentTheme().imageViewBackground
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

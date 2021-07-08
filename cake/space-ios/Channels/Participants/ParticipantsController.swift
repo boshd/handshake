@@ -82,15 +82,13 @@ class ParticipantsController: UIViewController {
     
     @objc fileprivate func changeTheme() {
         if let navigationBar = navigationController?.navigationBar {
-            ThemeManager.setNavigationBarAppearance(navigationBar)
+            ThemeManager.setSecondaryNavigationBarAppearance(navigationBar)
         }
-        
-        view.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+        view.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
         participantsContainerView.tableView.indicatorStyle = ThemeManager.currentTheme().scrollBarStyle
         participantsContainerView.tableView.sectionIndexBackgroundColor = view.backgroundColor
         participantsContainerView.tableView.backgroundColor = view.backgroundColor
         participantsContainerView.tableView.isOpaque = true
-//        participantsContainerView.interfaceSegmented.textColor = ThemeManager.currentTheme().generalTitleColor
         participantsContainerView.setColors()
         DispatchQueue.main.async { [weak self] in
             self?.participantsContainerView.tableView.reloadData()
@@ -100,8 +98,6 @@ class ParticipantsController: UIViewController {
     fileprivate func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(reConfigureCurrentUser), name: .currentUserDidChange, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(changeTheme), name: .themeUpdated, object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(handleMemberRemoved), name: .memberRemoved, object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(handleChannelUpdate), name: .channelUpdated, object: nil)
     }
     
     @objc fileprivate func reConfigureCurrentUser() {
@@ -281,7 +277,7 @@ class ParticipantsController: UIViewController {
             
             
             if let newAdminName = self.participants?.filter({ $0.id == memberID }).first?.name {
-                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channel?.name ?? "", participantIDs: [], text: "\(newAdminName) has been dismissed as admin", channel: channel)
+                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channel?.name ?? "", participantIDs: [], text: "\(newAdminName) has been dismissed as Organizer", channel: channel)
             }
         
         })
@@ -309,7 +305,7 @@ class ParticipantsController: UIViewController {
             }
 
             if let newAdminName = self.participants?.filter({ $0.id == memberID }).first?.name {
-                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channel?.name ?? "", participantIDs: [], text: "\(newAdminName) has been made admin", channel: channel)
+                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channel?.name ?? "", participantIDs: [], text: "\(newAdminName) is now an Organizer", channel: channel)
             }
             
             hapticFeedback(style: .success)
@@ -451,7 +447,7 @@ extension ParticipantsController: UITableViewDelegate, UITableViewDataSource {
         
 //        let cell = tableView.dequeueReusableCell(withIdentifier: userCellID, for: indexPath) as? UserCell ?? UserCell(style: .subtitle, reuseIdentifier: userCellID)
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: userCellID) as? UserCell ?? UserCell(style: .subtitle, reuseIdentifier: userCellID)
-        
+        cell.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
         
         guard let going = goingParticipants, let maybe = maybeParticipants, let notGoing = notGoingParticipants, let channelAdmins = channel?.admins else { return cell }
         
@@ -540,7 +536,7 @@ extension ParticipantsController: UITableViewDelegate, UITableViewDataSource {
         guard let memberID = member.id else { return }
         if memberID != currentUserID {
             if channelAdminIds.contains(memberID) {
-                alert.addAction(CustomAlertAction(title: "Dismiss as admin", style: .default , handler: { [unowned self] in
+                alert.addAction(CustomAlertAction(title: "Dismiss as Organizer", style: .default , handler: { [unowned self] in
                     if memberID == channelAuthor {
                         displayErrorAlert(title: "Not Allowed", message: "You cannot dismiss this person as admin because they created the event", preferredStyle: .alert, actionTitle: "Got it", controller: self)
                     } else {
@@ -548,7 +544,7 @@ extension ParticipantsController: UITableViewDelegate, UITableViewDataSource {
                     }
                 }))
             } else {
-                alert.addAction(CustomAlertAction(title: "Make admin", style: .default , handler: { [weak self] in
+                alert.addAction(CustomAlertAction(title: "Make Organizer", style: .default , handler: { [weak self] in
                     self?.makeAdmin(memberID: memberID)
                 }))
             }

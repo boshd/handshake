@@ -27,7 +27,7 @@ class ParticipantsContainerView: UIView {
     var tableView: UITableView = {
         var tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+        tableView.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
         tableView.separatorStyle = .none
         
         return tableView
@@ -36,7 +36,7 @@ class ParticipantsContainerView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+        backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
         
         addSubview(interfaceSegmented)
         addSubview(tableView)
@@ -59,7 +59,7 @@ class ParticipantsContainerView: UIView {
     func setColors() {
         interfaceSegmented.updateView()
         interfaceSegmented.selectorViewColor = ThemeManager.currentTheme().buttonColor
-        interfaceSegmented.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+        interfaceSegmented.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
         interfaceSegmented.selectorTextColor = ThemeManager.currentTheme().generalTitleColor
     }
     

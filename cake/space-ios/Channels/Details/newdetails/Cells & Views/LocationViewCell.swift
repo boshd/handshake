@@ -15,6 +15,13 @@ class LocationViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        textLabel?.textColor = ThemeManager.currentTheme().generalTitleColor
+        detailTextLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
+        
+        textLabel?.numberOfLines = 0
+        detailTextLabel?.numberOfLines = 0
+        
         addSubview(locationView)
         selectionStyle = .none
         locationView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15).isActive = true

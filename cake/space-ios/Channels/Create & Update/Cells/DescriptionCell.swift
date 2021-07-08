@@ -25,7 +25,7 @@ class DescriptionCell: UITableViewCell {
         textView.backgroundColor = .clear
         textView.isScrollEnabled = false
         textView.font = ThemeManager.currentTheme().secondaryFont(with: 12)
-        textView.textColor = ThemeManager.currentTheme().generalSubtitleColor
+        textView.textColor = ThemeManager.currentTheme().generalTitleColor
         textView.returnKeyType = .done
         textView.autocorrectionType = .default
         textView.autocapitalizationType = .sentences

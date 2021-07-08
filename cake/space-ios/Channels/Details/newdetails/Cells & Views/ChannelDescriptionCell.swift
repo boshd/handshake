@@ -55,7 +55,7 @@ class ChannelDescriptionCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        backgroundColor = .clear
+        backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         
         userInteractionEnabledWhileDragging = false
         contentView.isUserInteractionEnabled = true
@@ -77,9 +77,10 @@ class ChannelDescriptionCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        backgroundColor = .clear
+        backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         textLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         textLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
+        textView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
     }
     
 }

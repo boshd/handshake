@@ -8,13 +8,13 @@
 
 import UIKit
 
-class ChannelLogHeaderView: BlurView {
+class ChannelLogHeaderView: UIView {
     
     var timeLabel: DynamicLabel = {
         var label = DynamicLabel(withInsets: 0, 0, 0, 0)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
-        label.textColor = ThemeManager.currentTheme().tintColor
+        label.textColor = ThemeManager.currentTheme().chatLogHeaderTextColor
         label.font = ThemeManager.currentTheme().secondaryFontBold(with: 12)
         
         return label
@@ -24,7 +24,7 @@ class ChannelLogHeaderView: BlurView {
         var label = DynamicLabel(withInsets: 0, 0, 0, 0)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
-        label.textColor = ThemeManager.currentTheme().tintColor
+        label.textColor = ThemeManager.currentTheme().chatLogHeaderTextColor
         label.font = ThemeManager.currentTheme().secondaryFontBold(with: 12)
         
         return label
@@ -33,7 +33,7 @@ class ChannelLogHeaderView: BlurView {
     let dateLabel: DynamicLabel = {
         let label = DynamicLabel(withInsets: 2, 2, 3, 3)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = ThemeManager.currentTheme().tintColor
+        label.textColor = ThemeManager.currentTheme().chatLogHeaderTextColor
         label.textAlignment = .right
         label.font = ThemeManager.currentTheme().secondaryFontBold(with: 12)
         label.cornerRadius = 3
@@ -80,10 +80,10 @@ class ChannelLogHeaderView: BlurView {
         cornerRadius = 65/3
         layer.cornerCurve = .continuous
         
-        layer.shadowColor = ThemeManager.currentTheme().buttonTextColor.cgColor
-        layer.shadowOpacity = 0.05
-        layer.shadowRadius = 5
-        layer.shadowOffset = CGSize(width: -1, height: 2)
+//        layer.shadowColor = ThemeManager.currentTheme().buttonTextColor.cgColor
+//        layer.shadowOpacity = 0.05
+//        layer.shadowRadius = 5
+//        layer.shadowOffset = CGSize(width: -1, height: 2)
         
 //        addSubview(channelImageView)
 //        addSubview(dateLabel)
@@ -116,18 +116,17 @@ class ChannelLogHeaderView: BlurView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
     func setColors() {
-        backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
-        timeLabel.textColor = ThemeManager.currentTheme().generalTitleColor
+        backgroundColor = ThemeManager.currentTheme().chatLogHeaderBackgroundColor
+        timeLabel.textColor = ThemeManager.currentTheme().chatLogHeaderTextColor
         timeLabel.font = ThemeManager.currentTheme().secondaryFontBold(with: 12)
-        locationNameLabel.textColor = ThemeManager.currentTheme().generalTitleColor
+        locationNameLabel.textColor = ThemeManager.currentTheme().chatLogHeaderTextColor
         viewDetails.textColor = ThemeManager.currentTheme().tintColor
         
-        layer.shadowColor = ThemeManager.currentTheme().buttonTextColor.cgColor
-        layer.shadowOpacity = 0.1
-        layer.shadowRadius = 5
-        layer.shadowOffset = CGSize(width: -1, height: 2)
+//        layer.shadowColor = ThemeManager.currentTheme().buttonTextColor.cgColor
+//        layer.shadowOpacity = 0.1
+//        layer.shadowRadius = 5
+//        layer.shadowOffset = CGSize(width: -1, height: 2)
     }
     
 }

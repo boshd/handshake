@@ -223,7 +223,7 @@ class UpdateChannelController: CreateChannelController {
             cell.channelNameField.text = channelName
         }
         
-        cell.channelNameDescriptionLabel.text = "Update event namevent namevent namevent name dflkmd fkld fkl dkfl dlkf lkdf dkfl dlkf ldfk."
+        cell.channelNameDescriptionLabel.text = "Update event name. Max length of 25 characters."
         
         cell.channelImageView.removeFromSuperview()
         cell.channelImagePlaceholderLabel.removeFromSuperview()

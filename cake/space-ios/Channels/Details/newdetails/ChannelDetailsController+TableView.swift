@@ -80,7 +80,6 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
             return cell
         } else if indexPath.section == 2 {
             let cell = tableView.dequeueReusableCell(withIdentifier: channelDescriptionCellId, for: indexPath) as? ChannelDescriptionCell ?? ChannelDescriptionCell()
-//            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
             cell.textView.text = "No description available."
             guard let desc = channel?.description_ else { return cell }
             cell.textView.text = desc
@@ -99,17 +98,23 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
                 return cell
             }
         } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: locationViewCellId, for: indexPath) as? LocationViewCell ?? LocationViewCell()
+            let cell = LocationViewCell(style: .subtitle, reuseIdentifier: locationViewCellId)
             
-            cell.locationView.locationNameLabel.text = ""
-            cell.locationView.locationLabel.text = ""
-            
-            guard let locationName = channel?.locationName,
-                  let lat = channel?.latitude.value,
-                  let lon = channel?.longitude.value
-            else { return cell }
-            
-            cell.configureCell(title: locationName, subtitle: channel?.locationDescription, lat: lat, lon: lon)
+            if let isRemote = channel?.isRemote.value, isRemote {
+                cell.locationView.removeFromSuperview()
+//                cell.textLabel?.text = "This is a remote event and no location."
+                cell.detailTextLabel?.text = "If you can't find any information regarding virtual meetings try reaching out to one of the event organizers."
+            } else {
+                cell.locationView.locationNameLabel.text = ""
+                cell.locationView.locationLabel.text = ""
+                
+                guard let locationName = channel?.locationName,
+                      let lat = channel?.latitude.value,
+                      let lon = channel?.longitude.value
+                else { return cell }
+                
+                cell.configureCell(title: locationName, subtitle: channel?.locationDescription, lat: lat, lon: lon)
+            }
             
             return cell
         }
@@ -177,7 +182,12 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
             let count = channel?.participantIds.count ?? 0
             label.text = count == 1 ? "Just you" : "\(count) attendees"
         } else if section == 4 {
-            label.text = "How to get there"
+            if let isRemote = channel?.isRemote.value, isRemote {
+                label.text = "Remote event"
+            } else {
+                label.text = "How to get there"
+            }
+            
         } else {
             label.text = ""
         }

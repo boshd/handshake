@@ -26,7 +26,7 @@ class SettingsFooterContainerView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         isUserInteractionEnabled = true
-        backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
+        backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         footerView.delegate = self
         addSubview(footerView)
         

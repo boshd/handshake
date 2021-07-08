@@ -79,7 +79,7 @@ class ChangePhoneNumberController: UIViewController {
         view.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
         phoneContainerView.setColors()
         if let navigationBar = navigationController?.navigationBar {
-            ThemeManager.setSecondaryNavigationBarAppearance(navigationBar)
+            ThemeManager.setNavigationBarAppearance(navigationBar)
         }
     }
     

@@ -226,6 +226,15 @@ enum Theme: Int {
         }
     }
     
+    var chatLogSendButtonColor: UIColor {
+        switch self {
+            case .normal:
+                return tintColor
+            case .dark:
+                return .white
+        }
+    }
+    
     var buttonIconColor: UIColor {
         switch self {
             case .normal:
@@ -267,7 +276,7 @@ enum Theme: Int {
             case .normal:
                 return .black
             case .dark:
-                return .white
+                return tintColor
         }
     }
     
@@ -331,7 +340,7 @@ enum Theme: Int {
             case .normal:
                 return .handshakeLightGray
             case .dark:
-                return .handshakeLightGray
+                return .defaultMediumDarkGray()
         }
     }
     
@@ -360,6 +369,15 @@ enum Theme: Int {
                 return .handshakeLightPurple
             case .dark:
                 return .defaultMediumDarkGray()
+        }
+    }
+    
+    var chatLogHeaderTextColor: UIColor {
+        switch self {
+            case .normal:
+                return tintColor
+            case .dark:
+                return .white
         }
     }
     
@@ -405,6 +423,25 @@ enum Theme: Int {
                 return UIColor.black
             case .dark:
                 return UIColor.white
+        }
+    }
+    
+    var supplementaryViewBackgroundColor: UIColor {
+        switch self {
+            case .normal:
+                return .black
+            case .dark:
+                return .defaultMediumDarkGray()
+        }
+    }
+    
+    
+    var supplementaryViewTextColor: UIColor {
+        switch self {
+            case .normal:
+                return .white
+            case .dark:
+                return .lightGray
         }
     }
     
@@ -470,7 +507,7 @@ enum Theme: Int {
             case .normal:
                 return tintColor
             case .dark:
-                return .black
+                return generalSubtitleColor
         }
     }
     
@@ -526,15 +563,6 @@ enum Theme: Int {
                 return .white
             case .dark:
                 return .black
-        }
-    }
-    
-    var supplementaryViewTextColor: UIColor {
-        switch self {
-            case .normal:
-                return .gray
-            case .dark:
-                return .lightGray
         }
     }
     

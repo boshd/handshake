@@ -515,7 +515,7 @@ extension CreateChannelController {
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: descriptionCellId, for: indexPath) as? DescriptionCell ?? DescriptionCell()
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
-            cell.textView.text = fourthSection[0]
+            //cell.textView.text = fourthSection[0]
             if let channelDescription = channelDescription {
                 cell.textView.text = channelDescription
             }
