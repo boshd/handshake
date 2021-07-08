@@ -28,6 +28,14 @@ extension ChannelCell {
         
         if let startTime = channel.startTime.value, let endTime = channel.endTime.value {
             dateTitle.text = getDateString(startTime: startTime, endTime: endTime)
+            
+            if endTime < Int64(Date().timeIntervalSince1970) {
+                statusIndicator.backgroundColor = .red
+            } else if startTime > Int64(Date().timeIntervalSince1970) {
+                statusIndicator.backgroundColor = .handshakeGreen
+            } else if startTime < Int64(Date().timeIntervalSince1970) && endTime > Int64(Date().timeIntervalSince1970) {
+                statusIndicator.backgroundColor = .yellow
+            }
         }
         
         if let locationName = channel.locationName {

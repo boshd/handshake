@@ -1387,10 +1387,10 @@
 			isa = PBXGroup;
 			children = (
 				BC7D9DB0265C0C48008CBF8F /* AddParticipantsTableViewController.swift */,
+				BC7D9DB1265C0C48008CBF8F /* SelectChannelParticipantsController.swift */,
 				BC7D9DAF265C0C48008CBF8F /* CreateChannelController.swift */,
 				BC7D9DAE265C0C48008CBF8F /* UpdateChannelController.swift */,
 				BC7D9DAD265C0C48008CBF8F /* LocationSearchController.swift */,
-				BC7D9DB1265C0C48008CBF8F /* SelectChannelParticipantsController.swift */,
 			);
 			path = Rollers;
 			sourceTree = "<group>";

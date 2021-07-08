@@ -47,21 +47,19 @@ class TabBarController: UITabBarController {
     @objc fileprivate func changeTheme() {
         tabBar.unselectedItemTintColor = ThemeManager.currentTheme().unselectedButtonTintColor
         tabBar.selectedImageTintColor = ThemeManager.currentTheme().selectedButtonTintColor
-        UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().barTextColor],
-        for: .normal)
-        tabBar.unselectedItemTintColor = ThemeManager.currentTheme().unselectedButtonTintColor
-        tabBar.tintColor = ThemeManager.currentTheme().selectedButtonTintColor
-        UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().selectedButtonTintColor], for: .selected)
-        setNeedsStatusBarAppearanceUpdate()
+//        UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().barTextColor],
+//        for: .normal)
+//        tabBar.unselectedItemTintColor = ThemeManager.currentTheme().unselectedButtonTintColor
+//        tabBar.tintColor = ThemeManager.currentTheme().selectedButtonTintColor
+//        UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().selectedButtonTintColor], for: .selected)
     }
 
-    func applyInitialTheme() {
+    func applyTheme() {
         if traitCollection.userInterfaceStyle == .light {
             ThemeManager.applyTheme(theme: .normal)
         } else {
             ThemeManager.applyTheme(theme: .dark)
         }
-        changeTheme()
         setNeedsStatusBarAppearanceUpdate()
     }
     
@@ -72,9 +70,6 @@ class TabBarController: UITabBarController {
         tabBar.tintColor = ThemeManager.currentTheme().selectedButtonTintColor
         tabBar.isTranslucent = false
         tabBar.clipsToBounds = true
-        
-        
-        
         UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().selectedButtonTintColor], for: .selected)
         
         setTabs()
@@ -107,9 +102,9 @@ class TabBarController: UITabBarController {
         exploreController.navigationItem.title = "Explore"
         settingsController.navigationItem.title = "ACCOUNT"
 
-        let contactsNavigationController = UINavigationController(rootViewController: contactsController)
-        let channelsNavigationController = UINavigationController(rootViewController: channelsController)
-        let settingsNavigationController = UINavigationController(rootViewController: settingsController)
+        let contactsNavigationController = CustomNavigationController(rootViewController: contactsController)
+        let channelsNavigationController = CustomNavigationController(rootViewController: channelsController)
+        let settingsNavigationController = CustomNavigationController(rootViewController: settingsController)
         settingsNavigationController.navigationBar.setValue(true, forKey: "hidesShadow")
 
 //        if #available(iOS 11.0, *) {
@@ -126,9 +121,9 @@ class TabBarController: UITabBarController {
         
         
         
-        let contactsImage =  UIImage(named: "Contacts-fill")
-        let eventsImage = UIImage(named: "Explore-fill")
-        let settingsImage = UIImage(named: "Setting-fill")
+        let contactsImage =  UIImage(named: "Contacts")
+        let eventsImage = UIImage(named: "Explore")
+        let settingsImage = UIImage(named: "Setting")
         
         let contactsImageSelected =  UIImage(named: "Contacts-fill")
         let eventsImageSelected = UIImage(named: "Explore-fill")

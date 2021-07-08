@@ -15,9 +15,9 @@ class SelectLocationCell: UITableViewCell {
         
         // userInteractionEnabledWhileDragging = false
         contentView.isUserInteractionEnabled = true
-        selectionStyle = .none
+        selectionStyle = .default
         
-//        contentView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+        contentView.backgroundColor = ThemeManager.currentTheme().modalGroupedInsetCellBackgroundColor
         
         textLabel?.textColor = ThemeManager.currentTheme().generalTitleColor
         detailTextLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
@@ -34,7 +34,7 @@ class SelectLocationCell: UITableViewCell {
     }
 
     fileprivate func setColor() {
-//        backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+        backgroundColor = ThemeManager.currentTheme().modalGroupedInsetCellBackgroundColor
 //        contentView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         textLabel?.textColor = ThemeManager.currentTheme().generalTitleColor
         detailTextLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor

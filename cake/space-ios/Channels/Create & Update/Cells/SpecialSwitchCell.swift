@@ -24,12 +24,10 @@ class SpecialSwitchCell: UITableViewCell {
   
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
-        
+        backgroundColor = ThemeManager.currentTheme().modalGroupedInsetCellBackgroundColor
         switchAccessory.addTarget(self, action: #selector(switchStateDidChange(_:)), for: .valueChanged)
         
-        backgroundColor = ThemeManager.currentTheme().generalBackgroundSecondaryColor
         selectionStyle = .none
-//        contentView.addSubview(switchAccessory)
         
         detailTextLabel?.numberOfLines = 0
         detailTextLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
@@ -40,11 +38,6 @@ class SpecialSwitchCell: UITableViewCell {
         contentView.isUserInteractionEnabled = true
         
         accessoryView = switchAccessory
-
-//        switchAccessory.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-//        switchAccessory.widthAnchor.constraint(equalToConstant: 60).isActive = true
-//        switchAccessory.rightAnchor.constraint(equalTo: rightAnchor, constant: -5).isActive = true
-        
     }
   
     required init?(coder aDecoder: NSCoder) {
@@ -53,7 +46,7 @@ class SpecialSwitchCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        backgroundColor = ThemeManager.currentTheme().generalBackgroundSecondaryColor
+        backgroundColor = ThemeManager.currentTheme().modalGroupedInsetCellBackgroundColor
         switchAccessory.onTintColor = ThemeManager.currentTheme().tintColor
         textLabel?.textColor = ThemeManager.currentTheme().generalTitleColor
     }

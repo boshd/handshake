@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AccountSettingsTableViewCell: InteractiveTableViewCell {
+class AccountSettingsTableViewCell: UITableViewCell {
     
     var topInset: CGFloat = 0
     var leftInset: CGFloat = 20
@@ -51,7 +51,7 @@ class AccountSettingsTableViewCell: InteractiveTableViewCell {
         
         userInteractionEnabledWhileDragging = false
         contentView.isUserInteractionEnabled = false
-        selectionStyle = .none
+        selectionStyle = .default
         
         
         
@@ -88,8 +88,7 @@ class AccountSettingsTableViewCell: InteractiveTableViewCell {
     fileprivate func setColor() {
         backgroundColor = ThemeManager.currentTheme().groupedInsetCellBackgroundColor
         accessoryView?.backgroundColor = backgroundColor
-        title.backgroundColor = backgroundColor
-        icon.backgroundColor = backgroundColor
+//        icon.backgroundColor = backgroundColor
         title.textColor = ThemeManager.currentTheme().generalTitleColor
         selectionColor = ThemeManager.currentTheme().cellSelectionColor
         separator.backgroundColor = ThemeManager.currentTheme().seperatorColor

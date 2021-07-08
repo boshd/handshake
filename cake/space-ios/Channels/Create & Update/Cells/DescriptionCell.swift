@@ -60,7 +60,7 @@ class DescriptionCell: UITableViewCell {
     }
 
     fileprivate func setColor() {
-//        backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+        backgroundColor = ThemeManager.currentTheme().modalGroupedInsetCellBackgroundColor
         accessoryView?.backgroundColor = backgroundColor
         selectionColor = ThemeManager.currentTheme().cellSelectionColor
     }

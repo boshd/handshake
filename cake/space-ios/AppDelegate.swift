@@ -42,7 +42,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         tabBarController = TabBarController()
         
         if #available(iOS 13, *), userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme) {
-            tabBarController?.applyInitialTheme()
+            tabBarController?.applyTheme()
         } else {
             ThemeManager.applyTheme(theme: ThemeManager.currentTheme())
         }

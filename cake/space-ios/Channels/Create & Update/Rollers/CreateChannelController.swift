@@ -117,8 +117,6 @@ class CreateChannelController: UITableViewController {
         tableView.register(SelectLocationCell.self, forCellReuseIdentifier: selectLocationCellId)
         tableView.register(DescriptionCell.self, forCellReuseIdentifier: descriptionCellId)
         
-        UITableView.appearance().separatorColor = ThemeManager.currentTheme().seperatorColor
-        
         tableView.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
         
         tableView.separatorStyle = .singleLine
@@ -140,13 +138,20 @@ class CreateChannelController: UITableViewController {
     }
     
     func configureNavigationBar() {
-        title = "New event"
+        title = "New Event"
+        
+        if selectedUsers.count > 0 {
+            navigationItem.setTitle(title: "New Event", subtitle: selectedUsers.count > 1 ? "\(selectedUsers.count) attendees selected" : "\(selectedUsers.count) attendee selected")
+        }
+        
+        navigationController?.navigationBar.titleTextAttributes = [.font: ThemeManager.currentTheme().primaryFontItalic(with: 34)]
         
         let backButtonItem = UIBarButtonItem(image: UIImage(named: "ctrl-left"), style: .plain, target: self, action: #selector(goBack))
         navigationItem.leftBarButtonItem = backButtonItem
         
         let createButton = UIBarButtonItem(title: "Create", style: .plain, target: self, action: #selector(doneAction))
         createButton.tintColor = ThemeManager.currentTheme().tintColor
+        createButton.setTitleTextAttributes([.font: ThemeManager.currentTheme().secondaryFont(with: 16)], for: .normal)
         navigationItem.rightBarButtonItem = createButton
         
         if let navigationBar = navigationController?.navigationBar {
@@ -170,18 +175,16 @@ class CreateChannelController: UITableViewController {
             } else {
                 ThemeManager.applyTheme(theme: .dark)
             }
-            UITableView.appearance().separatorColor = ThemeManager.currentTheme().seperatorColor
             setNeedsStatusBarAppearanceUpdate()
         }
     }
     
     @objc fileprivate func changeTheme() {
         view.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
-        UITableView.appearance().separatorColor = ThemeManager.currentTheme().seperatorColor
         tableView.indicatorStyle = ThemeManager.currentTheme().scrollBarStyle
         tableView.sectionIndexBackgroundColor = view.backgroundColor
         tableView.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
-        tableView.isOpaque = true
+//        tableView.isOpaque = true
         DispatchQueue.main.async { [weak self] in
             self?.tableView.reloadData()
         }
@@ -585,8 +588,9 @@ extension CreateChannelController {
                 let destination = LocationSearchController()
                 destination.modalPresentationStyle = .formSheet
                 destination.delegate = self
+                let navController = CustomNavigationController(rootViewController: destination)
                 // tableView.deselectRow(at: indexPath, animated: true)
-                present(destination, animated: true, completion: nil)
+                present(navController, animated: true, completion: nil)
             }
         } else if indexPath.section == 2 {
             if datePickerIndexPath != nil {

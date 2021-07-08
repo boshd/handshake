@@ -30,13 +30,13 @@ struct ThemeManager {
         UINavigationBar.appearance().scrollEdgeAppearance = coloredAppearance
         UINavigationBar.appearance().compactAppearance = coloredAppearance
         
-//        UITabBar.appearance().tintColor = theme.tabBarTintColor
-
-//        let tabBarAppearance = UITabBarItem.appearance()
-//        let attributes = [NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFontBold(with: 6)]
-//        tabBarAppearance.setTitleTextAttributes(attributes, for: .normal)
-        
+        UITabBar.appearance().tintColor = theme.tabBarTintColor
         UITabBar.appearance().barTintColor = theme.barBackgroundColor
+        let tabBarAppearance = UITabBarItem.appearance()
+        let attributes = [NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFontBold(with: 6)]
+        tabBarAppearance.setTitleTextAttributes(attributes, for: .normal)
+        
+        // HERE IS WHERE WE SET ALL GLOBAL VALUES TO RESPECTIVE COLORS!
 
         UITableViewCell.appearance().selectionColor = ThemeManager.currentTheme().cellSelectionColor
         UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes =  [
@@ -47,6 +47,7 @@ struct ThemeManager {
         UIView.appearance(whenContainedInInstancesOf: [UINavigationBar.self]).tintColor = theme.barTintColor
         UITableViewCell.appearance().tintColor = ThemeManager.currentTheme().tintColor
         UITableView.appearance().separatorColor = ThemeManager.currentTheme().seperatorColor
+        
         NotificationCenter.default.post(name: .themeUpdated, object: nil)
     }
     
@@ -68,6 +69,7 @@ struct ThemeManager {
             coloredAppearance.shadowColor = nil
             coloredAppearance.backgroundColor = ThemeManager.currentTheme().barBackgroundColor
             coloredAppearance.titleTextAttributes = [.foregroundColor: ThemeManager.currentTheme().generalTitleColor, .font: ThemeManager.currentTheme().secondaryFontVeryBold(with: 15)]
+            coloredAppearance.largeTitleTextAttributes = [.foregroundColor: ThemeManager.currentTheme().generalTitleColor, .font: ThemeManager.currentTheme().secondaryFontVeryBold(with: 30)]
             naviationBar.barTintColor = ThemeManager.currentTheme().barBackgroundColor
             naviationBar.standardAppearance = coloredAppearance
             naviationBar.scrollEdgeAppearance = coloredAppearance
@@ -82,6 +84,7 @@ struct ThemeManager {
             coloredAppearance.shadowColor = nil
             coloredAppearance.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
             coloredAppearance.titleTextAttributes = [.foregroundColor: ThemeManager.currentTheme().generalTitleColor, .font: ThemeManager.currentTheme().secondaryFontVeryBold(with: 15)]
+            coloredAppearance.largeTitleTextAttributes = [.foregroundColor: ThemeManager.currentTheme().generalTitleColor, .font: ThemeManager.currentTheme().secondaryFontVeryBold(with: 30)]
 //            naviationBar.isTranslucent = false
             naviationBar.barTintColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
             naviationBar.standardAppearance = coloredAppearance
@@ -158,7 +161,7 @@ enum Theme: Int {
             case .normal:
                 return .black
             case .dark:
-                return .black
+                return .offBlack()
         }
     }
     
@@ -255,18 +258,18 @@ enum Theme: Int {
     var tabBarTintColor: UIColor {
         switch self {
             case .normal:
-                return tintColor
+                return .black
             case .dark:
-                return tintColor
+                return .white
         }
     }
     
     var unselectedButtonTintColor: UIColor {
         switch self {
             case .normal:
-                return .handshakeMediumGray
+                return .black
             case .dark:
-                return .handshakeDarkGray
+                return .white
         }
     }
     
@@ -275,7 +278,7 @@ enum Theme: Int {
             case .normal:
                 return .black
             case .dark:
-                return tintColor
+                return .white
         }
     }
     
@@ -343,6 +346,14 @@ enum Theme: Int {
         }
     }
     
+    var modalGroupedInsetCellBackgroundColor: UIColor {
+        switch self {
+            case .normal:
+                return .handshakeLightGray
+            case .dark:
+                return .offBlack()
+        }
+    }
     
     var barBackgroundColor: UIColor {
         switch self {
@@ -523,7 +534,7 @@ enum Theme: Int {
         switch self {
             case .normal:
                 // return .extraLight()
-                return UIColor(red: 0.95, green: 0.95, blue: 0.96, alpha: 1.00)
+                return .white
             case .dark:
                 return .defaultMediumDarkGray()
         }

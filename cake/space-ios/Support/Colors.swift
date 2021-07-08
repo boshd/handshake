@@ -33,6 +33,10 @@ extension UIColor {
         get { return UIColor(red: 0.66, green: 0.64, blue: 0.71, alpha: 1.00) }
     }
     
+    open class var handshakeDarkestGray: UIColor {
+        get { return .gray }
+    }
+    
     open class var handshakeGreen: UIColor {
         get { return UIColor(red: 0.30, green: 0.96, blue: 0.49, alpha: 1.00) }
     }

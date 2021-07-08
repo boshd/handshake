@@ -39,7 +39,6 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
     
     let channelCellId = "channelCellId"
     
-//    var channelsContainerView = ChannelsContainerView()
     let channelsFetcher = ChannelsFetcher()
     let viewPlaceholder = ViewPlaceholder()
     let notificationsManager = InAppNotificationManager()
@@ -102,7 +101,6 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         addObservers()
         configureController()
         configureNavigationBar()
-//        showActivityTitle(title: .updatingUsers)
     }
 
     @objc
@@ -116,7 +114,6 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         } else {
             ThemeManager.applyTheme(theme: .dark)
         }
-        changeTheme()
         setNeedsStatusBarAppearanceUpdate()
     }
     
@@ -126,10 +123,6 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         initializeUsersDataSource()
         continiousUIUpdate()
         setDate()
-        
-        if let navigationBar = navigationController?.navigationBar {
-            ThemeManager.setNavigationBarAppearance(navigationBar)
-        }
     }
     
     override var preferredStatusBarStyle : UIStatusBarStyle {
@@ -138,7 +131,6 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-//        navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
     override func didReceiveMemoryWarning() {
@@ -191,8 +183,6 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         if let navigationBar = navigationController?.navigationBar {
             ThemeManager.setNavigationBarAppearance(navigationBar)
         }
-        
-        // setUpMenuButton()
 
     }
     

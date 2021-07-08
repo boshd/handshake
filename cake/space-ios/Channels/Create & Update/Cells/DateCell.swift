@@ -15,6 +15,7 @@ class DateCell: UITableViewCell {
         let label = DynamicLabel(withInsets: 0, 0, 0, 0)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = ThemeManager.currentTheme().secondaryFont(with: 13)
+        label.textColor = ThemeManager.currentTheme().generalTitleColor
         label.text = "11:00 AM"
         
         return label
@@ -25,13 +26,13 @@ class DateCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = ThemeManager.currentTheme().secondaryFont(with: 13)
         label.text = "May 19, 2021"
-        
+        label.textColor = ThemeManager.currentTheme().generalTitleColor
         return label
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
-        
+        setColors()
         textLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 13)
         
         selectionStyle = .default
@@ -47,6 +48,19 @@ class DateCell: UITableViewCell {
             dateLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0),
         ])
         
+    }
+    
+    fileprivate func setColors() {
+        backgroundColor = ThemeManager.currentTheme().modalGroupedInsetCellBackgroundColor
+        timeLabel.textColor = ThemeManager.currentTheme().generalTitleColor
+        dateLabel.textColor = ThemeManager.currentTheme().generalTitleColor
+        textLabel?.textColor = ThemeManager.currentTheme().generalTitleColor
+        detailTextLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        setColors()
     }
     
     required init?(coder: NSCoder) {

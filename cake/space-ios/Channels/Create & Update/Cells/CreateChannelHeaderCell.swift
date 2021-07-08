@@ -105,7 +105,6 @@ class ChannelNameHeaderCell: UITableViewCell {
         contentView.addSubview(channelImagePlaceholderLabel)
         contentView.addSubview(channelNameField)
         contentView.addSubview(channelNameDescriptionLabel)
-//        contentView.addSubview(paddingView)
         
         NSLayoutConstraint.activate([
             channelImageView.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 20),
@@ -121,18 +120,11 @@ class ChannelNameHeaderCell: UITableViewCell {
             channelNameField.centerYAnchor.constraint(equalTo: channelImageView.centerYAnchor, constant: 0),
             channelNameField.leadingAnchor.constraint(equalTo: channelImageView.trailingAnchor, constant: 15),
             channelNameField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
-//            nameTextView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0),
             
             channelNameDescriptionLabel.topAnchor.constraint(equalTo: channelImageView.bottomAnchor, constant: 5),
             channelNameDescriptionLabel.leadingAnchor.constraint(equalTo: channelNameField.leadingAnchor, constant: 0),
             channelNameDescriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
             channelNameDescriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0),
-            
-//            paddingView.topAnchor.constraint(equalTo: channelNameDescriptionLabel.bottomAnchor, constant: 0),
-//            paddingView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0),
-//            paddingView.heightAnchor.constraint(equalToConstant: 15),
-//            paddingView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
-//            paddingView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
         ])
     }
     

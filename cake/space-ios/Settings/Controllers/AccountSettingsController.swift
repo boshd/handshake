@@ -121,6 +121,7 @@ class AccountSettingsController: UITableViewController, MFMailComposeViewControl
         tableView.register(AccountSettingsTableViewCell.self, forCellReuseIdentifier: accountSettingsCellId)
         tableView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         tableView.reloadData()
+        
         settingsFooterContainerView.controller = self
 //        settingsFooterContainerView.footerView.delegate = self
         
@@ -325,7 +326,7 @@ extension AccountSettingsController {
     }
      
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        hapticFeedback(style: .impact)
+        // hapticFeedback(style: .impact)
         if indexPath.section == 0 {
             if indexPath.row == 0 {
                 let destination = ProfileController()
