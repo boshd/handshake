@@ -27,7 +27,7 @@ class SpecialSwitchCell: UITableViewCell {
         
         switchAccessory.addTarget(self, action: #selector(switchStateDidChange(_:)), for: .valueChanged)
         
-//        backgroundColor = ThemeManager.currentTheme().generalBackgroundSecondaryColor
+        backgroundColor = ThemeManager.currentTheme().generalBackgroundSecondaryColor
         selectionStyle = .none
 //        contentView.addSubview(switchAccessory)
         
@@ -53,7 +53,7 @@ class SpecialSwitchCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-//        backgroundColor = ThemeManager.currentTheme().generalBackgroundSecondaryColor
+        backgroundColor = ThemeManager.currentTheme().generalBackgroundSecondaryColor
         switchAccessory.onTintColor = ThemeManager.currentTheme().tintColor
         textLabel?.textColor = ThemeManager.currentTheme().generalTitleColor
     }

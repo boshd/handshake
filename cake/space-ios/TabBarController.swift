@@ -49,6 +49,10 @@ class TabBarController: UITabBarController {
         tabBar.selectedImageTintColor = ThemeManager.currentTheme().selectedButtonTintColor
         UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().barTextColor],
         for: .normal)
+        tabBar.unselectedItemTintColor = ThemeManager.currentTheme().unselectedButtonTintColor
+        tabBar.tintColor = ThemeManager.currentTheme().selectedButtonTintColor
+        UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().selectedButtonTintColor], for: .selected)
+        setNeedsStatusBarAppearanceUpdate()
     }
 
     func applyInitialTheme() {

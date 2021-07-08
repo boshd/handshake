@@ -36,7 +36,7 @@ struct ThemeManager {
 //        let attributes = [NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFontBold(with: 6)]
 //        tabBarAppearance.setTitleTextAttributes(attributes, for: .normal)
         
-        
+        UITabBar.appearance().barTintColor = theme.barBackgroundColor
 
         UITableViewCell.appearance().selectionColor = ThemeManager.currentTheme().cellSelectionColor
         UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes =  [
@@ -68,7 +68,6 @@ struct ThemeManager {
             coloredAppearance.shadowColor = nil
             coloredAppearance.backgroundColor = ThemeManager.currentTheme().barBackgroundColor
             coloredAppearance.titleTextAttributes = [.foregroundColor: ThemeManager.currentTheme().generalTitleColor, .font: ThemeManager.currentTheme().secondaryFontVeryBold(with: 15)]
-//            naviationBar.isTranslucent = false
             naviationBar.barTintColor = ThemeManager.currentTheme().barBackgroundColor
             naviationBar.standardAppearance = coloredAppearance
             naviationBar.scrollEdgeAppearance = coloredAppearance

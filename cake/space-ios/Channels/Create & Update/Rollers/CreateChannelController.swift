@@ -119,6 +119,8 @@ class CreateChannelController: UITableViewController {
         
         UITableView.appearance().separatorColor = ThemeManager.currentTheme().seperatorColor
         
+        tableView.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
+        
         tableView.separatorStyle = .singleLine
         tableView.tableFooterView = UIView()
         // tableView.keyboardDismissMode = .onDrag
@@ -146,6 +148,10 @@ class CreateChannelController: UITableViewController {
         let createButton = UIBarButtonItem(title: "Create", style: .plain, target: self, action: #selector(doneAction))
         createButton.tintColor = ThemeManager.currentTheme().tintColor
         navigationItem.rightBarButtonItem = createButton
+        
+        if let navigationBar = navigationController?.navigationBar {
+            ThemeManager.setSecondaryNavigationBarAppearance(navigationBar)
+        }
     }
     
     @objc func goBack() {
@@ -170,11 +176,11 @@ class CreateChannelController: UITableViewController {
     }
     
     @objc fileprivate func changeTheme() {
-        view.backgroundColor = ThemeManager.currentTheme().generalBackgroundSecondaryColor
+        view.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
         UITableView.appearance().separatorColor = ThemeManager.currentTheme().seperatorColor
         tableView.indicatorStyle = ThemeManager.currentTheme().scrollBarStyle
         tableView.sectionIndexBackgroundColor = view.backgroundColor
-        tableView.backgroundColor = view.backgroundColor
+        tableView.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
         tableView.isOpaque = true
         DispatchQueue.main.async { [weak self] in
             self?.tableView.reloadData()

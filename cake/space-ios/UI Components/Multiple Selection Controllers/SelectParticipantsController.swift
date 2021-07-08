@@ -114,6 +114,7 @@ class SelectParticipantsController: UIViewController {
             navigationItem.rightBarButtonItem = UIBarButtonItem(title: title, style: .plain, target: self, action: #selector(rightBarButtonTapped))
         }
         navigationItem.rightBarButtonItem?.isEnabled = false
+        navigationItem.rightBarButtonItem?.tintColor = ThemeManager.currentTheme().tintColor
     }
 
     @objc func rightBarButtonTapped() {
@@ -318,7 +319,7 @@ class SelectParticipantsController: UIViewController {
         navigationItem.rightBarButtonItem?.isEnabled = true
 
         if selectedUsers.count == 1 {
-            collectionViewHeightAnchor.constant = 85
+            collectionViewHeightAnchor.constant = 75
             UIView.animate(withDuration: 0.3) {
                 self.view.layoutIfNeeded()
             }

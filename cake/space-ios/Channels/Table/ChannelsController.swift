@@ -164,7 +164,7 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         
         // tableview cell registration
         tableView.register(ChannelCell.self, forCellReuseIdentifier: channelCellId)
-        
+        tableView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         // add targets
 //        channelsContainerView.createButton.addTarget(self, action: #selector(presentCreateChannelController), for: .touchUpInside)
 //        channelsContainerView.contactsButton.addTarget(self, action: #selector(presentContactsController), for: .touchUpInside)
@@ -187,6 +187,10 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
 
         let newChatBarButton = UIBarButtonItem(image: UIImage(named: "add"), style: .plain, target: self, action: #selector(presentCreateChannelController))
         navigationItem.rightBarButtonItem = newChatBarButton
+        
+        if let navigationBar = navigationController?.navigationBar {
+            ThemeManager.setNavigationBarAppearance(navigationBar)
+        }
         
         // setUpMenuButton()
 
@@ -257,6 +261,7 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         tableView.sectionIndexBackgroundColor = view.backgroundColor
         tableView.backgroundColor = view.backgroundColor
         tableView.isOpaque = true
+        
         DispatchQueue.main.async { [weak self] in
             self?.tableView.reloadData()
         }
