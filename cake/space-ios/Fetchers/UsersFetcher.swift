@@ -162,7 +162,7 @@ class UsersFetcher: NSObject {
             
             for doc in docs {
                 let data = doc.data()
-                let contactId = data["localContactId"] as! String
+                guard let contactId = data["localContactId"] as? String else { return }
                 userIDsAndContactIDs.append((doc.documentID, contactId))
             }
             

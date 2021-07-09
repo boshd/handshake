@@ -24,10 +24,12 @@ final class RealmKeychain {
     }
     
     static func realmNonLocalUsersConfiguration() -> Realm.Configuration {
+        // considered but rejected: in-memory realm; because data wiped when app is terminated, not what we want.
         var config = Realm.Configuration()
         // is this safe?
         // config.deleteRealmIfMigrationNeeded = true
-        config.fileURL = config.fileURL!.deletingLastPathComponent().appendingPathComponent("nonLocalUsers.realm")
+        
+        config.fileURL = config.fileURL!.deletingLastPathComponent().appendingPathComponent("users.nonLocal.realm")
         config.encryptionKey = RealmKeychain.getKey() as Data
         return config
     }
@@ -36,7 +38,7 @@ final class RealmKeychain {
         var config = Realm.Configuration()
         // is this safe?
         // config.deleteRealmIfMigrationNeeded = true
-        config.fileURL = config.fileURL!.deletingLastPathComponent().appendingPathComponent("users.realm")
+        config.fileURL = config.fileURL!.deletingLastPathComponent().appendingPathComponent("users.Local.realm")
         config.encryptionKey = RealmKeychain.getKey() as Data
         return config
     }

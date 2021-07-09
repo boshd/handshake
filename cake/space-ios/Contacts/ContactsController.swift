@@ -39,7 +39,8 @@ class ContactsController: CustomTableViewController {
     let createButtonDelegate: CreateButtonDelegate? = nil
 
     let realm = try! Realm(configuration: RealmKeychain.realmUsersConfiguration())
-
+    let nonLocalRealm = try! Realm(configuration: RealmKeychain.realmNonLocalUsersConfiguration())
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureViewController()
@@ -178,6 +179,7 @@ class ContactsController: CustomTableViewController {
             do {
                 try realm.safeWrite {
                     realm.deleteAll()
+                    nonLocalRealm.deleteAll()
                 }
             } catch {}
         }
@@ -215,6 +217,13 @@ class ContactsController: CustomTableViewController {
                     realm.create(User.self, value: user, update: .modified)
                 }
                 try! realm.commitWrite()
+            }
+            
+            if !nonLocalRealm.isInWriteTransaction {
+                nonLocalRealm.beginWrite()
+                let objectsToDelete = nonLocalRealm.objects(User.self).filter({ RealmKeychain.realmUsersArray().map({$0.id}).contains($0.id) })
+                nonLocalRealm.delete(objectsToDelete)
+                try! nonLocalRealm.commitWrite()
             }
         }
 
