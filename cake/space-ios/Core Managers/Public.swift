@@ -88,6 +88,12 @@ extension SystemSoundID {
   }
 }
 
+extension Array where Element: Comparable {
+    func containsSameElements(as other: [Element]) -> Bool {
+        return self.count == other.count && self.sorted() == other.sorted()
+    }
+}
+
 func createImageThumbnail (_ image: UIImage) -> UIImage {
   
   let actualHeight:CGFloat = image.size.height
