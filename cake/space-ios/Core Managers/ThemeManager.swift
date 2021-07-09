@@ -264,6 +264,15 @@ enum Theme: Int {
         }
     }
     
+    var tabBarBlurEffect: UIBlurEffect {
+        switch self {
+            case .normal:
+                return UIBlurEffect(style: .light)
+            case .dark:
+                return UIBlurEffect(style: .dark)
+        }
+    }
+    
     var unselectedButtonTintColor: UIColor {
         switch self {
             case .normal:
@@ -323,7 +332,7 @@ enum Theme: Int {
             case .normal:
                 return .handshakeMediumGray
             case .dark:
-                return .handshakeDarkGray
+                return .offBlack()
         }
     }
     
@@ -367,7 +376,7 @@ enum Theme: Int {
     var seperatorColor: UIColor {
         switch self {
             case .normal:
-                return .lightGray
+                return .handshakeMediumGray
             case .dark:
                 return .defaultMediumDarkGray()
         }
@@ -478,7 +487,7 @@ enum Theme: Int {
             case .normal:
                 return .handshakeDarkGray
             case .dark:
-                return .handshakeDarkGray
+                return .gray
                 //return .defaultLightGray()
         }
     }
@@ -486,9 +495,9 @@ enum Theme: Int {
     var placeholderTextColor: UIColor {
         switch self {
             case .normal:
-                return .lightGray
+                return generalSubtitleColor
             case .dark:
-                return UIColor(red: 0.60, green: 0.60, blue: 0.60, alpha: 1.00)
+                return generalSubtitleColor
                 //return .defaultLightGray()
         }
     }

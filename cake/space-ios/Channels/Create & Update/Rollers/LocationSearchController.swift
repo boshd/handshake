@@ -106,9 +106,6 @@ class LocationSearchController: UIViewController {
         searchCompletionRequest = MKLocalSearchCompleter()
         searchTableContainerView.searchBar.delegate = self
         searchCompletionRequest?.delegate = self
-        //delegate = self
-        //searchCompletionRequest?.region = mapSearchContainerView.mapView.region
-
 
         if searchMapItems.count == 0 {
             tablePopulated(isEmpty: true)
@@ -121,7 +118,12 @@ class LocationSearchController: UIViewController {
         navigationController?.setNavigationBarHidden(false, animated: false)
         title = "Search Location"
         let cancelButtonItem = UIBarButtonItem(image: UIImage(named: "i-remove"), style: .plain, target: self, action: #selector(dismissController))
+        cancelButtonItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -10)
         navigationItem.rightBarButtonItem = cancelButtonItem
+        
+        if let navigationBar = navigationController?.navigationBar {
+            ThemeManager.setSecondaryNavigationBarAppearance(navigationBar)
+        }
     }
     
     func addObservers() {

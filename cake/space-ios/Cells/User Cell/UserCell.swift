@@ -43,7 +43,7 @@ class UserCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
-        selectionStyle = .none
+        selectionStyle = .default
         backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         textLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         detailTextLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 12)

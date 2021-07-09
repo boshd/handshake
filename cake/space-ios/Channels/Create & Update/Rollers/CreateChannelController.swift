@@ -118,7 +118,7 @@ class CreateChannelController: UITableViewController {
         tableView.register(DescriptionCell.self, forCellReuseIdentifier: descriptionCellId)
         
         tableView.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
-        
+        tableView.keyboardDismissMode = .onDrag
         tableView.separatorStyle = .singleLine
         tableView.tableFooterView = UIView()
         // tableView.keyboardDismissMode = .onDrag
@@ -459,10 +459,11 @@ extension CreateChannelController {
             return constructHeaderCell(indexPath: indexPath)
         } else if indexPath.section == 1 {
             if indexPath.row == 0 {
-                let cell = tableView.dequeueReusableCell(withIdentifier: specialSwitchCellId, for: indexPath) as? SpecialSwitchCell ?? SpecialSwitchCell()
+                let cell = SpecialSwitchCell(style: .subtitle, reuseIdentifier: specialSwitchCellId)
                 cell.textLabel?.text = secondSection[0]
+                cell.detailTextLabel?.text = "Indicate to others that this event will be held remotely and that no physical location will be shown."
                 // cell.detailTextLabel?.text = "Plan a remote event. Share any details in the description below."
-                
+                cell.backgroundColor = ThemeManager.currentTheme().modalGroupedInsetCellBackgroundColor
                 cell.switchAccessory.isOn = isRemote
                 cell.switchTapAction = { isOn in
                     DispatchQueue.main.async { [weak self] in
@@ -481,9 +482,9 @@ extension CreateChannelController {
                 
                 return cell
             } else {
-                let cell = tableView.dequeueReusableCell(withIdentifier: selectLocationCellId, for: indexPath) as? SelectLocationCell ?? SelectLocationCell()
-                cell.textLabel?.text = locationName != nil ? location?.name : secondSection[1]
-                if location != nil { cell.detailTextLabel?.text = location?.locationDescription }
+                let cell = SelectLocationCell(style: .subtitle, reuseIdentifier: locationCellId)
+                if locationDescription != nil { cell.detailTextLabel?.text = locationDescription }
+                cell.textLabel?.text = locationName != nil ? locationName : secondSection[1]
                 return cell
             }
         } else if indexPath.section == 2 {
@@ -537,11 +538,7 @@ extension CreateChannelController {
         if indexPath.section == 0 {
             return returnHeaderHeight()
         } else if indexPath.section == 1 {
-            if indexPath.row == 1 {
-                return 50
-            } else {
-                return 50
-            }
+            return UITableView.automaticDimension
         } else if indexPath.section == 2 {
             if let datePickerIndexPathRow = datePickerIndexPath?.row, datePickerIndexPath != nil && datePickerIndexPathRow + 1 == indexPath.row {
                 return DatePickerCell().datePickerHeight

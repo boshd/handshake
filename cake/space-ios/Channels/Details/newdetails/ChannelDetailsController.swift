@@ -33,7 +33,8 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     
     let tableSectionHeaderHeight: CGFloat = 27.5
     
-    let initialNumberOfAttendees = 5
+    let initialNumberOfAttendees = 1
+    let showMoreUsers = false
     
     var allAttendeesLoaded = false
     var initialAttendeesLoaded = false
@@ -324,6 +325,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     private var onceToken = 0
     
     fileprivate func observeChannel() {
+        // observe channel changes
         guard let channelID = channel?.id else { return }
         var first = true
         channelListener = Firestore.firestore().collection("channels").document(channelID).addSnapshotListener({ snapshot, error in
@@ -340,26 +342,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
             guard let channelDictionary = snapshot?.data() as [String: AnyObject]? else { return }
             let channel = Channel(dictionary: channelDictionary)
             self.channel = channel
-            
-//            if let url = channel.thumbnailImageUrl {
-//                if self.onceToken == 0 {
-//                    self.channelDetailsContainerView.channelImageView.showActivityIndicator()
-//                }
-//
-//                self.channelDetailsContainerView.channelImageView.sd_setImage(with: URL(string: url), placeholderImage: nil, options: [.continueInBackground, .scaleDownLargeImages], completed: { (_, _, _, _) in
-//                    if self.onceToken == 0 {
-//                        self.channelDetailsContainerView.channelImageView.hideActivityIndicator()
-//                        self.onceToken = 1
-//                    }
-//                })
-//            }
-            
-            // re-configure header if necessary
-            
             self.configureChannelImageHeaderView()
-            
-            // reload table
-            
             DispatchQueue.main.async { [weak self] in
                 self?.channelDetailsContainerView.tableView.reloadData()
             }
@@ -369,9 +352,9 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     fileprivate func observeChannelAttendeesChanges() {
-        
+        // handle channel attendess changes
         guard let channelID = channel?.id else { return }
-        channelPartiticapntsListener = Firestore.firestore().collection("channels").document(channelID).collection("participantIds").limit(to: initialNumberOfAttendees).addSnapshotListener({ snapshot, error in
+        channelPartiticapntsListener = Firestore.firestore().collection("channels").document(channelID).collection("participantIds").addSnapshotListener({ snapshot, error in
             if error != nil {
                 print(error?.localizedDescription ?? "err")
                 return
@@ -387,6 +370,94 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
             })
             
         })
+        
+    }
+    
+    fileprivate func fetchChannelAttendees() {
+        
+        guard let channelID = channel?.id, let currentUserID = Auth.auth().currentUser?.uid else { return }
+        
+        Firestore.firestore().collection("channels").document(channelID).collection("participantIds").limit(to: initialNumberOfAttendees).getDocuments(completion: { [weak self] snapshot, error in
+            
+            if error != nil {
+                print(error?.localizedDescription ?? "error")
+                return
+            }
+
+            guard let docs = snapshot?.documents else { self?.doneFetchingReloadTable(); return }
+            
+            if docs.count > 0 {
+                let group = DispatchGroup()
+                for doc in docs {
+                    if doc.documentID != currentUserID {
+                        group.enter()
+                        self?.fetchUser(id: doc.documentID) { user, err in
+                            
+                            if let user = user {
+                                if !RealmKeychain.realmNonLocalUsersArray().map({ $0.id }).contains(user.id) {
+                                    autoreleasepool {
+                                        if !(self?.realm.isInWriteTransaction ?? false) {
+                                            self?.realm.beginWrite()
+                                            self?.realm.create(User.self, value: user, update: .modified)
+                                            try! self?.realm.commitWrite()
+                                        }
+                                        self?.attendees.append(user)
+                                    }
+                                } else {
+                                    // user AVAILABLE in non-local users realm
+                                    // if diff, replace existing (if any)
+                                    if let realmUser = RealmKeychain.realmNonLocalUsersArray().first(where: { $0.id == user.id }) {
+                                        if !user.isEqual_(to: realmUser) {
+                                            if let index = self?.attendees.firstIndex(where: { $0.id == realmUser.id }) {
+                                                // update in realm too
+                                                if !(self?.realm.isInWriteTransaction ?? false) {
+                                                    self?.realm.beginWrite()
+                                                    realmUser.email = user.email
+                                                    realmUser.name = user.name
+                                                    realmUser.localName = user.localName
+                                                    realmUser.phoneNumber = user.phoneNumber
+                                                    realmUser.userImageUrl = user.userImageUrl
+                                                    realmUser.userThumbnailImageUrl = user.userThumbnailImageUrl
+                                                    try! self?.realm.commitWrite()
+                                                }
+                                                
+                                                self?.channelDetailsContainerView.tableView.beginUpdates()
+                                                self?.channelDetailsContainerView.tableView.deleteRows(at: [IndexPath(row: index, section: 3)], with: .none)
+                                                self?.channelDetailsContainerView.tableView.insertRows(at: [IndexPath(row: index, section: 3)], with: .none)
+                                                self?.channelDetailsContainerView.tableView.endUpdates()
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            group.leave()
+                            
+                        }
+                    }
+                }
+                
+                group.notify(queue: .main, execute: {
+                    // sort??
+                    self?.channelDetailsContainerView.tableView.reloadData()
+                })
+            }
+            
+        })
+        
+    }
+    
+    func populateAllAttendees(at indexPath: IndexPath) {
+        guard let channelParticipantIds = channel?.participantIds else { return }
+        let localAttendees = RealmKeychain.realmUsersArray().filter({ channelParticipantIds.contains($0.id ?? "") })
+        let nonLocalAttendees = RealmKeychain.realmNonLocalUsersArray().filter({ channelParticipantIds.contains($0.id ?? "") })
+        
+        let listSet = NSSet(array: Array(channelParticipantIds))
+        let findListSet = NSSet(array: localAttendees.map({ $0.id ?? "" }))
+        
+        let allElemtsEqual = findListSet.isSubset(of: listSet as! Set<AnyHashable>)
+        
+        print("allElemtsEqual", allElemtsEqual)
+    }
             
 //            if error != nil {
 //                print(error?.localizedDescription ?? "sdd")
@@ -477,90 +548,17 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
 //            }
 //        }
 
-    }
+//    }
     
-    func loadAllAttendees(at indexPath: IndexPath) {
-        guard let attendeeIds = channel?.participantIds else { return }
-        // load realm users
-        var allUsers = [User]()
-        
-        allUsers = RealmKeychain.realmUsersArray()
-        
-        print(allUsers.map({ $0.name }))
-    }
-    
-    fileprivate func fetchChannelAttendees() {
-        
-        guard let channelID = channel?.id, let currentUserID = Auth.auth().currentUser?.uid else { return }
-        
-        Firestore.firestore().collection("channels").document(channelID).collection("participantIds").limit(to: initialNumberOfAttendees).getDocuments(completion: { [weak self] snapshot, error in
-            
-            if error != nil {
-                print(error?.localizedDescription ?? "error")
-                return
-            }
-
-            guard let docs = snapshot?.documents else { self?.doneFetchingReloadTable(); return }
-            
-            if docs.count > 0 {
-                let group = DispatchGroup()
-                for doc in docs {
-                    if doc.documentID != currentUserID {
-                        group.enter()
-                        self?.fetchUser(id: doc.documentID) { user, err in
-                            
-                            if let user = user {
-                                if !RealmKeychain.realmNonLocalUsersArray().map({ $0.id }).contains(user.id) {
-                                    autoreleasepool {
-                                        if !(self?.realm.isInWriteTransaction ?? false) {
-                                            self?.realm.beginWrite()
-                                            self?.realm.create(User.self, value: user, update: .modified)
-                                            try! self?.realm.commitWrite()
-                                        }
-                                        self?.attendees.append(user)
-                                    }
-                                } else {
-                                    // user AVAILABLE in non-local users realm
-                                    // if diff, replace existing (if any)
-                                    if let realmUser = RealmKeychain.realmNonLocalUsersArray().first(where: { $0.id == user.id }) {
-                                        if !user.isEqual_(to: realmUser) {
-                                            if let index = self?.attendees.firstIndex(where: { $0.id == realmUser.id }) {
-                                                // update in realm too
-                                                if !(self?.realm.isInWriteTransaction ?? false) {
-                                                    self?.realm.beginWrite()
-                                                    realmUser.email = user.email
-                                                    realmUser.name = user.name
-                                                    realmUser.localName = user.localName
-                                                    realmUser.phoneNumber = user.phoneNumber
-                                                    realmUser.userImageUrl = user.userImageUrl
-                                                    realmUser.userThumbnailImageUrl = user.userThumbnailImageUrl
-                                                    try! self?.realm.commitWrite()
-                                                }
-                                                
-                                                self?.channelDetailsContainerView.tableView.beginUpdates()
-                                                self?.channelDetailsContainerView.tableView.deleteRows(at: [IndexPath(row: index, section: 3)], with: .none)
-                                                self?.channelDetailsContainerView.tableView.insertRows(at: [IndexPath(row: index, section: 3)], with: .none)
-                                                self?.channelDetailsContainerView.tableView.endUpdates()
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            group.leave()
-                            
-                        }
-                    }
-                }
-                
-                group.notify(queue: .main, execute: {
-                    // sort??
-                    self?.channelDetailsContainerView.tableView.reloadData()
-                })
-            }
-            
-        })
-        
-    }
+//    func loadAllAttendees(at indexPath: IndexPath) {
+//        guard let attendeeIds = channel?.participantIds else { return }
+//        // load realm users
+//        var allUsers = [User]()
+//
+//        allUsers = RealmKeychain.realmUsersArray()
+//
+//        print(allUsers.map({ $0.name }))
+//    }
     
     // MARK: - Helper methods
     

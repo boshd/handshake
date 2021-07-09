@@ -1,3 +1,30 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6e99c0876d304836c61781a18336f6b63b15f4f971984dd25e456df50e7ffc0d
-size 809
+//
+//  CreateChannelController+LocationSearchDelegate.swift
+//  space-ios
+//
+//  Created by Kareem Arab on 2021-05-20.
+//  Copyright © 2021 Kareem Arab. All rights reserved.
+//
+
+import MapKit
+import Firebase
+
+extension CreateChannelController: LocationSearchDelegate {
+    func clickSearchButton(searchBar: UISearchBar) {}
+    
+    func didSelectMapItem(mapItem: MKMapItem) {
+        print("arrived in location delegate")
+        self.mapItem = mapItem
+        
+        self.locationName = mapItem.name
+        self.locationDescription = mapItem.placemark.title
+        self.locationCoordinates = (mapItem.placemark.coordinate.latitude, mapItem.placemark.coordinate.longitude)
+        
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+        
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+}

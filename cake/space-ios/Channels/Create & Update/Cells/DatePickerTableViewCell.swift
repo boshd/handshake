@@ -22,7 +22,7 @@ class DatePickerCell: UITableViewCell {
         picker.isUserInteractionEnabled = true
         picker.tintColor = ThemeManager.currentTheme().tintColor
         picker.minimumDate = Date()
-        
+        picker.overrideUserInterfaceStyle = ThemeManager.currentTheme().generalOverrideUserInterfaceStyle
         return picker
     }()
     

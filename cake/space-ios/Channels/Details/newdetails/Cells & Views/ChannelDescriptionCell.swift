@@ -19,21 +19,8 @@ class ChannelDescriptionCell: UITableViewCell {
         let textView = ReadMoreTextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
-//        textView.isScrollEnabled = false
         textView.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         textView.textColor = ThemeManager.currentTheme().generalSubtitleColor
-//        textView.returnKeyType = .done
-//        textView.autocorrectionType = .default
-//        textView.autocapitalizationType = .sentences
-//        textView.tintColor = ThemeManager.currentTheme().tintColor
-//        textView.textContainer.lineFragmentPadding = 0
-        textView.text = ""
-//        textView.isUserInteractionEnabled = true
-//        textView.isSelectable = true
-//        textView.isEditable = false
-//        textView.onSizeChange = { _ in }
-//        textView.shouldTrim = true
-//        textView.maximumNumberOfLines = 3
         let readMoreTextAttributes: [NSAttributedString.Key: Any] = [
             NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().tintColor,
             NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFont(with: 12)
@@ -44,7 +31,7 @@ class ChannelDescriptionCell: UITableViewCell {
         ]
         textView.attributedReadMoreText = NSAttributedString(string: "... Read more", attributes: readMoreTextAttributes)
         textView.attributedReadLessText = NSAttributedString(string: " Read less", attributes: readLessTextAttributes)
-        textView.maximumNumberOfLines = 6
+        textView.maximumNumberOfLines = 3
         textView.shouldTrim = true
         textView.layoutIfNeeded()
         return textView

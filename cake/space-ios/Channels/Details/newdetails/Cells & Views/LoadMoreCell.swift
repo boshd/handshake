@@ -15,9 +15,13 @@ class LoadMoreCell: UITableViewCell {
         selectionStyle = .default
 //        imageView?.image = UIImage(named: "Arrow - Down Circle")
 //        imageView?.tintColor = ThemeManager.currentTheme().tintColor
-        textLabel?.text = "See 10 more"
+//        textLabel?.text = "See 10 more"
         textLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         textLabel?.textColor = ThemeManager.currentTheme().tintColor
+        
+//        textLabel?.backgroundColor = .handshakeLightPurple
+//        textLabel?.cornerRadius = textLabel?.frame.height ?? 0.0
+        
         
 //        let itemSize = CGSize.init(width: 40, height: 40)
 //        UIGraphicsBeginImageContextWithOptions(itemSize, false, UIScreen.main.scale)

@@ -23,15 +23,15 @@ class SpecialSwitchCell: UITableViewCell {
     var switchTapAction: ((Bool) -> Void)?
   
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: .default, reuseIdentifier: reuseIdentifier)
-        backgroundColor = ThemeManager.currentTheme().modalGroupedInsetCellBackgroundColor
+        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
+        backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         switchAccessory.addTarget(self, action: #selector(switchStateDidChange(_:)), for: .valueChanged)
-        
+        switchAccessory.backgroundColor = .clear
         selectionStyle = .none
         
         detailTextLabel?.numberOfLines = 0
         detailTextLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
-        detailTextLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 12)
+        detailTextLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 11)
         textLabel?.font = ThemeManager.currentTheme().secondaryFontBold(with: 13)
         textLabel?.textColor = ThemeManager.currentTheme().generalTitleColor
         
@@ -46,7 +46,8 @@ class SpecialSwitchCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        backgroundColor = ThemeManager.currentTheme().modalGroupedInsetCellBackgroundColor
+        backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+        switchAccessory.backgroundColor = .clear
         switchAccessory.onTintColor = ThemeManager.currentTheme().tintColor
         textLabel?.textColor = ThemeManager.currentTheme().generalTitleColor
     }

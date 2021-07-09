@@ -56,7 +56,7 @@ class UpdateChannelController: CreateChannelController {
     }
     
     override func configureNavigationBar() {
-        title = "Edit event"
+        title = "Edit Event"
         
         let doneEditingButton = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(doneAction))
         navigationItem.rightBarButtonItem = doneEditingButton
@@ -65,6 +65,10 @@ class UpdateChannelController: CreateChannelController {
         let dismissButton = UIBarButtonItem(image: UIImage(named: "i-remove"), style: .plain, target: self, action: #selector(dismissController))
         dismissButton.imageInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 0)
         navigationItem.leftBarButtonItem = dismissButton
+        
+        if let navigationBar = navigationController?.navigationBar {
+            ThemeManager.setSecondaryNavigationBarAppearance(navigationBar)
+        }
     }
     
     func populateUpdatableProperties() {
@@ -153,6 +157,10 @@ class UpdateChannelController: CreateChannelController {
         channelReference.updateData([
             "name": channelName as AnyObject,
             "isRemote": isRemote as AnyObject,
+            "locationName": isRemote ? FieldValue.delete() : channel?.locationName ?? "" as AnyObject,
+            "locationDescription": isRemote ? FieldValue.delete() : channel?.locationName ?? "" as AnyObject,
+            "latitude":  isRemote ? FieldValue.delete() : channel?.latitude ?? 0.0 as AnyObject,
+            "longitude": isRemote ? FieldValue.delete() : channel?.latitude ?? 0.0 as AnyObject,
             "startTime": startTime as AnyObject,
             "endTime": endTime as AnyObject,
             "description": channelDescription as AnyObject

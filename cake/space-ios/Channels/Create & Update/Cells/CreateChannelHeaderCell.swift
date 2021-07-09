@@ -26,7 +26,8 @@ class ChannelNameHeaderCell: UITableViewCell {
         imageView.backgroundColor = ThemeManager.currentTheme().imageViewBackground
         imageView.contentMode = .scaleAspectFill
         imageView.layer.masksToBounds = true
-        imageView.cornerRadius = 25
+        imageView.cornerRadius = 30
+        imageView.layer.cornerCurve = .circular
         imageView.isUserInteractionEnabled = true
         return imageView
     }()
@@ -107,10 +108,10 @@ class ChannelNameHeaderCell: UITableViewCell {
         contentView.addSubview(channelNameDescriptionLabel)
         
         NSLayoutConstraint.activate([
-            channelImageView.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 20),
+            channelImageView.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 5),
             channelImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
-            channelImageView.heightAnchor.constraint(equalToConstant: 50),
-            channelImageView.widthAnchor.constraint(equalToConstant: 50),
+            channelImageView.heightAnchor.constraint(equalToConstant: 60),
+            channelImageView.widthAnchor.constraint(equalToConstant: 60),
             
             channelImagePlaceholderLabel.topAnchor.constraint(equalTo: channelImageView.topAnchor, constant: 0),
             channelImagePlaceholderLabel.leadingAnchor.constraint(equalTo: channelImageView.leadingAnchor, constant: 0),
@@ -119,7 +120,7 @@ class ChannelNameHeaderCell: UITableViewCell {
             
             channelNameField.centerYAnchor.constraint(equalTo: channelImageView.centerYAnchor, constant: 0),
             channelNameField.leadingAnchor.constraint(equalTo: channelImageView.trailingAnchor, constant: 15),
-            channelNameField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
+            channelNameField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
             
             channelNameDescriptionLabel.topAnchor.constraint(equalTo: channelImageView.bottomAnchor, constant: 5),
             channelNameDescriptionLabel.leadingAnchor.constraint(equalTo: channelNameField.leadingAnchor, constant: 0),

@@ -21,7 +21,7 @@ enum ViewPlaceholderPosition {
 
 enum ViewPlaceholderTitle: String {
     case noChannels = "You don't have any events yet."
-    case searchForLocation = "Search for a spot"
+    case searchForLocation = "Search for location"
     case noUsers = "No users found. 😞"
     case deniedContacts = "✋ Access Denied."
     case nothingHere = "✋ Nothing to see here."

@@ -25,12 +25,15 @@ class DescriptionCell: UITableViewCell {
         textView.backgroundColor = .clear
         textView.isScrollEnabled = false
         textView.font = ThemeManager.currentTheme().secondaryFont(with: 12)
-        textView.textColor = ThemeManager.currentTheme().generalTitleColor
+        textView.textColor = ThemeManager.currentTheme().generalSubtitleColor
         textView.returnKeyType = .done
+        textView.text = "Description"
         textView.autocorrectionType = .default
-        textView.autocapitalizationType = .sentences
+        textView.autocapitalizationType = .none
         textView.tintColor = ThemeManager.currentTheme().tintColor
         textView.textContainer.lineFragmentPadding = 0
+        textView.keyboardAppearance = ThemeManager.currentTheme().keyboardAppearance
+        textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
         
         return textView
     }()
@@ -42,7 +45,7 @@ class DescriptionCell: UITableViewCell {
         selectionStyle = .none
         
         textView.delegate = self
-        
+
         setColor()
         contentView.addSubview(textView)
         
@@ -76,32 +79,73 @@ extension DescriptionCell: UITextViewDelegate {
     
     func textViewDidChangeSelection(_ textView: UITextView) {
         if self.contentView.window != nil {
-            if textView.textColor == UIColor.lightGray {
+            if textView.textColor == ThemeManager.currentTheme().generalSubtitleColor {
                 textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
             }
         }
     }
     
+//    func textViewDidChangeSelection(_ textView: UITextView) {
+//        if self.view.window != nil {
+//            if textView.textColor == UIColor.lightGray {
+//                textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+//            }
+//        }
+//    }
+    
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        let currentText:String = textView.text
-        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: text)
-        
-        if text == "\n" {
-            textView.resignFirstResponder()
+        // Combine the textView text and the replacement text to
+            // create the updated text string
+            let currentText:String = textView.text
+            let updatedText = (currentText as NSString).replacingCharacters(in: range, with: text)
+
+            // If updated text view will be empty, add the placeholder
+            // and set the cursor to the beginning of the text view
+            if updatedText.isEmpty {
+
+                textView.text = "Description"
+                textView.textColor = ThemeManager.currentTheme().generalSubtitleColor
+
+                textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+            }
+
+            // Else if the text view's placeholder is showing and the
+            // length of the replacement string is greater than 0, set
+            // the text color to black then set its text to the
+            // replacement string
+             else if textView.textColor == ThemeManager.currentTheme().generalSubtitleColor && !text.isEmpty {
+                textView.textColor = ThemeManager.currentTheme().generalTitleColor
+                textView.text = text
+            }
+
+            // For every other case, the text should change with the usual
+            // behavior...
+            else {
+                return true
+            }
+
+            // ...otherwise return false since the updates have already
+            // been made
             return false
-        } else if updatedText.isEmpty {
-            textView.text = "Description"
-            textView.textColor = ThemeManager.currentTheme().generalSubtitleColor
-
-            textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
-        } else if textView.textColor == UIColor.lightGray && !text.isEmpty {
-            textView.textColor = UIColor.black
-            textView.text = text
-        } else {
-            return true
-        }
-
-        return false
+//        let currentText:String = textView.text
+//        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: text)
+//
+//        if text == "\n" {
+//            textView.resignFirstResponder()
+//            return false
+//        } else if updatedText.isEmpty {
+//            textView.text = "Description"
+//            textView.textColor = ThemeManager.currentTheme().generalSubtitleColor
+//
+//            textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+//        } else if textView.textColor == UIColor.lightGray && !text.isEmpty {
+//            textView.textColor = UIColor.black
+//            textView.text = text
+//        } else {
+//            return true
+//        }
+//
+//        return false
     }
     
     func textChanged(action: @escaping (String) -> Void) {

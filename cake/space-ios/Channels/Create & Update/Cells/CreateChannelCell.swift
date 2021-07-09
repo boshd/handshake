@@ -11,7 +11,7 @@ import UIKit
 class SelectLocationCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         // userInteractionEnabledWhileDragging = false
         contentView.isUserInteractionEnabled = true
@@ -35,7 +35,6 @@ class SelectLocationCell: UITableViewCell {
 
     fileprivate func setColor() {
         backgroundColor = ThemeManager.currentTheme().modalGroupedInsetCellBackgroundColor
-//        contentView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         textLabel?.textColor = ThemeManager.currentTheme().generalTitleColor
         detailTextLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
     }
