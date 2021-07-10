@@ -30,7 +30,10 @@ class ParticipantsController: UIViewController {
     
     private var detailsTransitioningDelegate: InteractiveModalTransitioningDelegate!
     
-    var participants: [User]?
+    let nonLocalRealm = try! Realm(configuration: RealmKeychain.realmNonLocalUsersConfiguration())
+    let localRealm = try! Realm(configuration: RealmKeychain.realmUsersConfiguration())
+    
+    var participants = [User]()
     var selectedUsers: [User]?
     var segmentedControlIndex = 0
     
@@ -55,6 +58,7 @@ class ParticipantsController: UIViewController {
         configureRSVPuserArrays()
         addObservers()
         listenToChannelChanges()
+        fetchAndPopulate()
     }
     
     private func loadViews() {
@@ -166,9 +170,9 @@ class ParticipantsController: UIViewController {
     
     fileprivate func configureRSVPuserArrays() {
         guard let channel = channel else { return }
-        goingParticipants = participants?.filter({ channel.goingIds.contains($0.id ?? "") })
-        maybeParticipants = participants?.filter({ channel.maybeIds.contains($0.id ?? "") })
-        notGoingParticipants = participants?.filter({ channel.notGoingIds.contains($0.id ?? "") })
+        goingParticipants = participants.filter({ channel.goingIds.contains($0.id ?? "") })
+        maybeParticipants = participants.filter({ channel.maybeIds.contains($0.id ?? "") })
+        notGoingParticipants = participants.filter({ channel.notGoingIds.contains($0.id ?? "") })
         
         var goingTitle = "Going"
         var maybeTitle = "Maybe"
@@ -214,6 +218,112 @@ class ParticipantsController: UIViewController {
         }
     }
     
+    // MARK: - Datasource
+    
+    func fetchAndPopulate() {
+        
+        guard let currentUserID = Auth.auth().currentUser?.uid,
+              let participantIds = channel?.participantIds
+        else { return }
+        
+        var mutableParticipantIds = [String]()
+        
+        mutableParticipantIds +=  Array(participantIds)
+        
+        if let globalCurrentUser = globalCurrentUser {
+            participants.append(globalCurrentUser)
+        }
+        
+        let group = DispatchGroup()
+
+        for participantId in mutableParticipantIds {
+            if participantId == currentUserID { continue }
+            group.enter()
+            
+            if RealmKeychain.realmNonLocalUsersArray().map({$0.id}).contains(participantId) {
+                if let usr = RealmKeychain.realmNonLocalUsersArray().first(where: {$0.id == participantId}) {
+                    participants.append(usr)
+                }
+            }
+            
+            if RealmKeychain.realmUsersArray().map({$0.id}).contains(participantId) {
+                if let usr = RealmKeychain.realmUsersArray().first(where: {$0.id == participantId}) {
+                    participants.append(usr)
+                }
+            }
+            
+            UsersFetcher.fetchUser(id: participantId) { user, error in
+                group.leave()
+                if let user = user {
+                    guard error == nil else { print(error?.localizedDescription ?? "error"); return }
+
+                    if RealmKeychain.realmUsersArray().map({$0.id}).contains(user.id) {
+                        if let localRealmUser = RealmKeychain.usersRealm.object(ofType: User.self, forPrimaryKey: user.id),
+                           !user.isEqual_(to: localRealmUser) {
+                            
+                            // update local realm user copy
+                            if !(self.localRealm.isInWriteTransaction) {
+                                self.localRealm.beginWrite()
+                                localRealmUser.email = user.email
+                                localRealmUser.name = user.name
+                                localRealmUser.localName = user.localName
+                                localRealmUser.phoneNumber = user.phoneNumber
+                                localRealmUser.userImageUrl = user.userImageUrl
+                                localRealmUser.userThumbnailImageUrl = user.userThumbnailImageUrl
+                                try! self.localRealm.commitWrite()
+                            }
+                            
+                            // update array
+                            if let index = self.participants.firstIndex(where: { user_ in
+                                return user_.id == user.id
+                            }) {
+                                self.participants[index] = user
+                            }
+                        }
+                    } else if RealmKeychain.realmNonLocalUsersArray().map({$0.id}).contains(user.id) {
+                        if let nonLocalRealmUser = RealmKeychain.nonLocalUsersRealm.object(ofType: User.self, forPrimaryKey: user.id),
+                           !user.isEqual_(to: nonLocalRealmUser) {
+                            
+                            // update local realm user copy
+                            if !(self.nonLocalRealm.isInWriteTransaction) {
+                                self.nonLocalRealm.beginWrite()
+                                nonLocalRealmUser.email = user.email
+                                nonLocalRealmUser.name = user.name
+                                nonLocalRealmUser.localName = user.localName
+                                nonLocalRealmUser.phoneNumber = user.phoneNumber
+                                nonLocalRealmUser.userImageUrl = user.userImageUrl
+                                nonLocalRealmUser.userThumbnailImageUrl = user.userThumbnailImageUrl
+                                try! self.nonLocalRealm.commitWrite()
+                            }
+                            
+                            // update array
+                            if let index = self.participants.firstIndex(where: { user_ in
+                                return user_.id == user.id
+                            }) {
+                                self.participants[index] = user
+                            }
+                        }
+                    } else {
+                        autoreleasepool {
+                            if !self.nonLocalRealm.isInWriteTransaction {
+                                self.nonLocalRealm.beginWrite()
+                                self.nonLocalRealm.create(User.self, value: user, update: .modified)
+                                try! self.nonLocalRealm.commitWrite()
+                            }
+                        }
+                        self.participants.append(user)
+                    }
+                }
+            }
+            
+            group.notify(queue: .main, execute: { [weak self] in
+                self?.configureRSVPuserArrays()
+                self?.participantsContainerView.tableView.reloadData()
+            })
+        }
+        
+    }
+    
     // MARK: - @objc methods
     
     @objc func dismissController() {
@@ -230,13 +340,6 @@ class ParticipantsController: UIViewController {
             return
         }
         
-//        guard let status = channel?.updateAndReturnStatus() else { return }
-        
-//        if status == .inProgress || status == .expired || status == .cancelled {
-//            displayErrorAlert(title: basicErrorTitleForAlert, message: cannotDoThisState, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
-//            return
-//        }
-        
         hapticFeedback(style: .impact)
         
         let destination = AddChannelParticipantsController()
@@ -252,6 +355,28 @@ class ParticipantsController: UIViewController {
         destination.setUpCollation()
         destination.delegate = self
         navigationController?.pushViewController(destination, animated: true)
+    }
+    
+    @objc fileprivate func removeAdmin_(memberID: String) {
+        if currentReachabilityStatus == .notReachable {
+            displayErrorAlert(title: basicErrorTitleForAlert, message: noInternetError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+            return
+        }
+        guard let ref = currentChannelReference, let channelID = channel?.id else { return }
+        globalIndicator.show()
+        ChannelManager.removeAdmin(ref: ref, memberID: memberID, channelID: channelID) { error in
+            guard error == nil else {
+                globalIndicator.dismiss()
+                print(error?.localizedDescription ?? "")
+                displayErrorAlert(title: basicErrorTitleForAlert, message: genericOperationError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+                return
+            }
+            globalIndicator.showSuccess(withStatus: "Removed")
+            hapticFeedback(style: .success)
+            if let name = self.participants.filter({ $0.id == memberID }).first?.name, let channelName = self.channel?.name {
+                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\(name) has been dismissed as Organizer", channel: self.channel)
+            }
+        }
     }
     
     @objc fileprivate func removeAdmin(memberID: String) {
@@ -276,7 +401,7 @@ class ParticipantsController: UIViewController {
             hapticFeedback(style: .success)
             
             
-            if let newAdminName = self.participants?.filter({ $0.id == memberID }).first?.name {
+            if let newAdminName = self.participants.filter({ $0.id == memberID }).first?.name {
                 self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channel?.name ?? "", participantIDs: [], text: "\(newAdminName) has been dismissed as Organizer", channel: channel)
             }
         
@@ -304,7 +429,7 @@ class ParticipantsController: UIViewController {
                 return
             }
 
-            if let newAdminName = self.participants?.filter({ $0.id == memberID }).first?.name {
+            if let newAdminName = self.participants.filter({ $0.id == memberID }).first?.name {
                 self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channel?.name ?? "", participantIDs: [], text: "\(newAdminName) is now an Organizer", channel: channel)
             }
             
@@ -336,7 +461,7 @@ class ParticipantsController: UIViewController {
             "notGoingIds": FieldValue.arrayRemove([memberID]),
         ], forDocument: currentChannelReference)
         
-        let fellasName = self.participants?.filter({ $0.id == memberID }).first?.name
+        let fellasName = self.participants.filter({ $0.id == memberID }).first?.name
         self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channel?.name ?? "", participantIDs: [], text: "\(fellasName ?? "someone") has been removed from the event", channel: channel)
         batch.commit { [unowned self] (error) in
             if error != nil {

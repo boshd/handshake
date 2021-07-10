@@ -811,8 +811,8 @@
 				BC00A268250A46EB00EB1E7B /* Realm */,
 				BCECF52B24884CD100D38AE1 /* Table */,
 				BC1A77E522A2AE07005AC5CE /* Log */,
-				BC81DDF5253DDE2C001C24BC /* Participants */,
 				BCD9577422C13B130065DE5F /* Create & Update */,
+				BC81DDF5253DDE2C001C24BC /* Participants */,
 				BC08717B238AF7370055E109 /* Details */,
 			);
 			path = Channels;

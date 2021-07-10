@@ -231,4 +231,17 @@ class UsersFetcher: NSObject {
         currentUserUserIdsListener?.remove()
     }
     
+    // user fetching method
+    public static func fetchUser(id: String, completion: @escaping (User?, Error?) -> ()) {
+        Firestore.firestore().collection("users").document(id).getDocument { snapshot, error in
+            if error != nil {
+                print(error?.localizedDescription ?? "error")
+                completion(nil, error)
+                return
+            }
+            guard let userData = snapshot?.data() as [String : AnyObject]? else { completion(nil, error); return }
+            completion(User(dictionary: userData), nil)
+        }
+    }
+    
 }

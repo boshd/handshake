@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 /*
  sections:
@@ -216,15 +217,37 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
         
         if indexPath.section == 3 {
             if indexPath.row == attendees.count, isInitial {
-                // i.e if row is the LAST row
-                print("LOAD MORE")
-//                populateAllAttendees(at: indexPath)
                 isInitial = false
             } else {
-                print("detectedd....")
+                let member = attendees[indexPath.row]
+                guard let memberID = member.id, let currentUserID = Auth.auth().currentUser?.uid, member.id != currentUserID else { return }
+                
+                let alert = CustomAlertController(title_: nil, message: nil, preferredStyle: .actionSheet)
+                
+                alert.addAction(CustomAlertAction(title: "View profile", style: .default , handler: { [unowned self] in
+                    viewProfile(member: attendees[indexPath.row])
+                }))
+                
+                if let admins = channel?.admins, admins.contains(currentUserID) {
+                    alert.addAction(CustomAlertAction(title: "Remove from event", style: .default , handler: { [unowned self] in
+                        viewProfile(member: member)
+                    }))
+                    
+                    // dismiss/assign
+                    if let author = channel?.author,
+                       admins.contains(memberID) && member.id != author {
+                        alert.addAction(CustomAlertAction(title: "Dismiss as Organizer", style: .destructive , handler: { [unowned self] in
+                            removeAdmin(memberID: memberID)
+                        }))
+                    } else {
+                        alert.addAction(CustomAlertAction(title: "Make Organizer", style: .default , handler: { [unowned self] in
+                            makeAdmin(memberID: memberID)
+                        }))
+                    }
+                }
+                
+                present(alert, animated: true, completion: nil)
             }
-        } else if indexPath.section == 3 {
-            print("detected")
         } else if indexPath.section == 4 {
             if let isRemote = channel?.isRemote.value, isRemote {
                 //
