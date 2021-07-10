@@ -34,6 +34,11 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     let tableSectionHeaderHeight: CGFloat = 27.5
     
     let initialNumberOfAttendees = 1
+    var isInitial = true {
+        didSet {
+            test2()
+        }
+    }
     let showMoreUsers = false
     
     var allAttendeesLoaded = false
@@ -63,7 +68,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         observeChannel()
         observeChannelAttendeesChanges()
 //        fetchChannelAttendees()
-        test2(usersToLoad: 10)
+        test2()
         addObservers()
     }
     
@@ -375,21 +380,71 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         
     }
     
-    func test2(usersToLoad: Int) {
-        
+    func test2() {
+        print("triggered")
         guard let currentUserID = Auth.auth().currentUser?.uid,
-              let participantIds = channel?.participantIds.filter({ $0 != currentUserID }),
-              let currentUser = globalCurrentUser
+              let participantIds = channel?.participantIds
         else { return }
+        print("triggered \(isInitial)")
+        var mutableParticipantIds = [String]()
+        
+        // check how many users we will be fetching
+        // this is based on if it's an initial loading of users or not
+        
+        if isInitial && initialNumberOfAttendees < participantIds.count {
+            // only load n users
+            mutableParticipantIds += Array(participantIds).prefix(initialNumberOfAttendees)
+            print("mutableParticipantIds \(mutableParticipantIds) \(mutableParticipantIds.count)")
+        } else {
+            // load all, basically do nothing
+            mutableParticipantIds +=  Array(participantIds)
+//            if let last = attendees.first(where: { $0.id == currentUserID }) {
+//                attendees = [last]
+//            }
+            print("in else")
+            attendees.removeAll()
+            
+        }
+        
+        if let globalCurrentUser = globalCurrentUser {
+            attendees.append(globalCurrentUser)
+        }
+//
+//        attendees += RealmKeychain.realmNonLocalUsersArray().filter({ participantIds.contains($0.id ?? "") })
+//        attendees += RealmKeychain.realmUsersArray().filter({ participantIds.contains($0.id ?? "") })
         
         let group = DispatchGroup()
 
-        attendees.append(currentUser)
-        
-        // sort participant ids
-
-        for participantId in participantIds {
+        for participantId in mutableParticipantIds {
+            if participantId == currentUserID { continue }
             group.enter()
+            print("in loop")
+//            if participantId == currentUserID {
+//                if let globalCurrentUser = globalCurrentUser {
+//                    attendees.append(globalCurrentUser)
+////                    group.leave()
+////                    continue
+//                }
+//
+//            }
+            
+            if RealmKeychain.realmNonLocalUsersArray().map({$0.id}).contains(participantId) {
+                if let usr = RealmKeychain.realmNonLocalUsersArray().first(where: {$0.id == participantId}) {
+                    attendees.append(usr)
+//                    group.leave()
+//                    continue
+                }
+            }
+            
+            if RealmKeychain.realmUsersArray().map({$0.id}).contains(participantId) {
+                if let usr = RealmKeychain.realmUsersArray().first(where: {$0.id == participantId}) {
+                    attendees.append(usr)
+//                    group.leave()
+//                    continue
+                }
+                
+            }
+            print("prefetch")
             fetchUser(id: participantId) { user, error in
                 group.leave()
                 if let user = user {
@@ -397,10 +452,14 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
 
                     // check for existance in realm as a whole
                     // if exists, then check for difference with local copy
+                    
+                    print("realmUsersArray", RealmKeychain.realmUsersArray().map({$0.id}))
+                    print("realmNonLocalUsersArray", RealmKeychain.realmNonLocalUsersArray().map({$0.id}))
 
                     if RealmKeychain.realmUsersArray().map({$0.id}).contains(user.id) {
                         if let localRealmUser = RealmKeychain.usersRealm.object(ofType: User.self, forPrimaryKey: user.id),
                            !user.isEqual_(to: localRealmUser) {
+                            print("ENTERED1 -- \(user.name)")
                             
                             // update local realm user copy
                             if !(self.localRealm.isInWriteTransaction) {
@@ -419,17 +478,20 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
                                 return user_.id == user.id
                             }) {
                                 self.attendees[index] = user
+                            } else {
+                                print("TRAPPED1 -- \(user.name)")
                             }
                         }
                         // IN LOCAL REALM
                         // is different and needs updating?
                         
-                    } else if RealmKeychain.realmUsersArray().map({$0.id}).contains(user.id) {
+                    } else if RealmKeychain.realmNonLocalUsersArray().map({$0.id}).contains(user.id) {
                         // IN NON LOCAL REALM
                         // is different and needs updating?
                         
                         if let nonLocalRealmUser = RealmKeychain.nonLocalUsersRealm.object(ofType: User.self, forPrimaryKey: user.id),
                            !user.isEqual_(to: nonLocalRealmUser) {
+                            print("ENTERED2 -- \(user.name)")
                             
                             // update local realm user copy
                             if !(self.nonLocalRealm.isInWriteTransaction) {
@@ -448,11 +510,14 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
                                 return user_.id == user.id
                             }) {
                                 self.attendees[index] = user
+                            } else {
+                                print("TRAPPED2 -- \(user.name)")
                             }
                             
                         }
                         
                     } else {
+                        print("ENTERED3 -- \(user.name)")
                         // NOT IN ANY REALM -- YET
                         // add to nonlocal realm or add to local realm?
                         // add to non local realm, if theres an issue it will be removed from local realm anyway
@@ -464,6 +529,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
                             }
                         }
                         // update array
+                        self.attendees.append(user)
                     }
                 }
                 // if doesn't exist in realm, create it
@@ -471,6 +537,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
             
             group.notify(queue: .main, execute: { [weak self] in
                 self?.channelDetailsContainerView.tableView.reloadData()
+                print("attendees", self?.attendees.map({$0.name}), self?.attendees.count)
             })
         }
         
@@ -749,7 +816,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
                 completion(nil, error)
                 return
             }
-            guard let userData = snapshot?.data() as [String : AnyObject]? else { return }
+            guard let userData = snapshot?.data() as [String : AnyObject]? else { completion(nil, error); return }
             completion(User(dictionary: userData), nil)
         }
     }

@@ -29,6 +29,11 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
         if section == 1 {
             return 1
         } else if section == 3 {
+            guard let count = channel?.participantIds.count, isInitial && initialNumberOfAttendees < count else { return attendees.count }
+
+            return attendees.count + 1
+            
+            
 //            print("attendess count \(attendees.count)")
 //            guard let count = channel?.participantIds.count,
 //                  count > initialNumberOfAttendees,
@@ -38,7 +43,6 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
             // +2 because of the current user AND "Load more" cell
 //            return initialNumberOfAttendees + 2
 
-            return attendees.count  
             
 //            if allAttendeesLoaded || !initialAttendeesLoaded {
 //                return attendees.count
@@ -95,13 +99,30 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
             cell.textView.text = desc
             return cell
         } else if indexPath.section == 3 {
-            print(attendees.count, initialNumberOfAttendees, "dfdflmd")
+//            print(attendees.count, initialNumberOfAttendees, "dfdflmd")
 //            guard let channelParticipantsCount = channel?.participantIds.count,
 //                  channelParticipantsCount > initialNumberOfAttendees,
 //                  // initialNumberOfAttendees + 2 like above but - 1 because index starts at 0
 //                  indexPath.row == initialNumberOfAttendees + 1,
 //                  !showMoreUsers
 //            else {
+//                let cell = UITableViewCell(style: .value2, reuseIdentifier: userCellId) as? UserCell ?? UserCell(style: .subtitle, reuseIdentifier: userCellId)
+//                guard let userID = attendees[indexPath.row].id else { return cell }
+//                cell.configureCell(for: indexPath, users: attendees, admin: channel?.admins.contains(userID) ?? false)
+//                cell.selectionStyle = .none
+//                cell.accessoryView = .none
+//                cell.accessoryType = .none
+//                return cell
+//            }
+            
+            if let channelParticipantsCount = channel?.participantIds.count, isInitial && indexPath.row == attendees.count && initialNumberOfAttendees < channelParticipantsCount {
+                let cell = LoadMoreCell(style: .subtitle, reuseIdentifier: loadMoreCellId)
+    //            // - 1 because we're removing current user as this is a count retrieved from the global channel entity
+                cell.textLabel?.text = "See more"
+                guard let channelParticipantsCount = channel?.participantIds.count else { return cell }
+                cell.textLabel?.text = "See \(channelParticipantsCount - attendees.count) more"
+                return cell
+            } else {
                 let cell = UITableViewCell(style: .value2, reuseIdentifier: userCellId) as? UserCell ?? UserCell(style: .subtitle, reuseIdentifier: userCellId)
                 guard let userID = attendees[indexPath.row].id else { return cell }
                 cell.configureCell(for: indexPath, users: attendees, admin: channel?.admins.contains(userID) ?? false)
@@ -109,10 +130,10 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
                 cell.accessoryView = .none
                 cell.accessoryType = .none
                 return cell
-//            }
+            }
             
 //            let cell = LoadMoreCell(style: .subtitle, reuseIdentifier: loadMoreCellId)
-//            // - 1 because we're removing current user as this is a count retrieved from the global channel entity
+////            // - 1 because we're removing current user as this is a count retrieved from the global channel entity
 //            cell.textLabel?.text = "See \(channelParticipantsCount - initialNumberOfAttendees - 1) more"
 //            return cell
 //
@@ -194,17 +215,22 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
         }
         
         if indexPath.section == 3 {
-            if indexPath.row == initialNumberOfAttendees + 1, !showMoreUsers {
+            if indexPath.row == attendees.count, isInitial {
                 // i.e if row is the LAST row
-                print("somethings wrong")
-                populateAllAttendees(at: indexPath)
+                print("LOAD MORE")
+//                populateAllAttendees(at: indexPath)
+                isInitial = false
             } else {
                 print("detectedd....")
             }
         } else if indexPath.section == 3 {
             print("detected")
         } else if indexPath.section == 4 {
-            presentLocationActions()
+            if let isRemote = channel?.isRemote.value, isRemote {
+                //
+            } else {
+                presentLocationActions()
+            }
         }
     }
     
