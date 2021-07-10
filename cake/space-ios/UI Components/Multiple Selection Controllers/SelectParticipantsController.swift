@@ -319,7 +319,7 @@ class SelectParticipantsController: UIViewController {
         navigationItem.rightBarButtonItem?.isEnabled = true
 
         if selectedUsers.count == 1 {
-            collectionViewHeightAnchor.constant = 75
+            collectionViewHeightAnchor.constant = 140
             UIView.animate(withDuration: 0.3) {
                 self.view.layoutIfNeeded()
             }

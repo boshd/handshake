@@ -57,7 +57,7 @@ class TabBarController: UITabBarController {
     @objc fileprivate func changeTheme() {
         tabBar.unselectedItemTintColor = ThemeManager.currentTheme().unselectedButtonTintColor
         tabBar.selectedImageTintColor = ThemeManager.currentTheme().selectedButtonTintColor
-        setTranslucency()
+//        setTranslucency()
 //        UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().barTextColor],
 //        for: .normal)
 //        tabBar.unselectedItemTintColor = ThemeManager.currentTheme().unselectedButtonTintColor
@@ -92,9 +92,9 @@ class TabBarController: UITabBarController {
     }
     
     fileprivate func setTranslucency() {
-        frost.frame = tabBar.bounds
-        tabBar.backgroundColor = .black.withAlphaComponent(0.05)
-        tabBar.insertSubview(frost, at: 0)
+//        frost.frame = tabBar.bounds
+//        tabBar.backgroundColor = .black.withAlphaComponent(0.05)
+//        tabBar.insertSubview(frost, at: 0)
     }
 
     override func viewWillAppear(_ animated: Bool) {

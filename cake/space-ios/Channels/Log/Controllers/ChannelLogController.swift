@@ -1008,7 +1008,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     // MARK: - Misc.
     
     @objc func pleasePopController() {
-        hapticFeedback(style: .impact)
         navigationController?.popViewController(animated: true)
     }
     

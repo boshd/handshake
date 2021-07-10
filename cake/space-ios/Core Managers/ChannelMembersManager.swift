@@ -134,7 +134,6 @@ class ChannelManager: NSObject {
         ref.updateData([
             "admins": FieldValue.arrayUnion([memberID])
         ], completion: { (error) in
-            globalIndicator.dismiss()
             if error != nil {
                 print(error?.localizedDescription ?? "")
                 completion(error)
@@ -143,5 +142,32 @@ class ChannelManager: NSObject {
             completion(nil)
         })
     }
+    
+    public static func removeMember(channelReference: DocumentReference, userReference: DocumentReference, memberID: String, channelID: String, completion: @escaping (Error?) -> ()) {
+        
+        let batch = Firestore.firestore().batch()
+        
+        batch.deleteDocument(userReference.collection("channelIds").document(channelID))
+        batch.deleteDocument(channelReference.collection("participantIds").document(memberID))
+        batch.updateData([
+            "participantIds": FieldValue.arrayRemove([memberID]),
+            "admins": FieldValue.arrayRemove([memberID]),
+            "goingIds": FieldValue.arrayRemove([memberID]),
+            "maybeIds": FieldValue.arrayRemove([memberID]),
+            "notGoingIds": FieldValue.arrayRemove([memberID]),
+        ], forDocument: channelReference)
+        
+        batch.commit { error in
+            if error != nil {
+                print(error?.localizedDescription ?? "error")
+                completion(error)
+            }
+            completion(nil)
+        }
+    }
+    /*
+     going: true false nil
+     */
+    public static func rsvp(channelReference: DocumentReference, memberID: String, rsvp: )
 
 }

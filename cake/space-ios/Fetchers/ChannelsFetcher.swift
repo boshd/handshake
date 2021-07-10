@@ -125,21 +125,21 @@ class ChannelsFetcher: NSObject {
                         self?.delegate?.channels(didRemove: true, channelID: channelID)
                     } else if (diff.type == .modified) {
                         // CHANNEL MODIFIED
-                        print("CHANNEL HAS BEEN MODIIFIED!!")
-                        var dictionary = diff.document.data() as [String: AnyObject]
-                        dictionary.updateValue(diff.document.documentID as AnyObject, forKey: "id")
-
-                        if let isGroupAlreadyFinished = self?.isGroupAlreadyFinished, isGroupAlreadyFinished {
-                            self?.delegate?.channels(didStartUpdatingData: true)
-                        }
-
-                        let channel = Channel(dictionary: dictionary)
-                        channel.isTyping.value = channel.getTyping()
-                        guard let lastMessageID = channel.lastMessageId else {
-                            self?.loadAdditionalMetadata(for: channel)
-                            return
-                        }
-                        self?.loadLastMessage(for: lastMessageID, channel: channel)
+//                        print("CHANNEL HAS BEEN MODIIFIED!!")
+//                        var dictionary = diff.document.data() as [String: AnyObject]
+//                        dictionary.updateValue(diff.document.documentID as AnyObject, forKey: "id")
+//
+//                        if let isGroupAlreadyFinished = self?.isGroupAlreadyFinished, isGroupAlreadyFinished {
+//                            self?.delegate?.channels(didStartUpdatingData: true)
+//                        }
+//
+//                        let channel = Channel(dictionary: dictionary)
+//                        channel.isTyping.value = channel.getTyping()
+//                        guard let lastMessageID = channel.lastMessageId else {
+//                            self?.loadAdditionalMetadata(for: channel)
+//                            return
+//                        }
+//                        self?.loadLastMessage(for: lastMessageID, channel: channel)
                     }
                 }
             })
@@ -169,7 +169,6 @@ class ChannelsFetcher: NSObject {
                 return
             }
             self.loadLastMessage(for: lastMessageID, channel: channel)
-            
         }
     }
     
@@ -193,7 +192,7 @@ class ChannelsFetcher: NSObject {
     
     fileprivate func loadAdditionalMetadata(for channel: Channel) {
         guard let channelID = channel.id, let _ = Auth.auth().currentUser?.uid else { return }
-        Firestore.firestore().collection("channels").document(channelID).getDocument { (snapshot, error) in
+        let tempListener = Firestore.firestore().collection("channels").document(channelID).addSnapshotListener { (snapshot, error) in
             if error != nil {
                 print(error as Any)
                 return
@@ -236,20 +235,13 @@ class ChannelsFetcher: NSObject {
             location.longitude = metaInfo.longitude.value ?? 0.0
             channel.location = location
             
-//            print("\n\n\n\narrived here: \(metaInfo.latitude) ... \(metaInfo.longitude)\n\n\n\n\n\n")
-//            
-//            if let latVal = metaInfo.latitude.value, let lonVal = metaInfo.longitude.value {
-//                let computedMapItem = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: latVal, longitude: lonVal)))
-//                channel.mapItem = computedMapItem
-//                print(computedMapItem)
-//            }
-            
             if let fcmTokensDict = dictionary["fcmTokens"] as? [String:String] {
                 channel.fcmTokens = convertRawFCMTokensToRealmCompatibleType(fcmTokensDict)
             }
             prefetchThumbnail(from: channel.thumbnailImageUrl == nil ? channel.imageUrl : channel.thumbnailImageUrl)
             self.updateConversationArrays(with: channel)
         }
+        individualChannelListenersDict[channelID] = tempListener
     }
     
     fileprivate let messagesFetcher = MessagesFetcher()

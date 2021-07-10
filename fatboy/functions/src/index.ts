@@ -13,6 +13,7 @@ import { db, admin } from './core/admin'
 //     getUsersWithPreparedNumbers,
 // } from './handlers/users/getUsers'
 import { constants } from './core/constants'
+import { firestore } from 'firebase-admin'
 // import { incrementBadge, sendMessageToMember, updateChannelLastMessage } from './helpers/messaging'
 
 // API routes
@@ -303,4 +304,31 @@ export const updateEventFCMTokenIdsArrayOnUpdate = functions.firestore
             }
 
         }
+    })
+
+exports.updateChannelFCMTokens = functions.firestore
+    .document(constants.CHANNELS_COLLECTION + '/{channelId}/participantIds}')
+    .onWrite((onCreateSnapshot, context) => {
+
+        functions.logger.log('updateChannelFCMTokens')
+
+        const userRef = db
+        .collection('users')
+        .doc(memberId)
+
+        try {
+            db.runTransaction(async (snapshot) => {
+                const doc: FirebaseFirestore.DocumentData = await t.get(userRef)
+                const newthing = (doc.data()['badge'] || 0) + 1
+
+                snapshot.update(userRef, {
+                    'badge': newthing,
+                })
+            })
+            .then(snapshot => { functions.logger.info('success incrementBadge') })
+            .catch(err => { functions.logger.error('error in incrementBadge // ', err) })
+        } catch (e) {
+            functions.logger.error('Transaction failure:', e)
+        }
+
     })

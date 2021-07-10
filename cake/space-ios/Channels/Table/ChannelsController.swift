@@ -271,11 +271,11 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         
         let currentDateInt64 = Int64(Int(Date().timeIntervalSince1970))
         
-        let objects = RealmKeychain.defaultRealm.objects(Channel.self).sorted(byKeyPath: "startTime", ascending: true)
+        let objects = RealmKeychain.defaultRealm.objects(Channel.self).sorted(byKeyPath: "startTime", ascending: false)
         let pastObjects = objects.filter("startTime < \(currentDateInt64) && endTime < \(currentDateInt64)").sorted(byKeyPath: "startTime", ascending: false)
         let upcomingObjects = objects.filter("startTime > \(currentDateInt64) && endTime > \(currentDateInt64)").sorted(byKeyPath: "startTime", ascending: false)
         let inProgressObjects = objects.filter("startTime < \(currentDateInt64) && endTime > \(currentDateInt64)").sorted(byKeyPath: "startTime", ascending: false)
-        let theObjects = objects.sorted(byKeyPath: "startTime", ascending: true)
+        let theObjects = objects.sorted(byKeyPath: "startTime", ascending: false)
         // filter past objects newer than 24 hrs ago
         
         pastRealmChannels = pastObjects
@@ -347,7 +347,7 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
 //        inProgressRealmChannels = inProgressRealmChannels?.sorted(byKeyPath: "startTime", ascending: false)
 //        upcomingRealmChannels = upcomingRealmChannels?.sorted(byKeyPath: "startTime", ascending: false)
 //        pastRealmChannels = pastRealmChannels?.sorted(byKeyPath: "startTime", ascending: false)
-        theRealmChannels = theRealmChannels?.sorted(byKeyPath: "startTime", ascending: true)
+        theRealmChannels = theRealmChannels?.sorted(byKeyPath: "startTime", ascending: false)
 
         guard let realmChannels = theRealmChannels else { return }
         if !isAppLoaded {

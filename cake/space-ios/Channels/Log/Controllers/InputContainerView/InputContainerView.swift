@@ -17,10 +17,14 @@ final class InputContainerView: UIControl {
     func setColors() {
         placeholderLabel.textColor = ThemeManager.currentTheme().generalSubtitleColor
         
-        sendButton.setTitleColor(ThemeManager.currentTheme().tintColor, for: .normal)
-        sendButton.setTitleColor(.lightGray, for: .disabled)
+//        sendButton.setTitleColor(ThemeManager.currentTheme().tintColor, for: .normal)
+//        sendButton.setTitleColor(.lightGray, for: .disabled)
+//        sendButton.backgroundColor = .clear
+        
+        
+//        sendButton.setImage(UIImage(named: "Send")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        sendButton.tintColor = ThemeManager.currentTheme().chatLogSendButtonColor
         sendButton.imageView?.tintColor = ThemeManager.currentTheme().chatLogSendButtonColor
-        sendButton.backgroundColor = .clear
     }
 
     weak var channelLogController: ChannelLogController? {
@@ -50,14 +54,9 @@ final class InputContainerView: UIControl {
     let sendButton: InteractiveButton = {
         let sendButton = InteractiveButton(type: .custom)
         sendButton.translatesAutoresizingMaskIntoConstraints = false
-        sendButton.setImage(UIImage(named: "Send")?.withRenderingMode(.alwaysTemplate), for: .normal)
-//         sendButton.setTitle("SEND", for: .normal)
-        sendButton.titleLabel?.font = ThemeManager.currentTheme().secondaryFontVeryBold(with: 13)
+        sendButton.setImage(UIImage(named: "Send-1")?.withRenderingMode(.alwaysTemplate), for: .normal)
         sendButton.isEnabled = false
-        sendButton.tintColor = ThemeManager.currentTheme().tintColor
-        sendButton.setTitleColor(ThemeManager.currentTheme().tintColor, for: .normal)
-        sendButton.setTitleColor(.lightGray, for: .disabled)
-        sendButton.backgroundColor = .clear
+        sendButton.tintColor = ThemeManager.currentTheme().chatLogSendButtonColor
         sendButton.imageView?.tintColor = ThemeManager.currentTheme().chatLogSendButtonColor
 
         return sendButton
@@ -94,6 +93,8 @@ final class InputContainerView: UIControl {
         addSubview(placeholderLabel)
         sendButton.layer.cornerRadius = 15
         sendButton.clipsToBounds = true
+        
+        setColors()
 
         tap = UITapGestureRecognizer(target: self, action: #selector(toggleTextView))
         tap.delegate = self

@@ -49,17 +49,6 @@ class UserCell: UITableViewCell {
         detailTextLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         detailTextLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
         textLabel?.textColor = ThemeManager.currentTheme().generalTitleColor
-//        imageView?.contentMode = .scaleAspectFill
-        
-        //        let itemSize = CGSize.init(width: 40, height: 40)
-        //        UIGraphicsBeginImageContextWithOptions(itemSize, false, UIScreen.main.scale)
-        //        let imageRect = CGRect.init(origin: CGPoint.zero, size: itemSize)
-        //        imageView?.image!.draw(in: imageRect)
-        //        imageView?.image! = UIGraphicsGetImageFromCurrentImageContext()!
-        //        UIGraphicsEndImageContext()
-        //        imageView?.layer.cornerRadius = (itemSize.width) / 2
-        //        imageView?.contentMode = .scaleAspectFit
-        //        imageView?.clipsToBounds = true
         
         addSubview(rightLabel)
         

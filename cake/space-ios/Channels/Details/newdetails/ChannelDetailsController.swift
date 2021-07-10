@@ -384,10 +384,11 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func test2() {
-        
         guard let currentUserID = Auth.auth().currentUser?.uid,
               let participantIds = channel?.participantIds
         else { return }
+        
+        attendees.removeAll()
         
         var mutableParticipantIds = [String]()
         
@@ -395,7 +396,6 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
             mutableParticipantIds += Array(participantIds).prefix(initialNumberOfAttendees)
         } else {
             mutableParticipantIds +=  Array(participantIds)
-            attendees.removeAll()
         }
         
         if let globalCurrentUser = globalCurrentUser {
@@ -549,6 +549,34 @@ extension ChannelDetailsController {
         }
     }
     
+    
+    @objc func removeMember(memberID: String) {
+        if currentReachabilityStatus == .notReachable {
+            displayErrorAlert(title: basicErrorTitleForAlert, message: noInternetError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+            return
+        }
+        guard let channelReference = currentChannelReference,
+              let channelID = channel?.id
+        else { return }
+        
+        let userReference = Firestore.firestore().collection("users").document(memberID)
+        
+        globalIndicator.show()
+        ChannelManager.removeMember(channelReference: channelReference, userReference: userReference, memberID: memberID, channelID: channelID) { error in
+            guard error == nil else {
+                globalIndicator.dismiss()
+                print(error?.localizedDescription ?? "")
+                displayErrorAlert(title: basicErrorTitleForAlert, message: genericOperationError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+                return
+            }
+            globalIndicator.showSuccess(withStatus: "Removed")
+            hapticFeedback(style: .success)
+            if let name = self.attendees.filter({ $0.id == memberID }).first?.name, let channelName = self.channel?.name {
+                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\(name) has been removed from the event", channel: self.channel)
+            }
+//            self.channelDetailsContainerView.tableView.reloadData()
+        }
+    }
     
     
 }

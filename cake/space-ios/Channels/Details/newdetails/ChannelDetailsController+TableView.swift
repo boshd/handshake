@@ -100,25 +100,8 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
             cell.textView.text = desc
             return cell
         } else if indexPath.section == 3 {
-//            print(attendees.count, initialNumberOfAttendees, "dfdflmd")
-//            guard let channelParticipantsCount = channel?.participantIds.count,
-//                  channelParticipantsCount > initialNumberOfAttendees,
-//                  // initialNumberOfAttendees + 2 like above but - 1 because index starts at 0
-//                  indexPath.row == initialNumberOfAttendees + 1,
-//                  !showMoreUsers
-//            else {
-//                let cell = UITableViewCell(style: .value2, reuseIdentifier: userCellId) as? UserCell ?? UserCell(style: .subtitle, reuseIdentifier: userCellId)
-//                guard let userID = attendees[indexPath.row].id else { return cell }
-//                cell.configureCell(for: indexPath, users: attendees, admin: channel?.admins.contains(userID) ?? false)
-//                cell.selectionStyle = .none
-//                cell.accessoryView = .none
-//                cell.accessoryType = .none
-//                return cell
-//            }
-            
             if let channelParticipantsCount = channel?.participantIds.count, isInitial && indexPath.row == attendees.count && initialNumberOfAttendees < channelParticipantsCount {
                 let cell = LoadMoreCell(style: .subtitle, reuseIdentifier: loadMoreCellId)
-    //            // - 1 because we're removing current user as this is a count retrieved from the global channel entity
                 cell.textLabel?.text = "See more"
                 guard let channelParticipantsCount = channel?.participantIds.count else { return cell }
                 cell.textLabel?.text = "See \(channelParticipantsCount - attendees.count) more"
@@ -127,48 +110,15 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
                 let cell = UITableViewCell(style: .value2, reuseIdentifier: userCellId) as? UserCell ?? UserCell(style: .subtitle, reuseIdentifier: userCellId)
                 guard let userID = attendees[indexPath.row].id else { return cell }
                 cell.configureCell(for: indexPath, users: attendees, admin: channel?.admins.contains(userID) ?? false)
-                cell.selectionStyle = .none
                 cell.accessoryView = .none
                 cell.accessoryType = .none
                 return cell
             }
-            
-//            let cell = LoadMoreCell(style: .subtitle, reuseIdentifier: loadMoreCellId)
-////            // - 1 because we're removing current user as this is a count retrieved from the global channel entity
-//            cell.textLabel?.text = "See \(channelParticipantsCount - initialNumberOfAttendees - 1) more"
-//            return cell
-//
-//            if indexPath.row == attendees.count, attendees.count > initialNumberOfAttendees && !showMoreUsers {
-//                let cell = LoadMoreCell(style: .subtitle, reuseIdentifier: loadMoreCellId)
-//                return cell
-//            } else {
-//                let cell = UITableViewCell(style: .value2, reuseIdentifier: userCellId) as? UserCell ?? UserCell(style: .subtitle, reuseIdentifier: userCellId)
-//                guard let userID = attendees[indexPath.row].id else { return cell }
-//                cell.configureCell(for: indexPath, users: attendees, admin: channel?.admins.contains(userID) ?? false)
-//                cell.selectionStyle = .none
-//                cell.accessoryView = .none
-//                cell.accessoryType = .none
-//                return cell
-//            }
-            
-//            if indexPath.row == attendees.count && !allAttendeesLoaded {
-//                let cell = LoadMoreCell(style: .subtitle, reuseIdentifier: loadMoreCellId)
-//                return cell
-//            } else {
-//                let cell = UITableViewCell(style: .value2, reuseIdentifier: userCellId) as? UserCell ?? UserCell(style: .subtitle, reuseIdentifier: userCellId)
-//                guard let userID = attendees[indexPath.row].id else { return cell }
-//                cell.configureCell(for: indexPath, users: attendees, admin: channel?.admins.contains(userID) ?? false)
-//                cell.selectionStyle = .none
-//                cell.accessoryView = .none
-//                cell.accessoryType = .none
-//                return cell
-//            }
         } else {
             let cell = LocationViewCell(style: .subtitle, reuseIdentifier: locationViewCellId)
             
             if let isRemote = channel?.isRemote.value, isRemote {
                 cell.locationView.removeFromSuperview()
-//                cell.textLabel?.text = "This is a remote event and no location."
                 cell.detailTextLabel?.text = "If you can't find any information regarding virtual meetings try reaching out to one of the event organizers."
             } else {
                 cell.locationView.locationNameLabel.text = ""
@@ -216,6 +166,7 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
         }
         
         if indexPath.section == 3 {
+            channelDetailsContainerView.tableView.deselectRow(at: indexPath, animated: true)
             if indexPath.row == attendees.count, isInitial {
                 isInitial = false
             } else {
@@ -229,14 +180,10 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
                 }))
                 
                 if let admins = channel?.admins, admins.contains(currentUserID) {
-                    alert.addAction(CustomAlertAction(title: "Remove from event", style: .default , handler: { [unowned self] in
-                        viewProfile(member: member)
-                    }))
                     
-                    // dismiss/assign
                     if let author = channel?.author,
                        admins.contains(memberID) && member.id != author {
-                        alert.addAction(CustomAlertAction(title: "Dismiss as Organizer", style: .destructive , handler: { [unowned self] in
+                        alert.addAction(CustomAlertAction(title: "Dismiss as Organizer", style: .default , handler: { [unowned self] in
                             removeAdmin(memberID: memberID)
                         }))
                     } else {
@@ -244,6 +191,10 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
                             makeAdmin(memberID: memberID)
                         }))
                     }
+                    
+                    alert.addAction(CustomAlertAction(title: "Remove from event", style: .destructive , handler: { [unowned self] in
+                        removeMember(memberID: memberID)
+                    }))
                 }
                 
                 present(alert, animated: true, completion: nil)
@@ -290,10 +241,7 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
             let button = UIButton()
             button.translatesAutoresizingMaskIntoConstraints = false
             button.setTitleColor(ThemeManager.currentTheme().tintColor, for: .normal)
-//            button.backgroundColor = .handshakeLightPurple
             button.setTitle("RSVP LIST", for: .normal)
-//            button.layer.cornerRadius = 10
-//            button.layer.cornerCurve = .continuous
             button.contentHorizontalAlignment = .right
             button.titleLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 12)
             button.addTarget(self, action: #selector(presentRSVPList), for: .touchUpInside)
@@ -302,8 +250,6 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
             NSLayoutConstraint.activate([
                 button.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -15),
                 button.centerYAnchor.constraint(equalTo: label.centerYAnchor, constant: 0),
-//                button.heightAnchor.constraint(equalToConstant: 20),
-//                button.widthAnchor.constraint(equalToConstant: 120)
             ])
         }
         
