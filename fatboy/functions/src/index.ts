@@ -5,6 +5,9 @@ https://github.com/dch133/Social-Media-App/blob/master/socialmedia-server/functi
 https://github.com/dalenguyen/serverless-rest-api/blob/master/functions/src/index.ts
 
 */
+
+// import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import { firestore } from 'firebase-admin'
 import { constructNotificationPayload } from './helpers/notifications'
 import * as functions from 'firebase-functions'
 // import * as express from 'express'
@@ -13,7 +16,6 @@ import { db, admin } from './core/admin'
 //     getUsersWithPreparedNumbers,
 // } from './handlers/users/getUsers'
 import { constants } from './core/constants'
-import { firestore } from 'firebase-admin'
 // import { incrementBadge, sendMessageToMember, updateChannelLastMessage } from './helpers/messaging'
 
 // API routes
@@ -87,7 +89,7 @@ export const sendNotificationToDevice = functions.firestore
                                     const historicSenderName = data['historicSenderName']
                                     const text: string = data['text']
                                     const fcmTokens = data['fcmTokens']
-                                    var badge = 0
+                                    let badge = 0
 
                                     admin
                                     .firestore()
@@ -143,7 +145,7 @@ export const sendNotificationToDevice = functions.firestore
     })
 
 export const updateEventFCMTokenIdsArrayOnUpdate = functions.firestore
-	.document(constants.FCM_OKENS_COLLECTION + '/{userId}')
+	.document(constants.FCM_TOKENS_COLLECTION + '/{userId}')
 	.onUpdate((change, context) => {
         const userId = context.params['userId']
 
@@ -207,7 +209,7 @@ export const updateEventFCMTokenIdsArrayOnUpdate = functions.firestore
         .then(snapshot => {
             if (!snapshot.empty) {
                 console.log('snapshot not empty')
-                let members = snapshot.docs
+                const members = snapshot.docs
                 members.forEach(member => {
                     console.log('sender id: ' + senderId + ' // member id: ' + member.id)
 
@@ -224,7 +226,7 @@ export const updateEventFCMTokenIdsArrayOnUpdate = functions.firestore
 
         function batchSetEverything(memberId: string) {
 
-            var batch = admin.firestore().batch()
+            const batch = admin.firestore().batch()
 
             batch.set((
                 admin.firestore()
@@ -306,29 +308,204 @@ export const updateEventFCMTokenIdsArrayOnUpdate = functions.firestore
         }
     })
 
-exports.updateChannelFCMTokens = functions.firestore
-    .document(constants.CHANNELS_COLLECTION + '/{channelId}/participantIds}')
-    .onWrite((onCreateSnapshot, context) => {
+// exports.updateChannelFCMTokens = functions.firestore
+//     .document(constants.CHANNELS_COLLECTION + '/{channelId}/participantIds}')
+//     .onWrite((snapshot, context) => {
 
-        functions.logger.log('updateChannelFCMTokens')
+//         functions.logger.log('updateChannelFCMTokens')
 
-        const userRef = db
-        .collection('users')
-        .doc(memberId)
+//         const userRef = db
+//         .collection('users')
+//         .doc(memberId)
 
-        try {
-            db.runTransaction(async (snapshot) => {
-                const doc: FirebaseFirestore.DocumentData = await t.get(userRef)
-                const newthing = (doc.data()['badge'] || 0) + 1
+//         try {
+//             db.runTransaction(async (doc) => {
+//                 const doc: FirebaseFirestore.DocumentData = await t.get(userRef)
+//                 const newthing = (doc.data()['badge'] || 0) + 1
 
-                snapshot.update(userRef, {
-                    'badge': newthing,
+//                 snapshot.update(userRef, {
+//                     'badge': newthing,
+//                 })
+//             })
+//             .then(snapshot => { functions.logger.info('success incrementBadge') })
+//             .catch(err => { functions.logger.error('error in incrementBadge // ', err) })
+//         } catch (e) {
+//             functions.logger.error('Transaction failure:', e)
+//         }
+
+//     })
+
+exports.updateChannelParticipantIdsUponDelete = functions.firestore
+    .document(constants.USERS_COLLECTION + '/{userId}/channelIds/{channelId}')
+    .onDelete((_, context) => {
+
+        /*
+        This function takes care of removing the userid from the channel, abstracting away
+        the need to do it locally. It's not the client's responsibility anymore.
+        */
+
+        functions.logger.log('updateChannelParticipantIdsUponDelete')
+
+        // check if person is the only admin/author/etc.
+        // remove user's fcm token for notifications thru transaction?
+
+        const channelId = context.params.channelId
+        const userId = context.params.userId
+
+        const channelReference = admin.firestore().collection('channels').doc(channelId)
+        const channelParticipantReference = channelReference.collection('participantIds').doc(userId)
+
+        var batch = admin.firestore().batch()
+
+        batch.update(channelReference, {
+            'participantIds': firestore.FieldValue.arrayRemove(userId),
+            'admins': firestore.FieldValue.arrayRemove(userId),
+            'goingIds': firestore.FieldValue.arrayRemove(userId),
+            'maybeIds': firestore.FieldValue.arrayRemove(userId),
+            'notGoingIds': firestore.FieldValue.arrayRemove(userId),
+        })
+
+        batch.delete(channelParticipantReference)
+
+        batch.commit()
+        .then(() => {
+            console.log('successful batch commit')
+        })
+        .catch(error => {
+            console.log(error)
+        })
+
+        // fcm token transaction
+        // admin.firestore().runTransaction()
+
+    })
+
+exports.updateChannelParticipantIdsUponCreate = functions.firestore
+    .document(constants.USERS_COLLECTION + '/{userId}/channelIds/{channelId}')
+    .onCreate((_, context) => {
+
+        /*
+        This function takes care of adding the userid to the channel, abstracting away
+        the need to do it locally. It's not the client's responsibility anymore.
+        */
+
+        functions.logger.log('updateChannelParticipantIdsUponCreate')
+
+        const channelId = context.params.channelId
+        const userId = context.params.userId
+
+        const channelReference = admin.firestore().collection('channels').doc(channelId)
+        const channelParticipantReference = channelReference.collection('participantIds').doc(userId)
+
+        var batch = admin.firestore().batch()
+
+        batch.update(channelReference, {
+            'participantIds': firestore.FieldValue.arrayUnion(userId),
+        })
+
+        batch.create(channelParticipantReference, {})
+
+        batch.commit()
+        .then(() => {
+            console.log('successful batch commit')
+        })
+        .catch(error => {
+            console.log(error)
+        })
+
+    })
+
+exports.channelCreationHandler = functions.firestore
+    .document(constants.CHANNELS_COLLECTION + '/{channelId}')
+    .onCreate((snapshot, context) => {
+
+        functions.logger.log('channelCreationHandler')
+
+        const channelId = context.params.channelId
+        const channel = snapshot.data()
+        const participantIds = channel.participantIds as [string]
+
+        const channelReference = admin.firestore().collection(constants.CHANNELS_COLLECTION).doc(channelId)
+
+        const newParticipantReference = channelReference.collection('participantIds').doc(channelId)
+
+        var fcmTokens: {[k: string]: any} = {}
+
+        var batch = admin.firestore().batch()
+
+        var dataFetchPromise = new Promise((resolve, reject) => {
+            participantIds.forEach(participantId => {
+                const newChannelReference = admin.firestore().collection(constants.USERS_COLLECTION).doc(participantId).collection('channelIds').doc(channelId)
+
+                batch.create(newParticipantReference, {})
+                batch.create(newChannelReference, {})
+
+                admin
+                .firestore()
+                .collection(constants.FCM_TOKENS_COLLECTION)
+                .doc(participantId)
+                .get()
+                .then(participantSnapshot => {
+                    const token = participantSnapshot?.data()?.fcmToken as string
+                    fcmTokens[participantId] = token
                 })
+                .catch(err => { functions.logger.error('Error getting data', err) })
             })
-            .then(snapshot => { functions.logger.info('success incrementBadge') })
-            .catch(err => { functions.logger.error('error in incrementBadge // ', err) })
-        } catch (e) {
-            functions.logger.error('Transaction failure:', e)
-        }
+        })
+
+        dataFetchPromise.then(() => {
+            functions.logger.log('All done!', fcmTokens);
+        })
+        .catch(err => { functions.logger.error('Promise error?', err) })
+
+        return dataFetchPromise
+
+        // participantIds.forEach(participantId => {
+        //     const newChannelReference = admin.firestore().collection(constants.USERS_COLLECTION).doc(participantId).collection('channelIds').doc(channelId)
+
+        //     batch.create(newParticipantReference, {})
+        //     batch.create(newChannelReference, {})
+
+        //     admin
+        //     .firestore()
+        //     .collection(constants.FCM_TOKENS_COLLECTION)
+        //     .doc(participantId)
+        //     .get()
+        //     .then(snapshot => {
+        //         const token = snapshot?.data()?.fcmToken as string
+        //         // fcmTokensMap.set(participantId, token)
+        //         // fcmTokensMap = 'rf'
+        //     })
+        //     .catch(err => { functions.logger.error('Error getting data', err) })
+        // })
+
+        // batch.set(channelReference, {
+        //     'fcmTokens': fcmTokensMap
+        // })
+
+        // batch.commit()
+
+        // add channel to all participants
+        // add participants to the channel
+        // fetch user's fcm tokens and add to group
+
+        // const channelRef = admin.firestore().collection(constants.CHANNELS_COLLECTION).doc(channelId)
+
+        // try {
+        //     db.runTransaction(async (transaction) => {
+        //         const doc = await transaction.get(channelRef)
+        //         const fcmTokens = doc?.data()?.fcmTokens as Map<string, string>
+        //         fcmTokens.set(participantId, )
+        //         fcmTokens[participantId] = 'df'
+
+        //         transaction.update(channelRef, {
+        //             'fcmTokens': newthing,
+        //         })
+        //     })
+        //     .then(snapshot => { functions.logger.info('success incrementBadge') })
+        //     .catch(err => { functions.logger.error('error in incrementBadge // ', err) })
+        // } catch (e) {
+        //     functions.logger.error('Transaction failure:', e)
+        // }
 
     })

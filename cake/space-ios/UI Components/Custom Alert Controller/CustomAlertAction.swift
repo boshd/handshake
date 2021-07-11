@@ -1,3 +1,33 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8f9ce7e0941ff316dbbe4af8f7d9f9403e4f44b882572a785b0f465fffcd215a
-size 658
+//
+//  CustomAlertAction.swift
+//  space-ios
+//
+//  Created by Kareem Arab on 2021-01-03.
+//  Copyright © 2021 Kareem Arab. All rights reserved.
+//
+
+import Foundation
+
+class CustomAlertAction: NSObject {
+    
+    var title_: String?
+    var style: Style?
+    let handler: (() -> Void)?
+    
+    var isEnabled: Bool = true
+    
+    init(title: String?, style: CustomAlertAction.Style, handler: (() -> Void)? = nil) {
+        self.title_ = title
+        self.style = style
+        self.handler = handler
+    }
+    
+}
+
+extension CustomAlertAction {
+    enum Style : Int {
+        case `default` = 0
+        case cancel = 1
+        case destructive = 2
+    }
+}

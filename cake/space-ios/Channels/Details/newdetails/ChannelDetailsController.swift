@@ -66,7 +66,6 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         configureNaviationBar()
         observeChannel()
         observeChannelAttendeesChanges()
-//        fetchChannelAttendees()
         test2()
         addObservers()
     }
@@ -115,6 +114,9 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         
         configureChannelImageHeaderView()
         configureFooterView()
+        
+//        channelDetailsContainerView.rsvpButton.target(forAction: #selector(presentRSVPOptions), withSender: self)
+        channelDetailsContainerView.rsvpButton.addTarget(self, action: #selector(presentRSVPOptions), for: .touchUpInside)
         
         guard let channelID = channel?.id else { return }
         currentChannelReference = Firestore.firestore().collection("channels").document(channelID)
@@ -294,7 +296,39 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @objc func presentRSVPOptions() {
+        guard let currentUserID = Auth.auth().currentUser?.uid,
+              let goingIds = channel?.goingIds,
+              let notGoingIds = channel?.notGoingIds,
+              let tentativeIds = channel?.maybeIds
+        else { return }
         
+        let alert = CustomAlertController(title_: nil, message: nil, preferredStyle: .actionSheet)
+        
+        let goingAction = CustomAlertAction(title: "Going", style: .default , handler: { [weak self] in
+            self?.rsvp(.going, memberID: currentUserID)
+        })
+        
+        let notGoingAction = CustomAlertAction(title: "Not going", style: .default , handler: { [weak self] in
+            self?.rsvp(.notGoing, memberID: currentUserID)
+        })
+        
+        let tentativeAction = CustomAlertAction(title: "Tentative", style: .default , handler: { [weak self] in
+            self?.rsvp(.tentative, memberID: currentUserID)
+        })
+        
+        if goingIds.contains(currentUserID) {
+            goingAction.isEnabled = false
+        } else if tentativeIds.contains(currentUserID) {
+            tentativeAction.isEnabled = false
+        } else if notGoingIds.contains(currentUserID) {
+            notGoingAction.isEnabled = false
+        }
+        
+        alert.addAction(goingAction)
+        alert.addAction(tentativeAction)
+        alert.addAction(notGoingAction)
+        
+        present(alert, animated: true, completion: nil)
     }
     
     // MARK: - Cell Interaction Handlers
@@ -363,19 +397,58 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     fileprivate func observeChannelAttendeesChanges() {
         // handle channel attendess changes
         // are the changes in a user that's not being shown? redundant
+        var initial = true
         guard let channelID = channel?.id else { return }
         channelPartiticapntsListener = Firestore.firestore().collection("channels").document(channelID).collection("participantIds").addSnapshotListener({ snapshot, error in
             if error != nil {
                 print(error?.localizedDescription ?? "err")
                 return
             }
+            if initial {
+                initial = false
+                return
+            }
             snapshot?.documentChanges.forEach({ diff in
                 if diff.type == .added {
-                    
+                    UsersFetcher.fetchUser(id: diff.document.documentID) { user, error in
+                        guard error == nil else { print(error?.localizedDescription ?? ""); return }
+                        // issues w/ initial state
+                        if let user = user {
+                            
+                            if self.isInitial {
+                                self.isInitial = false
+                            }
+                            
+                            UIView.performWithoutAnimation {
+                                if let userIndex = self.attendees.firstIndex(where: { (member) -> Bool in
+                                    return member.id == diff.document.documentID
+                                }) {
+                                    self.channelDetailsContainerView.tableView.beginUpdates()
+                                    self.attendees[userIndex] = user
+                                    self.channelDetailsContainerView.tableView.reloadRows(at: [IndexPath(row: userIndex, section: 3)], with: .none)
+                                } else {
+                                    self.channelDetailsContainerView.tableView.beginUpdates()
+                                    self.attendees.append(user)
+                                    var index = 0
+                                    if self.attendees.count-1 >= 0 { index = self.attendees.count - 1 }
+                                    self.channelDetailsContainerView.tableView.insertRows(at: [IndexPath(row: index, section: 3)], with: .fade)
+                                }
+                                self.channelDetailsContainerView.tableView.endUpdates()
+                            }
+                        }
+                    }
                 } else if diff.type == .removed {
-                    
-                } else {
-                    
+                    guard let memberIndex = self.attendees.firstIndex(where: { (member) -> Bool in
+                        return member.id == diff.document.documentID
+                    }) else { return }
+
+                    self.channelDetailsContainerView.tableView.beginUpdates()
+                    self.attendees.remove(at: memberIndex)
+                    self.channelDetailsContainerView.tableView.deleteRows(at: [IndexPath(row: memberIndex, section: 3)], with: .left)
+                    self.channelDetailsContainerView.tableView.endUpdates()
+                    if !self.isCurrentUserMemberOfCurrentGroup() {
+                        self.navigationController?.popViewController(animated: true)
+                    }
                 }
             })
             
@@ -492,6 +565,11 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     
     // MARK: - Helper methods
     
+    func isCurrentUserMemberOfCurrentGroup() -> Bool {
+        guard let membersIDs = channel?.participantIds, let uid = Auth.auth().currentUser?.uid, membersIDs.contains(uid) else { return false }
+        return true
+    }
+    
 }
 
 // MARK: - Channel members action handlers
@@ -541,7 +619,7 @@ extension ChannelDetailsController {
                 displayErrorAlert(title: basicErrorTitleForAlert, message: genericOperationError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
                 return
             }
-            globalIndicator.showSuccess(withStatus: "")
+            globalIndicator.showSuccess(withStatus: "Done")
             hapticFeedback(style: .success)
             if let name = self.attendees.filter({ $0.id == memberID }).first?.name, let channelName = self.channel?.name {
                 self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\(name) is now an Organizer", channel: self.channel)
@@ -576,6 +654,42 @@ extension ChannelDetailsController {
             }
 //            self.channelDetailsContainerView.tableView.reloadData()
         }
+    }
+    
+    func rsvp(_ rsvp: EventRSVP, memberID: String) {
+        if currentReachabilityStatus == .notReachable {
+            displayErrorAlert(title: basicErrorTitleForAlert, message: noInternetError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+            return
+        }
+        guard let channelReference = currentChannelReference,
+              let channelID = channel?.id
+        else { return }
+        
+        globalIndicator.show()
+        ChannelManager.rsvp(channelReference: channelReference, memberID: memberID, rsvp: rsvp) { error in
+            if error != nil {
+                print(error?.localizedDescription ?? "error")
+                globalIndicator.dismiss()
+                displayErrorAlert(title: basicErrorTitleForAlert, message: "Operation could not be completed", preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+                return
+            }
+            globalIndicator.showSuccess(withStatus: "Done")
+            hapticFeedback(style: .success)
+            if let name = globalCurrentUser?.name, let channelName = self.channel?.name {
+                var text = ""
+                if rsvp == .going {
+                    text = "\(name) is going."
+                } else if rsvp == .notGoing {
+                    text = "\(name) can't make it."
+                } else {
+                    text = "\(name) might attend."
+                }
+                
+                // self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: text, channel: self.channel)
+            }
+            
+        }
+        
     }
     
     

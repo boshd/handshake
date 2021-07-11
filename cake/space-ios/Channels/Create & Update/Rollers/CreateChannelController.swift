@@ -315,17 +315,15 @@ extension CreateChannelController {
 
         channelCreatingGroup.enter()
         channelCreatingGroup.enter()
-        channelCreatingGroup.enter()
-        fetchAndUpdateMemeberFCMTokens(reference: newChannelReference)
-        createChannelAndConnectMembersToChannelNode(newChannelReference: newChannelReference, channelData: channelData, participantIDs: memberIDs.0)
+//        channelCreatingGroup.enter()
+//        fetchAndUpdateMemeberFCMTokens(reference: newChannelReference)
+        createChannelNode(newChannelReference: newChannelReference, channelData: channelData, participantIDs: memberIDs.0)
         uploadImage(reference: newChannelReference, image: selectedImage)
 
         channelCreatingGroup.notify(queue: DispatchQueue.main) { [weak self] in
             hapticFeedback(style: .success)
 
-//            if let localChannelData = localChannelData {
             self?.informationMessageSender.sendInformationMessage(channelID: newChannelReference.documentID, channelName: self?.channelName ?? "", participantIDs: memberIDs.0, text: "New event has been created. Discuss and share ideas here.", channel: Channel(dictionary: self?.localChannelData))
-//            }
 
             self?.dismiss(animated: true, completion: nil)
             globalIndicator.dismiss()
@@ -333,18 +331,18 @@ extension CreateChannelController {
 
     }
 
-    func createChannelAndConnectMembersToChannelNode(newChannelReference: DocumentReference, channelData: [String: AnyObject], participantIDs: [String]) {
+    func createChannelNode(newChannelReference: DocumentReference, channelData: [String: AnyObject], participantIDs: [String]) {
         guard Auth.auth().currentUser != nil else { channelCreatingGroup.leave(); return }
         let batch = Firestore.firestore().batch()
         let usersCollectionReference = Firestore.firestore().collection("users")
 
         batch.setData(channelData, forDocument: newChannelReference)
-        for participantID in participantIDs {
-            batch.setData(["participantId":participantID], forDocument: newChannelReference.collection("participantIds").document(participantID), merge: true)
-            batch.setData([
-                "id": newChannelReference.documentID
-            ], forDocument: usersCollectionReference.document(participantID).collection("channelIds").document(newChannelReference.documentID), merge: true)
-        }
+//        for participantID in participantIDs {
+//            batch.setData(["participantId":participantID], forDocument: newChannelReference.collection("participantIds").document(participantID), merge: true)
+//            batch.setData([
+//                "id": newChannelReference.documentID
+//            ], forDocument: usersCollectionReference.document(participantID).collection("channelIds").document(newChannelReference.documentID), merge: true)
+//        }
 
         batch.commit { [unowned self] (error) in
             channelCreatingGroup.leave()

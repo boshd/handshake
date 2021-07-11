@@ -49,5 +49,62 @@
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A69191D7-8489-41AB-BA22-1BA1A17D4C16"
+            shouldBeEnabled = "No"
+            nameForDebugger = "pre-batch-commit"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "space-ios/Channels/Table/Handlers/ChannelsController+RowActions.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "95"
+            endingLineNumber = "95"
+            landmarkName = "deleteChannel(at:)"
+            landmarkType = "7">
+            <Actions>
+               <BreakpointActionProxy
+                  ActionExtensionID = "Xcode.BreakpointAction.Sound">
+                  <ActionContent
+                     soundName = "Blow">
+                  </ActionContent>
+               </BreakpointActionProxy>
+            </Actions>
+            <Locations>
+               <Location
+                  uuid = "A69191D7-8489-41AB-BA22-1BA1A17D4C16 - ad300d4bb01ceb9d"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "space_ios.ChannelsController.deleteChannel(at: Foundation.IndexPath) -&gt; ()"
+                  moduleName = "space-ios"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kareemarab/dev/handshake/src/cake/space-ios/Channels/Table/Handlers/ChannelsController+RowActions.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "96"
+                  endingLineNumber = "96"
+                  offsetFromSymbolStart = "5484">
+               </Location>
+               <Location
+                  uuid = "A69191D7-8489-41AB-BA22-1BA1A17D4C16 - 237c3ad51c70e732"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;Swift.Error&gt;) -&gt; () in space_ios.ChannelsController.deleteChannel(at: Foundation.IndexPath) -&gt; ()"
+                  moduleName = "space-ios"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kareemarab/dev/handshake/src/cake/space-ios/Channels/Table/Handlers/ChannelsController+RowActions.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "97"
+                  endingLineNumber = "97"
+                  offsetFromSymbolStart = "52">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

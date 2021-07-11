@@ -249,7 +249,7 @@ enum Theme: Int {
     var buttonTextColor: UIColor {
         switch self {
             case .normal:
-                return .white
+                return .black
             case .dark:
                 return .white
         }

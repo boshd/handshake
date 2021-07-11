@@ -231,7 +231,9 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
             typingIndicatorCollectionListener = nil
             //typingIndicatorReference.removeObserver(withHandle: typingIndicatorHandle)
         }
-
+        
+        NotificationCenter.default.removeObserver(self)
+        channelManager.removeAllListeners()
     }
     
     
@@ -453,7 +455,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         alert.addAction(CustomAlertAction(title: "Yes", style: .destructive, handler: { [weak self] in
 //            let obj: [String: Any] = ["channelID": channelID]
 //            NotificationCenter.default.post(name: .deleteAndExit, object: obj)
-            self?.deleteAndExitHandler()
+//            self?.deleteAndExitHandler()
             
         }))
         self.present(alert, animated: true, completion: nil)
@@ -521,64 +523,30 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     fileprivate func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(changeTheme), name: .themeUpdated, object: nil)
 //        NotificationCenter.default.addObserver(self, selector: #selector(handleChannelRemoved), name: .channelRemoved, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(deleteAndExitHandler), name: .deleteAndExit, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(handleChannelStatusUpdated), name: .channlStatusUpdated, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(deleteAndExitHandler), name: .deleteAndExit, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(handleChannelStatusUpdated), name: .channlStatusUpdated, object: nil)
     }
+//
+//    @objc func handleChannelStatusUpdated(_ notification: Notification) {
+//        guard let obj = notification.object as? [String: Any],
+//              let channelID = obj["channelID"] as? String,
+//              let currentChannelID = channel?.id,
+//              channelID == currentChannelID else { return }
+//        setupHeaderView()
+//        checkChannelStateAndPermissions()
+//    }
     
-    func listenToChannelChanges() {
-        guard let channelID = channel?.id, let currentUserID = Auth.auth().currentUser?.uid else { return }
-        let channelReference = Firestore.firestore().collection("channels").document(channelID)
-        channelListener = channelReference.addSnapshotListener { [weak self] (snapshot, error) in
-            guard let unwrappedSelf = self else { return }
-            if error != nil {
-                print(error?.localizedDescription ?? "error")
-                return
-            }
-            
-            let oldChannel = self?.channel
-
-            guard let data = snapshot?.data() as [String:AnyObject]? else { return }
-            let newChannel = Channel(dictionary: data)
-            self?.channel = newChannel
-            if let messages = oldChannel?.messages, newChannel.participantIds.contains(currentUserID) {
-                self?.channel?.messages = messages
-                
-                if newChannel.lastMessageId == oldChannel?.lastMessageId {
-                    unwrappedSelf.checkChannelStateAndPermissions()
-                }
-
-                if newChannel.name != oldChannel?.name {
-                    unwrappedSelf.setupTitleName()
-                }
-
-                if (newChannel.startTime != oldChannel?.startTime) || (newChannel.locationName != oldChannel?.locationName) {
-                    unwrappedSelf.setupHeaderView()
-                }
-            }
-            
-        }
-    }
+//    @objc func handleChannelUpdated(_ notification: Notification) {
+//        guard let obj = notification.object as? [String: Any],
+//              let channel = obj["channel"] as? Channel,
+//              let channelID = obj["channelID"] as? String,
+//              let currentChannelID = channel.id,
+//              channelID == currentChannelID else { return }
+//
+//        self.channel = channel
+//    }
     
-    @objc func handleChannelStatusUpdated(_ notification: Notification) {
-        guard let obj = notification.object as? [String: Any],
-              let channelID = obj["channelID"] as? String,
-              let currentChannelID = channel?.id,
-              channelID == currentChannelID else { return }
-        setupHeaderView()
-        checkChannelStateAndPermissions()
-    }
-    
-    @objc func handleChannelUpdated(_ notification: Notification) {
-        guard let obj = notification.object as? [String: Any],
-              let channel = obj["channel"] as? Channel,
-              let channelID = obj["channelID"] as? String,
-              let currentChannelID = channel.id,
-              channelID == currentChannelID else { return }
-        
-        self.channel = channel
-    }
-    
-    @objc func handleChannelRemoved(_ notification: Notification) {}
+//    @objc func handleChannelRemoved(_ notification: Notification) {}
     
     
     fileprivate func resetBadgeForSelf() {
@@ -598,24 +566,19 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         }
     }
 
-    @objc
-    fileprivate func deleteAndExitHandler() {
-        print("HERE AT CHATLOG")
-        guard let channelID = channel?.id else { return }
-        NotificationCenter.default.removeObserver(self)
-        removeChannelListener()
-        messagesFetcher?.removeListener()
-        messagesFetcher?.collectionDelegate = nil
-        messagesFetcher?.delegate = nil
-        deleteAndExitDelegate?.deleteAndExit(from: channelID)
-        navigationController?.popViewController(animated: true)
-    }
+//    @objc
+//    fileprivate func deleteAndExitHandler() {
+//        print("HERE AT CHATLOG")
+//        guard let channelID = channel?.id else { return }
+//        NotificationCenter.default.removeObserver(self)
+//        removeChannelListener()
+//        messagesFetcher?.removeListener()
+//        messagesFetcher?.collectionDelegate = nil
+//        messagesFetcher?.delegate = nil
+//        deleteAndExitDelegate?.deleteAndExit(from: channelID)
+//        navigationController?.popViewController(animated: true)
+//    }
     
-    @objc
-    fileprivate func eventCancelledHandler() {
-        reloadInputView(view: inputBlockerContainerView)
-    }
-
     @objc private func changeTheme() {
         view.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         if let navigationBar = navigationController?.navigationBar {
@@ -880,7 +843,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     func configureTitleView() {
 
         if let title = channel?.name, let membersCount = channel?.participantIds.count {
-            navigationItem.setTitle(title: title, subtitle: "\(String(membersCount)) attendees")
+            navigationItem.setTitle(title: title, subtitle: "\(String(membersCount)) Attendees")
             return
         }
 

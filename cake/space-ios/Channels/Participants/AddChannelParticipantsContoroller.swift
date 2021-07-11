@@ -20,7 +20,7 @@ class AddChannelParticipantsController: SelectParticipantsController {
         navigationItem.leftBarButtonItem = backButton
 
         setupRightBarButton(with: "Done")
-        title = "Add attendees"
+        title = "Add Attendees"
         
         indicator.setDefaultMaskType(.clear)
     }
@@ -93,10 +93,10 @@ class AddChannelParticipantsController: SelectParticipantsController {
         
         for participantID in participantIDs {
             batch.setData(["participantId": participantID], forDocument: currentChannelParticipantIDsReference.document(participantID))
-            batch.updateData([
-                "maybeIds": FieldValue.arrayUnion([participantID]),
-                "participantIds": FieldValue.arrayUnion([participantID]),
-            ], forDocument: currentChannelReference)
+//            batch.updateData([
+//                "maybeIds": FieldValue.arrayUnion([participantID]),
+//                "participantIds": FieldValue.arrayUnion([participantID]),
+//            ], forDocument: currentChannelReference)
             batch.setData([
                 "channelId": channelID
             ], forDocument: usersReference.document(participantID).collection("channelIds").document(channelID))

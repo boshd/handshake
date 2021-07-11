@@ -15,7 +15,7 @@
 * @beta
 */
 export function constructNotificationPayload(currentUserFCMToken: string, messageId: string, channelId: string, senderName: string, channelName: string, fromId: string, text: string, badge: number) {
-    var title: string = ''
+    let title: string = ''
     // var text: string = ''
 
     if (senderName && channelName) {

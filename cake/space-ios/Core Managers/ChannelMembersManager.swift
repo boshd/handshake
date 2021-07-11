@@ -53,7 +53,7 @@ class ChannelManager: NSObject {
         guard let channel = channel else { return }
         // CHANNEL UPDATING
         
-        Firestore.firestore().collection("channels").document(channelID).addSnapshotListener { snapshot, error in
+        channelListener = Firestore.firestore().collection("channels").document(channelID).addSnapshotListener { snapshot, error in
             if error != nil {
                 print(error?.localizedDescription ?? "error")
                 return
@@ -168,6 +168,95 @@ class ChannelManager: NSObject {
     /*
      going: true false nil
      */
-    public static func rsvp(channelReference: DocumentReference, memberID: String, rsvp: )
-
+    public static func rsvp(channelReference: DocumentReference, memberID: String, rsvp: EventRSVP, completion: @escaping (Error?) -> ()) {
+        
+        // batch is used here for cosmetics
+        let batch = Firestore.firestore().batch()
+        
+        switch rsvp {
+            case .going:
+                batch.updateData([
+                    "goingIds": FieldValue.arrayUnion([memberID]),
+                    "notGoingIds": FieldValue.arrayRemove([memberID]),
+                    "maybeIds": FieldValue.arrayRemove([memberID])
+                ], forDocument: channelReference)
+            case .notGoing:
+                batch.updateData([
+                    "goingIds": FieldValue.arrayRemove([memberID]),
+                    "notGoingIds": FieldValue.arrayUnion([memberID]),
+                    "maybeIds": FieldValue.arrayRemove([memberID])
+                ], forDocument: channelReference)
+            case .tentative:
+                batch.updateData([
+                    "goingIds": FieldValue.arrayRemove([memberID]),
+                    "notGoingIds": FieldValue.arrayRemove([memberID]),
+                    "maybeIds": FieldValue.arrayUnion([memberID])
+                ], forDocument: channelReference)
+        }
+        
+        batch.commit { error in
+            if let error = error {
+                completion(error)
+            }
+            completion(nil)
+        }
+        
+        
+        // looks like it must be a transactional operation
+        
+//        Firestore.firestore().runTransaction { transaction, errPointer in
+//            let oldDoc: DocumentSnapshot
+//            do {
+//                try oldDoc = transaction.getDocument(channelReference)
+//            } catch let fetchError as NSError {
+//                errPointer?.pointee = fetchError
+//                return nil
+//            }
+//
+//            guard let oldGoingIds = oldDoc.data()?["goingIds"] as? [String],
+//                  let oldNotGoingIds = oldDoc.data()?["notGoingIds"] as? [String],
+//                  let oldMaybeIds = oldDoc.data()?["maybeIds"] as? [String]
+//            else { return nil }
+//
+//
+////            switch rsvp {
+////                case .going:
+////                    transaction.updateData([
+////                        "goingIds": FieldValue.arrayUnion([memberID]),
+////                        "notGoingIds": FieldValue.arrayRemove([memberID]),
+////                        "maybeIds": FieldValue.arrayRemove([memberID])
+////                    ], forDocument: channelReference)
+////                case .notGoing:
+////                    transaction.updateData([
+////                        "goingIds": FieldValue.arrayRemove([memberID]),
+////                        "notGoingIds": FieldValue.arrayUnion([memberID]),
+////                        "maybeIds": FieldValue.arrayRemove([memberID])
+////                    ], forDocument: channelReference)
+////                case .tentative:
+////                    transaction.updateData([
+////                        "goingIds": FieldValue.arrayRemove([memberID]),
+////                        "notGoingIds": FieldValue.arrayRemove([memberID]),
+////                        "maybeIds": FieldValue.arrayUnion([memberID])
+////                    ], forDocument: channelReference)
+////            }
+//
+//            return nil
+//        } completion: { object, error in
+//            if let error = error {
+//                print("Transaction failed: \(error)")
+//            } else {
+//                print("Transaction successfully committed!")
+//            }
+//        }
+//
+//
+    }
 }
+
+enum EventRSVP {
+    case going
+    case notGoing
+    case tentative
+}
+
+

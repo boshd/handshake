@@ -16,9 +16,11 @@ class ParticipantsController: UIViewController {
     let participantsContainerView = ParticipantsContainerView()
     let userCellID = "userCellID"
     
-    var goingParticipants: [User]?
-    var maybeParticipants: [User]?
-    var notGoingParticipants: [User]?
+    var goingParticipants = [User]()
+    var maybeParticipants = [User]()
+    var notGoingParticipants = [User]()
+    var noResponseParticipants = [User]()
+
     var admin: Bool?
     var channel: Channel?
     
@@ -170,27 +172,47 @@ class ParticipantsController: UIViewController {
     
     fileprivate func configureRSVPuserArrays() {
         guard let channel = channel else { return }
-        goingParticipants = participants.filter({ channel.goingIds.contains($0.id ?? "") })
-        maybeParticipants = participants.filter({ channel.maybeIds.contains($0.id ?? "") })
-        notGoingParticipants = participants.filter({ channel.notGoingIds.contains($0.id ?? "") })
+//        goingParticipants = participants.filter({ channel.goingIds.contains($0.id ?? "") })
+//        maybeParticipants = participants.filter({ channel.maybeIds.contains($0.id ?? "") })
+//        notGoingParticipants = participants.filter({ channel.notGoingIds.contains($0.id ?? "") })
         
+        for participant in participants {
+            if let id = participant.id {
+                if channel.goingIds.contains(id) {
+                    goingParticipants.append(participant)
+                } else if channel.notGoingIds.contains(id) {
+                    notGoingParticipants.append(participant)
+                } else if channel.maybeIds.contains(id) {
+                    maybeParticipants.append(participant)
+                } else {
+                    noResponseParticipants.append(participant)
+                }
+                print("here")
+            }
+        }
+        print("here2", goingParticipants.count, notGoingParticipants.count, maybeParticipants.count)
         var goingTitle = "Going"
-        var maybeTitle = "Maybe"
+        var maybeTitle = "Tentative"
         var notGoingTitle = "Not going"
+        var noResponseTitle = "No response"
         
-        if goingParticipants?.count != 0 {
-            goingTitle += " (\(goingParticipants?.count ?? 0))"
+        if goingParticipants.count != 0 {
+            goingTitle += " (\(goingParticipants.count))"
         }
-        if maybeParticipants?.count != 0 {
-            maybeTitle += " (\(maybeParticipants?.count ?? 0))"
+        if maybeParticipants.count != 0 {
+            maybeTitle += " (\(maybeParticipants.count))"
         }
-        if notGoingParticipants?.count != 0 {
-            notGoingTitle += " (\(notGoingParticipants?.count ?? 0))"
+        if notGoingParticipants.count != 0 {
+            notGoingTitle += " (\(notGoingParticipants.count))"
+        }
+        
+        if noResponseParticipants.count != 0 {
+            noResponseTitle += " (\(noResponseParticipants.count))"
         }
         
         
         
-        participantsContainerView.interfaceSegmented.setButtonTitles(buttonTitles: [maybeTitle, goingTitle, notGoingTitle])
+        participantsContainerView.interfaceSegmented.setButtonTitles(buttonTitles: [noResponseTitle, maybeTitle, goingTitle, notGoingTitle])
         reloadTable()
     }
     
@@ -518,33 +540,38 @@ class ParticipantsController: UIViewController {
     }
     
     func reloadTable() {
-        // checkIfThereAreAnyElements(isEmpty: true)
         participantsContainerView.tableView.reloadData()
         
         switch (segmentedControlIndex) {
         case 0:
-            if maybeParticipants?.count == 0 {
+            if noResponseParticipants.count == 0 {
                 checkIfThereAreAnyElements(isEmpty: true)
             } else {
                 checkIfThereAreAnyElements(isEmpty: false)
             }
             break
         case 1:
-            if goingParticipants?.count == 0 {
+            if maybeParticipants.count == 0 {
                 checkIfThereAreAnyElements(isEmpty: true)
             } else {
                 checkIfThereAreAnyElements(isEmpty: false)
             }
             break
         case 2:
-            if notGoingParticipants?.count == 0 {
+            if goingParticipants.count == 0 {
+                checkIfThereAreAnyElements(isEmpty: true)
+            } else {
+                checkIfThereAreAnyElements(isEmpty: false)
+            }
+            break
+        case 3:
+            if notGoingParticipants.count == 0 {
                 checkIfThereAreAnyElements(isEmpty: true)
             } else {
                 checkIfThereAreAnyElements(isEmpty: false)
             }
             break
         default: break }
-        
     }
 
 }
@@ -558,44 +585,51 @@ extension ParticipantsController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch (segmentedControlIndex) {
         case 0:
-            return maybeParticipants?.count ?? 0
+            return noResponseParticipants.count
         case 1:
-            return goingParticipants?.count ?? 0
+            return maybeParticipants.count
         case 2:
-            return notGoingParticipants?.count ?? 0
+            return goingParticipants.count
+        case 3:
+            return notGoingParticipants.count
         default:
             return 0
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-//        let cell = tableView.dequeueReusableCell(withIdentifier: userCellID, for: indexPath) as? UserCell ?? UserCell(style: .subtitle, reuseIdentifier: userCellID)
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: userCellID) as? UserCell ?? UserCell(style: .subtitle, reuseIdentifier: userCellID)
         cell.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
         
-        guard let going = goingParticipants, let maybe = maybeParticipants, let notGoing = notGoingParticipants, let channelAdmins = channel?.admins else { return cell }
+        guard let channelAdmins = channel?.admins else { return cell }
         
         switch (segmentedControlIndex) {
         case 0:
-            if channelAdmins.contains(maybe[indexPath.row].id ?? "") {
-                cell.configureCell(for: indexPath, users: maybe, admin: true)
+            if channelAdmins.contains(noResponseParticipants[indexPath.row].id ?? "") {
+                cell.configureCell(for: indexPath, users: noResponseParticipants, admin: true)
             } else {
-                cell.configureCell(for: indexPath, users: maybe, admin: false)
+                cell.configureCell(for: indexPath, users: noResponseParticipants, admin: false)
             }
             break
         case 1:
-            if channelAdmins.contains(going[indexPath.row].id ?? "") {
-                cell.configureCell(for: indexPath, users: going, admin: true)
+            if channelAdmins.contains(maybeParticipants[indexPath.row].id ?? "") {
+                cell.configureCell(for: indexPath, users: maybeParticipants, admin: true)
             } else {
-                cell.configureCell(for: indexPath, users: going, admin: false)
+                cell.configureCell(for: indexPath, users: maybeParticipants, admin: false)
             }
             break
         case 2:
-            if channelAdmins.contains(notGoing[indexPath.row].id ?? "") {
-                cell.configureCell(for: indexPath, users: notGoing, admin: true)
+            if channelAdmins.contains(goingParticipants[indexPath.row].id ?? "") {
+                cell.configureCell(for: indexPath, users: goingParticipants, admin: true)
             } else {
-                cell.configureCell(for: indexPath, users: notGoing, admin: false)
+                cell.configureCell(for: indexPath, users: goingParticipants, admin: false)
+            }
+            break
+        case 3:
+            if channelAdmins.contains(notGoingParticipants[indexPath.row].id ?? "") {
+                cell.configureCell(for: indexPath, users: notGoingParticipants, admin: true)
+            } else {
+                cell.configureCell(for: indexPath, users: notGoingParticipants, admin: false)
             }
             break
         default: break }
@@ -622,17 +656,14 @@ extension ParticipantsController: UITableViewDelegate, UITableViewDataSource {
             cell.accessoryType = .none
         }
         
-        guard let currentUserID = Auth.auth().currentUser?.uid,
-              let maybeParticipants = maybeParticipants,
-              let goingParticipants = goingParticipants,
-              let notGoingParticipants  = notGoingParticipants
-        else { return }
+        guard let currentUserID = Auth.auth().currentUser?.uid else { return }
         
         var tmp: User?
         switch (segmentedControlIndex) {
-            case 0: tmp = maybeParticipants[indexPath.row]
-            case 1: tmp = goingParticipants[indexPath.row]
-            case 2: tmp = notGoingParticipants[indexPath.row]
+            case 0: tmp = noResponseParticipants[indexPath.row]
+            case 1: tmp = maybeParticipants[indexPath.row]
+            case 2: tmp = goingParticipants[indexPath.row]
+            case 3: tmp = notGoingParticipants[indexPath.row]
             default: break
         }
         

@@ -50,7 +50,7 @@ class ChannelDetailsContainerView: UIView {
         button.backgroundColor = ThemeManager.currentTheme().buttonColor
         button.setTitle("RSVP", for: .normal)
         button.titleLabel?.font = ThemeManager.currentTheme().secondaryFontVeryBold(with: 14)
-        button.titleLabel?.textColor = ThemeManager.currentTheme().buttonTextColor
+        button.titleLabel?.textColor = .white
         button.layer.cornerRadius = 15
         button.layer.cornerCurve = .continuous
 
@@ -95,7 +95,7 @@ class ChannelDetailsContainerView: UIView {
     
     func setColors() {
         rsvpButton.backgroundColor = ThemeManager.currentTheme().buttonColor
-        rsvpButton.titleLabel?.textColor = ThemeManager.currentTheme().buttonTextColor
+        rsvpButton.titleLabel?.textColor = .white
         rsvpView.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
         tableView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         channelImageView.backgroundColor = ThemeManager.currentTheme().imageViewBackground

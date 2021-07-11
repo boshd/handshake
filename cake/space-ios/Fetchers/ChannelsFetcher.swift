@@ -104,25 +104,26 @@ class ChannelsFetcher: NSObject {
                 guard let snap = snapshot else { return }
                 snap.documentChanges.forEach { (diff) in
                     if (diff.type == .added) {
-                        // CHANNEL ADDED
+                        print("channel added")
                         let channelID = diff.document.documentID
                         self?.delegate?.channels(addedNewChannel: true, channelID: channelID)
                         self?.loadConversation(for: channelID)
                     } else if (diff.type == .removed) {
-                        // CHANNEL REMOVED
-                        let channelID = diff.document.documentID
-                        let obj: [String: Any] = ["channelID": channelID]
-                        NotificationCenter.default.post(name: .channelRemoved, object: obj)
+                        print("channel removed")
+//                        let obj: [String: Any] = ["channelID": channelID]
+//                        NotificationCenter.default.post(name: .channelRemoved, object: obj)
+                        print("pre", self?.individualChannelListenersDict.count)
                         if self?.individualChannelListenersDict.count != 0 {
-                            self?.individualChannelListenersDict[channelID]?.remove()
-                            
-                            if let index = self?.individualChannelListenersDict.firstIndex(where: { (k, v) -> Bool in
-                                return k == channelID
+                            self?.individualChannelListenersDict[diff.document.documentID]?.remove()
+                            if let index = self?.individualChannelListenersDict.firstIndex(where: { (channelID, _) -> Bool in
+                                return channelID == diff.document.documentID
                             }) {
                                 self?.individualChannelListenersDict.remove(at: index)
                             }
                         }
-                        self?.delegate?.channels(didRemove: true, channelID: channelID)
+                        print("post", self?.individualChannelListenersDict.count)
+                        
+                        self?.delegate?.channels(didRemove: true, channelID: diff.document.documentID)
                     } else if (diff.type == .modified) {
                         // CHANNEL MODIFIED
 //                        print("CHANNEL HAS BEEN MODIIFIED!!")
@@ -192,6 +193,7 @@ class ChannelsFetcher: NSObject {
     
     fileprivate func loadAdditionalMetadata(for channel: Channel) {
         guard let channelID = channel.id, let _ = Auth.auth().currentUser?.uid else { return }
+        print("arrived in load additional metadata")
         let tempListener = Firestore.firestore().collection("channels").document(channelID).addSnapshotListener { (snapshot, error) in
             if error != nil {
                 print(error as Any)
