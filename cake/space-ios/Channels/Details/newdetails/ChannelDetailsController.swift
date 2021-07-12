@@ -399,7 +399,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         // are the changes in a user that's not being shown? redundant
         var initial = true
         guard let channelID = channel?.id else { return }
-        channelPartiticapntsListener = Firestore.firestore().collection("channels").document(channelID).collection("participantIds").addSnapshotListener({ snapshot, error in
+        channelPartiticapntsListener = Firestore.firestore().collection("channels").document(channelID).collection("participantIds").addSnapshotListener({ [weak self] snapshot, error in
             if error != nil {
                 print(error?.localizedDescription ?? "err")
                 return
@@ -415,39 +415,39 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
                         // issues w/ initial state
                         if let user = user {
                             
-                            if self.isInitial {
-                                self.isInitial = false
+                            if let isInitial = self?.isInitial, isInitial {
+                                self?.isInitial = false
                             }
                             
                             UIView.performWithoutAnimation {
-                                if let userIndex = self.attendees.firstIndex(where: { (member) -> Bool in
+                                if let userIndex = self?.attendees.firstIndex(where: { (member) -> Bool in
                                     return member.id == diff.document.documentID
                                 }) {
-                                    self.channelDetailsContainerView.tableView.beginUpdates()
-                                    self.attendees[userIndex] = user
-                                    self.channelDetailsContainerView.tableView.reloadRows(at: [IndexPath(row: userIndex, section: 3)], with: .none)
+                                    self?.channelDetailsContainerView.tableView.beginUpdates()
+                                    self?.attendees[userIndex] = user
+                                    self?.channelDetailsContainerView.tableView.reloadRows(at: [IndexPath(row: userIndex, section: 3)], with: .none)
                                 } else {
-                                    self.channelDetailsContainerView.tableView.beginUpdates()
-                                    self.attendees.append(user)
+                                    self?.channelDetailsContainerView.tableView.beginUpdates()
+                                    self?.attendees.append(user)
                                     var index = 0
-                                    if self.attendees.count-1 >= 0 { index = self.attendees.count - 1 }
-                                    self.channelDetailsContainerView.tableView.insertRows(at: [IndexPath(row: index, section: 3)], with: .fade)
+                                    if let count = self?.attendees.count, count-1 >= 0 { index = count - 1 }
+                                    self?.channelDetailsContainerView.tableView.insertRows(at: [IndexPath(row: index, section: 3)], with: .fade)
                                 }
-                                self.channelDetailsContainerView.tableView.endUpdates()
+                                self?.channelDetailsContainerView.tableView.endUpdates()
                             }
                         }
                     }
                 } else if diff.type == .removed {
-                    guard let memberIndex = self.attendees.firstIndex(where: { (member) -> Bool in
+                    guard let memberIndex = self?.attendees.firstIndex(where: { (member) -> Bool in
                         return member.id == diff.document.documentID
                     }) else { return }
 
-                    self.channelDetailsContainerView.tableView.beginUpdates()
-                    self.attendees.remove(at: memberIndex)
-                    self.channelDetailsContainerView.tableView.deleteRows(at: [IndexPath(row: memberIndex, section: 3)], with: .left)
-                    self.channelDetailsContainerView.tableView.endUpdates()
-                    if !self.isCurrentUserMemberOfCurrentGroup() {
-                        self.navigationController?.popViewController(animated: true)
+                    self?.channelDetailsContainerView.tableView.beginUpdates()
+                    self?.attendees.remove(at: memberIndex)
+                    self?.channelDetailsContainerView.tableView.deleteRows(at: [IndexPath(row: memberIndex, section: 3)], with: .left)
+                    self?.channelDetailsContainerView.tableView.endUpdates()
+                    if let isMember = self?.isCurrentUserMemberOfCurrentGroup(), !isMember {
+                        self?.navigationController?.popViewController(animated: true)
                     }
                 }
             })

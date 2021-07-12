@@ -95,11 +95,17 @@ class ChannelsFetcher: NSObject {
     
     func observeChannelAddedOrRemoved() {
         if currentUserChannelIDsReference != nil {
+//            var first = true
             userChannelIdsCollectionListener = currentUserChannelIDsReference.addSnapshotListener({ [weak self] (snapshot, error) in
                 if error != nil {
                     print(error?.localizedDescription ?? "")
                     return
                 }
+                
+//                if first {
+//                    first = false
+//                    return
+//                }
                 
                 guard let snap = snapshot else { return }
                 snap.documentChanges.forEach { (diff) in
@@ -152,7 +158,7 @@ class ChannelsFetcher: NSObject {
               let channelID = channelID
         else { return }
         
-        let groupChannelDataReference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID)
+        let groupChannelDataReference = Firestore.firestore().collection("channels").document(channelID)
         groupChannelDataReference.getDocument { (documentSnapshot, error) in
             guard let data = documentSnapshot?.data() else {
                 if error != nil {
@@ -161,14 +167,18 @@ class ChannelsFetcher: NSObject {
                 self.delegate?.channels(didFinishFetching: true, channels: self.channels)
                 return
             }
+            print("loadConversation")
             let channel = Channel(dictionary: data as [String : AnyObject])
+            
             
             channel.isTyping.value = channel.getTyping()
             
             guard let lastMessageID = channel.lastMessageId else {
                 self.loadAdditionalMetadata(for: channel)
+                print("loadAdditionalMetadata route")
                 return
             }
+            print("loadLastMessage route")
             self.loadLastMessage(for: lastMessageID, channel: channel)
         }
     }
@@ -179,6 +189,7 @@ class ChannelsFetcher: NSObject {
                 print(error?.localizedDescription as Any)
                 return
             }
+            print("loadLastMessage")
             guard var dictionary = snapshot?.data() as [String: AnyObject]? else { return }
             dictionary.updateValue(messageID as AnyObject, forKey: "messageUID")
             
@@ -192,6 +203,7 @@ class ChannelsFetcher: NSObject {
     }
     
     fileprivate func loadAdditionalMetadata(for channel: Channel) {
+        print(channel.id, channel.name, channel.admins)
         guard let channelID = channel.id, let _ = Auth.auth().currentUser?.uid else { return }
         print("arrived in load additional metadata")
         let tempListener = Firestore.firestore().collection("channels").document(channelID).addSnapshotListener { (snapshot, error) in
@@ -256,6 +268,7 @@ class ChannelsFetcher: NSObject {
     
     fileprivate func updateConversationArrays(with channel: Channel) {
         guard let channelID = channel.id else { return }
+        print("updateConversationArrays")
         if let index = channels.firstIndex(where: { (channel) -> Bool in
             return channel.id == channelID
         }) {
@@ -267,7 +280,7 @@ class ChannelsFetcher: NSObject {
     }
     
     func update(channel: Channel, at index: Int) {
-        
+        print("update")
         if channel.isTyping.value == nil {
             let isTyping = channels[index].isTyping.value
             channel.isTyping.value = isTyping
@@ -283,6 +296,7 @@ class ChannelsFetcher: NSObject {
     }
     
     fileprivate func handleGroupOrReloadTable() {
+        print("handleGroupOrReloadTable")
         guard isGroupAlreadyFinished else {
             guard group != nil else {
                 delegate?.channels(didFinishFetching: true, channels: channels)
