@@ -27,6 +27,8 @@ import { constants } from './core/constants'
 
 // exports.getUsersWithPreparedNumbers = getUsersWithPreparedNumbers
 
+const LOGGER = functions.logger
+
 
 exports.getUsersWithPreparedNumbers = functions.https.onRequest((req, res) => {
 	try {
@@ -427,38 +429,94 @@ exports.channelCreationHandler = functions.firestore
 
         const channelReference = admin.firestore().collection(constants.CHANNELS_COLLECTION).doc(channelId)
 
-        const newParticipantReference = channelReference.collection('participantIds').doc(channelId)
-
         var fcmTokens: {[k: string]: any} = {}
 
         var batch = admin.firestore().batch()
 
-        var dataFetchPromise = new Promise((resolve, reject) => {
-            participantIds.forEach(participantId => {
-                const newChannelReference = admin.firestore().collection(constants.USERS_COLLECTION).doc(participantId).collection('channelIds').doc(channelId)
+        // var promises: Promise<any> = [];
 
-                batch.create(newParticipantReference, {})
-                batch.create(newChannelReference, {})
+    //    return new Promise((resolve, reject) => {
+        // participantIds.forEach(participantId => {
+        //     const newChannelReference = admin.firestore().collection(constants.USERS_COLLECTION).doc(participantId).collection('channelIds').doc(channelId)
 
-                admin
-                .firestore()
-                .collection(constants.FCM_TOKENS_COLLECTION)
-                .doc(participantId)
-                .get()
-                .then(participantSnapshot => {
-                    const token = participantSnapshot?.data()?.fcmToken as string
-                    fcmTokens[participantId] = token
+        //     batch.create(newParticipantReference, {})
+        //     batch.create(newChannelReference, {})
+
+        //     promises.push(
+        //         returnadmin
+        //         .firestore()
+        //         .collection(constants.FCM_TOKENS_COLLECTION)
+        //         .doc(participantId)
+        //         .get()
+        //         .then(participantSnapshot => {
+        //             const token = participantSnapshot?.data()?.fcmToken as string
+        //             fcmTokens[participantId] = token
+        //         })
+        //         .catch(err => { functions.logger.error('Error getting data', err) })
+        //     )
+        // })
+
+        // Promise.all(promises)
+        // .then(() =>
+        //     // self.resultingFunction(self.files)
+        // )
+        // .catch(err => {
+
+        // })
+
+        try {
+
+            Promise.all(
+                participantIds.map((participantId) => {
+                    const newChannelReference = admin.firestore().collection(constants.USERS_COLLECTION).doc(participantId).collection('channelIds').doc(channelId)
+                    const newParticipantReference = channelReference.collection('participantIds').doc(participantId)
+
+                    batch.create(newParticipantReference, {})
+                    batch.create(newChannelReference, {})
+
+                    return admin
+                    .firestore()
+                    .collection(constants.FCM_TOKENS_COLLECTION)
+                    .doc(participantId)
+                    .get()
+                    .then(participantSnapshot => {
+                        const token = participantSnapshot?.data()?.fcmToken as string
+                        fcmTokens[participantId] = token
+                    })
+                    .catch(err => { functions.logger.error('Error getting data', err) })
                 })
-                .catch(err => { functions.logger.error('Error getting data', err) })
+            )
+            .then(() => {
+                LOGGER.info('Promise completed')
+
+                batch.update(channelReference, {
+                    'fcmTokens': fcmTokens,
+                })
+
+                batch.commit()
+                .then(() => {
+                    LOGGER.info('Batch commit successful')
+                })
+                .catch(err => {
+                    LOGGER.error(err)
+                })
             })
-        })
+            .catch((error) => {
+                LOGGER.error(error)
+            })
 
-        dataFetchPromise.then(() => {
-            functions.logger.log('All done!', fcmTokens);
-        })
-        .catch(err => { functions.logger.error('Promise error?', err) })
 
-        return dataFetchPromise
+        } catch (error) {
+            LOGGER.error(error)
+        }
+
+        // })
+        // .then(() => {
+        //     functions.logger.log('All done!', fcmTokens);
+        // })
+        // .catch(err => { functions.logger.error('Promise error?', err) })
+
+        // return dataFetchPromise
 
         // participantIds.forEach(participantId => {
         //     const newChannelReference = admin.firestore().collection(constants.USERS_COLLECTION).doc(participantId).collection('channelIds').doc(channelId)

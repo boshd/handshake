@@ -306,7 +306,6 @@ extension CreateChannelController {
             "longitude": locationCoordinates?.1 as AnyObject,
             "locationName": locationName as AnyObject,
             "locationDescription": locationDescription as AnyObject,
-            "maybeIds": memberIDs.0 as AnyObject,
             "isCancelled": false as AnyObject,
             "isRemote": isRemote as AnyObject
         ]
