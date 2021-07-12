@@ -126,7 +126,10 @@ class InAppNotificationManager: NSObject {
                             let message = Message(dictionary: dictionary as [String : AnyObject])
                             
                             guard let uid = Auth.auth().currentUser?.uid, message.fromId != uid else { return }
-                            self.handleInAppSoundPlaying(message: message, channel: channel, channels: self.channels)
+                            
+                            if let notified = message.notified.value, !notified {
+                                self.handleInAppSoundPlaying(message: message, channel: channel, channels: self.channels)
+                            }
                         }
                     }
                 }
