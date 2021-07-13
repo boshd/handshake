@@ -73,7 +73,7 @@ class MessageSender: NSObject {
         channel?.fcmTokens.forEach({ (token) in
             fcmDict[token.userId] = token.fcmToken
         })
-//smyth medical centre, corener 208, walk over, health card
+        
         let defaultData: [String: AnyObject] = ["messageUID": messageUID as AnyObject,
                                                 "toId": toID as AnyObject,
                                                 "status": messageStatus as AnyObject,

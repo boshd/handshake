@@ -39,14 +39,14 @@ export function constructNotificationPayload(currentUserFCMToken: string, messag
             },
             payload: {
                 aps: {
+                    'content-available': 0,
                     sound: 'push.aiff',
                     category: 'QuickReply',
                     badge: badge,
                     'mutable-content': 1,
                 },
-                messageID: messageId,
-                channelID: channelId,
-                // message: data,
+                messageId: messageId,
+                channelId: channelId,
             },
         },
         tokens: [currentUserFCMToken],

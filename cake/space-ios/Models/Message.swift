@@ -42,7 +42,7 @@ final class Message: Object {
     let isInformationMessage = RealmOptional<Bool>()
     let seen = RealmOptional<Bool>()
     
-    let notified = RealmOptional<Bool>()
+//    let notified = RealmOptional<Bool>()
     
 //    var fcmTokens = List<FCMToken>()
     
@@ -71,7 +71,7 @@ final class Message: Object {
         self.historicChannelName = dictionary["historicChannelName"] as? String
         self.historicSenderName = dictionary["historicSenderName"] as? String
         self.estimatedFrameForText = dictionary["estimatedFrameForText"] as? RealmCGRect
-        self.notified.value = dictionary["notified"] as? Bool
+//        self.notified.value = dictionary["notified"] as? Bool
         
 //        self.fcmTokens.assign(dictionary["fcmTokens"] as? [String])
 //        self.fcmTokens = dictionary["fcmTokens"] as? List<FCMToken> ?? List<FCMToken>()

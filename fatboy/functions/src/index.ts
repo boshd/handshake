@@ -120,16 +120,6 @@ export const sendNotificationToDevice = functions.firestore
                                             badge,
                                         )
 
-                                        admin.firestore().collection('messages').doc(userMessageSnapshot.id).update({
-                                            'notified': true,
-                                        })
-                                        .then((res) => {
-                                            functions.logger.info('Successfully updated notified flag // ', res);
-                                        })
-                                        .catch((error) => {
-                                            functions.logger.error('Error updating notified flag // ', error)
-                                        })
-
                                         return admin.messaging().sendMulticast(messagePayload)
                                         .then((res) => {
                                             functions.logger.info('Successfully sent message // ', res);

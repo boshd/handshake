@@ -23,7 +23,7 @@ var tabBarController: TabBarController?
 var globalIndicator = SVProgressHUD.self
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     
     var window: UIWindow?
     let pushManager = PushNotificationManager()
@@ -31,13 +31,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        print("\nAPP DELEGATE realm channel count: \(RealmKeychain.defaultRealm.objects(Channel.self).count)\n")
         FirebaseConfiguration.shared.setLoggerLevel(.min)
         FirebaseApp.configure()
         Database.database().isPersistenceEnabled = true
         userDefaults.configureInitialLaunch()
-        
-        //ThemeManager.applyTheme(theme: ThemeManager.currentTheme())
         
         tabBarController = TabBarController()
         
@@ -55,8 +52,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.backgroundColor = ThemeManager.currentTheme().windowBackground
         tabBarController?.presentOnboardingController()
         
-        // Push notifications setup
         pushManager.registerForPushNotifications()
+        
+        if let options = launchOptions,
+           let notification = options[UIApplication.LaunchOptionsKey.remoteNotification] as? [NSObject : AnyObject] {
+            // NOTE: (Kyle Begeman) May 19, 2016 - There is an issue with iOS instantiating the UIWindow object. Making this call without
+            // a delay will cause window to be nil, thus preventing us from constructing the application and assigning it to the window.
+            
+            print("IN APP DELEGATE", notification)
+//            Quark.runAfterDelay(seconds: 0.001, after: {
+//                self.application(application, didReceiveRemoteNotification: notification)
+//            })
+        }
+        
+        print("LAUNCH OPTIONS", launchOptions)
         
         configureIndicator()
         
@@ -68,14 +77,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     // MARK: - Push Notifications
+//
+//    func application(_ application: UIApplication, didReceiveRemoteNotification notification: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+//        if Auth.auth().canHandleNotification(notification) {
+//            completionHandler(.noData)
+//            return
+//        }
+//        pushManager.handleNotification(notification: notification)
+//    }
+//
     
-    func application(_ application: UIApplication, didReceiveRemoteNotification notification: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        if Auth.auth().canHandleNotification(notification) {
-            completionHandler(.noData)
-            return
-        }
-        pushManager.handleNotification(notification: notification)
-    }
+    // MARK: - Push notification registration
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         Messaging.messaging().apnsToken = deviceToken
@@ -84,6 +96,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
          print("Unable to register for remote notifications: \(error.localizedDescription)")
     }
+
+    // MARK: - Indicator
     
     func configureIndicator() {
         globalIndicator.setDefaultMaskType(.clear)

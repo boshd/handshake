@@ -108,6 +108,8 @@ class InAppNotificationManager: NSObject {
                     return
                 }
                 
+                // if the snapshot is older than current session
+                
                 if (first) {
                     first = false
                     return
@@ -127,9 +129,9 @@ class InAppNotificationManager: NSObject {
                             
                             guard let uid = Auth.auth().currentUser?.uid, message.fromId != uid else { return }
                             
-                            if let notified = message.notified.value, !notified {
-                                self.handleInAppSoundPlaying(message: message, channel: channel, channels: self.channels)
-                            }
+//                            if let notified = message.notified.value, !notified {
+                            self.handleInAppSoundPlaying(message: message, channel: channel, channels: self.channels)
+//                            }
                         }
                     }
                 }
