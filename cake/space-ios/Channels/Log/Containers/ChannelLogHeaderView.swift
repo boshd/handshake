@@ -10,6 +10,36 @@ import UIKit
 
 class ChannelLogHeaderView: UIView {
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        DispatchQueue.main.async {
+            self.alpha = 1.0
+            UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveLinear, animations: {
+                self.alpha = 0.8
+//                self.backgroundColor = .handshakeBlue
+            }, completion: nil)
+        }
+    }
+
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        DispatchQueue.main.async {
+            self.alpha = 0.8
+            UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveLinear, animations: {
+                self.alpha = 1.0
+//                self.backgroundColor = ThemeManager.currentTheme().chatLogHeaderBackgroundColor
+            }, completion: nil)
+        }
+    }
+
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        DispatchQueue.main.async {
+            self.alpha = 0.8
+            UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveLinear, animations: {
+                self.alpha = 1
+//                self.backgroundColor = ThemeManager.currentTheme().chatLogHeaderBackgroundColor
+            }, completion: nil)
+        }
+    }
+    
     var timeLabel: DynamicLabel = {
         var label = DynamicLabel(withInsets: 0, 0, 0, 0)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -77,7 +107,7 @@ class ChannelLogHeaderView: UIView {
         isUserInteractionEnabled = true
         backgroundColor = ThemeManager.currentTheme().chatLogHeaderBackgroundColor
         
-        cornerRadius = 65/3
+        cornerRadius = 10
         layer.cornerCurve = .continuous
         
 //        layer.shadowColor = ThemeManager.currentTheme().buttonTextColor.cgColor

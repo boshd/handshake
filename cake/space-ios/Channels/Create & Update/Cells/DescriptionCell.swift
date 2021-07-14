@@ -27,7 +27,7 @@ class DescriptionCell: UITableViewCell {
         textView.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         textView.textColor = ThemeManager.currentTheme().generalSubtitleColor
         textView.returnKeyType = .done
-        textView.text = "Description"
+//        textView.text = "Description"
         textView.autocorrectionType = .default
         textView.autocapitalizationType = .none
         textView.tintColor = ThemeManager.currentTheme().tintColor
@@ -79,19 +79,13 @@ extension DescriptionCell: UITextViewDelegate {
     
     func textViewDidChangeSelection(_ textView: UITextView) {
         if self.contentView.window != nil {
-            if textView.textColor == ThemeManager.currentTheme().generalSubtitleColor {
+            if textView.textColor == ThemeManager.currentTheme().generalSubtitleColor && textView.text.isEmpty {
                 textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+            } else {
+                
             }
         }
     }
-    
-//    func textViewDidChangeSelection(_ textView: UITextView) {
-//        if self.view.window != nil {
-//            if textView.textColor == UIColor.lightGray {
-//                textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
-//            }
-//        }
-//    }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         // Combine the textView text and the replacement text to
@@ -101,26 +95,20 @@ extension DescriptionCell: UITextViewDelegate {
 
             // If updated text view will be empty, add the placeholder
             // and set the cursor to the beginning of the text view
-            if updatedText.isEmpty {
-
+        
+            print("IN TEXTVIEW DELEAGTE", textView.textColor, text.isEmpty)
+            
+            if text == "\n" {
+                textView.resignFirstResponder()
+                return false
+            } else if updatedText.isEmpty {
                 textView.text = "Description"
                 textView.textColor = ThemeManager.currentTheme().generalSubtitleColor
-
                 textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
-            }
-
-            // Else if the text view's placeholder is showing and the
-            // length of the replacement string is greater than 0, set
-            // the text color to black then set its text to the
-            // replacement string
-             else if textView.textColor == ThemeManager.currentTheme().generalSubtitleColor && !text.isEmpty {
+            } else if textView.textColor == ThemeManager.currentTheme().generalSubtitleColor && !text.isEmpty {
                 textView.textColor = ThemeManager.currentTheme().generalTitleColor
                 textView.text = text
-            }
-
-            // For every other case, the text should change with the usual
-            // behavior...
-            else {
+            } else {
                 return true
             }
 
@@ -167,4 +155,5 @@ extension DescriptionCell: UITextViewDelegate {
         }
     }
 }
+
 

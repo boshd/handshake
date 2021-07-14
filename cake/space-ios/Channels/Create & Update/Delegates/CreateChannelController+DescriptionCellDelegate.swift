@@ -11,6 +11,9 @@ import UIKit
 extension CreateChannelController: DescriptionCellDelegate {
     
     func updateHeightOfRow(_ cell: UITableViewCell, _ textView: UITextView) {
+        
+        channelDescription = textView.text
+        
         let size = textView.bounds.size
         let newSize = tableView.sizeThatFits(CGSize(width: size.width,
                                                         height: CGFloat.greatestFiniteMagnitude))

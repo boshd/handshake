@@ -159,7 +159,6 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
         return 0
     }
     
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let cell = channelDetailsContainerView.tableView.cellForRow(at: indexPath) {
             cell.accessoryType = .none
