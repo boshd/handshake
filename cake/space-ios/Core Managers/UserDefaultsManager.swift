@@ -31,6 +31,7 @@ class UserDefaultsManager: NSObject {
     let contactsCount = "ContactsCount"
     let currentUserName = "CurrentUserName"
     let fcmToken = "fcmToken"
+    let shouldInAppNotify = "shouldInAppNotify"
   
     //updating
     func updateObject(for key: String, with data: Any?) {

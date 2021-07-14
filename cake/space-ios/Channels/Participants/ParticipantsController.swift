@@ -175,8 +175,12 @@ class ParticipantsController: UIViewController {
 //        goingParticipants = participants.filter({ channel.goingIds.contains($0.id ?? "") })
 //        maybeParticipants = participants.filter({ channel.maybeIds.contains($0.id ?? "") })
 //        notGoingParticipants = participants.filter({ channel.notGoingIds.contains($0.id ?? "") })
-        
+        goingParticipants.removeAll()
+        notGoingParticipants.removeAll()
+        maybeParticipants.removeAll()
+        noResponseParticipants.removeAll()
         for participant in participants {
+            print("CALLED 2222222222")
             if let id = participant.id {
                 if channel.goingIds.contains(id) {
                     goingParticipants.append(participant)

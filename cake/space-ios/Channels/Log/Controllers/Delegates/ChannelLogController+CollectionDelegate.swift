@@ -97,5 +97,5 @@ extension ChannelLogController: CollectionDelegate {
         }
         NotificationCenter.default.post(name: .messageSent, object: nil)
     }
-
+    
 }

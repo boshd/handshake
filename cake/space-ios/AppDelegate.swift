@@ -23,7 +23,7 @@ var tabBarController: TabBarController?
 var globalIndicator = SVProgressHUD.self
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UIWindowSceneDelegate, UISceneDelegate {
     
     var window: UIWindow?
     let pushManager = PushNotificationManager()
@@ -45,32 +45,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
         
         window = UIWindow(frame: UIScreen.main.bounds)
-        let navigationController = CustomNavigationController(rootViewController: tabBarController ?? UIViewController())
-        navigationController.navigationBar.isHidden = true
-        window?.rootViewController = navigationController
-        window?.makeKeyAndVisible()
-        window?.backgroundColor = ThemeManager.currentTheme().windowBackground
-        tabBarController?.presentOnboardingController()
+        if let tabBarController = tabBarController {
+            let navigationController = CustomNavigationController(rootViewController: tabBarController)
+            navigationController.navigationBar.isHidden = true
+    //        self.window?.rootViewController = navigationController
+    //        self.window?.makeKeyAndVisible()
+    //        self.window?.backgroundColor = ThemeManager.currentTheme().windowBackground
+            
+            
+            UIApplication.shared.windows.first?.rootViewController = navigationController
+            UIApplication.shared.windows.first?.makeKeyAndVisible()
+//            UIApplication.shared.windows.first?.isKeyWindow = true
+            UIApplication.shared.windows.first?.backgroundColor = ThemeManager.currentTheme().windowBackground
+            
+            tabBarController.presentOnboardingController()
+        }
+
         
         pushManager.registerForPushNotifications()
-        
-        if let options = launchOptions,
-           let notification = options[UIApplication.LaunchOptionsKey.remoteNotification] as? [NSObject : AnyObject] {
-            // NOTE: (Kyle Begeman) May 19, 2016 - There is an issue with iOS instantiating the UIWindow object. Making this call without
-            // a delay will cause window to be nil, thus preventing us from constructing the application and assigning it to the window.
-            
-            print("IN APP DELEGATE", notification)
-//            Quark.runAfterDelay(seconds: 0.001, after: {
-//                self.application(application, didReceiveRemoteNotification: notification)
-//            })
-        }
-        
-        print("LAUNCH OPTIONS", launchOptions)
         
         configureIndicator()
         
         return true
     }
+    
+
+    
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
         Auth.auth().canHandle(url)

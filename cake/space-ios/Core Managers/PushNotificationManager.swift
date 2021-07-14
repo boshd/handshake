@@ -42,7 +42,6 @@ class PushNotificationManager: NSObject, MessagingDelegate, UNUserNotificationCe
             UIApplication.shared.registerUserNotificationSettings(settings)
         }
         
-    
     }
     
     
@@ -59,6 +58,10 @@ class PushNotificationManager: NSObject, MessagingDelegate, UNUserNotificationCe
     // post ios 10 (include ios10), requires delegate
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         print("CALLED userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification")
+        
+        // should not notify in-app
+        
+        
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {

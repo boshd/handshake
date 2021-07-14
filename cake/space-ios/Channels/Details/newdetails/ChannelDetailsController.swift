@@ -34,7 +34,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     
     let tableSectionHeaderHeight: CGFloat = 27.5
     
-    let initialNumberOfAttendees = 1
+    let initialNumberOfAttendees = 5
     var isInitial = true {
         didSet {
             test2()

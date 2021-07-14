@@ -101,23 +101,27 @@ class InAppNotificationManager: NSObject {
             guard channel.participantIds.contains(currentUserID) else { return }
             
             var first = true
+            
             notificationReference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID).collection("messageIds")
             let listener = notificationReference.addSnapshotListener { (querySnapshot, error) in
                 guard error == nil else {
                     print("error // ", error!)
                     return
                 }
-                
-                // if the snapshot is older than current session
-                
-                if (first) {
+
+                if first {
                     first = false
                     return
                 }
                 
                 guard let changes = querySnapshot?.documentChanges else { return }
+                
+                print("\n\n\nIN SNAPSHOT FOR NOTIFICATIONS, \(changes.count), channel count \(self.channels.count)\n\n\n")
+                
                 changes.forEach { (diff) in
+                    
                     if diff.type == .added {
+                        print("ADDED ")
                         let messageID = diff.document.documentID
                         
                         Firestore.firestore().collection("messages").document(messageID).getDocument { (snapshot, error) in
@@ -224,11 +228,28 @@ class InAppNotificationManager: NSObject {
         
         let notification: InAppNotification = InAppNotification(resource: resource, title: title, subtitle: subtitle, data: placeholder)
         InAppNotificationDispatcher.shared.show(notification: notification) { (_) in
-            guard let controller = UIApplication.shared.keyWindow?.rootViewController else { return }
+            print("PRE PRE OPEN", UIApplication.shared.windows.first?.rootViewController)
+//            print(UIApplication.shared.windows.filter({ $0.isKeyWindow }).first?., "UIApplication.shared.windows.filter({ $0.isKeyWindow }).first?.rootViewController")
+            
+            
+//            let keyWindow = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
+//
+//            if var topController = keyWindow?.rootViewController {
+//                while let presentedViewController = topController.presentedViewController {
+//                    topController = presentedViewController
+//                    print(topController, "topcontroller")
+//                }
+//
+//            // topController should now be your topmost view controller
+//            }
+            
+            guard let controller = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController else { return }
+            print(controller, "controller")
             guard let id = channel.id, let realmChannel = RealmKeychain.defaultRealm.objects(Channel.self).filter("id == %@", id).first else {
                 channelLogPresenter.open(channel, controller: controller)
                 return
             }
+            print("PRE OPEN")
             channelLogPresenter.open(realmChannel, controller: controller)
         }
     }
