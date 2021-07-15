@@ -180,7 +180,6 @@ class ParticipantsController: UIViewController {
         maybeParticipants.removeAll()
         noResponseParticipants.removeAll()
         for participant in participants {
-            print("CALLED 2222222222")
             if let id = participant.id {
                 if channel.goingIds.contains(id) {
                     goingParticipants.append(participant)
@@ -191,10 +190,8 @@ class ParticipantsController: UIViewController {
                 } else {
                     noResponseParticipants.append(participant)
                 }
-                print("here")
             }
         }
-        print("here2", goingParticipants.count, notGoingParticipants.count, maybeParticipants.count)
         var goingTitle = "Going"
         var maybeTitle = "Tentative"
         var notGoingTitle = "Not going"

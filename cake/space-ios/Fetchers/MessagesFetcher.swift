@@ -56,7 +56,6 @@ class MessagesFetcher: NSObject {
         loadingMessagesGroup.enter()
         newLoadMessages(reference: reference, channelID: channelID, channel: channel)
         loadingMessagesGroup.notify(queue: .main) {
-            print("notified \(self.messages.count)")
             guard self.messages.count != 0 else {
                 if self.isInitialChatMessagesLoad {
                     self.messages = self.sortedMessages(unsortedMessages: self.messages)
@@ -91,13 +90,11 @@ class MessagesFetcher: NSObject {
             for _ in 0 ..< documentsCount { loadedMessagesGroup.enter() }
             
             loadedMessagesGroup.notify(queue: .main) { [weak self] in
-                print("loadedMessagesGroup notified")
                 self?.messages = loadedMessages
                 self?.loadingMessagesGroup.leave()
             }
             
             self.threadListener = reference.addSnapshotListener { (snapshot, error) in
-                print("message is here")
                 if error != nil {
                     print(error?.localizedDescription ?? "error")
                     return
@@ -107,7 +104,6 @@ class MessagesFetcher: NSObject {
                 if !documentChanges.isEmpty {
                     documentChanges.forEach { (diff) in
                         if diff.type == .added {
-                            print("triggered added")
                             let messageUID = diff.document.documentID
                             
                             self.messageReference = Firestore.firestore().collection("messages").document(messageUID)

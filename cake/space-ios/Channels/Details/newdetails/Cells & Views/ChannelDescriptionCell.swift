@@ -34,6 +34,7 @@ class ChannelDescriptionCell: UITableViewCell {
         textView.maximumNumberOfLines = 3
         textView.shouldTrim = true
         textView.layoutIfNeeded()
+        textView.isSelectable = false
         return textView
     }()
     

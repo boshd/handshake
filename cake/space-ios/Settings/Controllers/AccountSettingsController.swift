@@ -26,16 +26,16 @@ class AccountSettingsController: UITableViewController, MFMailComposeViewControl
     
     let realm = try! Realm(configuration: RealmKeychain.realmUsersConfiguration())
 
-    var accountSection = [( icon: UIImage(named: "Notification") , title: "Profile" ),
-                        ( icon: UIImage(named: "ChangeNumber") , title: "Change number")]
+    var accountSection = [( icon: UIImage(named: "Profile") , title: "Profile" ),
+                        ( icon: UIImage(named: "Phone") , title: "Change Number")]
     
-    var preferencesSection = [( icon: UIImage(named: "ChangeNumber") , title: "Notifications"),
-                             ( icon: UIImage(named: "Privacy") , title: "Appearance" )]
+    var preferencesSection = [( icon: UIImage(named: "Activity") , title: "Notifications"),
+                             ( icon: UIImage(named: "Show") , title: "Appearance" )]
     
-    var supportSection = [( icon: UIImage(named: "Logout") , title: "Terms of Use"),
-                         ( icon: UIImage(named: "Logout") , title: "Privacy Policy"),
-                         ( icon: UIImage(named: "Logout") , title: "Licences"),
-                         ( icon: UIImage(named: "ChangeNumber") , title: "Feedback")]
+    var supportSection = [( icon: UIImage(named: "Document") , title: "Terms of Use"),
+                         ( icon: UIImage(named: "Shield Done") , title: "Privacy Policy"),
+                         ( icon: UIImage(named: "Paper") , title: "Licences"),
+                         ( icon: UIImage(named: "Heart") , title: "Feedback")]
     
     var logoutSection = [
                             ( icon: UIImage(named: "Logout") , title: "Permenantly delete account")
@@ -304,18 +304,19 @@ extension AccountSettingsController {
         let cell = tableView.dequeueReusableCell(withIdentifier: accountSettingsCellId,
                                                  for: indexPath) as? AccountSettingsTableViewCell ?? AccountSettingsTableViewCell()
         cell.accessoryType = .disclosureIndicator
-
+        cell.accessoryView?.tintColor = ThemeManager.currentTheme().tintColor
+        
         if indexPath.section == 0 {
-            cell.icon.image = accountSection[indexPath.row].icon
+            cell.icon.image = accountSection[indexPath.row].icon?.withRenderingMode(.alwaysTemplate)
             cell.title.text = accountSection[indexPath.row].title
         } else if indexPath.section == 1 {
-            cell.icon.image = preferencesSection[indexPath.row].icon
+            cell.icon.image = preferencesSection[indexPath.row].icon?.withRenderingMode(.alwaysTemplate)
             cell.title.text = preferencesSection[indexPath.row].title
         } else if indexPath.section == 2 {
-            cell.icon.image = supportSection[indexPath.row].icon
+            cell.icon.image = supportSection[indexPath.row].icon?.withRenderingMode(.alwaysTemplate)
             cell.title.text = supportSection[indexPath.row].title
         } else {
-            cell.icon.image = logoutSection[indexPath.row].icon
+            cell.icon.image = logoutSection[indexPath.row].icon?.withRenderingMode(.alwaysTemplate)
             cell.title.text = logoutSection[indexPath.row].title
             cell.title.textColor = .defaultHotRed()
             cell.title.font = ThemeManager.currentTheme().secondaryFontBold(with: 14)

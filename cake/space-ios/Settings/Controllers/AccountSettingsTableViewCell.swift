@@ -19,7 +19,8 @@ class AccountSettingsTableViewCell: UITableViewCell {
         var icon = UIImageView()
         icon.translatesAutoresizingMaskIntoConstraints = false
         icon.contentMode = .scaleAspectFit
-
+        icon.tintColor = ThemeManager.currentTheme().generalTitleColor
+        
         return icon
     }()
   
@@ -53,23 +54,18 @@ class AccountSettingsTableViewCell: UITableViewCell {
         contentView.isUserInteractionEnabled = false
         selectionStyle = .default
         
-        
-        
-//        setColor()
-        
-//        contentView.backgroundColor = .red
-        backgroundColor = ThemeManager.currentTheme().groupedInsetCellBackgroundColor
+        setColor()
         
         contentView.addSubview(icon)
         
         icon.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: 0).isActive = true
         icon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16).isActive = true
-        icon.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        icon.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        icon.widthAnchor.constraint(equalToConstant: 23).isActive = true
+        icon.heightAnchor.constraint(equalToConstant: 23).isActive = true
         
         contentView.addSubview(title)
         title.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: 0).isActive = true
-        title.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15).isActive = true
+        title.leadingAnchor.constraint(equalTo: icon.trailingAnchor, constant: 15).isActive = true
         title.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15).isActive = true
         title.heightAnchor.constraint(equalToConstant: 30).isActive = true
         
@@ -86,9 +82,11 @@ class AccountSettingsTableViewCell: UITableViewCell {
     }
   
     fileprivate func setColor() {
+        tintColor = ThemeManager.currentTheme().tintColor
         backgroundColor = ThemeManager.currentTheme().groupedInsetCellBackgroundColor
         accessoryView?.backgroundColor = backgroundColor
 //        icon.backgroundColor = backgroundColor
+        icon.tintColor = ThemeManager.currentTheme().generalTitleColor
         title.textColor = ThemeManager.currentTheme().generalTitleColor
         selectionColor = ThemeManager.currentTheme().cellSelectionColor
         separator.backgroundColor = ThemeManager.currentTheme().seperatorColor

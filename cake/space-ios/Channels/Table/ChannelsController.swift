@@ -327,7 +327,6 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
                 break
             case .update(_, let deletions, let insertions, let modifications):
                 if unwrappedSelf.isAppLoaded {
-                    print(deletions, insertions, modifications)
                     unwrappedSelf.tableView.beginUpdates()
                     unwrappedSelf.tableView.insertRows(at: insertions.map { IndexPath(row: $0, section: 0) }, with: .none)
                     unwrappedSelf.tableView.deleteRows(at: unwrappedSelf.indexPathsToUpdate(updates: deletions, section: 0), with: .automatic)
@@ -343,7 +342,6 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
     // MARK: - User experience
     
     @objc func handleReloadTable() {
-        print("calling handle reload\n\n")
 //        inProgressRealmChannels = inProgressRealmChannels?.sorted(byKeyPath: "startTime", ascending: false)
 //        upcomingRealmChannels = upcomingRealmChannels?.sorted(byKeyPath: "startTime", ascending: false)
 //        pastRealmChannels = pastRealmChannels?.sorted(byKeyPath: "startTime", ascending: false)

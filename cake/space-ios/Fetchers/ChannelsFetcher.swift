@@ -79,15 +79,13 @@ class ChannelsFetcher: NSObject {
                     return
                 }
                 self.group = DispatchGroup()
-                for _ in 0 ..< documents.count { print("we are entering"); self.group.enter() }
+                for _ in 0 ..< documents.count { self.group.enter() }
                 self.group?.notify(queue: .main, execute: { [weak self] in
                     //guard let unwrappedSelf = self else { return }
                     if let delegate = self?.delegate {
                         self?.isGroupAlreadyFinished = true
                         delegate.channels(didFinishFetching: true, channels: self!.channels)
-                    }else{
-                       print("The delegate is nil")
-                     }
+                    }
                 })
             }
         }
@@ -110,15 +108,12 @@ class ChannelsFetcher: NSObject {
                 guard let snap = snapshot else { return }
                 snap.documentChanges.forEach { (diff) in
                     if (diff.type == .added) {
-                        print("channel added")
                         let channelID = diff.document.documentID
                         self?.delegate?.channels(addedNewChannel: true, channelID: channelID)
                         self?.loadConversation(for: channelID)
                     } else if (diff.type == .removed) {
-                        print("channel removed")
 //                        let obj: [String: Any] = ["channelID": channelID]
 //                        NotificationCenter.default.post(name: .channelRemoved, object: obj)
-                        print("pre", self?.individualChannelListenersDict.count)
                         if self?.individualChannelListenersDict.count != 0 {
                             self?.individualChannelListenersDict[diff.document.documentID]?.remove()
                             if let index = self?.individualChannelListenersDict.firstIndex(where: { (channelID, _) -> Bool in
@@ -127,7 +122,6 @@ class ChannelsFetcher: NSObject {
                                 self?.individualChannelListenersDict.remove(at: index)
                             }
                         }
-                        print("post", self?.individualChannelListenersDict.count)
                         
                         self?.delegate?.channels(didRemove: true, channelID: diff.document.documentID)
                     } else if (diff.type == .modified) {
@@ -167,7 +161,6 @@ class ChannelsFetcher: NSObject {
                 self.delegate?.channels(didFinishFetching: true, channels: self.channels)
                 return
             }
-            print("loadConversation")
             let channel = Channel(dictionary: data as [String : AnyObject])
             
             
@@ -175,10 +168,8 @@ class ChannelsFetcher: NSObject {
             
             guard let lastMessageID = channel.lastMessageId else {
                 self.loadAdditionalMetadata(for: channel)
-                print("loadAdditionalMetadata route")
                 return
             }
-            print("loadLastMessage route")
             self.loadLastMessage(for: lastMessageID, channel: channel)
         }
     }
@@ -189,7 +180,6 @@ class ChannelsFetcher: NSObject {
                 print(error?.localizedDescription as Any)
                 return
             }
-            print("loadLastMessage")
             guard var dictionary = snapshot?.data() as [String: AnyObject]? else { return }
             dictionary.updateValue(messageID as AnyObject, forKey: "messageUID")
             
@@ -203,9 +193,7 @@ class ChannelsFetcher: NSObject {
     }
     
     fileprivate func loadAdditionalMetadata(for channel: Channel) {
-        print(channel.id, channel.name, channel.admins)
         guard let channelID = channel.id, let _ = Auth.auth().currentUser?.uid else { return }
-        print("arrived in load additional metadata")
         let tempListener = Firestore.firestore().collection("channels").document(channelID).addSnapshotListener { (snapshot, error) in
             if error != nil {
                 print(error as Any)
@@ -268,7 +256,6 @@ class ChannelsFetcher: NSObject {
     
     fileprivate func updateConversationArrays(with channel: Channel) {
         guard let channelID = channel.id else { return }
-        print("updateConversationArrays")
         if let index = channels.firstIndex(where: { (channel) -> Bool in
             return channel.id == channelID
         }) {
@@ -280,7 +267,6 @@ class ChannelsFetcher: NSObject {
     }
     
     func update(channel: Channel, at index: Int) {
-        print("update")
         if channel.isTyping.value == nil {
             let isTyping = channels[index].isTyping.value
             channel.isTyping.value = isTyping
@@ -296,7 +282,6 @@ class ChannelsFetcher: NSObject {
     }
     
     fileprivate func handleGroupOrReloadTable() {
-        print("handleGroupOrReloadTable")
         guard isGroupAlreadyFinished else {
             guard group != nil else {
                 delegate?.channels(didFinishFetching: true, channels: channels)

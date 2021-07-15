@@ -23,7 +23,7 @@ var tabBarController: TabBarController?
 var globalIndicator = SVProgressHUD.self
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, UIWindowSceneDelegate, UISceneDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     let pushManager = PushNotificationManager()
@@ -77,15 +77,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIWindowSceneDelegate, UI
     }
     
     // MARK: - Push Notifications
-//
-//    func application(_ application: UIApplication, didReceiveRemoteNotification notification: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-//        if Auth.auth().canHandleNotification(notification) {
-//            completionHandler(.noData)
-//            return
-//        }
+
+    func application(_ application: UIApplication, didReceiveRemoteNotification notification: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        if Auth.auth().canHandleNotification(notification) {
+            completionHandler(.noData)
+            return
+        }
 //        pushManager.handleNotification(notification: notification)
-//    }
-//
+    }
+
     
     // MARK: - Push notification registration
     

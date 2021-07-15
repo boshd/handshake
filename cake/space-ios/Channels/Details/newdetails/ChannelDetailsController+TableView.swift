@@ -98,6 +98,12 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
             cell.textView.text = "No description available."
             guard let desc = channel?.description_ else { return cell }
             cell.textView.text = desc
+            
+//            let readMoreTextView = cell.contentView.viewWithTag(1) as! ReadMoreTextView
+            cell.textView.shouldTrim = !expandedCells.contains(indexPath.row)
+            cell.textView.setNeedsUpdateTrim()
+            cell.textView.layoutIfNeeded()
+            
             return cell
         } else if indexPath.section == 3 {
             if let channelParticipantsCount = channel?.participantIds.count, isInitial && indexPath.row == attendees.count && initialNumberOfAttendees < channelParticipantsCount {
@@ -192,7 +198,14 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
                     }
                     
                     alert.addAction(CustomAlertAction(title: "Remove from event", style: .destructive , handler: { [unowned self] in
-                        removeMember(memberID: memberID)
+                        let alert = CustomAlertController(title_: "Confirmation", message: "Are you sure you want to remove this person from the event?", preferredStyle: .alert)
+                        alert.addAction(CustomAlertAction(title: "No", style: .default, handler: {
+                            
+                        }))
+                        alert.addAction(CustomAlertAction(title: "Yes", style: .destructive, handler: {
+                            self.removeMember(memberID: memberID)
+                        }))
+                        self.present(alert, animated: true, completion: nil)
                     }))
                 }
                 

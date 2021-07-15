@@ -34,7 +34,7 @@ extension ChannelCell {
             } else if startTime > Int64(Date().timeIntervalSince1970) {
                 statusIndicator.backgroundColor = .handshakeGreen
             } else if startTime < Int64(Date().timeIntervalSince1970) && endTime > Int64(Date().timeIntervalSince1970) {
-                statusIndicator.backgroundColor = .yellow
+                statusIndicator.backgroundColor = .eventOrange()
             }
         }
         

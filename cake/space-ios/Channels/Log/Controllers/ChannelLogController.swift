@@ -21,6 +21,12 @@ protocol DeleteAndExitDelegate: class {
     func deleteAndExit(from channelID: String)
 }
 
+struct ContextMenuItem {
+  var title = ""
+//  var image = UIImage()
+  var index = 0
+}
+
 class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
 
     weak var deleteAndExitDelegate: DeleteAndExitDelegate?
@@ -34,6 +40,12 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     var groupedMessages = [MessageSection]()
     var typingIndicatorSection: [String] = []
+    
+    let contextMenuItems = [
+        ContextMenuItem(title: "Edit", index: 0),
+        ContextMenuItem(title: "Remove", index: 1),
+        ContextMenuItem(title: "Promote", index: 2)
+    ]
     
     var dayFormatter = DateFormatter()
     var monthFormatter = DateFormatter()
@@ -240,11 +252,8 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         super.viewWillDisappear(animated)
         
         if let viewControllers = self.navigationController?.viewControllers {
-            print("viewcontrollers not nil")
             if viewControllers.count > 1 && viewControllers[viewControllers.count-2] == self {
-                print("forwards")
             } else {
-                print("backwards")
                 removeChannelListener()
 
                 for message in groupedMessages {
@@ -548,7 +557,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     
     fileprivate func resetBadgeForSelf() {
-        print("resetting badge for self...")
         guard let unwrappedChannel = channel else { return }
         let channelObject = ThreadSafeReference(to: unwrappedChannel)
         guard let channel = realm.resolve(channelObject) else { return }
@@ -763,7 +771,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     // MARK: - DATABASE MESSAGE STATUS
     func updateMessageStatus(messageRef: DocumentReference) {
-        print("arrived")
         guard let uid = Auth.auth().currentUser?.uid, currentReachabilityStatus != .notReachable else { return }
         var senderID: String?
         
@@ -773,8 +780,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
             guard let data = snapshot?.data() else { return }
             
             senderID = data["fromId"] as? String
-            print("in here")
-            print(UIApplication.topViewController())
             
             guard uid != senderID,
                   (UIApplication.topViewController() is ChannelLogController ||
@@ -783,8 +788,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
 //                    UIApplication.topViewController() is UpdateChannelController ||
                     UIApplication.topViewController() is INSPhotosViewController ||
                     UIApplication.topViewController() is SFSafariViewController)
-            else { senderID = nil; print("stuck hererer"); return }
-            print("in here2")
+            else { senderID = nil; return }
             messageRef.updateData([
                 "seen": true,
                 "status": messageStatusRead

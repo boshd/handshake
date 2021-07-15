@@ -55,8 +55,13 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     
     // MARK: - Lifecycle
     
+    deinit {
+        print("DETAILS WILL BE DEALLOCATED NOW")
+    }
+    
     override func loadView() {
         super.loadView()
+        print("LOADING DETAILS PAGE")
         view = channelDetailsContainerView
     }
     
@@ -149,9 +154,9 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         channelImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(openChannelProfilePicture)))
         channelDetailsContainerView.tableView.tableHeaderView = channelImageView
         if let url = channel?.imageUrl {
-            channelImageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "GroupIcon"), options: [.continueInBackground, .scaleDownLargeImages], completed: { (image, error, _, _) in
-                print(error?.localizedDescription ?? "")
-                self.channelImage = image
+            channelImageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "GroupIcon"), options: [.continueInBackground, .scaleDownLargeImages], completed: { [weak self] (image, error, _, _) in
+                if error != nil { print(error?.localizedDescription ?? ""); return }
+                self?.channelImage = image
             })
         }
     }
@@ -173,11 +178,11 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
                let name = realmUser.localName {
                 footerView.primaryLabel.text = "Created by \(name)"
             } else {
-                Firestore.firestore().collection("users").document(authorID).getDocument { (snapshot, error) in
+                Firestore.firestore().collection("users").document(authorID).getDocument { [weak self] (snapshot, error) in
                     guard let data = snapshot?.data() as [String:AnyObject]?, error == nil else { return }
                     let user = User(dictionary: data)
                     if let name = user.name {
-                        self.footerView.primaryLabel.text = "Created by \(name)"
+                        self?.footerView.primaryLabel.text = "Created by \(name)"
                     }
                 }
             }
@@ -204,7 +209,6 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     // responsible for changing theme based on system theme
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        print(userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme))
         if #available(iOS 13, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) &&
             userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme) {
             if traitCollection.userInterfaceStyle == .light {
@@ -255,30 +259,27 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         hapticFeedback(style: .impact)
         let alert = CustomAlertController(title_: nil, message: nil, preferredStyle: .actionSheet)
         if channel.admins.contains(currentUserID) {
-            let editEventAction = CustomAlertAction(title: "Edit event", style: .default , handler: {
+            let editEventAction = CustomAlertAction(title: "Edit event", style: .default , handler: { [weak self] in
                 let destination = UpdateChannelController(style: .plain)
                 destination.channel = RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: channelID)
-//                self.navigationController?.pushViewController(destination, animated: true)
-                if let channelImage = self.channelImage {
+                if let channelImage = self?.channelImage {
                     destination.selectedImage = channelImage
                 }
                 let navController = UINavigationController(rootViewController: destination)
                 
                 navController.isModalInPresentation = true
-                self.present(navController, animated: true, completion: nil)
+                self?.present(navController, animated: true, completion: nil)
 
             })
             alert.addAction(editEventAction)
-
         }
-        let addToCalendarAction = CustomAlertAction(title: "Add to calendar", style: .default , handler: { [weak self] in
-            //self?.addToCalendar()
-        })
+        
+        let addToCalendarAction = CustomAlertAction(title: "Add to calendar", style: .default , handler: nil)
+        let deleteAction = CustomAlertAction(title: "Delete and exit", style: .destructive , handler: nil)
+        
         alert.addAction(addToCalendarAction)
-        let deleteAction = CustomAlertAction(title: "Delete and exit", style: .destructive , handler: {
-            //self.deleteAndExitHandler()
-        })
         alert.addAction(deleteAction)
+        
         self.present(alert, animated: true)
     }
     
@@ -371,7 +372,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         // observe channel changes
         guard let channelID = channel?.id else { return }
         var first = true
-        channelListener = Firestore.firestore().collection("channels").document(channelID).addSnapshotListener({ snapshot, error in
+        channelListener = Firestore.firestore().collection("channels").document(channelID).addSnapshotListener({ [weak self] snapshot, error in
             if error != nil {
                 print(error?.localizedDescription ?? "error")
                 return
@@ -384,8 +385,8 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
             
             guard let channelDictionary = snapshot?.data() as [String: AnyObject]? else { return }
             let channel = Channel(dictionary: channelDictionary)
-            self.channel = channel
-            self.configureChannelImageHeaderView()
+            self?.channel = channel
+            self?.configureChannelImageHeaderView()
             DispatchQueue.main.async { [weak self] in
                 self?.channelDetailsContainerView.tableView.reloadData()
             }
@@ -438,6 +439,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
                         }
                     }
                 } else if diff.type == .removed {
+                    print("DETECTED ATTENDEE REMOVAL")
                     guard let memberIndex = self?.attendees.firstIndex(where: { (member) -> Bool in
                         return member.id == diff.document.documentID
                     }) else { return }

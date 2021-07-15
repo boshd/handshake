@@ -183,13 +183,11 @@ class ChannelCell: UITableViewCell {
               let channelID = channelId,
               deletedChannelID == channelID
         else { return }
-        print("arrived  safetly")
         invalidateTimer()
         channel = nil
     }
     
     deinit {
-        print("deinited cell")
         invalidateTimer()
         channel = nil
     }

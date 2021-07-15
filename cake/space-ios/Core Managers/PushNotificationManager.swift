@@ -24,7 +24,6 @@ class PushNotificationManager: NSObject, MessagingDelegate, UNUserNotificationCe
             let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
             UNUserNotificationCenter.current().requestAuthorization(options: authOptions, completionHandler: { (granted, error) in
                 guard granted else { return }
-                print("NOTIFICATIONS PRESMISSION GRANTED")
                 let replyAction = UNTextInputNotificationAction(identifier: "ReplyAction", title: "Reply", options: [])
                 let openAppAction = UNNotificationAction(identifier: "OpenAppAction", title: "Open app", options: [.foreground])
                 let quickReplyCategory = UNNotificationCategory(identifier: "QuickReply", actions: [replyAction, openAppAction], intentIdentifiers: [], options: [])
@@ -108,7 +107,7 @@ class PushNotificationManager: NSObject, MessagingDelegate, UNUserNotificationCe
 //    }
 //
     func updateFirestorePushTokenIfNeeded() {
-        guard let currentUserID = Auth.auth().currentUser?.uid, Messaging.messaging().fcmToken != userDefaults.currentStringObjectState(for: userDefaults.fcmToken) else { print("stuck in between return"); return }
+        guard let currentUserID = Auth.auth().currentUser?.uid, Messaging.messaging().fcmToken != userDefaults.currentStringObjectState(for: userDefaults.fcmToken) else { return }
         if let token = Messaging.messaging().fcmToken {
             userDefaults.updateObject(for: userDefaults.fcmToken, with: token)
             let fcmTokensCurrentUserReference = Firestore.firestore().collection("fcmTokens").document(currentUserID)

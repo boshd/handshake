@@ -15,7 +15,7 @@ extension ChannelsController {
     
     func setupDeleteAction(at indexPath: IndexPath) -> UIContextualAction {
         let delete = UIContextualAction.init(style: .destructive, title: nil) { [weak self] _,_,_ in
-            hapticFeedback(style: .impact)
+
             let alert = CustomAlertController(title_: "Confirmation", message: "Are you sure you want to delete and exit this event?", preferredStyle: .alert)
             alert.addAction(CustomAlertAction(title: "No", style: .default, handler: {
                 self?.tableView.deselectRow(at: indexPath, animated: false)
@@ -73,7 +73,6 @@ extension ChannelsController {
         }
         
 //        if participantIds.contains(currentUserID) {
-            print("in here lol")
             
             let batch = Firestore.firestore().batch()
             batch.deleteDocument(currentUserDocToDelete)

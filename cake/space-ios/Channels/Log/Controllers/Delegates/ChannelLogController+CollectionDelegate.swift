@@ -73,7 +73,7 @@ extension ChannelLogController: CollectionDelegate {
             // temporary due to inefficiency
             UIView.performWithoutAnimation {
                 collectionView.performBatchUpdates({
-                        collectionView.reloadSections([indexPath.section])
+                    collectionView.reloadSections([indexPath.section])
                 }) { (isCompleted) in
                     self.performAdditionalUpdates(reference: reference)
                 }
@@ -81,6 +81,27 @@ extension ChannelLogController: CollectionDelegate {
         }
         try! self.realm.commitWrite()
     }
+    
+//    @available(iOS 13.0, *)
+//    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+//        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { suggestedActions in
+//            return self.makeContextMenu(for: indexPath.row)
+//        })
+//    }
+//    
+//    @available(iOS 13.0, *)
+//    fileprivate func makeContextMenu(for index:Int) -> UIMenu {
+//        var actions = [UIAction]()
+//        for item in self.contextMenuItems {
+//            let action = UIAction(title: item.title, identifier: nil, discoverabilityTitle: nil) { _ in
+//                // self.didSelectContextMenu(menuIndex: item.index, cellIndex: index)  // Here I have both cell index & context menu item index
+//            }
+//            actions.append(action)
+//        }
+//        let cancel = UIAction(title: "Cancel", attributes: .destructive) { _ in}
+//        actions.append(cancel)
+//        return UIMenu(title: "", children: actions)
+//    }
     
     fileprivate func isInsertingToTheBottom(message: Message) -> Bool {
         let firstObject = groupedMessages.last?.messages.first?.timestamp.value ?? 0

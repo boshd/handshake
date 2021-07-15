@@ -10,7 +10,6 @@ import RealmSwift
 
 extension ChannelsController: DeleteAndExitDelegate {
     func deleteAndExit(from channelID: String) {
-        print("CALLED !!!")
         guard let row = conversationIndex(for: channelID, at: 0) else { return }
         let indexPath = IndexPath(row: row, section: 0)
         deleteChannel(at: indexPath)

@@ -60,8 +60,8 @@
             filePath = "space-ios/Channels/Table/Handlers/ChannelsController+RowActions.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "95"
-            endingLineNumber = "95"
+            startingLineNumber = "94"
+            endingLineNumber = "94"
             landmarkName = "deleteChannel(at:)"
             landmarkType = "7">
             <Actions>

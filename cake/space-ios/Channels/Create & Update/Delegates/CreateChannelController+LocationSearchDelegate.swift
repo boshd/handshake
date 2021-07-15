@@ -13,7 +13,6 @@ extension CreateChannelController: LocationSearchDelegate {
     func clickSearchButton(searchBar: UISearchBar) {}
     
     func didSelectMapItem(mapItem: MKMapItem) {
-        print("arrived in location delegate")
         self.mapItem = mapItem
         
         self.locationName = mapItem.name

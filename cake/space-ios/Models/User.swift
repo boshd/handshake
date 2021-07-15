@@ -53,23 +53,6 @@ final class User: Object {
     }
     
     func isEqual_(to user: User) -> Bool {
-        
-        print(id)
-        print(localName)
-        print(name)
-        print(phoneNumber)
-        print(userThumbnailImageUrl)
-        print(userImageUrl)
-        
-        print(user.id)
-        print(user.localName)
-        print(user.name)
-        print(user.phoneNumber)
-        print(user.userThumbnailImageUrl)
-        print(user.userImageUrl)
-        
-        
-        
         if self.id == user.id,
            self.name == user.name,
            self.localName == user.localName,

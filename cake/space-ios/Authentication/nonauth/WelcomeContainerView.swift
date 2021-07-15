@@ -14,11 +14,11 @@ class WelcomeContainerView: UIView {
         let button = InteractiveButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Get started", for: .normal)
-        button.setTitleColor(ThemeManager.currentTheme().buttonTextColor, for: .normal)
+        button.setTitleColor(ThemeManager.currentTheme().buttonIconColor, for: .normal)
         button.titleLabel?.font = ThemeManager.currentTheme().secondaryFontBold(with: 17)
         button.addTarget(self, action: #selector(WelcomeViewController.toSignup), for: .touchUpInside)
         button.backgroundColor = ThemeManager.currentTheme().buttonColor
-        button.cornerRadius = 25
+        button.cornerRadius = 30
         button.layer.cornerCurve = .continuous
         
         return button
@@ -32,7 +32,7 @@ class WelcomeContainerView: UIView {
         label.numberOfLines = 0
         label.textAlignment = .left
         label.backgroundColor = .clear
-        label.font = ThemeManager.currentTheme().secondaryFontVeryBold(with: 40)
+        label.font = ThemeManager.currentTheme().secondaryFontVeryBold(with: 45)
         label.text = "🤝"
         return label
     }()
@@ -45,7 +45,7 @@ class WelcomeContainerView: UIView {
         label.numberOfLines = 0
         label.textAlignment = .left
         label.backgroundColor = .clear
-        label.font = ThemeManager.currentTheme().secondaryFontVeryBold(with: 33)
+        label.font = ThemeManager.currentTheme().secondaryFontVeryBold(with: 36)
         label.text = "Handshake"
         return label
     }()
@@ -55,7 +55,7 @@ class WelcomeContainerView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
         label.textColor = ThemeManager.currentTheme().tintColor
-        label.font = ThemeManager.currentTheme().secondaryFontBold(with: 17)
+        label.font = ThemeManager.currentTheme().secondaryFontBold(with: 20)
         label.numberOfLines = 0
         label.textAlignment = .left
         //label.text = "Seamlessly plan private events with your favourite people."
@@ -137,7 +137,7 @@ class WelcomeContainerView: UIView {
             
             signupButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -20),
             signupButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 0),
-            signupButton.heightAnchor.constraint(equalToConstant: 50),
+            signupButton.heightAnchor.constraint(equalToConstant: 60),
             signupButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             signupButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
         ])

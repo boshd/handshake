@@ -22,7 +22,6 @@ extension ChannelsController: ChannelUpdatesDelegate {
     }
 
     func channels(didFinishFetching: Bool, channels: [Channel]) {
-        print("didFinishFetching \(didFinishFetching)")
         notificationsManager.observersForNotifications(channels: channels)
         
         if !isAppLoaded {

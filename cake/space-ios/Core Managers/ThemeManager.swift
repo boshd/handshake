@@ -231,7 +231,7 @@ enum Theme: Int {
     var chatLogSendButtonColor: UIColor {
         switch self {
             case .normal:
-                return tintColor
+                return .black
             case .dark:
                 return .white
         }
