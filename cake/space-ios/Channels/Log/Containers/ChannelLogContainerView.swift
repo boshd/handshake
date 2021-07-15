@@ -44,9 +44,10 @@ class ChannelLogContainerView: UIView {
         return inputContainerSafeAreaView
     }()
     
-    let inputViewContainer: UIView = {
-        let inputViewContainer = UIView()
+    let inputViewContainer: BlurView = {
+        let inputViewContainer = BlurView()
         inputViewContainer.translatesAutoresizingMaskIntoConstraints = false
+        inputViewContainer.blurEffectView = UIVisualEffectView(effect: ThemeManager.currentTheme().tabBarBlurEffect)
         inputViewContainer.backgroundColor = ThemeManager.currentTheme().inputBarContainerViewBackgroundColor
         return inputViewContainer
     }()
@@ -68,7 +69,7 @@ class ChannelLogContainerView: UIView {
     
     var headerHeightConstraint: NSLayoutConstraint?
     var headerTopConstraint: NSLayoutConstraint?
-    fileprivate var bottomConstraint_: NSLayoutConstraint!
+    var bottomConstraint_: NSLayoutConstraint!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -95,7 +96,7 @@ class ChannelLogContainerView: UIView {
         backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         backgroundView.topAnchor.constraint(equalTo: inputViewContainer.bottomAnchor).isActive = true
         
-        collectionViewContainer.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor).isActive = true
+        collectionViewContainer.topAnchor.constraint(equalTo: channelLogHeaderView.topAnchor).isActive = true
         if #available(iOS 11.0, *) {
             collectionViewContainer.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor).isActive = true
             collectionViewContainer.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor).isActive = true
@@ -111,8 +112,9 @@ class ChannelLogContainerView: UIView {
             inputViewContainer.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
             inputViewContainer.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
         }
-        bottomConstraint_ = inputViewContainer.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
-        inputViewContainer.topAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor).isActive = true
+        bottomConstraint_ = inputViewContainer.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50)
+        collectionViewContainer.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -50).isActive = true
+//        inputViewContainer.topAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor).isActive = true
     }
     
     func add(_ collectionView: UICollectionView) {

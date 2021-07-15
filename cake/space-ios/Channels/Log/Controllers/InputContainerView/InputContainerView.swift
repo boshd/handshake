@@ -25,6 +25,8 @@ final class InputContainerView: UIControl {
 //        sendButton.setImage(UIImage(named: "Send")?.withRenderingMode(.alwaysTemplate), for: .normal)
         sendButton.tintColor = ThemeManager.currentTheme().chatLogSendButtonColor
         sendButton.imageView?.tintColor = ThemeManager.currentTheme().chatLogSendButtonColor
+        
+        
     }
 
     weak var channelLogController: ChannelLogController? {
@@ -37,6 +39,8 @@ final class InputContainerView: UIControl {
         let textView = InputTextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.delegate = self
+        textView.borderColor = ThemeManager.currentTheme().chatInputTextViewBorder
+        textView.borderWidth = 2
 
         return textView
     }()
@@ -65,13 +69,33 @@ final class InputContainerView: UIControl {
     private var heightConstraint_: NSLayoutConstraint!
 
     private func addHeightConstraints() {
-        heightConstraint_ = heightAnchor.constraint(equalToConstant: InputTextViewLayout.minHeight)
+        
+        if #available(iOS 11.0, *) {
+            let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
+            if let bottom = window?.safeAreaInsets.bottom {
+                heightConstraint_ = heightAnchor.constraint(equalToConstant: InputTextViewLayout.minHeight + bottom)
+            }
+        } else {
+            heightConstraint_ = heightAnchor.constraint(equalToConstant: InputTextViewLayout.minHeight)
+        }
+        
         heightConstraint_.isActive = true
     }
 
     func confirugeHeightConstraint() {
         let size = inputTextView.sizeThatFits(CGSize(width: inputTextView.bounds.size.width, height: .infinity))
-        let height = size.height + 12
+        var height = CGFloat()
+            
+        if #available(iOS 11.0, *) {
+            let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
+            if let bottom = window?.safeAreaInsets.bottom {
+                height = size.height + 12 + bottom
+            }
+        } else {
+            height = size.height + 12
+        }
+            
+        print("OH BOY \(size.height)  ---- \(height < InputTextViewLayout.maxHeight())")
         heightConstraint_.constant = height < InputTextViewLayout.maxHeight() ? height : InputTextViewLayout.maxHeight()
         let maxHeight: CGFloat = InputTextViewLayout.maxHeight()
         guard height >= maxHeight else { inputTextView.isScrollEnabled = false; return }
@@ -107,7 +131,13 @@ final class InputContainerView: UIControl {
 
         inputTextView.topAnchor.constraint(equalTo: topAnchor, constant: 6).isActive = true
         inputTextView.leftAnchor.constraint(equalTo: leftAnchor, constant: 6).isActive = true
-        inputTextView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -6).isActive = true
+        
+        if #available(iOS 11.0, *) {
+            let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
+            if let bottom = window?.safeAreaInsets.bottom {
+                inputTextView.bottomAnchor.constraint(equalTo: bottomAnchor , constant: -6 - bottom).isActive = true
+            }
+        }
 
         placeholderLabel.font = UIFont.systemFont(ofSize: (inputTextView.font!.pointSize))
         placeholderLabel.isHidden = !inputTextView.text.isEmpty

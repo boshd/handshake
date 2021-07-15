@@ -267,9 +267,9 @@ enum Theme: Int {
     var tabBarBlurEffect: UIBlurEffect {
         switch self {
             case .normal:
-                return UIBlurEffect(style: .light)
+                return UIBlurEffect(style: .regular)
             case .dark:
-                return UIBlurEffect(style: .dark)
+                return UIBlurEffect(style: .regular)
         }
     }
     
@@ -379,6 +379,15 @@ enum Theme: Int {
                 return .handshakeMediumGray
             case .dark:
                 return .defaultMediumDarkGray()
+        }
+    }
+    
+    var chatInputTextViewBorder: UIColor {
+        switch self {
+            case .normal:
+                return .handshakeMediumGray
+            case .dark:
+                return .handshakeDarkGray
         }
     }
     
@@ -524,7 +533,7 @@ enum Theme: Int {
     var informationMessageTextColor: UIColor {
         switch self {
             case .normal:
-                return tintColor
+                return generalSubtitleColor
             case .dark:
                 return generalSubtitleColor
         }
@@ -579,9 +588,9 @@ enum Theme: Int {
     var inputBarContainerViewBackgroundColor: UIColor {
         switch self {
             case .normal:
-                return .white
+                return .clear
             case .dark:
-                return .black
+                return .clear
         }
     }
     

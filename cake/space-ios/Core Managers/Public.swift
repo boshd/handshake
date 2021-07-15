@@ -896,7 +896,7 @@ extension UINavigationItem {
         let one = UILabel()
         one.text = title
         one.textColor = ThemeManager.currentTheme().generalTitleColor
-        one.font = ThemeManager.currentTheme().secondaryFont(with: 15)
+        one.font = ThemeManager.currentTheme().secondaryFontVeryBold(with: 15)
         one.textAlignment = .center
         one.sizeToFit()
 
@@ -920,7 +920,7 @@ extension UINavigationItem {
     }
 }
 
-public let messageStatusRead = "Read"
+public let messageStatusRead = "Seen"
 public let messageStatusSending = "Sending"
 public let messageStatusDelivered = "Delivered"
 public let messageStatusNotSent = "Sending failed"

@@ -119,9 +119,10 @@ extension ChannelLogController: UICollectionViewDelegateFlowLayout, UICollection
             guard let messagesFetcher = messagesFetcher else { return CGSize(width: 0, height: 0) }
             let infoMessageWidth = collectionView.frame.width
             guard let messageText = message.text else { return CGSize(width: 0, height: 0 ) }
+            
             let infoMessageHeight = messagesFetcher.estimateFrameForText(width: infoMessageWidth,
                                                                          text: messageText,
-                                                                         font: MessageFontsAppearance.defaultInformationMessageTextFont).height + 35
+                                                                         font: MessageFontsAppearance.defaultInformationMessageTextFont).height + 25
             return CGSize(width: infoMessageWidth, height: infoMessageHeight)
         }
 

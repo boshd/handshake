@@ -97,8 +97,10 @@ class MessageSender: NSObject {
             delegateGroup.leave()
         }
 
+        self.delegate?.update(with: defaultData)
+        
         delegateGroup.notify(queue: .main) {
-            self.delegate?.update(with: defaultData)
+            // why was self.delegate?.update(with: defaultData) in here?
         }
         
         messageSendingGroup.notify(queue: .global(qos: .background), execute: {

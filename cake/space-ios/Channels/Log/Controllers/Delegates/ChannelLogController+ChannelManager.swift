@@ -18,7 +18,7 @@ extension ChannelLogController: ChannelManagerDelegate {
             self.channel?.name = name
         }
         if self.isCurrentUserMemberOfCurrentGroup() {
-            self.configureTitleView()
+            self.setupTitle()
         }
     }
     
@@ -28,7 +28,7 @@ extension ChannelLogController: ChannelManagerDelegate {
             self.channel?.description_ = description
         }
         if self.isCurrentUserMemberOfCurrentGroup() {
-            self.configureTitleView()
+            self.setupTitle()
         }
     }
     
@@ -148,7 +148,7 @@ extension ChannelLogController: ChannelManagerDelegate {
     fileprivate func changeUIAfterChildRemovedIfNeeded() {
         
         if isCurrentUserMemberOfCurrentGroup() {
-            configureTitleView()
+            setupTitle()
         } else {
             messagesFetcher?.removeListener()
             self.inputContainerView.resignAllResponders()
