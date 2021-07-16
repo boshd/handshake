@@ -144,6 +144,11 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         destination.channel = RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: channelID)
         
         navigationController?.pushViewController(destination, animated: true)
+        
+        
+        
+//        savedContentOffset = collectionView.contentOffset
+//        savedContentInset = collectionView.contentInset
     }
     
     // MARK: - Controller Lifecycle
@@ -196,9 +201,39 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         print("VIEW DID APPEAR")
+        
+        self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: view.safeAreaInsets.bottom, right: 0)
+        self.collectionView.contentOffset = CGPoint(x: 0, y: (self.collectionView.contentSize.height - self.collectionView.bounds.size.height))
+
+        self.view.layoutIfNeeded()
+        
+//        guard let keyboardWindow: UIWindow = getKeyboardWindow() else { return }
+////        let screenWidth: CGFloat = UIScreen.main.bounds.width
+////        let screenHeight: CGFloat = UIScreen.main.bounds.height
+//        if #available(iOS 13.0, *) {
+//            let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
+//            if let bottom = window?.safeAreaInsets.bottom {
+//                channelLogContainerView.bottomConstraint_.constant = keyboardWindow.frame.height + bottom
+////                keyboardWindow.frame = CGRect(x: 0, y: -inputContainerView.frame.height, width: screenWidth, height: screenHeight)
+//            }
+//        } else {
+////            keyboardWindow.frame = CGRect(x: 0, y: inputContainerView.frame.height, width: screenWidth, height: screenHeight)
+//            channelLogContainerView.bottomConstraint_.constant = keyboardWindow.frame.height
+//        }
+        
         unblockInputViewConstraints()
         
+        if savedContentInset != nil {
+            print("in here no probs")
+            UIView.performWithoutAnimation { [weak self] in
+                guard let unwrappedSelf = self else { return }
+                unwrappedSelf.view.layoutIfNeeded()
+                unwrappedSelf.collectionView.contentInset = unwrappedSelf.savedContentInset
+            }
+        }
+        
         if savedContentOffset != nil {
+            print("in here no probs")
             UIView.performWithoutAnimation { [weak self] in
                 guard let unwrappedSelf = self else { return }
                 unwrappedSelf.view.layoutIfNeeded()
@@ -220,8 +255,10 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
             cell.restart()
         }
     }
+    
     var navigationBarTitleGestureRecognizer: UITapGestureRecognizer?
     private var savedContentOffset: CGPoint!
+    private var savedContentInset: UIEdgeInsets!
 //    var goingForwards = false
     
     func removeChannelListener() {
@@ -252,9 +289,12 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
+        print("VIEW WILL DISSAPPEAR")
         if let viewControllers = self.navigationController?.viewControllers {
             if viewControllers.count > 1 && viewControllers[viewControllers.count-2] == self {
+                view.endEditing(true)
+                collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                
             } else {
                 removeChannelListener()
 
@@ -272,13 +312,11 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         
         blockInputViewConstraints()
         savedContentOffset = collectionView.contentOffset
-//        
-//        resignFirstResponder()
+        savedContentInset = collectionView.contentInset
+        
         if let navigationBarTitleGestureRecognizer = navigationBarTitleGestureRecognizer {
             self.navigationController?.navigationBar.removeGestureRecognizer(navigationBarTitleGestureRecognizer)
-//            navigationBarTitleGestureRecognizer = nil
         }
-//        inputContainerView.inputTextView.endEditing(true)
     }
     
     deinit {
@@ -427,7 +465,15 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         guard let view = view as? ChannelLogContainerView else { return }
         if let constant = keyboardLayoutGuide.topConstant {
             if inputContainerView.inputTextView.isFirstResponder {
-                view.blockBottomConstraint(constant: -constant)
+                if #available(iOS 13.0, *) {
+                    let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
+                    if let bottom = window?.safeAreaInsets.bottom {
+                        view.blockBottomConstraint(constant: -constant + bottom)
+                    }
+                } else {
+                    view.blockBottomConstraint(constant: -constant)
+                }
+                
                 view.layoutIfNeeded()
             }
         }
@@ -745,11 +791,14 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
 
             UIView.animate(withDuration: animationDuration) {
                 self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize.height, right: 0)
+                self.collectionView.contentOffset = CGPoint(x: 0, y: (self.collectionView.contentSize.height - self.collectionView.bounds.size.height) + (self.collectionView.contentInset.bottom))
+                self.collectionView.layoutIfNeeded()
+//                self.collectionView.contentOffset = CGPoint(x: 0, y: -keyboardSize.height)
             } completion: { [weak self] compl in
                 
                 print("IS AT BOTTOM? \(self?.isScrollViewAtTheBottom())")
 //                if isScrollViewAtTheBottom() {
-                self?.collectionView.scrollToBottom(animated: true)
+//                self?.collectionView.scrollToBottom(animated: true)
 //                }
             }
 
@@ -783,36 +832,21 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         print("KEYBOARD WILL HIDE")
         if channelLogContainerView.headerTopConstraint?.constant == -75 {
             channelLogContainerView.headerTopConstraint?.constant = 10
-
-//            UIView.animate(withDuration: 0.1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
-//                self.view.layoutIfNeeded()
-//            }, completion: nil)
         }
 
-//        let userInfo = notification.userInfo!
-//        let animationDuration: TimeInterval = (userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
-//
-//        channelLogContainerView.bottomConstraint_?.constant = 110
         self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: view.safeAreaInsets.bottom, right: 0)
-//
-//        UIView.animate(withDuration: animationDuration) {
-//            self.view.layoutIfNeeded()
-//        }
-        
-//         makes come back to not good positiion, doesnt resolve jumping
-        guard let keyboardWindow: UIWindow = getKeyboardWindow() else { return }
+        self.collectionView.contentOffset = CGPoint(x: 0, y: (self.collectionView.contentSize.height - self.collectionView.bounds.size.height))
 
+        self.view.layoutIfNeeded()
+        
+        guard let keyboardWindow: UIWindow = getKeyboardWindow() else { return }
 //        let screenWidth: CGFloat = UIScreen.main.bounds.width
 //        let screenHeight: CGFloat = UIScreen.main.bounds.height
-        
         if #available(iOS 13.0, *) {
             let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
             if let bottom = window?.safeAreaInsets.bottom {
                 channelLogContainerView.bottomConstraint_.constant = keyboardWindow.frame.height + bottom
-                
-
-
-//                keyboardWindow.frame = CGRect(x: 0, y: -inputContainerView.frame.height - bottom, width: screenWidth, height: screenHeight)
+//                keyboardWindow.frame = CGRect(x: 0, y: -inputContainerView.frame.height, width: screenWidth, height: screenHeight)
             }
         } else {
 //            keyboardWindow.frame = CGRect(x: 0, y: inputContainerView.frame.height, width: screenWidth, height: screenHeight)
