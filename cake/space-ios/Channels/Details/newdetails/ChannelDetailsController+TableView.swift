@@ -59,7 +59,7 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if indexPath.section == 0 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: channelNameCellId, for: indexPath) as? ChannelNameCell ?? ChannelNameCell()
+            let cell = ChannelNameCell()
             guard let channelName = channel?.name else { return cell }
             cell.textLabel?.text = channelName
             return cell
@@ -235,7 +235,7 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
             label.text = "About"
         } else if section == 3 {
             let count = channel?.participantIds.count ?? 0
-            label.text = count == 1 ? "Just you" : "\(count) attendees"
+            label.text = count == 1 ? "Just you" : "\(count) Attendees"
         } else if section == 4 {
             if let isRemote = channel?.isRemote.value, isRemote {
                 label.text = "Remote event"

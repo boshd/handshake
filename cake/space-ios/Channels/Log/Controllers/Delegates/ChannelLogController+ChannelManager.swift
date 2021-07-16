@@ -128,6 +128,7 @@ extension ChannelLogController: ChannelManagerDelegate {
     }
     
     func removeMember(id: String) {
+        print("MEMBER REMOVED")
         guard let channel = self.channel, !channel.isInvalidated else { return }
         
         guard let members = self.channel?.participantIds else { return }

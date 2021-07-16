@@ -140,9 +140,11 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     @objc func goToChannelDetails() {
         guard let channelID = channel?.id else { return }
 
-        let destination = ChannelDetailsController()
-        destination.channel = RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: channelID)
+//        view.endEditing(true)
         
+        let destination = ChannelDetailsController()
+        destination.channelID = channelID
+
         navigationController?.pushViewController(destination, animated: true)
         
         
@@ -155,12 +157,12 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     override func loadView() {
         super.loadView()
         loadViews()
-        configureController()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollectionView()
+        configureController()
         setupInputView()
         setupBottomScrollButton()
         setupHeaderView()
@@ -170,7 +172,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        print(userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme))
         if #available(iOS 13, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) &&
             userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme) {
             if traitCollection.userInterfaceStyle == .light {
@@ -200,12 +201,11 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print("VIEW DID APPEAR")
         
-        self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: view.safeAreaInsets.bottom, right: 0)
-        self.collectionView.contentOffset = CGPoint(x: 0, y: (self.collectionView.contentSize.height - self.collectionView.bounds.size.height))
-
-        self.view.layoutIfNeeded()
+//        self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: view.safeAreaInsets.bottom, right: 0)
+//        self.collectionView.contentOffset = CGPoint(x: 0, y: (self.collectionView.contentSize.height - self.collectionView.bounds.size.height))
+//
+//        self.view.layoutIfNeeded()
         
 //        guard let keyboardWindow: UIWindow = getKeyboardWindow() else { return }
 ////        let screenWidth: CGFloat = UIScreen.main.bounds.width
@@ -224,7 +224,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         unblockInputViewConstraints()
         
         if savedContentInset != nil {
-            print("in here no probs")
             UIView.performWithoutAnimation { [weak self] in
                 guard let unwrappedSelf = self else { return }
                 unwrappedSelf.view.layoutIfNeeded()
@@ -233,7 +232,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         }
         
         if savedContentOffset != nil {
-            print("in here no probs")
             UIView.performWithoutAnimation { [weak self] in
                 guard let unwrappedSelf = self else { return }
                 unwrappedSelf.view.layoutIfNeeded()
@@ -270,6 +268,8 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        if self.navigationController?.visibleViewController is ChannelDetailsController { return }
+        
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
         
@@ -285,16 +285,22 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         channelManager.removeAllListeners()
     }
     
-    
+    /*
+     
+     VIEW WILL APPEAR
+     KEYBOARD WILL HIDE
+     VIEW WILL DISSAPPEAR
+     in first
+     VIEW DID DISAPPEAR
+     
+     */
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        print("VIEW WILL DISSAPPEAR")
         if let viewControllers = self.navigationController?.viewControllers {
             if viewControllers.count > 1 && viewControllers[viewControllers.count-2] == self {
-                view.endEditing(true)
-                collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-                
+//                view.endEditing(true)
+//                collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             } else {
                 removeChannelListener()
 
@@ -309,6 +315,9 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
                 messagesFetcher?.delegate = nil
             }
         }
+        
+        // this can get run multiple time when you drag to go back from details controller,
+        // but change your mind multiple times
         
         blockInputViewConstraints()
         savedContentOffset = collectionView.contentOffset
@@ -551,6 +560,8 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
 //
 //        channelLogContainerView.layoutIfNeeded()
         
+//        collectionView.keyboardDismissMode = .onDrag
+        
         collectionView.addSubview(refreshControl)
         configureRefreshControlInitialTintColor()
     }
@@ -718,7 +729,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
             
             snapshot?.documentChanges.forEach({ (change) in
                 if change.type == .added {
-                    print("added")
                     if change.document.documentID != currentUserID {
                         self.handleTypingIndicatorAppearance(isEnabled: true)
                     }
@@ -740,10 +750,8 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
             hapticFeedback(style: .selectionChanged)
             self.typingIndicatorSection = ["TypingIndicator"]
             self.collectionView.performBatchUpdates ({
-                print("inserting")
                 self.collectionView.insertSections([groupedMessages.count])
             }, completion: { (isCompleted) in
-                print(isCompleted)
                 if self.isScrollViewAtTheBottom() {
                     if self.collectionView.contentSize.height < self.collectionView.bounds.height {
                         return
@@ -772,8 +780,11 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     // MARK: - Keyboard
+    
+    var keyOpen = false
 
     @objc open dynamic func keyboardWillShow(_ notification: Notification) {
+        keyOpen = true
 //        if isScrollViewAtTheBottom() {
 //            collectionView.scrollToBottom(animated: false)
 //        }
@@ -796,7 +807,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
 //                self.collectionView.contentOffset = CGPoint(x: 0, y: -keyboardSize.height)
             } completion: { [weak self] compl in
                 
-                print("IS AT BOTTOM? \(self?.isScrollViewAtTheBottom())")
+//                print("IS AT BOTTOM? \(self?.isScrollViewAtTheBottom())")
 //                if isScrollViewAtTheBottom() {
 //                self?.collectionView.scrollToBottom(animated: true)
 //                }
@@ -829,29 +840,44 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     }
 
     @objc open dynamic func keyboardWillHide(_ notification: Notification) {
-        print("KEYBOARD WILL HIDE")
+        guard keyOpen else { return }
+        
+        keyOpen = false
+        
         if channelLogContainerView.headerTopConstraint?.constant == -75 {
             channelLogContainerView.headerTopConstraint?.constant = 10
         }
-
-        self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: view.safeAreaInsets.bottom, right: 0)
-        self.collectionView.contentOffset = CGPoint(x: 0, y: (self.collectionView.contentSize.height - self.collectionView.bounds.size.height))
-
-        self.view.layoutIfNeeded()
         
         guard let keyboardWindow: UIWindow = getKeyboardWindow() else { return }
-//        let screenWidth: CGFloat = UIScreen.main.bounds.width
-//        let screenHeight: CGFloat = UIScreen.main.bounds.height
+        
         if #available(iOS 13.0, *) {
             let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
             if let bottom = window?.safeAreaInsets.bottom {
+                collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: inputContainerView.frame.height, right: 0)
+                collectionView.contentOffset = CGPoint(x: 0, y: (self.collectionView.contentSize.height - self.collectionView.bounds.size.height) + inputContainerView.frame.height + bottom)
+                
                 channelLogContainerView.bottomConstraint_.constant = keyboardWindow.frame.height + bottom
-//                keyboardWindow.frame = CGRect(x: 0, y: -inputContainerView.frame.height, width: screenWidth, height: screenHeight)
             }
         } else {
-//            keyboardWindow.frame = CGRect(x: 0, y: inputContainerView.frame.height, width: screenWidth, height: screenHeight)
+            self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: inputContainerView.frame.height, right: 0)
+            self.collectionView.contentOffset = CGPoint(x: 0, y: (self.collectionView.contentSize.height - self.collectionView.bounds.size.height) + inputContainerView.frame.height)
             channelLogContainerView.bottomConstraint_.constant = keyboardWindow.frame.height
         }
+        
+        self.view.layoutIfNeeded()
+        
+//        let screenWidth: CGFloat = UIScreen.main.bounds.width
+//        let screenHeight: CGFloat = UIScreen.main.bounds.height
+//        if #available(iOS 13.0, *) {
+//            let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
+//            if let bottom = window?.safeAreaInsets.bottom {
+//                channelLogContainerView.bottomConstraint_.constant = keyboardWindow.frame.height + bottom
+////                keyboardWindow.frame = CGRect(x: 0, y: -inputContainerView.frame.height, width: screenWidth, height: screenHeight)
+//            }
+//        } else {
+////            keyboardWindow.frame = CGRect(x: 0, y: inputContainerView.frame.height, width: screenWidth, height: screenHeight)
+//            channelLogContainerView.bottomConstraint_.constant = keyboardWindow.frame.height
+//        }
     }
     
     
@@ -1064,7 +1090,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     fileprivate func handleResend(channel: Channel, text: String?, indexPath: IndexPath) {
-        print("gonna send")
         let messageSender = MessageSender(channel, text: text)
         messageSender.delegate = self
         messageSender.sendMessage()

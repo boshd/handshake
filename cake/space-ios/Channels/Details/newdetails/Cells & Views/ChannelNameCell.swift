@@ -14,9 +14,10 @@ class ChannelNameCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         selectionStyle = .none
         backgroundColor = .clear
-        layoutMargins = .zero
+//        layoutMargins = .zero
         textLabel?.font = ThemeManager.currentTheme().secondaryFontVeryBold(with: 20)
         textLabel?.textColor = ThemeManager.currentTheme().generalTitleColor
+
         textLabel?.translatesAutoresizingMaskIntoConstraints = false
         textLabel?.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0).isActive = true
         textLabel?.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15).isActive = true

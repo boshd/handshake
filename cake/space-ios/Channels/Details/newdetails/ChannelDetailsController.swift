@@ -9,10 +9,20 @@
 import UIKit
 import Firebase
 import RealmSwift
+import EventKit
 
 class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     
+//    var realmChannel: Channel?
     var channel: Channel?
+    
+    var channelID = String() {
+        didSet {
+            print("didset")
+            observeChannel()
+            observeChannelAttendeesChanges()
+        }
+    }
     var channelImage: UIImage?
     
     var attendees = [User]()
@@ -37,7 +47,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     let initialNumberOfAttendees = 5
     var isInitial = true {
         didSet {
-            test2()
+            populateAttendees()
         }
     }
     
@@ -45,6 +55,8 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     let timeFormatter = DateFormatter()
     let avatarOpener = AvatarOpener()
     let channelDetailsDataDatabaseUpdater = ChannelDetailsDataDatabaseUpdater()
+    
+    let eventStore = EKEventStore()
     
     var expandedCells = Set<Int>()
     
@@ -57,11 +69,11 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     
     deinit {
         print("DETAILS WILL BE DEALLOCATED NOW")
+        removeListeners()
     }
     
     override func loadView() {
         super.loadView()
-        print("LOADING DETAILS PAGE")
         view = channelDetailsContainerView
     }
     
@@ -69,15 +81,11 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         super.viewDidLoad()
         configureTableView()
         configureNaviationBar()
-        observeChannel()
-        observeChannelAttendeesChanges()
-        test2()
         addObservers()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        removeListeners()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -102,6 +110,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     }
 
     fileprivate func configureTableView() {
+//        channel = RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: channelID)
         avatarOpener.delegate = self
         
         channelDetailsContainerView.tableView.delegate = self
@@ -261,7 +270,9 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         if channel.admins.contains(currentUserID) {
             let editEventAction = CustomAlertAction(title: "Edit event", style: .default , handler: { [weak self] in
                 let destination = UpdateChannelController(style: .plain)
-                destination.channel = RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: channelID)
+                // might be an issue
+//                destination.channel = RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: channelID)
+                destination.channel = self?.channel
                 if let channelImage = self?.channelImage {
                     destination.selectedImage = channelImage
                 }
@@ -274,8 +285,10 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
             alert.addAction(editEventAction)
         }
         
-        let addToCalendarAction = CustomAlertAction(title: "Add to calendar", style: .default , handler: nil)
-        let deleteAction = CustomAlertAction(title: "Delete and exit", style: .destructive , handler: nil)
+        let addToCalendarAction = CustomAlertAction(title: "Add to Calendar", style: .default , handler: { [weak self] in
+            self?.addToCalendar()
+        })
+        let deleteAction = CustomAlertAction(title: "Delete and Exit", style: .destructive , handler: nil)
         
         alert.addAction(addToCalendarAction)
         alert.addAction(deleteAction)
@@ -284,11 +297,11 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @objc func presentRSVPList() {
-        guard let channelID = channel?.id, let currentUserID = Auth.auth().currentUser?.uid, let admins = channel?.admins else { return }
+        guard let currentUserID = Auth.auth().currentUser?.uid, let admins = channel?.admins else { return }
         
         let destination = ParticipantsController()
 //        destination.participants = attendees
-        destination.channel = RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: channelID)
+        destination.channel = self.channel
         destination.admin = admins.contains(currentUserID)
         let newNavigationController = UINavigationController(rootViewController: destination)
         newNavigationController.modalPresentationStyle = .formSheet
@@ -369,29 +382,29 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     private var onceToken = 0
     
     fileprivate func observeChannel() {
-        // observe channel changes
-        guard let channelID = channel?.id else { return }
-        var first = true
         channelListener = Firestore.firestore().collection("channels").document(channelID).addSnapshotListener({ [weak self] snapshot, error in
+            print("detected channel changes")
             if error != nil {
                 print(error?.localizedDescription ?? "error")
                 return
             }
             
-            if first {
-                first = false
-                return
-            }
-            
             guard let channelDictionary = snapshot?.data() as [String: AnyObject]? else { return }
             let channel = Channel(dictionary: channelDictionary)
+            
             self?.channel = channel
-            self?.configureChannelImageHeaderView()
+            
+//            if self?.channel?.imageUrl != channel.imageUrl {
+                self?.configureChannelImageHeaderView()
+//            }
+            self?.configureFooterView()
+//            if self?.channel?.participantIds != channel.participantIds {
+                self?.populateAttendees()
+//            }
+            
             DispatchQueue.main.async { [weak self] in
                 self?.channelDetailsContainerView.tableView.reloadData()
             }
-            
-            
         })
     }
     
@@ -411,31 +424,37 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
             }
             snapshot?.documentChanges.forEach({ diff in
                 if diff.type == .added {
+                    print("here0 \(self?.attendees.count)", self?.attendees.map({$0.name}))
                     UsersFetcher.fetchUser(id: diff.document.documentID) { user, error in
                         guard error == nil else { print(error?.localizedDescription ?? ""); return }
                         // issues w/ initial state
                         if let user = user {
                             
+                            // this triggers test2()
                             if let isInitial = self?.isInitial, isInitial {
                                 self?.isInitial = false
                             }
                             
-                            UIView.performWithoutAnimation {
-                                if let userIndex = self?.attendees.firstIndex(where: { (member) -> Bool in
-                                    return member.id == diff.document.documentID
-                                }) {
-                                    self?.channelDetailsContainerView.tableView.beginUpdates()
-                                    self?.attendees[userIndex] = user
-                                    self?.channelDetailsContainerView.tableView.reloadRows(at: [IndexPath(row: userIndex, section: 3)], with: .none)
-                                } else {
-                                    self?.channelDetailsContainerView.tableView.beginUpdates()
-                                    self?.attendees.append(user)
-                                    var index = 0
-                                    if let count = self?.attendees.count, count-1 >= 0 { index = count - 1 }
-                                    self?.channelDetailsContainerView.tableView.insertRows(at: [IndexPath(row: index, section: 3)], with: .fade)
-                                }
-                                self?.channelDetailsContainerView.tableView.endUpdates()
-                            }
+//                            UIView.performWithoutAnimation {
+//                                if let userIndex = self?.attendees.firstIndex(where: { (member) -> Bool in
+//                                    return member.id == diff.document.documentID
+//                                }) {
+//                                    print("here1 \(self?.attendees.count)", userIndex, self?.attendees.map({$0.name}))
+//                                    self?.channelDetailsContainerView.tableView.beginUpdates()
+//                                    self?.attendees[userIndex] = user
+//                                    self?.channelDetailsContainerView.tableView.reloadRows(at: [IndexPath(row: userIndex, section: 3)], with: .none)
+//                                    self?.channelDetailsContainerView.tableView.endUpdates()
+//                                } else {
+//                                    print("here2 \((self?.attendees.count))")
+//                                    self?.channelDetailsContainerView.tableView.beginUpdates()
+//                                    self?.attendees.append(user)
+//                                    var index = 0
+//                                    if let count = self?.attendees.count, count-1 >= 0 { index = count - 1 }
+//                                    self?.channelDetailsContainerView.tableView.insertRows(at: [IndexPath(row: index, section: 3)], with: .fade)
+//                                    self?.channelDetailsContainerView.tableView.endUpdates()
+//                                }
+//
+//                            }
                         }
                     }
                 } else if diff.type == .removed {
@@ -458,10 +477,12 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         
     }
     
-    func test2() {
+    func populateAttendees() {
         guard let currentUserID = Auth.auth().currentUser?.uid,
-              let participantIds = channel?.participantIds
+              let participantIds = self.channel?.participantIds
         else { return }
+        
+        print("POPULATE ATTENDEES \(participantIds.count)")
         
         attendees.removeAll()
         
@@ -641,6 +662,8 @@ extension ChannelDetailsController {
         
         let userReference = Firestore.firestore().collection("users").document(memberID)
         
+        let nameToBeDeleted = self.attendees.filter({ $0.id == memberID }).first?.name
+         
         globalIndicator.show()
         ChannelManager.removeMember(channelReference: channelReference, userReference: userReference, memberID: memberID, channelID: channelID) { error in
             guard error == nil else {
@@ -651,10 +674,61 @@ extension ChannelDetailsController {
             }
             globalIndicator.showSuccess(withStatus: "Removed")
             hapticFeedback(style: .success)
-            if let name = self.attendees.filter({ $0.id == memberID }).first?.name, let channelName = self.channel?.name {
+            if let name = nameToBeDeleted, let channelName = self.channel?.name {
                 self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\(name) has been removed from the event", channel: self.channel)
             }
 //            self.channelDetailsContainerView.tableView.reloadData()
+        }
+    }
+    
+    @objc func addToCalendar() {
+
+        guard let unwrappedChannel = channel else { return }
+        
+        let name = unwrappedChannel.name
+        let endTime = unwrappedChannel.endTime.value
+        let description_ = unwrappedChannel.description_
+        let locationName = unwrappedChannel.locationName
+        let startTime = unwrappedChannel.startTime.value
+        let isRemote = unwrappedChannel.isRemote.value
+        let lat = unwrappedChannel.latitude.value
+        let lon = unwrappedChannel.longitude.value
+
+        eventStore.requestAccess(to: .event) { (granted, error) in
+            if (granted) && (error == nil) {
+                let event = EKEvent(eventStore: self.eventStore)
+
+                event.title = name
+                event.startDate = Date(timeIntervalSince1970: TimeInterval(startTime ?? 0))
+                event.endDate = Date(timeIntervalSince1970: TimeInterval(endTime ?? 0))
+                event.notes = description_
+
+
+                if let isRemote = isRemote, isRemote {
+                    event.location = "Remote"
+                } else {
+                    if let lat = lat, let lon = lon, let locationName = locationName {
+                        let location = CLLocation(latitude: lat, longitude: lon)
+                        let structuredLocation = EKStructuredLocation(title: locationName)
+                        structuredLocation.geoLocation = location
+                        event.structuredLocation = structuredLocation
+                    }
+                }
+
+                event.calendar = self.eventStore.defaultCalendarForNewEvents
+                do {
+                    try self.eventStore.save(event, span: .thisEvent)
+                } catch let error as NSError {
+                    print("failed to save event with error : \(error)")
+                }
+
+                hapticFeedback(style: .success)
+                displayAlert(title: "Success", message: "The event has been saved to your calendar", preferredStyle: .alert, actionTitle: "Got it", controller: self)
+            } else {
+                print("failed to save event with error : \(error?.localizedDescription ?? "") or access not granted")
+                displayErrorAlert(title: basicErrorTitleForAlert, message: "Could not save event, check permissions?", preferredStyle: .alert, actionTitle: "Got it", controller: self)
+
+            }
         }
     }
     

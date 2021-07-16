@@ -54,6 +54,7 @@ class ChannelManager: NSObject {
         // CHANNEL UPDATING
         
         channelListener = Firestore.firestore().collection("channels").document(channelID).addSnapshotListener { snapshot, error in
+            print("channelListener")
             if error != nil {
                 print(error?.localizedDescription ?? "error")
                 return
@@ -86,7 +87,9 @@ class ChannelManager: NSObject {
     }
     
     fileprivate func processChanges(old: Channel, new: Channel) {
+        print("processChanges \(RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: old.id)?.name)")
         if let newName = new.name, old.name != newName {
+            print("name updated")
             delegate?.nameUpdated(name: newName)
         }
         

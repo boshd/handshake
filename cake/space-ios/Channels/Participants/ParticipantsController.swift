@@ -222,7 +222,7 @@ class ParticipantsController: UIViewController {
         
         navigationItem.title = "Attendees"
         
-        let title = count == 1 ? "1 attendee" : "\(count ?? 0) attendees"
+        let title = count == 1 ? "1 Attendee" : "\(count ?? 0) Attendees"
         
         navigationItem.title = title
         
@@ -380,155 +380,155 @@ class ParticipantsController: UIViewController {
         navigationController?.pushViewController(destination, animated: true)
     }
     
-    @objc fileprivate func removeAdmin_(memberID: String) {
-        if currentReachabilityStatus == .notReachable {
-            displayErrorAlert(title: basicErrorTitleForAlert, message: noInternetError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
-            return
-        }
-        guard let ref = currentChannelReference, let channelID = channel?.id else { return }
-        globalIndicator.show()
-        ChannelManager.removeAdmin(ref: ref, memberID: memberID, channelID: channelID) { error in
-            guard error == nil else {
-                globalIndicator.dismiss()
-                print(error?.localizedDescription ?? "")
-                displayErrorAlert(title: basicErrorTitleForAlert, message: genericOperationError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
-                return
-            }
-            globalIndicator.showSuccess(withStatus: "Removed")
-            hapticFeedback(style: .success)
-            if let name = self.participants.filter({ $0.id == memberID }).first?.name, let channelName = self.channel?.name {
-                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\(name) has been dismissed as Organizer", channel: self.channel)
-            }
-        }
-    }
-    
-    @objc fileprivate func removeAdmin(memberID: String) {
-        if currentReachabilityStatus == .notReachable {
-            displayErrorAlert(title: basicErrorTitleForAlert, message: noInternetError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
-            return
-        }
-        
-        guard let channelID = channel?.id else { return }
-        
-        globalIndicator.show()
-        
-        currentChannelReference?.updateData([
-            "admins": FieldValue.arrayRemove([memberID])
-        ], completion: { [unowned self] (error) in
-            globalIndicator.dismiss()
-            if error != nil {
-                print(error?.localizedDescription ?? "")
-                displayErrorAlert(title: basicErrorTitleForAlert, message: genericOperationError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
-                return
-            }
-            hapticFeedback(style: .success)
-            
-            
-            if let newAdminName = self.participants.filter({ $0.id == memberID }).first?.name {
-                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channel?.name ?? "", participantIDs: [], text: "\(newAdminName) has been dismissed as Organizer", channel: channel)
-            }
-        
-        })
-    }
-    
-    @objc fileprivate func makeAdmin(memberID: String) {
-        if currentReachabilityStatus == .notReachable {
-            displayErrorAlert(title: basicErrorTitleForAlert, message: noInternetError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
-            return
-        }
-        
-        guard let channelID = channel?.id else { return }
-        
-        globalIndicator.show()
-        
-        currentChannelReference?.updateData([
-            "admins": FieldValue.arrayUnion([memberID])
-        ], completion: { [unowned self] (error) in
-            globalIndicator.dismiss()
-            
-            if error != nil {
-                print(error?.localizedDescription ?? "")
-                displayErrorAlert(title: "Oops", message: genericOperationError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
-                return
-            }
-
-            if let newAdminName = self.participants.filter({ $0.id == memberID }).first?.name {
-                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channel?.name ?? "", participantIDs: [], text: "\(newAdminName) is now an Organizer", channel: channel)
-            }
-            
-            hapticFeedback(style: .success)
-        })
-    }
-    
-    @objc fileprivate func removeMember_(memberID: String) {
-        if currentReachabilityStatus == .notReachable {
-            displayErrorAlert(title: basicErrorTitleForAlert, message: noInternetError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
-            return
-        }
-        guard let channelID = channel?.id else { return }
-        
-        globalIndicator.show()
-        
-        let batch = Firestore.firestore().batch()
-        
-        let userReference = Firestore.firestore().collection("users").document(memberID)
-        let currentChannelReference = Firestore.firestore().collection("channels").document(channelID)
-        
-        batch.deleteDocument(userReference.collection("channelIds").document(channelID))
-        batch.deleteDocument(currentChannelReference.collection("participantIds").document(memberID))
-        batch.updateData([
-            "participantIds": FieldValue.arrayRemove([memberID]),
-            "admins": FieldValue.arrayRemove([memberID]),
-            "goingIds": FieldValue.arrayRemove([memberID]),
-            "maybeIds": FieldValue.arrayRemove([memberID]),
-            "notGoingIds": FieldValue.arrayRemove([memberID]),
-        ], forDocument: currentChannelReference)
-        
-        let fellasName = self.participants.filter({ $0.id == memberID }).first?.name
-        self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channel?.name ?? "", participantIDs: [], text: "\(fellasName ?? "someone") has been removed from the event", channel: channel)
-        batch.commit { [unowned self] (error) in
-            if error != nil {
-                print(error?.localizedDescription ?? "error")
-                displayErrorAlert(title: basicErrorTitleForAlert, message: genericOperationError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
-                return
-            }
-            globalIndicator.showSuccess(withStatus: "Memeber removed")
-            hapticFeedback(style: .success)
-            
-            Firestore.firestore().runTransaction { (transaction, errorPointer) -> Any? in
-                let document: DocumentSnapshot
-                do {
-                    try document = transaction.getDocument(currentChannelReference)
-                } catch let fetchError as NSError {
-                    errorPointer?.pointee = fetchError
-                    return nil
-                }
-                guard let oldFCMTokensMap = document.data()?["fcmTokens"] as? [String:String] else {
-                   let error = NSError(domain: "AppErrorDomain", code: -1, userInfo: [
-                           NSLocalizedDescriptionKey: "Unable to retrieve fcmTokens from snapshot \(document)"
-                       ]
-                   )
-                   errorPointer?.pointee = error
-                   return nil
-                }
-                var newFCMTokensMap = oldFCMTokensMap
-                newFCMTokensMap.removeValue(forKey: memberID)
-                transaction.updateData(["fcmTokens": newFCMTokensMap], forDocument: currentChannelReference)
-                return nil
-            } completion: { (object, error) in
-                if let error = error {
-                    print("Transaction failed: \(error)")
-                } else {
-                    print("Transaction successfully committed!")
-                }
-            }
-
-//            self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channel?.name ?? "", participantIDs: [], text: "\(fellasName ?? "someone") has been removed from the event")
-            
-        
-            self.reloadTable()
-        }
-    }
+//    @objc fileprivate func removeAdmin_(memberID: String) {
+//        if currentReachabilityStatus == .notReachable {
+//            displayErrorAlert(title: basicErrorTitleForAlert, message: noInternetError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+//            return
+//        }
+//        guard let ref = currentChannelReference, let channelID = channel?.id else { return }
+//        globalIndicator.show()
+//        ChannelManager.removeAdmin(ref: ref, memberID: memberID, channelID: channelID) { error in
+//            guard error == nil else {
+//                globalIndicator.dismiss()
+//                print(error?.localizedDescription ?? "")
+//                displayErrorAlert(title: basicErrorTitleForAlert, message: genericOperationError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+//                return
+//            }
+//            globalIndicator.showSuccess(withStatus: "Removed")
+//            hapticFeedback(style: .success)
+//            if let name = self.participants.filter({ $0.id == memberID }).first?.name, let channelName = self.channel?.name {
+//                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\(name) has been dismissed as Organizer", channel: self.channel)
+//            }
+//        }
+//    }
+//
+//    @objc fileprivate func removeAdmin(memberID: String) {
+//        if currentReachabilityStatus == .notReachable {
+//            displayErrorAlert(title: basicErrorTitleForAlert, message: noInternetError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+//            return
+//        }
+//
+//        guard let channelID = channel?.id else { return }
+//
+//        globalIndicator.show()
+//
+//        currentChannelReference?.updateData([
+//            "admins": FieldValue.arrayRemove([memberID])
+//        ], completion: { [unowned self] (error) in
+//            globalIndicator.dismiss()
+//            if error != nil {
+//                print(error?.localizedDescription ?? "")
+//                displayErrorAlert(title: basicErrorTitleForAlert, message: genericOperationError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+//                return
+//            }
+//            hapticFeedback(style: .success)
+//
+//
+//            if let newAdminName = self.participants.filter({ $0.id == memberID }).first?.name {
+//                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channel?.name ?? "", participantIDs: [], text: "\(newAdminName) has been dismissed as Organizer", channel: channel)
+//            }
+//
+//        })
+//    }
+//
+//    @objc fileprivate func makeAdmin(memberID: String) {
+//        if currentReachabilityStatus == .notReachable {
+//            displayErrorAlert(title: basicErrorTitleForAlert, message: noInternetError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+//            return
+//        }
+//
+//        guard let channelID = channel?.id else { return }
+//
+//        globalIndicator.show()
+//
+//        currentChannelReference?.updateData([
+//            "admins": FieldValue.arrayUnion([memberID])
+//        ], completion: { [unowned self] (error) in
+//            globalIndicator.dismiss()
+//
+//            if error != nil {
+//                print(error?.localizedDescription ?? "")
+//                displayErrorAlert(title: "Oops", message: genericOperationError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+//                return
+//            }
+//
+//            if let newAdminName = self.participants.filter({ $0.id == memberID }).first?.name {
+//                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channel?.name ?? "", participantIDs: [], text: "\(newAdminName) is now an Organizer", channel: channel)
+//            }
+//
+//            hapticFeedback(style: .success)
+//        })
+//    }
+//
+//    @objc fileprivate func removeMember_(memberID: String) {
+//        if currentReachabilityStatus == .notReachable {
+//            displayErrorAlert(title: basicErrorTitleForAlert, message: noInternetError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+//            return
+//        }
+//        guard let channelID = channel?.id else { return }
+//
+//        globalIndicator.show()
+//
+//        let batch = Firestore.firestore().batch()
+//
+//        let userReference = Firestore.firestore().collection("users").document(memberID)
+//        let currentChannelReference = Firestore.firestore().collection("channels").document(channelID)
+//
+//        batch.deleteDocument(userReference.collection("channelIds").document(channelID))
+//        batch.deleteDocument(currentChannelReference.collection("participantIds").document(memberID))
+//        batch.updateData([
+//            "participantIds": FieldValue.arrayRemove([memberID]),
+//            "admins": FieldValue.arrayRemove([memberID]),
+//            "goingIds": FieldValue.arrayRemove([memberID]),
+//            "maybeIds": FieldValue.arrayRemove([memberID]),
+//            "notGoingIds": FieldValue.arrayRemove([memberID]),
+//        ], forDocument: currentChannelReference)
+//
+//        let fellasName = self.participants.filter({ $0.id == memberID }).first?.name
+//        self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channel?.name ?? "", participantIDs: [], text: "\(fellasName ?? "someone") has been removed from the event", channel: channel)
+//        batch.commit { [unowned self] (error) in
+//            if error != nil {
+//                print(error?.localizedDescription ?? "error")
+//                displayErrorAlert(title: basicErrorTitleForAlert, message: genericOperationError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+//                return
+//            }
+//            globalIndicator.showSuccess(withStatus: "Memeber removed")
+//            hapticFeedback(style: .success)
+//
+//            Firestore.firestore().runTransaction { (transaction, errorPointer) -> Any? in
+//                let document: DocumentSnapshot
+//                do {
+//                    try document = transaction.getDocument(currentChannelReference)
+//                } catch let fetchError as NSError {
+//                    errorPointer?.pointee = fetchError
+//                    return nil
+//                }
+//                guard let oldFCMTokensMap = document.data()?["fcmTokens"] as? [String:String] else {
+//                   let error = NSError(domain: "AppErrorDomain", code: -1, userInfo: [
+//                           NSLocalizedDescriptionKey: "Unable to retrieve fcmTokens from snapshot \(document)"
+//                       ]
+//                   )
+//                   errorPointer?.pointee = error
+//                   return nil
+//                }
+//                var newFCMTokensMap = oldFCMTokensMap
+//                newFCMTokensMap.removeValue(forKey: memberID)
+//                transaction.updateData(["fcmTokens": newFCMTokensMap], forDocument: currentChannelReference)
+//                return nil
+//            } completion: { (object, error) in
+//                if let error = error {
+//                    print("Transaction failed: \(error)")
+//                } else {
+//                    print("Transaction successfully committed!")
+//                }
+//            }
+//
+////            self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channel?.name ?? "", participantIDs: [], text: "\(fellasName ?? "someone") has been removed from the event")
+//
+//
+//            self.reloadTable()
+//        }
+//    }
     
     // MARK: - Misc.
     
@@ -575,6 +575,93 @@ class ParticipantsController: UIViewController {
         default: break }
     }
 
+}
+
+// MARK: - Channel members action handlers
+
+extension ParticipantsController {
+    
+    @objc func viewProfile(member: User) {
+        let destination = ParticipantProfileController()
+        destination.member = member
+        destination.userProfileContainerView.addPhotoLabel.isHidden = true
+        navigationController?.pushViewController(destination, animated: true)
+    }
+    
+    @objc func removeAdmin(memberID: String) {
+        if currentReachabilityStatus == .notReachable {
+            displayErrorAlert(title: basicErrorTitleForAlert, message: noInternetError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+            return
+        }
+        guard let ref = currentChannelReference, let channelID = channel?.id else { return }
+        globalIndicator.show()
+        ChannelManager.removeAdmin(ref: ref, memberID: memberID, channelID: channelID) { error in
+            guard error == nil else {
+                globalIndicator.dismiss()
+                print(error?.localizedDescription ?? "")
+                displayErrorAlert(title: basicErrorTitleForAlert, message: genericOperationError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+                return
+            }
+            globalIndicator.showSuccess(withStatus: "Dismissed")
+            hapticFeedback(style: .success)
+            if let name = self.participants.filter({ $0.id == memberID }).first?.name, let channelName = self.channel?.name {
+                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\(name) has been dismissed as Organizer", channel: self.channel)
+            }
+        }
+    }
+    
+    @objc func makeAdmin(memberID: String) {
+        if currentReachabilityStatus == .notReachable {
+            displayErrorAlert(title: basicErrorTitleForAlert, message: noInternetError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+            return
+        }
+        guard let ref = currentChannelReference, let channelID = channel?.id else { return }
+        globalIndicator.show()
+        ChannelManager.makeAdmin(ref: ref, memberID: memberID, channelID: channelID) { error in
+            guard error == nil else {
+                globalIndicator.dismiss()
+                print(error?.localizedDescription ?? "")
+                displayErrorAlert(title: basicErrorTitleForAlert, message: genericOperationError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+                return
+            }
+            globalIndicator.showSuccess(withStatus: "Done")
+            hapticFeedback(style: .success)
+            if let name = self.participants.filter({ $0.id == memberID }).first?.name, let channelName = self.channel?.name {
+                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\(name) is now an Organizer", channel: self.channel)
+            }
+        }
+    }
+    
+    
+    @objc func removeMember(memberID: String) {
+        if currentReachabilityStatus == .notReachable {
+            displayErrorAlert(title: basicErrorTitleForAlert, message: noInternetError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+            return
+        }
+        guard let channelReference = currentChannelReference,
+              let channelID = channel?.id
+        else { return }
+        
+        let userReference = Firestore.firestore().collection("users").document(memberID)
+        
+        globalIndicator.show()
+        ChannelManager.removeMember(channelReference: channelReference, userReference: userReference, memberID: memberID, channelID: channelID) { error in
+            guard error == nil else {
+                globalIndicator.dismiss()
+                print(error?.localizedDescription ?? "")
+                displayErrorAlert(title: basicErrorTitleForAlert, message: genericOperationError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+                return
+            }
+            globalIndicator.showSuccess(withStatus: "Removed")
+            hapticFeedback(style: .success)
+            if let name = self.participants.filter({ $0.id == memberID }).first?.name, let channelName = self.channel?.name {
+                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\(name) has been removed from the event", channel: self.channel)
+            }
+//            self.channelDetailsContainerView.tableView.reloadData()
+        }
+    }
+    
+    
 }
 
 extension ParticipantsController: UITableViewDelegate, UITableViewDataSource {
@@ -719,7 +806,7 @@ extension ParticipantsController: UITableViewDelegate, UITableViewDataSource {
                     if memberID == channelAuthor && channelAdminIds.contains(memberID) {
                         displayErrorAlert(title: "Not Allowed", message: "You cannot remove this person because they created the channel", preferredStyle: .alert, actionTitle: "Got it", controller: self)
                     } else {
-                        self.removeMember_(memberID: memberID)
+                        self.removeMember(memberID: memberID)
                     }
                 }))
                 self.present(alert, animated: true, completion: nil)

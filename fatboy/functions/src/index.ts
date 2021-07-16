@@ -382,40 +382,40 @@ exports.updateChannelParticipantIdsUponDelete = functions.firestore
 
     })
 
-exports.updateChannelParticipantIdsUponCreate = functions.firestore
-    .document(constants.USERS_COLLECTION + '/{userId}/channelIds/{channelId}')
-    .onCreate((_, context) => {
+// exports.updateChannelParticipantIdsUponCreate = functions.firestore
+//     .document(constants.USERS_COLLECTION + '/{userId}/channelIds/{channelId}')
+//     .onCreate((_, context) => {
 
-        /*
-        This function takes care of adding the userid to the channel, abstracting away
-        the need to do it locally. It's not the client's responsibility anymore.
-        */
+//         /*
+//         This function takes care of adding the userid to the channel, abstracting away
+//         the need to do it locally. It's not the client's responsibility anymore.
+//         */
 
-        functions.logger.log('updateChannelParticipantIdsUponCreate')
+//         functions.logger.log('updateChannelParticipantIdsUponCreate')
 
-        const channelId = context.params.channelId
-        const userId = context.params.userId
+//         const channelId = context.params.channelId
+//         const userId = context.params.userId
 
-        const channelReference = admin.firestore().collection('channels').doc(channelId)
-        const channelParticipantReference = channelReference.collection('participantIds').doc(userId)
+//         const channelReference = admin.firestore().collection('channels').doc(channelId)
+//         const channelParticipantReference = channelReference.collection('participantIds').doc(userId)
 
-        var batch = admin.firestore().batch()
+//         var batch = admin.firestore().batch()
 
-        batch.update(channelReference, {
-            'participantIds': firestore.FieldValue.arrayUnion(userId),
-        })
+//         batch.update(channelReference, {
+//             'participantIds': firestore.FieldValue.arrayUnion(userId),
+//         })
 
-        batch.create(channelParticipantReference, {})
+//         batch.create(channelParticipantReference, {})
 
-        batch.commit()
-        .then(() => {
-            console.log('successful batch commit')
-        })
-        .catch(error => {
-            console.log(error)
-        })
+//         batch.commit()
+//         .then(() => {
+//             console.log('successful batch commit')
+//         })
+//         .catch(error => {
+//             console.log(error)
+//         })
 
-    })
+//     })
 
 exports.channelCreationHandler = functions.firestore
     .document(constants.CHANNELS_COLLECTION + '/{channelId}')

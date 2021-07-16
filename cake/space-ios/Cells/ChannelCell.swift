@@ -76,7 +76,7 @@ class ChannelCell: UITableViewCell {
     let statusIndicator: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.cornerRadius = 2.5
+        view.cornerRadius = 3
         view.backgroundColor = .handshakeGreen
         
         return view
@@ -146,8 +146,8 @@ class ChannelCell: UITableViewCell {
             
             statusIndicator.topAnchor.constraint(equalTo: mainView.topAnchor, constant: 5),
             statusIndicator.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: 5),
-            statusIndicator.heightAnchor.constraint(equalToConstant: 5),
-            statusIndicator.widthAnchor.constraint(equalToConstant: 5),
+            statusIndicator.heightAnchor.constraint(equalToConstant: 6),
+            statusIndicator.widthAnchor.constraint(equalToConstant: 6),
             
             channelImageView.centerYAnchor.constraint(equalTo: mainView.centerYAnchor, constant: 0),
             channelImageView.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: 0),

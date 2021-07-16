@@ -27,7 +27,7 @@ class DescriptionCell: UITableViewCell {
         textView.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         textView.textColor = ThemeManager.currentTheme().generalSubtitleColor
         textView.returnKeyType = .done
-//        textView.text = "Description"
+        textView.text = "Description"
         textView.autocorrectionType = .default
         textView.autocapitalizationType = .none
         textView.tintColor = ThemeManager.currentTheme().tintColor
@@ -96,7 +96,6 @@ extension DescriptionCell: UITextViewDelegate {
             // If updated text view will be empty, add the placeholder
             // and set the cursor to the beginning of the text view
         
-            print("IN TEXTVIEW DELEAGTE", textView.textColor, text.isEmpty)
             
             if text == "\n" {
                 textView.resignFirstResponder()
