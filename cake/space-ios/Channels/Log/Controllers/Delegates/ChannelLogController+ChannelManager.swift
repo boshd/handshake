@@ -12,6 +12,13 @@ import RealmSwift
 
 extension ChannelLogController: ChannelManagerDelegate {
     
+    func channelUpdated() {
+        if self.isCurrentUserMemberOfCurrentGroup() {
+            self.setupTitle()
+            self.setupHeaderView()
+        }
+    }
+    
     func nameUpdated(name: String) {
         print("name updated")
         try! realm.safeWrite {

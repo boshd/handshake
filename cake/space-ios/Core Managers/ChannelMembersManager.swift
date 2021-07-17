@@ -12,6 +12,7 @@ import FirebaseFirestore
 import RealmSwift
 
 @objc protocol ChannelManagerDelegate {
+    func channelUpdated()
     func nameUpdated(name: String)
     func startTimeUpdated(startTime: Int64)
     func endTimeUpdated(endTime: Int64)
@@ -53,15 +54,16 @@ class ChannelManager: NSObject {
         guard let channel = channel else { return }
         // CHANNEL UPDATING
         
-        channelListener = Firestore.firestore().collection("channels").document(channelID).addSnapshotListener { snapshot, error in
+        channelListener = Firestore.firestore().collection("channels").document(channelID).addSnapshotListener { [weak self] snapshot, error in
             print("channelListener")
             if error != nil {
                 print(error?.localizedDescription ?? "error")
                 return
             }
-            guard let dictionary = snapshot?.data() as [String: AnyObject]? else { return }
-            let newChannel = Channel(dictionary: dictionary)
-            self.processChanges(old: channel, new: newChannel)
+//            guard let dictionary = snapshot?.data() as [String: AnyObject]? else { return }
+//            let newChannel = Channel(dictionary: dictionary)
+//            self.processChanges(old: channel, new: newChannel)
+            self?.delegate?.channelUpdated()
         }
         
         
@@ -115,6 +117,10 @@ class ChannelManager: NSObject {
         if let newIsRemote = new.isRemote.value, old.isRemote.value != newIsRemote {
             delegate?.isRemoteUpdated(newIsRemote)
         }
+    }
+    
+    func channelUpdated() {
+        
     }
     
     

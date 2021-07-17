@@ -484,7 +484,7 @@
 //        
 //        let destination = UpdateChannelController(style: .insetGrouped)
 //        
-//        destination.channel = RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: channel.id)
+//        destination.channel = RealmKeycKey: channel.id)
 //        if channel.imageUrl != nil {
 //            destination.selectedImage = channelDetailsContainerView.channelImageView.image
 //        }
@@ -580,7 +580,7 @@
 //        let destination = ParticipantsController()
 //
 //        destination.admin = channel.admins.contains(currentUserID)
-//        destination.channel = RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: channelID)
+//        destination.channel = R
 //        destination.participants = allParticipants
 //        
 //        let newNavigationController = UINavigationController(rootViewController: destination)

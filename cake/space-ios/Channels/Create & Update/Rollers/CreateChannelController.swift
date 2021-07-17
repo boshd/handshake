@@ -267,6 +267,8 @@ class CreateChannelController: UITableViewController {
             cell.channelImagePlaceholderLabel.isHidden = false
         }
         
+        cell.channelNameField.becomeFirstResponder()
+        
         return cell
     }
     
@@ -489,7 +491,8 @@ extension CreateChannelController {
             if let datePickerIndexPathRow = datePickerIndexPath?.row, datePickerIndexPath != nil && datePickerIndexPathRow + 1 == indexPath.row {
                 let cell = tableView.dequeueReusableCell(withIdentifier: datePickerCellId, for: indexPath) as? DatePickerCell ?? DatePickerCell()
                 return cell
-            } else if indexPath.row == 1 || indexPath.row == 3 {
+            }
+            else if indexPath.row == 1 || indexPath.row == 3 {
                 let cell = tableView.dequeueReusableCell(withIdentifier: datePickerCellId, for: indexPath) as? DatePickerCell ?? DatePickerCell()
 
                 if let startDate = startDate, let endDate = endDate {

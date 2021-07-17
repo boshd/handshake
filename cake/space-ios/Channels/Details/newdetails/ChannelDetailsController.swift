@@ -110,7 +110,6 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     }
 
     fileprivate func configureTableView() {
-//        channel = RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: channelID)
         avatarOpener.delegate = self
         
         channelDetailsContainerView.tableView.delegate = self
@@ -270,8 +269,6 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         if channel.admins.contains(currentUserID) {
             let editEventAction = CustomAlertAction(title: "Edit event", style: .default , handler: { [weak self] in
                 let destination = UpdateChannelController(style: .plain)
-                // might be an issue
-//                destination.channel = RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: channelID)
                 destination.channel = self?.channel
                 if let channelImage = self?.channelImage {
                     destination.selectedImage = channelImage

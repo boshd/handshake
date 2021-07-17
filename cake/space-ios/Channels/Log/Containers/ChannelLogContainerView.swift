@@ -96,7 +96,7 @@ class ChannelLogContainerView: UIView {
         backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         backgroundView.topAnchor.constraint(equalTo: inputViewContainer.bottomAnchor).isActive = true
         
-        collectionViewContainer.topAnchor.constraint(equalTo: channelLogHeaderView.bottomAnchor).isActive = true
+        collectionViewContainer.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor).isActive = true
         if #available(iOS 11.0, *) {
             collectionViewContainer.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor).isActive = true
             collectionViewContainer.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor).isActive = true
@@ -112,8 +112,8 @@ class ChannelLogContainerView: UIView {
             inputViewContainer.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
             inputViewContainer.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
         }
-        bottomConstraint_ = inputViewContainer.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50)
-        collectionViewContainer.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -50).isActive = true
+        bottomConstraint_ = inputViewContainer.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
+        collectionViewContainer.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true
 //        inputViewContainer.topAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor).isActive = true
     }
     

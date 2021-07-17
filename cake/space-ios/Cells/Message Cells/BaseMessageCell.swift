@@ -84,8 +84,8 @@ class BaseMessageCell: UICollectionViewCell {
     lazy var bubbleView: UIView = {
         let view = UIView()
         view.isUserInteractionEnabled = true
-        view.cornerRadius = 10
-//        view.layer.cornerCurve = .continuous
+        view.cornerRadius = 20
+        view.layer.cornerCurve = .continuous
 
         return view
     }()

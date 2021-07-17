@@ -25,7 +25,7 @@ extension ChannelLogController: MessageSenderDelegate {
                 realm.create(Message.self, value: message, update: .modified)
 
                 guard let newSectionTitle = message.shortConvertedTimestamp else { realm.cancelWrite(); return }
-
+                print(collectionView.contentInset)
                 let lastSection = groupedMessages.last?.title ?? ""
                 let isNewSection = newSectionTitle != lastSection
                 if isNewSection {
@@ -64,6 +64,7 @@ extension ChannelLogController: MessageSenderDelegate {
                     }
                 }, completion: nil)
                 self.collectionView.scrollToBottom(animated: true)
+                print(self.collectionView.contentInset)
                 NotificationCenter.default.post(name: .messageSent, object: nil)
             })
         }
