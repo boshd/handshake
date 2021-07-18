@@ -94,8 +94,6 @@ final class InputContainerView: UIControl {
         } else {
             height = size.height + 12
         }
-            
-        print("OH BOY \(size.height)  ---- \(height < InputTextViewLayout.maxHeight())")
         heightConstraint_.constant = height < InputTextViewLayout.maxHeight() ? height : InputTextViewLayout.maxHeight()
         let maxHeight: CGFloat = InputTextViewLayout.maxHeight()
         guard height >= maxHeight else { inputTextView.isScrollEnabled = false; return }

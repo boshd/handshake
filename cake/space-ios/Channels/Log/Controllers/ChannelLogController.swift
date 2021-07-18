@@ -88,23 +88,25 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     override var inputAccessoryView: UIView? {
         get {
-            let containerView = inputContainerView
-//            if #available(iOS 13.0, *) {
-//               let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
-//               if let bottom = window?.safeAreaInsets.bottom {
-//                    containerView.frame = CGRect(x: 0, y: bottom, width: view.frame.width, height: 50)
-//               }
-//            } else {
-//                containerView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
+            
+//            let inputViewContainer = UIView()
+//            inputViewContainer.backgroundColor = .cyan
+//
+//            for subview in inputViewContainer.subviews
+//            where subview is InputContainerView {
+//                subview.removeFromSuperview()
 //            }
 //
-//            containerView.backgroundColor = .red
+//            inputContainerView.translatesAutoresizingMaskIntoConstraints = false
+//            inputViewContainer.addSubview(inputContainerView)
+//            inputContainerView.topAnchor.constraint(equalTo: inputViewContainer.topAnchor).isActive = true
+//            inputContainerView.leftAnchor.constraint(equalTo: inputViewContainer.leftAnchor).isActive = true
+//            inputContainerView.rightAnchor.constraint(equalTo: inputViewContainer.rightAnchor).isActive = true
+//            inputContainerView.bottomAnchor.constraint(equalTo: inputViewContainer.bottomAnchor).isActive = true
             
-//            let field = UITextField()
-//            field.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
-//            containerView.addSubview(field)
+//            inputContainerView.heightAnchor = inputContainerView.heigh
             
-            return channelLogContainerView.inputViewContainer
+//            return inputViewContainer
         }
     }
     
@@ -191,7 +193,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         super.viewDidLoad()
         setupCollectionView()
         configureController()
-        setupInputView()
+//        setupInputView()
         setupBottomScrollButton()
         setupHeaderView()
         addObservers()
@@ -450,7 +452,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         guard let view = view as? ChannelLogContainerView else {
             fatalError("Root view is not ChannelLogContainerView")
         }
-        view.addLayoutGuide(keyboardLayoutGuide)
+//        view.addLayoutGuide(keyboardLayoutGuide)
         
         if #available(iOS 13.0, *) {
             let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
