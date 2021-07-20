@@ -385,9 +385,9 @@ enum Theme: Int {
     var chatInputTextViewBorder: UIColor {
         switch self {
             case .normal:
-                return .handshakeMediumGray
-            case .dark:
                 return .handshakeDarkGray
+            case .dark:
+                return .gray
         }
     }
     
@@ -396,7 +396,7 @@ enum Theme: Int {
             case .normal:
                 return .handshakeLightPurple
             case .dark:
-                return .defaultMediumDarkGray()
+                return .handshakeSecondaryDark
         }
     }
     
@@ -579,9 +579,9 @@ enum Theme: Int {
     var inputTextViewColor: UIColor {
         switch self {
             case .normal:
-                return .defaultLightGray()
+                return .handshakeSecondaryLight
             case .dark:
-                return .defaultMediumDarkGray()
+                return .handshakeSecondaryDark
         }
     }
     

@@ -21,9 +21,9 @@ struct InputTextViewLayout {
     static let maxContainerViewHeightPortraitIpad: CGFloat = 400
     static let maxContainerViewHeightPortraitIpadPro: CGFloat = 550
 
-    static let minHeight: CGFloat = 50
+//    static let minHeight: CGFloat = 50
     static let extendedInsets = UIEdgeInsets(top: 175, left: 8, bottom: 8, right: 30)
-    static let defaultInsets = UIEdgeInsets(top: 12, left: 8, bottom: 12, right: 30)
+    static let defaultInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
 
     static func maxHeight() -> CGFloat {
         guard UIDevice.current.orientation.isLandscape else {
@@ -52,16 +52,29 @@ struct InputTextViewLayout {
             return InputTextViewLayout.maxContainerViewHeightLandscape4Inch
         }
     }
+    
+    static func minHeight() -> CGFloat {
+//        if #available(iOS 11.0, *) {
+//            let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
+//            if let bottom = window?.safeAreaInsets.bottom {
+//                return CGFloat(50)
+//            } else {
+//                return CGFloat(50)
+//            }
+//        } else {
+            return CGFloat(50)
+//        }
+    }
 }
 
 class InputTextView: UITextView {
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
 
-        font = ThemeManager.currentTheme().secondaryFont(with: 14)
+        font = ThemeManager.currentTheme().secondaryFont(with: 13)
         tintColor = ThemeManager.currentTheme().tintColor
         isScrollEnabled = false
-        layer.cornerRadius = 18
+        layer.cornerRadius = 15
         textContainerInset = InputTextViewLayout.defaultInsets
         changeTheme()
     }

@@ -1100,6 +1100,17 @@ public func getPlacemark(with lat: Double, lon: Double, completion: @escaping([C
     }
 }
 
+public func hexStringFromColor(color: UIColor) -> String {
+    let components = color.cgColor.components
+    let r: CGFloat = components?[0] ?? 0.0
+    let g: CGFloat = components?[1] ?? 0.0
+    let b: CGFloat = components?[2] ?? 0.0
+
+    let hexString = String.init(format: "#%02lX%02lX%02lX", lroundf(Float(r * 255)), lroundf(Float(g * 255)), lroundf(Float(b * 255)))
+    print(hexString)
+    return hexString
+}
+
 func timestampOfLastMessage(_ date: Date) -> String {
     let calendar = NSCalendar.current
     let unitFlags: Set<Calendar.Component> = [ .day, .weekOfYear, .weekday]

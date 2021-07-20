@@ -74,7 +74,7 @@
             </Actions>
             <Locations>
                <Location
-                  uuid = "A69191D7-8489-41AB-BA22-1BA1A17D4C16 - ad300d4bb01ceb9d"
+                  uuid = "A69191D7-8489-41AB-BA22-1BA1A17D4C16 - ad300d4bb01cea7e"
                   shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -84,12 +84,12 @@
                   urlString = "file:///Users/kareemarab/dev/handshake/src/cake/space-ios/Channels/Table/Handlers/ChannelsController+RowActions.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "96"
-                  endingLineNumber = "96"
-                  offsetFromSymbolStart = "5484">
+                  startingLineNumber = "95"
+                  endingLineNumber = "95"
+                  offsetFromSymbolStart = "4040">
                </Location>
                <Location
-                  uuid = "A69191D7-8489-41AB-BA22-1BA1A17D4C16 - 237c3ad51c70e732"
+                  uuid = "A69191D7-8489-41AB-BA22-1BA1A17D4C16 - 237c3ad51c70e713"
                   shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -99,8 +99,8 @@
                   urlString = "file:///Users/kareemarab/dev/handshake/src/cake/space-ios/Channels/Table/Handlers/ChannelsController+RowActions.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "97"
-                  endingLineNumber = "97"
+                  startingLineNumber = "96"
+                  endingLineNumber = "96"
                   offsetFromSymbolStart = "52">
                </Location>
             </Locations>

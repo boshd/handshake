@@ -31,7 +31,7 @@ struct MessageFontsAppearance {
     }
 
     static var defaultTimeLabelTextFont: UIFont {
-        return ThemeManager.currentTheme().secondaryFont(with: 10)
+        return ThemeManager.currentTheme().secondaryFont(with: 8)
     }
 
     static var defaultMessageAuthorNameFont: UIFont {
@@ -84,7 +84,7 @@ class BaseMessageCell: UICollectionViewCell {
     lazy var bubbleView: UIView = {
         let view = UIView()
         view.isUserInteractionEnabled = true
-        view.cornerRadius = 20
+        view.cornerRadius = 10
         view.layer.cornerCurve = .continuous
 
         return view
@@ -119,7 +119,7 @@ class BaseMessageCell: UICollectionViewCell {
         label.frame.size.width = BaseMessageCell.messageTimeWidth
         label.backgroundColor = ThemeManager.currentTheme().inputTextViewColor
         label.layer.masksToBounds = true
-        label.layer.cornerRadius = 10
+        label.layer.cornerRadius = 8
         label.textAlignment = .center
         label.alpha = 0.85
         label.text = "10:46 AM"

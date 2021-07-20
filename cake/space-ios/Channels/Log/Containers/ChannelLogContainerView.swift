@@ -113,7 +113,7 @@ class ChannelLogContainerView: UIView {
             inputViewContainer.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
         }
         bottomConstraint_ = inputViewContainer.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
-        collectionViewContainer.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true
+        collectionViewContainer.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
 //        inputViewContainer.topAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor).isActive = true
     }
     

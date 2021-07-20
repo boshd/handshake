@@ -13,8 +13,17 @@ extension UIColor {
     
     // handshake colours
     
+    open class var handshakeSecondaryDark: UIColor {
+        get { return UIColor(red: 0.20, green: 0.20, blue: 0.20, alpha: 1.00) }
+    }
+    
+    open class var handshakeSecondaryLight: UIColor {
+        get { return UIColor(red: 0.95, green: 0.95, blue: 0.96, alpha: 1.00) }
+    }
+    
     open class var handshakeBlue: UIColor {
-        get { return UIColor(red: 0.12, green: 0.00, blue: 0.96, alpha: 1.00) }
+//        get { return UIColor(red: 0.12, green: 0.00, blue: 0.96, alpha: 1.00) }
+        get { return UIColor(red: 0.00, green: 0.35, blue: 1.00, alpha: 1.00) }
     }
     
     open class var handshakeLightPurple: UIColor {

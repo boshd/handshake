@@ -12,21 +12,13 @@ import AVFoundation
 final class InputContainerView: UIControl {
 
   fileprivate var tap = UITapGestureRecognizer()
-  static let messagePlaceholder = "Message..."
+  static let messagePlaceholder = "Aa"
     
     func setColors() {
+//        backgroundColor = .red
         placeholderLabel.textColor = ThemeManager.currentTheme().generalSubtitleColor
-        
-//        sendButton.setTitleColor(ThemeManager.currentTheme().tintColor, for: .normal)
-//        sendButton.setTitleColor(.lightGray, for: .disabled)
-//        sendButton.backgroundColor = .clear
-        
-        
-//        sendButton.setImage(UIImage(named: "Send")?.withRenderingMode(.alwaysTemplate), for: .normal)
         sendButton.tintColor = ThemeManager.currentTheme().chatLogSendButtonColor
         sendButton.imageView?.tintColor = ThemeManager.currentTheme().chatLogSendButtonColor
-        
-        
     }
 
     weak var channelLogController: ChannelLogController? {
@@ -39,8 +31,6 @@ final class InputContainerView: UIControl {
         let textView = InputTextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.delegate = self
-        textView.borderColor = ThemeManager.currentTheme().chatInputTextViewBorder
-        textView.borderWidth = 2
 
         return textView
     }()
@@ -62,100 +52,155 @@ final class InputContainerView: UIControl {
         sendButton.isEnabled = false
         sendButton.tintColor = ThemeManager.currentTheme().chatLogSendButtonColor
         sendButton.imageView?.tintColor = ThemeManager.currentTheme().chatLogSendButtonColor
-
+//        sendButton.backgroundColor = ThemeManager.currentTheme().tintColor
+//        sendButton.layer.cornerRadius = 16
+//        sendButton.contentMode = .center
+        sendButton.contentMode = .scaleAspectFit
+//        sendButton.clipsToBounds = true
+//        sendButton.imageEdgeInsets = UIEdgeInsets(top: 2, left: 0, bottom: 0, right: 3)
+        
         return sendButton
     }()
 
-    private var heightConstraint_: NSLayoutConstraint!
+    var heightConstraint_: NSLayoutConstraint!
 
     private func addHeightConstraints() {
         
-        if #available(iOS 11.0, *) {
-            let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
-            if let bottom = window?.safeAreaInsets.bottom {
-                heightConstraint_ = heightAnchor.constraint(equalToConstant: InputTextViewLayout.minHeight + bottom)
-            }
-        } else {
-            heightConstraint_ = heightAnchor.constraint(equalToConstant: InputTextViewLayout.minHeight)
-        }
+//        if #available(iOS 11.0, *) {
+//            let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
+//            if let bottom = window?.safeAreaInsets.bottom {
+//                heightConstraint_ = heightAnchor.constraint(equalToConstant: InputTextViewLayout.minHeight() + bottom)
+//            }
+//        } else {
+////        heightConstraint_ = heightAnchor.constraint(equalToConstant: self.frame.height)
+////            heightConstraint_ = heightAnchor.constraint(equalToConstant: InputTextViewLayout.minHeight())
+//        }
+//
         
-        heightConstraint_.isActive = true
+        if !heightConstraint_.isActive {
+            heightConstraint_ = heightAnchor.constraint(equalToConstant: InputTextViewLayout.minHeight())
+            heightConstraint_.isActive = true
+        }
     }
 
     func confirugeHeightConstraint() {
-        let size = inputTextView.sizeThatFits(CGSize(width: inputTextView.bounds.size.width, height: .infinity))
-        var height = CGFloat()
-            
-        if #available(iOS 11.0, *) {
-            let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
-            if let bottom = window?.safeAreaInsets.bottom {
-                height = size.height + 12 + bottom
-            }
-        } else {
-            height = size.height + 12
-        }
-        heightConstraint_.constant = height < InputTextViewLayout.maxHeight() ? height : InputTextViewLayout.maxHeight()
-        let maxHeight: CGFloat = InputTextViewLayout.maxHeight()
-        guard height >= maxHeight else { inputTextView.isScrollEnabled = false; return }
-        inputTextView.isScrollEnabled = true
+        
+        print(hexStringFromColor(color: .handshakeBlue))
+        
+//        let size = inputTextView.sizeThatFits(CGSize(width: inputTextView.bounds.size.width, height: .infinity))
+//        var height = CGFloat()
+//        height = size.height + 12
+//
+//        if height >= InputTextViewLayout.maxHeight() {
+//            if heightConstraint_ != nil {
+//                heightConstraint_.constant = InputTextViewLayout.maxHeight()
+//            } else {
+//                heightConstraint_ = heightAnchor.constraint(equalToConstant: InputTextViewLayout.maxHeight())
+//            }
+//            heightConstraint_.isActive = true
+//        } else {
+//            print("htcrrdrydddttdtrdtrrdrtdrtrtdrttr")
+//            if heightConstraint_ != nil {
+//                print("pre is active? \(heightConstraint_.isActive)")
+//                print("pre is nil? \(heightConstraint_ == nil)")
+//                removeConstraint(heightConstraint_)
+//                reloadInputViews()
+//                print("is active? \(heightConstraint_.isActive)")
+//                print("is nil? \(heightConstraint_ == nil)")
+////                heightConstraint_ = nil
+////                heightConstraint_.isActive = false
+//            }
+//        }
+//        heightConstraint_.constant = height < InputTextViewLayout.maxHeight() ? height : InputTextViewLayout.maxHeight()
+        
+//        let maxHeight: CGFloat = InputTextViewLayout.maxHeight()
+//        guard height >= maxHeight else { inputTextView.isScrollEnabled = false; return }
+//        inputTextView.isScrollEnabled = true
     }
+    
+//    open override func didMoveToWindow() {
+//        super.didMoveToWindow()
+//        print("DID MOVE")
+//        if #available(iOS 11.0, *) {
+//            guard let window = window else { return }
+
+            // bottomAnchor must be set to the window to avoid a memory leak issue
+//            bottomStackViewLayoutSet?.bottom?.isActive = false
+//            bottomStackViewLayoutSet?.bottom = bottomStackView.bottomAnchor.constraintLessThanOrEqualToSystemSpacingBelow(window.safeAreaLayoutGuide.bottomAnchor, multiplier: 1)
+//            bottomStackViewLayoutSet?.bottom?.isActive = true
+            
+//            heightConstraint_ = heightAnchor.constraint(equalToConstant: frame.height)
+//
+//            heightConstraint_.isActive = true
+//        }
+//    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        // This is required to make the view grow vertically
+        self.autoresizingMask = UIView.AutoresizingMask.flexibleHeight
+        
+        // this is where the fram magic happens
         
         NotificationCenter.default.addObserver(self, selector: #selector(inputViewResigned),
         name: .inputViewResigned, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(inputViewResponded),
         name: .inputViewResponded, object: nil)
-        addHeightConstraints()
-        backgroundColor = .clear
-        //    sendButton.tintColor = ThemeManager.generalTintColor
+//        addHeightConstraints()
+        
         addSubview(inputTextView)
         addSubview(sendButton)
         addSubview(placeholderLabel)
-        sendButton.layer.cornerRadius = 15
-        sendButton.clipsToBounds = true
         
         setColors()
 
         tap = UITapGestureRecognizer(target: self, action: #selector(toggleTextView))
         tap.delegate = self
 
-//        if #available(iOS 11.0, *) {
-//            inputTextView.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -5).isActive = true
-//        } else {
-            inputTextView.rightAnchor.constraint(equalTo: sendButton.leftAnchor, constant: -5).isActive = true
-//        }
+        inputTextView.rightAnchor.constraint(equalTo: sendButton.leftAnchor, constant: -5).isActive = true
 
-        inputTextView.topAnchor.constraint(equalTo: topAnchor, constant: 6).isActive = true
-        inputTextView.leftAnchor.constraint(equalTo: leftAnchor, constant: 6).isActive = true
+        inputTextView.topAnchor.constraint(equalTo: topAnchor, constant: 7).isActive = true
+        inputTextView.leftAnchor.constraint(equalTo: leftAnchor, constant: 15).isActive = true
         
-        if #available(iOS 11.0, *) {
-            let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
-            if let bottom = window?.safeAreaInsets.bottom {
-                inputTextView.bottomAnchor.constraint(equalTo: bottomAnchor , constant: -6 - bottom).isActive = true
-            }
-        }
+//        if #available(iOS 11.0, *) {
+//            let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
+//            if let bottom = window?.safeAreaInsets.bottom {
+                inputTextView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor , constant: -7).isActive = true
+//            }
+//        }
 
         placeholderLabel.font = UIFont.systemFont(ofSize: (inputTextView.font!.pointSize))
         placeholderLabel.isHidden = !inputTextView.text.isEmpty
         placeholderLabel.leftAnchor.constraint(equalTo: inputTextView.leftAnchor, constant: 12).isActive = true
         placeholderLabel.rightAnchor.constraint(equalTo: inputTextView.rightAnchor).isActive = true
-//        placeholderLabel.topAnchor.constraint(equalTo: attachCollectionView.bottomAnchor,
-//                                              constant: inputTextView.font!.pointSize / 2.3).isActive = true
         placeholderLabel.centerYAnchor.constraint(equalTo: inputTextView.centerYAnchor, constant: 0).isActive = true
         placeholderLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
 
-        sendButton.rightAnchor.constraint(equalTo: inputTextView.rightAnchor, constant: -4).isActive = true
-        sendButton.bottomAnchor.constraint(equalTo: inputTextView.bottomAnchor, constant: -4).isActive = true
-        sendButton.widthAnchor.constraint(equalToConstant: 50).isActive = true
-        sendButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
+//        sendButton.rightAnchor.constraint(equalTo: rightAnchor, constant: -8).isActive = true
+        sendButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -9).isActive = true
+        sendButton.widthAnchor.constraint(equalToConstant: 32).isActive = true
+        sendButton.heightAnchor.constraint(equalToConstant: 32).isActive = true
         
         if #available(iOS 11.0, *) {
-            sendButton.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -15).isActive = true
+            sendButton.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -10).isActive = true
         } else {
-            sendButton.rightAnchor.constraint(equalTo: rightAnchor, constant: -15).isActive = true
+            sendButton.rightAnchor.constraint(equalTo: rightAnchor, constant: -10).isActive = true
         }
+        
+        let blurEffect = ThemeManager.currentTheme().tabBarBlurEffect
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        addSubview(blurEffectView)
+        
+        sendSubviewToBack(blurEffectView)
+    }
+    
+    override var intrinsicContentSize: CGSize {
+        // Calculate intrinsicContentSize that will fit all the text
+        let textSize = self.inputTextView.sizeThatFits(CGSize(width: self.inputTextView.bounds.width, height: CGFloat.greatestFiniteMagnitude))
+        return CGSize(width: self.bounds.width, height: textSize.height)
     }
     
     deinit {
@@ -168,8 +213,9 @@ final class InputContainerView: UIControl {
     }
 
     @objc func toggleTextView () {
-        inputTextView.inputView = nil
-        inputTextView.reloadInputViews()
+//        inputTextView.inputView = nil
+//        inputTextView.reloadInputViews()
+        print("sdckmd1")
         UIView.performWithoutAnimation {
             inputTextView.resignFirstResponder()
             inputTextView.becomeFirstResponder()

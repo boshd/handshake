@@ -66,7 +66,7 @@ class ChannelCell: UITableViewCell {
         let label = DynamicLabel(withInsets: 0, 0, 0, 0)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
-        label.font = ThemeManager.currentTheme().secondaryFont(with: 12)
+        label.font = ThemeManager.currentTheme().secondaryFont(with: 9)
         label.textColor = ThemeManager.currentTheme().generalSubtitleColor
         label.cornerRadius = 3
         
@@ -102,7 +102,7 @@ class ChannelCell: UITableViewCell {
         imageView.layer.cornerCurve = .circular
         imageView.contentMode = .scaleAspectFill
         imageView.borderColor = .handshakeLightPurple
-        imageView.borderWidth = 3.5
+        imageView.borderWidth = 2
         return imageView
     }()
     
@@ -166,7 +166,7 @@ class ChannelCell: UITableViewCell {
             customAccessoryView.bottomAnchor.constraint(equalTo: subTitle.bottomAnchor, constant: 0),
             customAccessoryView.widthAnchor.constraint(equalToConstant: 50),
             
-            dateTitle.topAnchor.constraint(equalTo: customAccessoryView.topAnchor, constant: 0),
+            dateTitle.centerYAnchor.constraint(equalTo: title.centerYAnchor, constant: 0),
             dateTitle.trailingAnchor.constraint(equalTo: customAccessoryView.trailingAnchor, constant: 0),
             
             

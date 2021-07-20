@@ -47,7 +47,7 @@ class OutgoingMessageCell: BaseMessageCell {
         resendButtonFrame(message: message)
         bubbleView.frame = setupBubbleViewFrame(message: message)
         textView.frame.size = CGSize(width: bubbleView.frame.width, height: bubbleView.frame.height)
-        timeLabel.frame.origin = CGPoint(x: bubbleView.frame.width-timeLabel.frame.width-5, y: bubbleView.frame.height-timeLabel.frame.height-5)
+        timeLabel.frame.origin = CGPoint(x: bubbleView.frame.width-timeLabel.frame.width, y: bubbleView.frame.height-timeLabel.frame.height-5)
 
         // bubbleView.image = ThemeManager.currentTheme().outgoingPartialBubble
     }
