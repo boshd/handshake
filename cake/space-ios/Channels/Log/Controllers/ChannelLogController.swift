@@ -785,9 +785,9 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         guard sentMessage.status == messageStatusDelivered,
         messageToUpdate.messageUID == self.groupedMessages.last?.messages.last?.messageUID,
         userDefaults.currentBoolObjectState(for: userDefaults.inAppSounds) else { return }
-//        SystemSoundID.playFileNamed(fileName: "sent", withExtenstion: "caf")
+        SystemSoundID.playFileNamed(fileName: "sent", withExtenstion: "caf")
         
-        AudioServicesPlaySystemSound (1004)
+//        AudioServicesPlaySystemSound (1004)
     }
     
     // MARK: - Title view
@@ -842,12 +842,12 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
             return
         }
         isTyping = false
-//        let text = inputContainerView.inputTextView.text
-//        inputContainerView.prepareForSend()
+        let text = inputContainerView.inputTextView.text
+        inputContainerView.prepareForSend()
         guard let channel = self.channel else { return }
-//        let messageSender = MessageSender(realmChannel(from: channel), text: text)
-//        messageSender.delegate = self
-//        messageSender.sendMessage()
+        let messageSender = MessageSender(realmChannel(from: channel), text: text)
+        messageSender.delegate = self
+        messageSender.sendMessage()
     }
     
     @objc func presentResendActions(_ sender: UIButton) {
