@@ -39,7 +39,7 @@ struct MessageFontsAppearance {
     }
     
     static var defaultDeliveryStatusTextFont: UIFont {
-        return ThemeManager.currentTheme().secondaryFontBold(with: 10)
+        return ThemeManager.currentTheme().secondaryFontBold(with: 8)
     }
     
 }

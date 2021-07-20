@@ -50,7 +50,7 @@ class ChannelCollectionView: UICollectionView {
     }
     
     public func scrollToBottom(animated: Bool) {
-//        guard contentSize.height > bounds.size.height else { return }
+        guard contentSize.height > bounds.size.height else { return }
         setContentOffset(CGPoint(x: 0, y: (contentSize.height - bounds.size.height) + (contentInset.bottom)),
                    animated: animated)
     }

@@ -199,10 +199,10 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         super.viewWillAppear(animated)
         becomeFirstResponder()
 //        self.autoresizingMask = .flexibleHeight
-//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
 //        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow(_:)), name: UIResponder.keyboardDidShowNotification, object: nil)
 //        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidHide(_:)), name: UIResponder.keyboardDidHideNotification, object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         guard let channel = channel else { return }
         
@@ -715,9 +715,19 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     @objc open dynamic func keyboardDidShow(_ notification: Notification) {}
     
     @objc open dynamic func keyboardWillShow(_ notification: Notification) {
-        channelLogContainerView.headerTopConstraint?.constant = -75
+        // channelLogContainerView.headerTopConstraint?.constant = -75
         let userInfo = notification.userInfo!
         let animationDuration: TimeInterval = (userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
+        
+        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+            let keyboardRectangle = keyboardFrame.cgRectValue
+            let keyboardHeight = keyboardRectangle.height
+            
+            collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight, right: 0)
+            collectionView.scrollToBottom(animated: true)
+        }
+        
+        
         UIView.animate(withDuration: animationDuration) {
             self.view.layoutIfNeeded()
         }
@@ -726,9 +736,12 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     @objc open dynamic func keyboardDidHide(_ notification: Notification) {}
 
     @objc open dynamic func keyboardWillHide(_ notification: Notification) {
-        if channelLogContainerView.headerTopConstraint?.constant == -75 {
-            channelLogContainerView.headerTopConstraint?.constant = 10
-        }
+        // if channelLogContainerView.headerTopConstraint?.constant == -75 {
+        //     channelLogContainerView.headerTopConstraint?.constant = 10
+        // }
+        
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: inputAccessoryView?.frame.height ?? 0, right: 0)
+        
         let userInfo = notification.userInfo!
         let animationDuration: TimeInterval = (userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
         UIView.animate(withDuration: animationDuration) {
