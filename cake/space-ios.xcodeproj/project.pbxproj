@@ -48,6 +48,7 @@
 		BC0F428D2359450C000D3DF0 /* CreateChannelOptionsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0F428C2359450C000D3DF0 /* CreateChannelOptionsContainerView.swift */; };
 		BC1000C0238AF9EF00A0C5D8 /* ChannelDetailsContainerView_.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1000BF238AF9EF00A0C5D8 /* ChannelDetailsContainerView_.swift */; };
 		BC11962525C1B55300BAD03F /* CustomNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC11962425C1B55300BAD03F /* CustomNavigationController.swift */; };
+		BC166B5326A9B06B00A159EB /* ChannelLogController+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC166B5226A9B06B00A159EB /* ChannelLogController+Keyboard.swift */; };
 		BC17473325F30C630011BF91 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BC17473225F30C630011BF91 /* GoogleService-Info.plist */; };
 		BC1A77FB22A2C71D005AC5CE /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1A77FA22A2C71D005AC5CE /* Colors.swift */; };
 		BC1A77FD22A3F8B6005AC5CE /* fChannelLogController+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1A77FC22A3F8B6005AC5CE /* fChannelLogController+DataSource.swift */; };
@@ -422,6 +423,7 @@
 		BC0F428C2359450C000D3DF0 /* CreateChannelOptionsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateChannelOptionsContainerView.swift; sourceTree = "<group>"; };
 		BC1000BF238AF9EF00A0C5D8 /* ChannelDetailsContainerView_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDetailsContainerView_.swift; sourceTree = "<group>"; };
 		BC11962425C1B55300BAD03F /* CustomNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationController.swift; sourceTree = "<group>"; };
+		BC166B5226A9B06B00A159EB /* ChannelLogController+Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelLogController+Keyboard.swift"; sourceTree = "<group>"; };
 		BC17473225F30C630011BF91 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		BC1A77FA22A2C71D005AC5CE /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		BC1A77FC22A3F8B6005AC5CE /* fChannelLogController+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "fChannelLogController+DataSource.swift"; sourceTree = "<group>"; };
@@ -855,6 +857,7 @@
 			isa = PBXGroup;
 			children = (
 				BC0EAF2A2511A92900394898 /* ChannelLogController.swift */,
+				BC166B5226A9B06B00A159EB /* ChannelLogController+Keyboard.swift */,
 				BC0EAF352512610500394898 /* InputContainerView */,
 				BC68C0B8258A9BBF00D3A730 /* Delegates */,
 			);
@@ -960,6 +963,13 @@
 				BC0F428A2358D643000D3DF0 /* StackCellBase.swift */,
 			);
 			path = StackScrollView;
+			sourceTree = "<group>";
+		};
+		BC166B5426A9B3B300A159EB /* Util */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Util;
 			sourceTree = "<group>";
 		};
 		BC1A77E522A2AE07005AC5CE /* Log */ = {
@@ -1925,6 +1935,7 @@
 				BC01387D2379B93800C7291A /* Core Managers */,
 				BC01387A2379A8F900C7291A /* Fetchers */,
 				BC59273522A0156D006A5CEF /* Models */,
+				BC166B5426A9B3B300A159EB /* Util */,
 				BCAC056E22AD37FC006D0C24 /* Support */,
 				BCF979FE229D5F6A0088C568 /* AppDelegate.swift */,
 				BC7AABD726250EFB0024A20D /* TabBarController.swift */,
@@ -2408,6 +2419,7 @@
 				BCE5ABF8249EE74B001172C4 /* AddLocationContainerView.swift in Sources */,
 				BC08DF91236B335500A917D7 /* ParticipantCell.swift in Sources */,
 				BC49304D253A17DD00441F62 /* UsersTableViewCell.swift in Sources */,
+				BC166B5326A9B06B00A159EB /* ChannelLogController+Keyboard.swift in Sources */,
 				BCBDA162254DE6820051A183 /* CreateChannelController+TableView_.swift in Sources */,
 				BC5BAFC125A24ACB00996DCB /* CustomAlertController.swift in Sources */,
 				BC0F42892358D5DC000D3DF0 /* MarginStackCell.swift in Sources */,

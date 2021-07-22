@@ -41,6 +41,8 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     var groupedMessages = [MessageSection]()
     var typingIndicatorSection: [String] = []
     
+    var shouldAnimateKeyboardChanges = false
+    
     let contextMenuItems = [
         ContextMenuItem(title: "Edit", index: 0),
         ContextMenuItem(title: "Remove", index: 1),
@@ -68,6 +70,15 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     private let keyboardLayoutGuide = KeyboardLayoutGuide()
     
     var channelLogContainerView = ChannelLogContainerView()
+    
+    public var safeContentHeight: CGFloat {
+        // Don't use self.collectionView.contentSize.height as the collection view's
+        // content size might not be set yet.
+        //
+        // We can safely call prepareLayout to ensure the layout state is up-to-date
+        // since our layout uses a dirty flag internally to debounce redundant work.
+        collectionView.collectionViewLayout.collectionViewContentSize.height
+    }
     
     private var collectionViewLoaded = false {
         didSet {
@@ -135,36 +146,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         refreshControl.endRefreshing()
     }
     
-    @objc private func instantMoveToBottom() {
-        hapticFeedback(style: .impact)
-        collectionView.scrollToBottom(animated: true)
-    }
-
-    @objc func performRefresh() {
-        refreshControl.endRefreshing()
-        guard let channel = self.channel else { return }
-        let allMessages = groupedMessages.flatMap { (sectionedMessage) -> Results<Message> in
-            return sectionedMessage.messages
-        }
-        channelLogHistoryFetcher.loadPreviousMessages(allMessages, channel, messagesToLoad)
-    }
-    
-    @objc func goToChannelDetails() {
-        guard let channelID = channel?.id else { return }
-
-//        view.endEditing(true)
-        
-        let destination = ChannelDetailsController()
-        destination.channelID = channelID
-
-        navigationController?.pushViewController(destination, animated: true)
-        
-        
-        
-//        savedContentOffset = collectionView.contentOffset
-//        savedContentInset = collectionView.contentInset
-    }
-    
     // MARK: - Controller Lifecycle
     override func loadView() {
         super.loadView()
@@ -182,6 +163,18 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         setupNavigationBar()
     }
     
+    public override func viewSafeAreaInsetsDidChange() {
+
+        super.viewSafeAreaInsetsDidChange()
+        
+        print("called viewSafeAreaInsetsDidChange")
+
+        updateContentInsets(animated: false)
+//        self.updateInputToolbarLayout()
+//        self.viewSafeAreaInsetsDidChangeForLoad()
+//        self.updateConversationStyle()
+    }
+    
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         if #available(iOS 13, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) &&
@@ -194,6 +187,35 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
             setNeedsStatusBarAppearanceUpdate()
         }
     }
+    
+    /*
+     
+     guard let userInfo = notification.userInfo,
+         let beginFrame = userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as? CGRect,
+         let endFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
+         let animationDuration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval,
+         let rawAnimationCurve = userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? Int,
+         let animationCurve = UIView.AnimationCurve(rawValue: rawAnimationCurve) else {
+             return owsFailDebug("keyboard notification missing expected userInfo properties")
+     }
+
+     // We only want to do an animated presentation if either a) the height changed or b) the view is
+     // starting from off the bottom of the screen (a full presentation). This provides the best experience
+     // when canceling an interactive dismissal or changing orientations.
+     guard beginFrame.height != endFrame.height || beginFrame.minY == UIScreen.main.bounds.height else { return }
+
+     keyboardState = .presenting(frame: endFrame)
+
+     delegate?.inputAccessoryPlaceholderKeyboardIsPresenting(animationDuration: animationDuration, animationCurve: animationCurve)
+     
+     
+     
+     
+     
+     
+     
+     
+     */
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -216,6 +238,8 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+        self.shouldAnimateKeyboardChanges = true
         
         unblockInputViewConstraints()
         
@@ -264,6 +288,9 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        
+        self.shouldAnimateKeyboardChanges = true
+        
         if self.navigationController?.visibleViewController is ChannelDetailsController { return }
         
 //        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -341,6 +368,36 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     func configureController() {
         channelManager.delegate = self
         channelManager.setupListeners(channel)
+    }
+    
+    @objc private func instantMoveToBottom() {
+        hapticFeedback(style: .impact)
+        collectionView.scrollToBottom(animated: true)
+    }
+
+    @objc func performRefresh() {
+        refreshControl.endRefreshing()
+        guard let channel = self.channel else { return }
+        let allMessages = groupedMessages.flatMap { (sectionedMessage) -> Results<Message> in
+            return sectionedMessage.messages
+        }
+        channelLogHistoryFetcher.loadPreviousMessages(allMessages, channel, messagesToLoad)
+    }
+    
+    @objc func goToChannelDetails() {
+        guard let channelID = channel?.id else { return }
+
+//        view.endEditing(true)
+        
+        let destination = ChannelDetailsController()
+        destination.channelID = channelID
+
+        navigationController?.pushViewController(destination, animated: true)
+        
+        
+        
+//        savedContentOffset = collectionView.contentOffset
+//        savedContentInset = collectionView.contentInset
     }
     
     func configureCellContextMenuView() -> FTConfiguration {
@@ -707,45 +764,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
                     }
                 }
             }, completion: nil)
-        }
-    }
-    
-    // MARK: - Keyboard
-    
-    @objc open dynamic func keyboardDidShow(_ notification: Notification) {}
-    
-    @objc open dynamic func keyboardWillShow(_ notification: Notification) {
-        // channelLogContainerView.headerTopConstraint?.constant = -75
-        let userInfo = notification.userInfo!
-        let animationDuration: TimeInterval = (userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
-        
-        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-            let keyboardRectangle = keyboardFrame.cgRectValue
-            let keyboardHeight = keyboardRectangle.height
-            
-            collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight, right: 0)
-            collectionView.scrollToBottom(animated: true)
-        }
-        
-        
-        UIView.animate(withDuration: animationDuration) {
-            self.view.layoutIfNeeded()
-        }
-    }
-    
-    @objc open dynamic func keyboardDidHide(_ notification: Notification) {}
-
-    @objc open dynamic func keyboardWillHide(_ notification: Notification) {
-        // if channelLogContainerView.headerTopConstraint?.constant == -75 {
-        //     channelLogContainerView.headerTopConstraint?.constant = 10
-        // }
-        
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: inputAccessoryView?.frame.height ?? 0, right: 0)
-        
-        let userInfo = notification.userInfo!
-        let animationDuration: TimeInterval = (userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
-        UIView.animate(withDuration: animationDuration) {
-            self.view.layoutIfNeeded()
         }
     }
     

@@ -43,9 +43,38 @@ extension UITableView {
   }
 }
 
-extension CGFloat {
+public extension CGFloat {
     static func random() -> CGFloat {
         return CGFloat(arc4random()) / CGFloat(UInt32.max)
+    }
+    
+//    func clamp(_ minValue: CGFloat, _ maxValue: CGFloat) -> CGFloat {
+//        return CGFloatClamp(self, minValue, maxValue)
+//    }
+//
+//    func clamp01() -> CGFloat {
+//        return CGFloatClamp01(self)
+//    }
+//
+//    // Linear interpolation
+//    func lerp(_ minValue: CGFloat, _ maxValue: CGFloat) -> CGFloat {
+//        return CGFloatLerp(minValue, maxValue, self)
+//    }
+//
+//    // Inverse linear interpolation
+//    func inverseLerp(_ minValue: CGFloat, _ maxValue: CGFloat, shouldClamp: Bool = false) -> CGFloat {
+//        let value = CGFloatInverseLerp(self, minValue, maxValue)
+//        return (shouldClamp ? CGFloatClamp01(value) : value)
+//    }
+
+    static let halfPi: CGFloat = CGFloat.pi * 0.5
+
+    func fuzzyEquals(_ other: CGFloat, tolerance: CGFloat = 0.001) -> Bool {
+        return abs(self - other) < tolerance
+    }
+
+    var square: CGFloat {
+        return self * self
     }
 }
 
