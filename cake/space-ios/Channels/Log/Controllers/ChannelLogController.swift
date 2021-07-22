@@ -35,13 +35,22 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     var channel: Channel?
     
+    var navigationBarTitleGestureRecognizer: UITapGestureRecognizer?
+    private var savedContentOffset: CGPoint!
+    var channelListener: ListenerRegistration?
+    var typingIndicatorCollectionListener: ListenerRegistration?
+    
+    var first = true
     let typingIndicatorDatabaseID = "typingIndicator"
     let typingIndicatorStateDatabaseKeyID = "Is typing"
+    let messagesToLoad = 25
+    var isChannelLogHeaderShowing = false
+    var shouldAnimateKeyboardChanges = false
+    private var shouldScrollToBottom: Bool = true
+    private var localTyping = false
     
     var groupedMessages = [MessageSection]()
     var typingIndicatorSection: [String] = []
-    
-    var shouldAnimateKeyboardChanges = false
     
     let contextMenuItems = [
         ContextMenuItem(title: "Edit", index: 0),
@@ -49,27 +58,18 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         ContextMenuItem(title: "Promote", index: 2)
     ]
     
-    var dayFormatter = DateFormatter()
-    var monthFormatter = DateFormatter()
-    var dayNumericFormatter = DateFormatter()
-    let fullDateFormatter = DateFormatter()
-    let numberFormatter = NumberFormatter()
-    let timeFormatter  = DateFormatter()
-    
-    var channelListener: ListenerRegistration?
-    var typingIndicatorCollectionListener: ListenerRegistration?
-    
-    let channelManager = ChannelManager()
-
-    let realm = try! Realm(configuration: RealmKeychain.realmDefaultConfiguration())
-    let channelsRealmManager = ChannelsRealmManager()
-    let messagesToLoad = 25
-    let channelLogHistoryFetcher = ChannelLogHistoryFetcher()
-
-    private var shouldScrollToBottom: Bool = true
+    private var dayFormatter = DateFormatter()
+    private var monthFormatter = DateFormatter()
+    private var dayNumericFormatter = DateFormatter()
+    private let fullDateFormatter = DateFormatter()
+    private let numberFormatter = NumberFormatter()
+    private let timeFormatter  = DateFormatter()
+    private let channelManager = ChannelManager()
+    private let channelsRealmManager = ChannelsRealmManager()
+    private let channelLogHistoryFetcher = ChannelLogHistoryFetcher()
     private let keyboardLayoutGuide = KeyboardLayoutGuide()
-    
-    var channelLogContainerView = ChannelLogContainerView()
+    public var channelLogContainerView = ChannelLogContainerView()
+    public let realm = try! Realm(configuration: RealmKeychain.realmDefaultConfiguration())
     
     public var safeContentHeight: CGFloat {
         // Don't use self.collectionView.contentSize.height as the collection view's
@@ -85,6 +85,8 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
             if collectionViewLoaded && shouldScrollToBottom && !oldValue {
                 collectionView.scrollToBottom(animated: false)
             }
+            
+            updateContentInsets(animated: false)
         }
     }
     
@@ -94,18 +96,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
 
         return channelInputContainerView
     }()
-    
-//    var inputAccessoryView: UIView? { get set }
-    
-    override var inputAccessoryView: UIView? {
-        get {
-            return inputContainerView
-        }
-    }
-    
-    override var canBecomeFirstResponder: Bool {
-        return true
-    }
     
     lazy var inputBlockerContainerView: InputBlockerContainerView = {
         var inputBlockerContainerView = InputBlockerContainerView()
@@ -139,14 +129,18 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         return bottomScrollContainer
     }()
     
-    /* fixes bug of not setting refresh control tint color on initial refresh */
-    fileprivate func configureRefreshControlInitialTintColor() {
-        collectionView.contentOffset = CGPoint(x: 0, y: -refreshControl.frame.size.height)
-        refreshControl.beginRefreshing()
-        refreshControl.endRefreshing()
+    override var inputAccessoryView: UIView? {
+        get {
+            return inputContainerView
+        }
+    }
+    
+    override var canBecomeFirstResponder: Bool {
+        return true
     }
     
     // MARK: - Controller Lifecycle
+    
     override func loadView() {
         super.loadView()
         loadViews()
@@ -154,82 +148,57 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupCollectionView()
-        configureController()
-//        setupInputView()
         setupBottomScrollButton()
         setupHeaderView()
         addObservers()
         setupNavigationBar()
+        createContents()
     }
     
-    public override func viewSafeAreaInsetsDidChange() {
+    private func createContents() {
+        // We use the root view bounds as the initial frame for the collection
+        // view so that its contents can be laid out immediately.
+        //
+        // TODO: To avoid relayout, it'd be better to take into account safeAreaInsets,
+        //       but they're not yet set when this method is called.
+        self.collectionView.frame = view.bounds
+        self.collectionView.showsVerticalScrollIndicator = false
+        self.collectionView.showsHorizontalScrollIndicator = false
+        self.collectionView.keyboardDismissMode = .interactive
+        self.collectionView.allowsMultipleSelection = true
+        self.collectionView.backgroundColor = .clear
+        self.collectionView.delegate = self
+        self.collectionView.dataSource = self
+        self.collectionView.addObserver(self, forKeyPath: "contentSize", options: .old, context: nil)
+        self.collectionView.addSubview(refreshControl)
 
-        super.viewSafeAreaInsetsDidChange()
+        // To minimize time to initial apearance, we initially disable prefetching, but then
+        // re-enable it once the view has appeared.
+        self.collectionView.isPrefetchingEnabled = false
         
-        print("called viewSafeAreaInsetsDidChange")
-
-        updateContentInsets(animated: false)
-//        self.updateInputToolbarLayout()
-//        self.viewSafeAreaInsetsDidChangeForLoad()
-//        self.updateConversationStyle()
-    }
-    
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        if #available(iOS 13, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) &&
-            userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme) {
-            if traitCollection.userInterfaceStyle == .light {
-                ThemeManager.applyTheme(theme: .normal)
-            } else {
-                ThemeManager.applyTheme(theme: .dark)
-            }
-            setNeedsStatusBarAppearanceUpdate()
+        channelLogHistoryFetcher.delegate = self
+        channelManager.delegate = self
+        
+        channelManager.setupListeners(channel)
+        
+        extendedLayoutIncludesOpaqueBars = true
+        edgesForExtendedLayout = UIRectEdge.bottom
+        
+        if #available(iOS 11.0, *) {
+            navigationItem.largeTitleDisplayMode = .never
         }
+
+        configureRefreshControlInitialTintColor()
     }
-    
-    /*
-     
-     guard let userInfo = notification.userInfo,
-         let beginFrame = userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as? CGRect,
-         let endFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
-         let animationDuration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval,
-         let rawAnimationCurve = userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? Int,
-         let animationCurve = UIView.AnimationCurve(rawValue: rawAnimationCurve) else {
-             return owsFailDebug("keyboard notification missing expected userInfo properties")
-     }
-
-     // We only want to do an animated presentation if either a) the height changed or b) the view is
-     // starting from off the bottom of the screen (a full presentation). This provides the best experience
-     // when canceling an interactive dismissal or changing orientations.
-     guard beginFrame.height != endFrame.height || beginFrame.minY == UIScreen.main.bounds.height else { return }
-
-     keyboardState = .presenting(frame: endFrame)
-
-     delegate?.inputAccessoryPlaceholderKeyboardIsPresenting(animationDuration: animationDuration, animationCurve: animationCurve)
-     
-     
-     
-     
-     
-     
-     
-     
-     */
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         becomeFirstResponder()
-//        self.autoresizingMask = .flexibleHeight
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow(_:)), name: UIResponder.keyboardDidShowNotification, object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidHide(_:)), name: UIResponder.keyboardDidHideNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         
-        guard let channel = channel else { return }
+        guard let channelParticipants = channel?.participantIds else { return }
         
         if let uid = Auth.auth().currentUser?.uid,
-           channel.participantIds.contains(uid) {
+           channelParticipants.contains(uid) {
             if let navigationBarTitleGestureRecognizer = navigationBarTitleGestureRecognizer {
                 self.navigationController?.navigationBar.addGestureRecognizer(navigationBarTitleGestureRecognizer)
             }
@@ -239,17 +208,10 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        self.collectionView.isPrefetchingEnabled = true
         self.shouldAnimateKeyboardChanges = true
         
         unblockInputViewConstraints()
-        
-        if savedContentInset != nil {
-            UIView.performWithoutAnimation { [weak self] in
-                guard let unwrappedSelf = self else { return }
-                unwrappedSelf.view.layoutIfNeeded()
-                unwrappedSelf.collectionView.contentInset = unwrappedSelf.savedContentInset
-            }
-        }
         
         if savedContentOffset != nil {
             UIView.performWithoutAnimation { [weak self] in
@@ -260,7 +222,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         }
         
         setupHeaderView()
-//        checkChannelStateAndPermissions()
         
         if let uid = Auth.auth().currentUser?.uid, let channel = channel, channel.participantIds.contains(uid) {
             if typingIndicatorCollectionListener == nil  {
@@ -274,56 +235,26 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         }
     }
     
-    var navigationBarTitleGestureRecognizer: UITapGestureRecognizer?
-    private var savedContentOffset: CGPoint!
-    private var savedContentInset: UIEdgeInsets!
-//    var goingForwards = false
-    
-    func removeChannelListener() {
-        if channelListener != nil {
-            channelListener?.remove()
-            channelListener = nil
-        }
-    }
-    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        
         self.shouldAnimateKeyboardChanges = true
-        
         if self.navigationController?.visibleViewController is ChannelDetailsController { return }
-        
-//        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
-//        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
-        
         isTyping = false
         
         if typingIndicatorCollectionListener != nil {
             typingIndicatorCollectionListener?.remove()
             typingIndicatorCollectionListener = nil
-            //typingIndicatorReference.removeObserver(withHandle: typingIndicatorHandle)
         }
         
         NotificationCenter.default.removeObserver(self)
         channelManager.removeAllListeners()
     }
     
-    /*
-     
-     VIEW WILL APPEAR
-     KEYBOARD WILL HIDE
-     VIEW WILL DISSAPPEAR
-     in first
-     VIEW DID DISAPPEAR
-     
-     */
-    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         if let viewControllers = self.navigationController?.viewControllers {
             if viewControllers.count > 1 && viewControllers[viewControllers.count-2] == self {
-//                view.endEditing(true)
-//                collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                // do nothing
             } else {
                 removeChannelListener()
 
@@ -344,7 +275,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         
         blockInputViewConstraints()
         savedContentOffset = collectionView.contentOffset
-        savedContentInset = collectionView.contentInset
         
         if let navigationBarTitleGestureRecognizer = navigationBarTitleGestureRecognizer {
             self.navigationController?.navigationBar.removeGestureRecognizer(navigationBarTitleGestureRecognizer)
@@ -357,17 +287,33 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         channelManager.removeAllListeners()
         
     }
+    
+    // MARK: - skmclsmf
+    
+    /// fixes bug of not setting refresh control tint color on initial refresh
+    fileprivate func configureRefreshControlInitialTintColor() {
+        collectionView.contentOffset = CGPoint(x: 0, y: -refreshControl.frame.size.height)
+        refreshControl.beginRefreshing()
+        refreshControl.endRefreshing()
+    }
+
+    func removeChannelListener() {
+        if channelListener != nil {
+            channelListener?.remove()
+            channelListener = nil
+        }
+    }
+    
+    public override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+        // updateContentInsets(animated: false)
+    }
 
     override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         if let observedObject = object as? ChannelCollectionView, observedObject == collectionView {
             collectionViewLoaded = true
             collectionView.removeObserver(self, forKeyPath: "contentSize")
         }
-    }
-    
-    func configureController() {
-        channelManager.delegate = self
-        channelManager.setupListeners(channel)
     }
     
     @objc private func instantMoveToBottom() {
@@ -384,20 +330,14 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         channelLogHistoryFetcher.loadPreviousMessages(allMessages, channel, messagesToLoad)
     }
     
-    @objc func goToChannelDetails() {
+    @objc
+    func goToChannelDetails() {
         guard let channelID = channel?.id else { return }
 
-//        view.endEditing(true)
-        
         let destination = ChannelDetailsController()
         destination.channelID = channelID
 
         navigationController?.pushViewController(destination, animated: true)
-        
-        
-        
-//        savedContentOffset = collectionView.contentOffset
-//        savedContentInset = collectionView.contentInset
     }
     
     func configureCellContextMenuView() -> FTConfiguration {
@@ -506,20 +446,20 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     func blockInputViewConstraints() {
         guard let view = view as? ChannelLogContainerView else { return }
-//        if let constant = keyboardLayoutGuide.topConstant {
-//            if inputContainerView.inputTextView.isFirstResponder {
-//                if #available(iOS 13.0, *) {
-//                    let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
-//                    if let bottom = window?.safeAreaInsets.bottom {
-//                        view.blockBottomConstraint(constant: -constant + bottom)
-//                    }
-//                } else {
-//                    view.blockBottomConstraint(constant: -constant)
-//                }
-//
-//                view.layoutIfNeeded()
-//            }
-//        }
+        if let constant = keyboardLayoutGuide.topConstant {
+            if inputContainerView.inputTextView.isFirstResponder {
+                if #available(iOS 13.0, *) {
+                    let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
+                    if let bottom = window?.safeAreaInsets.bottom {
+                        view.blockBottomConstraint(constant: -constant + bottom)
+                    }
+                } else {
+                    view.blockBottomConstraint(constant: -constant)
+                }
+
+                view.layoutIfNeeded()
+            }
+        }
     }
 
     func unblockInputViewConstraints() {
@@ -574,26 +514,12 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         constant: -10).isActive = true
     }
     
-    private func setupCollectionView() {
-        extendedLayoutIncludesOpaqueBars = true
-        edgesForExtendedLayout = UIRectEdge.bottom
-        
-        if #available(iOS 11.0, *) {
-            navigationItem.largeTitleDisplayMode = .never
-        }
-
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        channelLogHistoryFetcher.delegate = self
-
-        collectionView.addObserver(self, forKeyPath: "contentSize", options: .old, context: nil)
-        
-        collectionView.addSubview(refreshControl)
-        configureRefreshControlInitialTintColor()
-    }
-    
     fileprivate func addObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(changeTheme), name: .themeUpdated, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleThemeChange), name: .themeUpdated, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow(_:)), name: UIResponder.keyboardDidShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidHide(_:)), name: UIResponder.keyboardDidHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     fileprivate func resetBadgeForSelf() {
@@ -610,34 +536,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         ], merge: true) { (error) in
             if error != nil { print("error // ", error?.localizedDescription ?? "error") }
         }
-    }
-
-    @objc private func changeTheme() {
-        view.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
-        if let navigationBar = navigationController?.navigationBar {
-            ThemeManager.setNavigationBarAppearance(navigationBar)
-        }
-        channelLogContainerView.channelLogHeaderView.setColors()
-        channelLogContainerView.inputViewContainer.blurEffectView = UIVisualEffectView(effect: ThemeManager.currentTheme().tabBarBlurEffect)
-        channelLogContainerView.inputViewContainer.backgroundColor = ThemeManager.currentTheme().inputBarContainerViewBackgroundColor
-//        inputContainerView.inputTextView.changeTheme()
-//        inputContainerView.setColors()
-        refreshControl.tintColor = ThemeManager.currentTheme().generalTitleColor
-        collectionView.updateColors()
-
-        DispatchQueue.main.async { [weak self] in
-            self?.collectionView.reloadData()
-        }
-        
-        func updateTypingIndicatorIfNeeded() {
-            if collectionView.numberOfSections == groupedMessages.count + 1 {
-                guard let cell = self.collectionView.cellForItem(at: IndexPath(item: 0, section: 1)) as? TypingIndicatorCell else { return }
-                cell.restart()
-            }
-        }
-        updateTypingIndicatorIfNeeded()
-
-        collectionView.collectionViewLayout.invalidateLayout()
     }
     
     func setupHeaderView() {
@@ -671,7 +569,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     // MARK: - DATABASE TYPING INDICATOR // TO MOVE
-    private var localTyping = false
 
     var isTyping: Bool {
         get {

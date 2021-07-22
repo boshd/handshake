@@ -10,12 +10,62 @@ import UIKit
 import AVFoundation
 
 final class InputContainerView: UIControl {
+    
+//    @objc
+//        public var keyboardOverlap: CGFloat {
+//            // Subtract our own height as this view is not actually
+//            // visible, but is represented in the keyboard.
+//            let ownHeight = superview != nil ? desiredHeight : 0
+//
+//            return max(0, visibleKeyboardHeight - ownHeight)
+//        }
+//    
+//    @objc
+//    weak var referenceView: UIView?
+//
+//    private var visibleKeyboardHeight: CGFloat {
+//        guard var keyboardFrame = transitioningKeyboardFrame ?? superview?.frame else { return 0 }
+//        guard keyboardFrame.height > 0 else { return 0 }
+//
+//        let referenceFrame: CGRect
+//
+//        if let referenceView = referenceView {
+//            keyboardFrame = referenceView.convert(keyboardFrame, from: nil)
+//            referenceFrame = referenceView.frame
+//        }
+//
+//        // Measure how much of the keyboard is currently offscreen.
+//        let offScreenHeight = keyboardFrame.maxY - referenceFrame.maxY
+//
+//        // The onscreen region represents the overlap.
+//        return max(0, keyboardFrame.height - offScreenHeight)
+//    }
+//
+//        /// The height that the accessory view should take up. This is
+//        /// automatically subtracted from the keyboard overlap and is
+//        /// intended to represent the extent to which you want the
+//        /// accessory view to overlap the presenting view, primarily
+//        /// for the purpose of defining the start point for interactive
+//        /// dismissals.
+//        @objc
+//        public var desiredHeight: CGFloat {
+//            set {
+//                guard newValue != desiredHeight else { return }
+//            }
+//            get {
+//                return heightConstraint_.constant
+//            }
+//        }
+//    
+//    private var transitioningKeyboardFrame: CGRect? {
+//        return frame
+//    }
 
   fileprivate var tap = UITapGestureRecognizer()
   static let messagePlaceholder = "Aa"
     
     func setColors() {
-//        backgroundColor = .red
+        backgroundColor = .red
         placeholderLabel.textColor = ThemeManager.currentTheme().generalSubtitleColor
         sendButton.tintColor = ThemeManager.currentTheme().chatLogSendButtonColor
         sendButton.imageView?.tintColor = ThemeManager.currentTheme().chatLogSendButtonColor

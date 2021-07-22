@@ -43,6 +43,19 @@ extension UITableView {
   }
 }
 
+extension Comparable {
+    func clamped(to limits: ClosedRange<Self>) -> Self {
+        return min(max(self, limits.lowerBound), limits.upperBound)
+    }
+}
+
+// Swift < 5.1
+extension Strideable where Stride: SignedInteger {
+    func clamped(to limits: CountableClosedRange<Self>) -> Self {
+        return min(max(self, limits.lowerBound), limits.upperBound)
+    }
+}
+
 public extension CGFloat {
     static func random() -> CGFloat {
         return CGFloat(arc4random()) / CGFloat(UInt32.max)

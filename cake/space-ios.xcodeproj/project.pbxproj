@@ -49,6 +49,7 @@
 		BC1000C0238AF9EF00A0C5D8 /* ChannelDetailsContainerView_.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1000BF238AF9EF00A0C5D8 /* ChannelDetailsContainerView_.swift */; };
 		BC11962525C1B55300BAD03F /* CustomNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC11962425C1B55300BAD03F /* CustomNavigationController.swift */; };
 		BC166B5326A9B06B00A159EB /* ChannelLogController+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC166B5226A9B06B00A159EB /* ChannelLogController+Keyboard.swift */; };
+		BC166B5726A9EE3300A159EB /* ChannelLogController+Theming.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC166B5626A9EE3300A159EB /* ChannelLogController+Theming.swift */; };
 		BC17473325F30C630011BF91 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BC17473225F30C630011BF91 /* GoogleService-Info.plist */; };
 		BC1A77FB22A2C71D005AC5CE /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1A77FA22A2C71D005AC5CE /* Colors.swift */; };
 		BC1A77FD22A3F8B6005AC5CE /* fChannelLogController+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1A77FC22A3F8B6005AC5CE /* fChannelLogController+DataSource.swift */; };
@@ -424,6 +425,7 @@
 		BC1000BF238AF9EF00A0C5D8 /* ChannelDetailsContainerView_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDetailsContainerView_.swift; sourceTree = "<group>"; };
 		BC11962425C1B55300BAD03F /* CustomNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationController.swift; sourceTree = "<group>"; };
 		BC166B5226A9B06B00A159EB /* ChannelLogController+Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelLogController+Keyboard.swift"; sourceTree = "<group>"; };
+		BC166B5626A9EE3300A159EB /* ChannelLogController+Theming.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelLogController+Theming.swift"; sourceTree = "<group>"; };
 		BC17473225F30C630011BF91 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		BC1A77FA22A2C71D005AC5CE /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		BC1A77FC22A3F8B6005AC5CE /* fChannelLogController+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "fChannelLogController+DataSource.swift"; sourceTree = "<group>"; };
@@ -858,6 +860,7 @@
 			children = (
 				BC0EAF2A2511A92900394898 /* ChannelLogController.swift */,
 				BC166B5226A9B06B00A159EB /* ChannelLogController+Keyboard.swift */,
+				BC166B5626A9EE3300A159EB /* ChannelLogController+Theming.swift */,
 				BC0EAF352512610500394898 /* InputContainerView */,
 				BC68C0B8258A9BBF00D3A730 /* Delegates */,
 			);
@@ -2408,6 +2411,7 @@
 				BC1A781622A43C23005AC5CE /* dChannelLogController+CollectionDelegate.swift in Sources */,
 				BC0F42872358C2A6000D3DF0 /* StackCell.swift in Sources */,
 				BC74F2B422D0A62E00B37801 /* CreateAccountContainerView.swift in Sources */,
+				BC166B5726A9EE3300A159EB /* ChannelLogController+Theming.swift in Sources */,
 				BC3AE88824B9F1DD00619FCF /* AddLocationViewController+Map.swift in Sources */,
 				BCCF551F2620D7E100AFBF7C /* InAppNotification.swift in Sources */,
 				BC74F2BC22D0ED2700B37801 /* PhoneController.swift in Sources */,
