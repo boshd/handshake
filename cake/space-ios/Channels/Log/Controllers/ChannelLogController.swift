@@ -49,6 +49,28 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     private var shouldScrollToBottom: Bool = true
     private var localTyping = false
     
+    public enum KeyboardState: CustomStringConvertible {
+        case dismissed
+        case dismissing
+        case presented
+        case presenting(frame: CGRect)
+
+        public var description: String {
+            switch self {
+            case .dismissed:
+                return "dismissed"
+            case .dismissing:
+                return "dismissing"
+            case .presented:
+                return "presented"
+            case .presenting:
+                return "presenting"
+            }
+        }
+    }
+    
+    public var keyboardState: KeyboardState = .dismissed
+    
     var groupedMessages = [MessageSection]()
     var typingIndicatorSection: [String] = []
     
@@ -70,6 +92,8 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     private let keyboardLayoutGuide = KeyboardLayoutGuide()
     public var channelLogContainerView = ChannelLogContainerView()
     public let realm = try! Realm(configuration: RealmKeychain.realmDefaultConfiguration())
+    
+    public var keyboardHeight = CGFloat()
     
     public var safeContentHeight: CGFloat {
         // Don't use self.collectionView.contentSize.height as the collection view's
@@ -109,6 +133,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         let collectionView = ChannelCollectionView()
         collectionView.isUserInteractionEnabled = true
         collectionView.allowsSelection = false
+        collectionView.backgroundColor = .green
         
         return collectionView
     }()
@@ -166,7 +191,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         self.collectionView.showsHorizontalScrollIndicator = false
         self.collectionView.keyboardDismissMode = .interactive
         self.collectionView.allowsMultipleSelection = true
-        self.collectionView.backgroundColor = .clear
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
         self.collectionView.addObserver(self, forKeyPath: "contentSize", options: .old, context: nil)
@@ -308,12 +332,27 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         super.viewSafeAreaInsetsDidChange()
         // updateContentInsets(animated: false)
     }
-
     override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
+        
         if let observedObject = object as? ChannelCollectionView, observedObject == collectionView {
             collectionViewLoaded = true
             collectionView.removeObserver(self, forKeyPath: "contentSize")
         }
+        
+        // Do nothing unless the keyboard is currently presented.
+        // We're only checking for interactive dismissal, which
+        // can only happen while presented.
+        guard case .presented = keyboardState else { return }
+
+//        guard superview != nil else { return }
+
+        // While the visible keyboard height is greater than zero,
+        // and the keyboard is presented, we can safely assume
+        // an interactive dismissal is in progress.
+        if keyboardHeight > 0 {
+//            delegate?.inputAccessoryPlaceholderKeyboardIsDismissingInteractively()
+        }
+        
     }
     
     @objc private func instantMoveToBottom() {
@@ -397,7 +436,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     private func loadViews() {
         let view = channelLogContainerView
         view.add(collectionView)
-        collectionView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         
         guard let channel = channel else { return }
 

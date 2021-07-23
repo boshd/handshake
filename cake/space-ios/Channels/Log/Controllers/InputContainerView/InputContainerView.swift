@@ -11,6 +11,8 @@ import AVFoundation
 
 final class InputContainerView: UIControl {
     
+    
+    
 //    @objc
 //        public var keyboardOverlap: CGFloat {
 //            // Subtract our own height as this view is not actually
@@ -66,6 +68,7 @@ final class InputContainerView: UIControl {
     
     func setColors() {
         backgroundColor = .red
+
         placeholderLabel.textColor = ThemeManager.currentTheme().generalSubtitleColor
         sendButton.tintColor = ThemeManager.currentTheme().chatLogSendButtonColor
         sendButton.imageView?.tintColor = ThemeManager.currentTheme().chatLogSendButtonColor

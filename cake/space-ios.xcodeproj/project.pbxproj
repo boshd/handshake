@@ -50,6 +50,7 @@
 		BC11962525C1B55300BAD03F /* CustomNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC11962425C1B55300BAD03F /* CustomNavigationController.swift */; };
 		BC166B5326A9B06B00A159EB /* ChannelLogController+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC166B5226A9B06B00A159EB /* ChannelLogController+Keyboard.swift */; };
 		BC166B5726A9EE3300A159EB /* ChannelLogController+Theming.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC166B5626A9EE3300A159EB /* ChannelLogController+Theming.swift */; };
+		BC166B5926AA0B9000A159EB /* KeyboardService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC166B5826AA0B9000A159EB /* KeyboardService.swift */; };
 		BC17473325F30C630011BF91 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BC17473225F30C630011BF91 /* GoogleService-Info.plist */; };
 		BC1A77FB22A2C71D005AC5CE /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1A77FA22A2C71D005AC5CE /* Colors.swift */; };
 		BC1A77FD22A3F8B6005AC5CE /* fChannelLogController+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1A77FC22A3F8B6005AC5CE /* fChannelLogController+DataSource.swift */; };
@@ -426,6 +427,7 @@
 		BC11962425C1B55300BAD03F /* CustomNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationController.swift; sourceTree = "<group>"; };
 		BC166B5226A9B06B00A159EB /* ChannelLogController+Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelLogController+Keyboard.swift"; sourceTree = "<group>"; };
 		BC166B5626A9EE3300A159EB /* ChannelLogController+Theming.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelLogController+Theming.swift"; sourceTree = "<group>"; };
+		BC166B5826AA0B9000A159EB /* KeyboardService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardService.swift; sourceTree = "<group>"; };
 		BC17473225F30C630011BF91 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		BC1A77FA22A2C71D005AC5CE /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		BC1A77FC22A3F8B6005AC5CE /* fChannelLogController+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "fChannelLogController+DataSource.swift"; sourceTree = "<group>"; };
@@ -971,6 +973,7 @@
 		BC166B5426A9B3B300A159EB /* Util */ = {
 			isa = PBXGroup;
 			children = (
+				BC166B5826AA0B9000A159EB /* KeyboardService.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -2441,6 +2444,7 @@
 				BCF97A07229D5F6A0088C568 /* space_ios.xcdatamodeld in Sources */,
 				BCBDA1BB254F001E0051A183 /* CreateChannelController+Description_.swift in Sources */,
 				BCBD85A62597845900303A25 /* SearchTableContainerView.swift in Sources */,
+				BC166B5926AA0B9000A159EB /* KeyboardService.swift in Sources */,
 				BC30D79A252FCB4D0013CD38 /* PhotoController+AvatarOpenerDelegate.swift in Sources */,
 				BC7D9DB826616F8A008CBF8F /* LocationPoint.swift in Sources */,
 				BC8C117725BB2F38000CBD25 /* UpdateChannelController+TableView.swift in Sources */,
