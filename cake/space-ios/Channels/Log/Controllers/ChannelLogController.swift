@@ -48,28 +48,8 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     var shouldAnimateKeyboardChanges = false
     private var shouldScrollToBottom: Bool = true
     private var localTyping = false
-    
-    public enum KeyboardState: CustomStringConvertible {
-        case dismissed
-        case dismissing
-        case presented
-        case presenting(frame: CGRect)
-
-        public var description: String {
-            switch self {
-            case .dismissed:
-                return "dismissed"
-            case .dismissing:
-                return "dismissing"
-            case .presented:
-                return "presented"
-            case .presenting:
-                return "presenting"
-            }
-        }
-    }
-    
-    public var keyboardState: KeyboardState = .dismissed
+    public var isDismissingInteractively = false
+    public var hasAppearedAndHasAppliedFirstLoad = false
     
     var groupedMessages = [MessageSection]()
     var typingIndicatorSection: [String] = []
@@ -109,16 +89,17 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
             if collectionViewLoaded && shouldScrollToBottom && !oldValue {
                 collectionView.scrollToBottom(animated: false)
             }
-            
-            updateContentInsets(animated: false)
+//
+//            updateContentInsets(animated: false)
         }
     }
     
     lazy var inputContainerView: InputContainerView = {
-        var channelInputContainerView = InputContainerView()
-        channelInputContainerView.channelLogController = self
+        var inputContainerView = InputContainerView()
+        inputContainerView.channelLogController = self
+        inputContainerView.delegate = self
 
-        return channelInputContainerView
+        return inputContainerView
     }()
     
     lazy var inputBlockerContainerView: InputBlockerContainerView = {
@@ -231,6 +212,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        self.hasAppearedAndHasAppliedFirstLoad = true
         
         self.collectionView.isPrefetchingEnabled = true
         self.shouldAnimateKeyboardChanges = true
@@ -330,8 +312,9 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     public override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
-        // updateContentInsets(animated: false)
+        updateContentInsets(animated: false)
     }
+    
     override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         
         if let observedObject = object as? ChannelCollectionView, observedObject == collectionView {
@@ -339,20 +322,14 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
             collectionView.removeObserver(self, forKeyPath: "contentSize")
         }
         
-        // Do nothing unless the keyboard is currently presented.
-        // We're only checking for interactive dismissal, which
-        // can only happen while presented.
-        guard case .presented = keyboardState else { return }
+    }
+    
+    public func inputAccessoryPlaceholderKeyboardIsDismissingInteractively() {
 
-//        guard superview != nil else { return }
-
-        // While the visible keyboard height is greater than zero,
-        // and the keyboard is presented, we can safely assume
-        // an interactive dismissal is in progress.
-        if keyboardHeight > 0 {
-//            delegate?.inputAccessoryPlaceholderKeyboardIsDismissingInteractively()
-        }
-        
+        // No animation, just follow along with the keyboard.
+        self.isDismissingInteractively = true
+        print("inputAccessoryPlaceholderKeyboardIsDismissingInteractively")
+        self.isDismissingInteractively = false
     }
     
     @objc private func instantMoveToBottom() {
@@ -554,10 +531,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     fileprivate func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleThemeChange), name: .themeUpdated, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow(_:)), name: UIResponder.keyboardDidShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidHide(_:)), name: UIResponder.keyboardDidHideNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     fileprivate func resetBadgeForSelf() {

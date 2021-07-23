@@ -22,7 +22,7 @@ class ChannelCollectionView: UICollectionView {
         super.init(frame: .zero, collectionViewLayout: AutoSizingCollectionViewFlowLayout())
         showsVerticalScrollIndicator = false
         alwaysBounceVertical = true
-        contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 20, right: 0)
+        contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0) // top, bottom 20
         delaysContentTouches = false
         isPrefetchingEnabled = true
         keyboardDismissMode = .interactive

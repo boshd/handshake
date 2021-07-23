@@ -85,7 +85,7 @@ class ChannelLogContainerView: UIView {
 //        channelLogHeaderView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
         channelLogHeaderView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 7).isActive = true
         channelLogHeaderView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -7).isActive = true
-        headerHeightConstraint = channelLogHeaderView.heightAnchor.constraint(equalToConstant: 65)
+        headerHeightConstraint = channelLogHeaderView.heightAnchor.constraint(equalToConstant: 0) //65
         headerHeightConstraint?.isActive = true
         
         headerTopConstraint = channelLogHeaderView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 5)

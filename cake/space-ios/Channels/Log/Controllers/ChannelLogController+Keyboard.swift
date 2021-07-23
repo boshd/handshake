@@ -8,68 +8,26 @@
 
 import UIKit
 
-extension ChannelLogController {
-    
-    @objc
-    open dynamic func keyboardDidShow(_ notification: Notification) {
-        keyboardState = .presented
-        guard let userInfo = notification.userInfo,
-            let keyboardFrame: NSValue = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue
-        else { return }
-        let keyboardRectangle = keyboardFrame.cgRectValue
-        let keyboardHeight = keyboardRectangle.height
-        
-        self.keyboardHeight = keyboardHeight
-        
+extension ChannelLogController: InputContainerViewDelegate {
+    func inputContainerViewKeyboardIsPresenting(animationDuration: TimeInterval, animationCurve: UIView.AnimationCurve) {
+        handleKeyboardStateChange(animationDuration: animationDuration,
+                                  animationCurve: animationCurve)
     }
     
-    @objc
-    open dynamic func keyboardWillShow(_ notification: Notification) {
-        if first {
-            first = false
-            return
-        }
-        print("Keyboard will show")
-        guard let userInfo = notification.userInfo,
-            let beginFrame = userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as? CGRect,
-            let endFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
-            let keyboardFrame: NSValue = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue,
-            let animationDuration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval,
-            let rawAnimationCurve = userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? Int
-        else { return }
-        
-        let keyboardHeight = keyboardFrame.cgRectValue.height
-        
-        // We only want to do an animated presentation if either a) the height changed or b) the view is
-        // starting from off the bottom of the screen (a full presentation). This provides the best experience
-        // when canceling an interactive dismissal or changing orientations.
-        guard beginFrame.height != endFrame.height || beginFrame.minY == UIScreen.main.bounds.height else { return }
-        
-        self.collectionView.contentInset.bottom = keyboardHeight
-        self.collectionView.contentOffset.y = (collectionView.contentSize.height - collectionView.bounds.size.height) + (collectionView.contentInset.bottom) + view.safeAreaInsets.bottom
-        
-        UIView.animate(withDuration: animationDuration) {
-            self.view.layoutIfNeeded()
-        }
-        
+    func inputContainerViewKeyboardDidPresent() {
+        updateContentInsets(animated: false)
     }
     
-    @objc
-    open dynamic func keyboardDidHide(_ notification: Notification) {
-        keyboardHeight = .zero
+    func inputContainerViewKeyboardIsDismissing(animationDuration: TimeInterval, animationCurve: UIView.AnimationCurve) {
+        handleKeyboardStateChange(animationDuration: animationDuration,
+                                  animationCurve: animationCurve)
     }
-
-    @objc
-    open dynamic func keyboardWillHide(_ notification: Notification) {
-        guard let userInfo = notification.userInfo,
-            let animationDuration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval
-        else { return }
-        print("keyboardWillHide")
-        self.collectionView.contentInset.bottom = (keyboardHeight + inputContainerView.frame.height)
-        
-        UIView.animate(withDuration: animationDuration) {
-            self.view.layoutIfNeeded()
-        }
+    
+    func inputContainerViewKeyboardDidDismiss() {
+        updateContentInsets(animated: false)
+    }
+    
+    func inputContainerViewKeyboardIsDismissingInteractively() {
     }
     
     private func handleKeyboardStateChange(animationDuration: TimeInterval,
@@ -82,18 +40,98 @@ extension ChannelLogController {
         
         if shouldAnimateKeyboardChanges, animationDuration > 0 {
             UIView.animate(withDuration: animationDuration) { [weak self] in
-                print("shouldAnimateKeyboardChanges")
                 self?.updateContentInsets(animated: true)
             }
         } else {
+            print("99999999")
             // from start, before shouldAnimateKeyboardChanges is set
             updateContentInsets(animated: false)
         }
         
     }
     
-    @objc
+    @objc(updateContentInsetsAnimated:)
     public func updateContentInsets(animated: Bool) {
+        
+//        guard !isMeasuringKeyboardHeight else {
+//            return
+//        }
+
+        // Don't update the content insets if an interactive pop is in progress
+        guard let navigationController = self.navigationController else {
+            return
+        }
+        if let interactivePopGestureRecognizer = navigationController.interactivePopGestureRecognizer {
+            switch interactivePopGestureRecognizer.state {
+            case .possible, .failed:
+                break
+            default:
+                return
+            }
+        }
+
+        view.layoutIfNeeded()
+
+        let oldInsets = collectionView.contentInset
+        var newInsets = oldInsets
+
+        let keyboardOverlap = inputContainerView.keyboardOverlap
+        newInsets.bottom = (keyboardOverlap + inputContainerView.frame.height - view.safeAreaInsets.bottom)
+        // TODO:
+        // newInsets.top = messageActionsExtraContentInsetPadding + (bannerView?.height ?? 0)
+
+         let wasScrolledToBottom = self.isScrollViewAtTheBottom()
+
+        // Changing the contentInset can change the contentOffset, so make sure we
+        // stash the current value before making any changes.
+        let oldYOffset = collectionView.contentOffset.y
+
+        let didChangeInsets = oldInsets != newInsets
+
+        UIView.performWithoutAnimation {
+            if didChangeInsets {
+                let contentOffset = self.collectionView.contentOffset
+                self.collectionView.contentInset = newInsets
+                self.collectionView.setContentOffset(contentOffset, animated: false)
+            }
+            self.collectionView.scrollIndicatorInsets = newInsets
+        }
+
+        // Adjust content offset to prevent the presented keyboard from obscuring content.
+        if !didChangeInsets {
+            // Do nothing.
+            //
+            // If content inset didn't change, no need to update content offset.
+        } else if !hasAppearedAndHasAppliedFirstLoad {
+            // Do nothing.
+//        } else if wasScrolledToBottom {
+            // If we were scrolled to the bottom, don't do any fancy math. Just stay at the bottom.
+//            collectionView.scrollToBottom(animated: false)
+        } else if hasAppearedAndHasAppliedFirstLoad {
+            // If we were scrolled away from the bottom, shift the content in lockstep with the
+            // keyboard, up to the limits of the content bounds.
+            let insetChange = newInsets.bottom - oldInsets.bottom
+            print("IN HERE ", insetChange)
+            // Only update the content offset if the inset has changed.
+            if insetChange != 0 {
+                // The content offset can go negative, up to the size of the top layout guide.
+                // This accounts for the extended layout under the navigation bar.
+                let minYOffset = -view.safeAreaInsets.top
+                let newYOffset = (oldYOffset + insetChange).clamped(to: .zero...safeContentHeight)
+                let newOffset = CGPoint(x: 0, y: newYOffset)
+
+                // This offset change will be animated by UIKit's UIView animation block
+                // which updateContentInsets() is called within
+                collectionView.setContentOffset(newOffset, animated: false)
+                
+                print(collectionView.contentInset)
+                print(collectionView.contentOffset)
+            }
+        }
+    }
+    
+    @objc
+    public func updateContentInsets_(animated: Bool) {
         
         view.layoutIfNeeded()
         
