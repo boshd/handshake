@@ -202,7 +202,7 @@ extension ChannelInputContainerView: UIGestureRecognizerDelegate {
 extension ChannelInputContainerView: UITextViewDelegate {
 
     func textViewDidBeginEditing(_ textView: UITextView) {
-        channelLogController?.collectionView.scrollToBottom(animated: true)
+        channelLogController?.scrollToBottom(animated: true)
     }
 
     func textViewDidChange(_ textView: UITextView) {

@@ -114,7 +114,7 @@ extension ChannelLogController: CollectionDelegate {
             self.updateMessageStatus(messageRef: reference)
         }
         if self.isScrollViewAtTheBottom() {
-            self.collectionView.scrollToBottom(animated: true)
+            self.scrollToBottom(animated: true)
         }
         NotificationCenter.default.post(name: .messageSent, object: nil)
     }

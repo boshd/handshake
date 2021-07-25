@@ -63,7 +63,7 @@ extension ChannelLogController: MessageSenderDelegate {
                         }
                     }
                 }, completion: nil)
-                self.collectionView.scrollToBottom(animated: true)
+                self.scrollToBottom(animated: true)
                 print(self.collectionView.contentInset)
                 NotificationCenter.default.post(name: .messageSent, object: nil)
             })

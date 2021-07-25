@@ -43,7 +43,6 @@ extension ChannelLogController: InputContainerViewDelegate {
                 self?.updateContentInsets(animated: true)
             }
         } else {
-            print("99999999")
             // from start, before shouldAnimateKeyboardChanges is set
             updateContentInsets(animated: false)
         }
@@ -52,10 +51,6 @@ extension ChannelLogController: InputContainerViewDelegate {
     
     @objc(updateContentInsetsAnimated:)
     public func updateContentInsets(animated: Bool) {
-        
-//        guard !isMeasuringKeyboardHeight else {
-//            return
-//        }
 
         // Don't update the content insets if an interactive pop is in progress
         guard let navigationController = self.navigationController else {
@@ -87,7 +82,7 @@ extension ChannelLogController: InputContainerViewDelegate {
         let oldYOffset = collectionView.contentOffset.y
 
         let didChangeInsets = oldInsets != newInsets
-
+        print("didChangeInsets", didChangeInsets)
         UIView.performWithoutAnimation {
             if didChangeInsets {
                 let contentOffset = self.collectionView.contentOffset
@@ -106,24 +101,28 @@ extension ChannelLogController: InputContainerViewDelegate {
             // Do nothing.
 //        } else if wasScrolledToBottom {
             // If we were scrolled to the bottom, don't do any fancy math. Just stay at the bottom.
-//            collectionView.scrollToBottom(animated: false)
-        } else if hasAppearedAndHasAppliedFirstLoad {
+//            scrollToBottom(animated: false)
+        } else {
             // If we were scrolled away from the bottom, shift the content in lockstep with the
             // keyboard, up to the limits of the content bounds.
-            let insetChange = newInsets.bottom - oldInsets.bottom
-            print("IN HERE ", insetChange)
+            let insetChange = Double(newInsets.bottom).rounded(toPlaces: 5) - Double(oldInsets.bottom).rounded(toPlaces: 5)
+            print("newInsets.bottom", newInsets.bottom)
+            print("oldInsets.bottom", oldInsets.bottom)
+            
             // Only update the content offset if the inset has changed.
             if insetChange != 0 {
                 // The content offset can go negative, up to the size of the top layout guide.
                 // This accounts for the extended layout under the navigation bar.
+                print("insetChange", insetChange)
+                print("oldYOffset", oldYOffset)
                 let minYOffset = -view.safeAreaInsets.top
-                let newYOffset = (oldYOffset + insetChange).clamped(to: .zero...safeContentHeight)
+                let newYOffset = (oldYOffset + CGFloat(insetChange)).clamped(to: minYOffset...safeContentHeight)
                 let newOffset = CGPoint(x: 0, y: newYOffset)
 
                 // This offset change will be animated by UIKit's UIView animation block
                 // which updateContentInsets() is called within
                 collectionView.setContentOffset(newOffset, animated: false)
-                
+                print("new offset", newYOffset)
                 print(collectionView.contentInset)
                 print(collectionView.contentOffset)
             }

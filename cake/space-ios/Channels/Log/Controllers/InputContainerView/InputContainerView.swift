@@ -218,7 +218,7 @@ final class InputContainerView: UIControl {
   static let messagePlaceholder = "Aa"
     
     func setColors() {
-        backgroundColor = .red
+        backgroundColor = ThemeManager.currentTheme().inputBarContainerViewBackgroundColor
 
         placeholderLabel.textColor = ThemeManager.currentTheme().generalSubtitleColor
         sendButton.tintColor = ThemeManager.currentTheme().chatLogSendButtonColor
@@ -293,6 +293,8 @@ final class InputContainerView: UIControl {
             delegate?.inputContainerViewKeyboardIsDismissingInteractively()
         }
     }
+    
+    
     
 //    override var intrinsicContentSize: CGSize {
 //        // Calculate intrinsicContentSize that will fit all the text
@@ -404,7 +406,7 @@ extension InputContainerView: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         guard text == "\n", let channelLogController = self.channelLogController else { return true }
         if channelLogController.isScrollViewAtTheBottom() {
-            channelLogController.collectionView.scrollToBottom(animated: false)
+            channelLogController.scrollToBottom(animated: false)
         }
         return true
     }

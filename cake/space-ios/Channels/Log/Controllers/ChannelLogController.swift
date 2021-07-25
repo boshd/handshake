@@ -84,14 +84,20 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         collectionView.collectionViewLayout.collectionViewContentSize.height
     }
     
-    private var collectionViewLoaded = false {
-        didSet {
-            if collectionViewLoaded && shouldScrollToBottom && !oldValue {
-                collectionView.scrollToBottom(animated: false)
-            }
-//
-//            updateContentInsets(animated: false)
-        }
+    // The highest valid content offset when the view is at rest.
+    internal var maxContentOffsetY: CGFloat {
+        let contentHeight = self.safeContentHeight // same as collectionView.contentSize.height
+        let adjustedContentInset = collectionView.adjustedContentInset
+        let rawValue = contentHeight + adjustedContentInset.bottom - collectionView.bounds.size.height
+        // Note the usage of MAX() to handle the case where there isn't enough
+        // content to fill the collection view at its current size.
+        let clampedValue = max(minContentOffsetY, rawValue)
+        return clampedValue
+    }
+    
+    // The lowest valid content offset when the view is at rest.
+    private var minContentOffsetY: CGFloat {
+        -collectionView.adjustedContentInset.top
     }
     
     lazy var inputContainerView: InputContainerView = {
@@ -101,6 +107,17 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
 
         return inputContainerView
     }()
+    
+    private var collectionViewLoaded = false {
+        didSet {
+            if collectionViewLoaded && shouldScrollToBottom && !oldValue {
+                print("scrollToBottom")
+                scrollToBottom(animated: false)
+//                let newContentOffset = CGPoint(x: 0, y: maxContentOffsetY + inputContainerView.desiredHeight + view.safeAreaInsets.bottom)
+//                collectionView.setContentOffset(newContentOffset, animated: false)
+            }
+        }
+    }
     
     lazy var inputBlockerContainerView: InputBlockerContainerView = {
         var inputBlockerContainerView = InputBlockerContainerView()
@@ -114,7 +131,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         let collectionView = ChannelCollectionView()
         collectionView.isUserInteractionEnabled = true
         collectionView.allowsSelection = false
-        collectionView.backgroundColor = .green
+        collectionView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         
         return collectionView
     }()
@@ -137,6 +154,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     override var inputAccessoryView: UIView? {
         get {
+            print("inputAccessoryView", inputContainerView.frame.height)
             return inputContainerView
         }
     }
@@ -193,7 +211,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
             navigationItem.largeTitleDisplayMode = .never
         }
 
-        configureRefreshControlInitialTintColor()
+        // configureRefreshControlInitialTintColor()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -296,9 +314,14 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     // MARK: - skmclsmf
     
+    func scrollToBottom(animated: Bool) {
+        let newContentOffset = CGPoint(x: 0, y: maxContentOffsetY)
+        collectionView.setContentOffset(newContentOffset, animated: animated)
+    }
+    
     /// fixes bug of not setting refresh control tint color on initial refresh
     fileprivate func configureRefreshControlInitialTintColor() {
-        collectionView.contentOffset = CGPoint(x: 0, y: -refreshControl.frame.size.height)
+//        collectionView.contentOffset = CGPoint(x: 0, y: -refreshControl.frame.size.height)
         refreshControl.beginRefreshing()
         refreshControl.endRefreshing()
     }
@@ -334,7 +357,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     @objc private func instantMoveToBottom() {
         hapticFeedback(style: .impact)
-        collectionView.scrollToBottom(animated: true)
+        scrollToBottom(animated: true)
     }
 
     @objc func performRefresh() {
@@ -652,7 +675,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
                     if self.collectionView.contentSize.height < self.collectionView.bounds.height {
                         return
                     }
-                    self.collectionView.scrollToBottom(animated: true)
+                    self.scrollToBottom(animated: true)
                 }
             })
         } else {
@@ -668,7 +691,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
                     }
                     cell.typingIndicator.stopAnimating()
                     if isScrollViewAtTheBottom() {
-                        collectionView.scrollToBottom(animated: true)
+                        self.scrollToBottom(animated: true)
                     }
                 }
             }, completion: nil)
@@ -784,6 +807,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         let text = inputContainerView.inputTextView.text
         inputContainerView.prepareForSend()
         guard let channel = self.channel else { return }
+//        scrollToBottom(animated: true)
         let messageSender = MessageSender(realmChannel(from: channel), text: text)
         messageSender.delegate = self
         messageSender.sendMessage()
