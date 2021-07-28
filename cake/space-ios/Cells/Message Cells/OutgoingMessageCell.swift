@@ -19,7 +19,8 @@ class OutgoingMessageCell: BaseMessageCell {
                                                    right: BaseMessageCell.outgoingTextViewRightInset)
 
         textView.textColor = ThemeManager.currentTheme().outgoingMessageCellTextColor
-        textView.backgroundColor = ThemeManager.currentTheme().outgoingMessageBackgroundColor
+//        textView.backgroundColor = ThemeManager.currentTheme().outgoingMessageBackgroundColor
+        textView.backgroundColor = .clear
         
         return textView
     }()
@@ -37,6 +38,7 @@ class OutgoingMessageCell: BaseMessageCell {
         addSubview(resendButton)
         timeLabel.backgroundColor = .clear
         timeLabel.textColor = ThemeManager.currentTheme().outgoingTimestampTextColor
+        bubbleView.backgroundColor = ThemeManager.currentTheme().outgoingMessageBackgroundColor
         //bubbleView.tintColor = ThemeManager.currentTheme().outgoingBubbleTintColor
     }
     
@@ -70,9 +72,9 @@ class OutgoingMessageCell: BaseMessageCell {
         super.prepareForReuse()
         timeLabel.backgroundColor = .clear
         timeLabel.textColor = ThemeManager.currentTheme().outgoingTimestampTextColor
-        //bubbleView.tintColor = ThemeManager.currentTheme().outgoingBubbleTintColor
         textView.textColor = ThemeManager.currentTheme().outgoingMessageCellTextColor
-        textView.backgroundColor = ThemeManager.currentTheme().outgoingMessageBackgroundColor
+        textView.backgroundColor = .clear
+        bubbleView.backgroundColor = ThemeManager.currentTheme().outgoingMessageBackgroundColor
         
     }
     

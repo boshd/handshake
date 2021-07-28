@@ -166,8 +166,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     lazy var collectionView: ChannelCollectionView = {
         let collectionView = ChannelCollectionView()
         
-        //collectionView.chatLayout.delegate = self
-        
         collectionView.isUserInteractionEnabled = true
         collectionView.allowsSelection = false
         collectionView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
@@ -200,7 +198,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("viewDidLoad \(collectionView.contentSize)")
         setupBottomScrollButton()
         setupHeaderView()
         addObservers()
@@ -228,7 +225,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
 
         // To minimize time to initial apearance, we initially disable prefetching, but then
         // re-enable it once the view has appeared.
-//        self.collectionView.isPrefetchingEnabled = false
+        self.collectionView.isPrefetchingEnabled = false
         
         channelLogHistoryFetcher.delegate = self
         channelManager.delegate = self
@@ -272,7 +269,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         print("viewDidAppear \(collectionView.contentSize)")
         self.hasAppearedAndHasAppliedFirstLoad = true
         
-//        self.collectionView.isPrefetchingEnabled = true
+        self.collectionView.isPrefetchingEnabled = true
         self.shouldAnimateKeyboardChanges = true
         
         //unblockInputViewConstraints()
@@ -352,6 +349,34 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         
     }
     
+    // MARK: - Setup/config
+    fileprivate func setupNavigationBar() {
+        setupTitle()
+        
+        let backButton = UIBarButtonItem(image: UIImage(named: "ctrl-left"), style: .plain, target: self, action:  #selector(pleasePopController))
+        navigationItem.leftBarButtonItem = backButton
+        navigationController?.interactivePopGestureRecognizer?.delegate = self
+    }
+
+    private func setupBottomScrollButton() {
+        view.addSubview(bottomScrollConainer)
+        bottomScrollConainer.translatesAutoresizingMaskIntoConstraints = false
+        bottomScrollConainer.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        bottomScrollConainer.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        
+//        if let view = inputAccessoryView {
+//            bottomScrollConainer.centerXAnchor.constraint(equalTo: view.centerXAnchor,
+//            constant: 0).isActive = true
+//            bottomScrollConainer.bottomAnchor.constraint(equalTo:  view.topAnchor,
+//            constant: -10).isActive = true
+//        }
+
+    }
+    
+    fileprivate func addObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(handleThemeChange), name: .themeUpdated, object: nil)
+    }
+    
     // MARK: - Misc.
     
 //    func scrollToBottom(animated: Bool) {
@@ -376,7 +401,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     public override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
         print("viewSafeAreaInsetsDidChange \(collectionView.contentSize)")
-        // updateContentInsets(animated: false)
+         updateContentInsets(animated: false)
 //        scrollToBottom(animated: false)
     }
     
@@ -568,33 +593,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
             
         }))
         self.present(alert, animated: true, completion: nil)
-    }
-    
-    fileprivate func setupNavigationBar() {
-        setupTitle()
-        
-        let backButton = UIBarButtonItem(image: UIImage(named: "ctrl-left"), style: .plain, target: self, action:  #selector(pleasePopController))
-        navigationItem.leftBarButtonItem = backButton
-        navigationController?.interactivePopGestureRecognizer?.delegate = self
-    }
-
-    private func setupBottomScrollButton() {
-        view.addSubview(bottomScrollConainer)
-        bottomScrollConainer.translatesAutoresizingMaskIntoConstraints = false
-        bottomScrollConainer.widthAnchor.constraint(equalToConstant: 40).isActive = true
-        bottomScrollConainer.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        
-//        if let view = inputAccessoryView {
-//            bottomScrollConainer.centerXAnchor.constraint(equalTo: view.centerXAnchor,
-//            constant: 0).isActive = true
-//            bottomScrollConainer.bottomAnchor.constraint(equalTo:  view.topAnchor,
-//            constant: -10).isActive = true
-//        }
-
-    }
-    
-    fileprivate func addObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(handleThemeChange), name: .themeUpdated, object: nil)
     }
     
     func resetBadgeForSelf() {

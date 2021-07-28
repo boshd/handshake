@@ -13,6 +13,7 @@ extension ChannelLogController: InputAccessoryViewPlaceholderDelegate {
     func inputAccessoryPlaceholderKeyboardDidChangeFrame(beginFrame: CGRect, endFrame: CGRect, animationDuration: TimeInterval, animationCurve: UIView.AnimationCurve) {
         print("beginFrame", beginFrame)
         print("endFrame", endFrame)
+//        channelLogContainerView.headerTopConstraint?.constant = endFrame.height
         handleKeyboardStateChange(animationDuration: animationDuration,
                                   animationCurve: animationCurve)
     }
@@ -20,23 +21,25 @@ extension ChannelLogController: InputAccessoryViewPlaceholderDelegate {
     func inputAccessoryPlaceholderKeyboardIsPresenting(animationDuration: TimeInterval, animationCurve: UIView.AnimationCurve, beginFrame: CGRect, endFrame: CGRect) {
         print("isPresenting")
         //handleKeyboardStateChange(animationDuration: animationDuration, animationCurve: animationCurve)
-        animateHeaderView(shouldCollapse: true, animationDuration: animationDuration, animationCurve: animationCurve)
+        
         adjustContentForKeyboard(animationDuration: animationDuration, animationCurve: animationCurve, beginFrame: beginFrame, endFrame: endFrame, shown: true)
     }
     
     func inputAccessoryPlaceholderKeyboardDidPresent() {
         print("didPresent")
-        updateContentInsets(animated: false)
+        animateHeaderView(shouldCollapse: true)
+//        updateContentInsets(animated: false)
     }
     
     func inputAccessoryPlaceholderKeyboardIsDismissing(animationDuration: TimeInterval, animationCurve: UIView.AnimationCurve, beginFrame: CGRect, endFrame: CGRect) {
         //handleKeyboardStateChange(animationDuration: animationDuration, animationCurve: animationCurve)
-        animateHeaderView(shouldCollapse: false, animationDuration: animationDuration, animationCurve: animationCurve)
+        
         adjustContentForKeyboard(animationDuration: animationDuration, animationCurve: animationCurve, beginFrame: beginFrame, endFrame: endFrame, shown: false)
     }
     
     func inputAccessoryPlaceholderKeyboardDidDismiss() {
-        updateContentInsets(animated: false)
+        animateHeaderView(shouldCollapse: false)
+//        updateContentInsets(animated: false)
     }
     
     func inputAccessoryPlaceholderKeyboardIsDismissingInteractively() {}
@@ -66,7 +69,7 @@ extension ChannelLogController: InputAccessoryViewPlaceholderDelegate {
        }, completion: nil)
    }
     
-    func animateHeaderView(shouldCollapse: Bool, animationDuration: TimeInterval, animationCurve: UIView.AnimationCurve) {
+    func animateHeaderView(shouldCollapse: Bool) {
         if shouldCollapse {
             channelLogContainerView.headerTopConstraint?.constant = -75
 //            channelLogContainerView.headerHeightConstraint?.constant = 0
@@ -76,13 +79,13 @@ extension ChannelLogController: InputAccessoryViewPlaceholderDelegate {
             }
         }
         
-        //UIView.animate(withDuration: 0.1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
-        //    self.view.layoutIfNeeded()
-        //}, completion: nil)
+        UIView.animate(withDuration: 0.1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+            self.view.layoutIfNeeded()
+        }, completion: nil)
         
-        UIView.animate(withDuration: animationDuration) { [weak self] in
-            self?.view.layoutIfNeeded()
-        }
+//        UIView.animate(withDuration: animationDuration) { [weak self] in
+//            self?.view.layoutIfNeeded()
+//        }
         
     }
     

@@ -17,7 +17,7 @@ class IncomingMessageCell: BaseMessageCell {
                                                     left: BaseMessageCell.incomingTextViewLeftInset,
                                                     bottom: BaseMessageCell.textViewBottomInset,
                                                     right: BaseMessageCell.incomingTextViewRightInset)
-        textView.backgroundColor = ThemeManager.currentTheme().incomingMessageBackgroundColor
+        textView.backgroundColor = .clear
         textView.textColor = ThemeManager.currentTheme().incomingMessageCellTextColor
 //        textView.font = ThemeManager.currentTheme().secondaryFont(with: IncomingMessageCell.messageTextSize)
         return textView
@@ -37,18 +37,20 @@ class IncomingMessageCell: BaseMessageCell {
         bubbleView.frame.origin = BaseMessageCell.incomingBubbleOrigin
         timeLabel.backgroundColor = .clear
         timeLabel.textColor = ThemeManager.currentTheme().incomingTimestampTextColor
+        bubbleView.backgroundColor = ThemeManager.currentTheme().incomingMessageBackgroundColor
         //bubbleView.tintColor = ThemeManager.currentTheme().incomingBubbleTintColor
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        textView.backgroundColor = ThemeManager.currentTheme().incomingMessageBackgroundColor
+        textView.backgroundColor = .clear
         textView.textColor = ThemeManager.currentTheme().incomingMessageCellTextColor
         textView.font = ThemeManager.currentTheme().secondaryFont(with: IncomingMessageCell.messageTextSize)
         
         bubbleView.frame.origin = BaseMessageCell.incomingBubbleOrigin
         timeLabel.backgroundColor = .clear
         timeLabel.textColor = ThemeManager.currentTheme().incomingTimestampTextColor
+        bubbleView.backgroundColor = ThemeManager.currentTheme().incomingMessageBackgroundColor
     }
 
     func setupData(message: Message) {
@@ -67,9 +69,6 @@ class IncomingMessageCell: BaseMessageCell {
         timeLabel.frame.origin = CGPoint(x: bubbleView.frame.width-timeLabel.frame.width,
                                          y: bubbleView.frame.height-timeLabel.frame.height-5)
         timeLabel.text = message.convertedTimestamp
-
-        
-        // bubbleView.image = ThemeManager.currentTheme().incomingPartialBubble
     }
     
     fileprivate func setupGroupBubbleViewSize(message: Message) -> CGSize {

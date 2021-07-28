@@ -16,7 +16,7 @@ class AutoSizingCollectionViewFlowLayout: UICollectionViewFlowLayout {
     
     override func prepare() {
         super.prepare()
-        minimumLineSpacing = 2
+        minimumLineSpacing = 5
         sectionHeadersPinToVisibleBounds = true
         
         if globalVariables.isInsertingCellsToTop == true {

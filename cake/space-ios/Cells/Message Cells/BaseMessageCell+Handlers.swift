@@ -35,14 +35,15 @@ struct ContextMenuItems {
 extension BaseMessageCell {
 
     func bubbleImage(currentColor: UIColor) -> UIColor {
-        switch currentColor {
-            case ThemeManager.currentTheme().outgoingMessageBackgroundColor:
-                return ThemeManager.currentTheme().selectedOutgoingBubbleTintColor
-            case ThemeManager.currentTheme().incomingMessageBackgroundColor:
-                return ThemeManager.currentTheme().selectedIncomingBubbleTintColor
-            default:
-                return currentColor
-        }
+//        switch currentColor {
+//            case ThemeManager.currentTheme().outgoingMessageBackgroundColor:
+//                return ThemeManager.currentTheme().selectedOutgoingBubbleTintColor
+//            case ThemeManager.currentTheme().incomingMessageBackgroundColor:
+//                return ThemeManager.currentTheme().selectedIncomingBubbleTintColor
+//            default:
+//                return currentColor
+//        }
+        return currentColor
     }
 
     @objc func handleLongTap(_ longPressGesture: UILongPressGestureRecognizer) {

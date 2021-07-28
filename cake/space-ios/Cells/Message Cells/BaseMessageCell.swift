@@ -53,8 +53,8 @@ class BaseMessageCell: UICollectionViewCell {
     
     static let scrollIndicatorInset: CGFloat = 5
 
-    static let textViewTopInset: CGFloat = 10
-    static let textViewBottomInset: CGFloat = 25
+    static let textViewTopInset: CGFloat = 7
+    static let textViewBottomInset: CGFloat = 15
     
     static let bubbleViewMaxWidth: CGFloat = CellSizes.bubbleViewMaxWidth()
     static let bubbleViewMaxHeight: CGFloat = 10000
@@ -62,9 +62,9 @@ class BaseMessageCell: UICollectionViewCell {
     static let messageTimeHeight: CGFloat = 20
     static var messageTimeWidth: CGFloat = 68
 
-    static let outgoingTextViewLeftInset: CGFloat = 10
-    static let outgoingTextViewRightInset: CGFloat = 8
-    static let outgoingMessageHorisontalInsets = (2 * (outgoingTextViewLeftInset + outgoingTextViewRightInset))
+    static let outgoingTextViewLeftInset: CGFloat = 8
+    static let outgoingTextViewRightInset: CGFloat = 5
+    static let outgoingMessageHorisontalInsets = (2 * (outgoingTextViewLeftInset + outgoingTextViewRightInset)) + 6
     
     static let incomingTextViewLeftInset: CGFloat = 10
     static let incomingTextViewRightInset: CGFloat = 3
@@ -74,7 +74,7 @@ class BaseMessageCell: UICollectionViewCell {
     static let incomingMessageAuthorNameLabelMaxWidth = bubbleViewMaxWidth - incomingMessageHorisontalInsets
     static let incomingMessageAuthorNameLabelHeight: CGFloat = 25 // 25
     static let incomingGroupMessageAuthorNameLabelHeightWithInsets: CGFloat = incomingMessageAuthorNameLabelHeight
-    static let incomingBubbleOrigin = CGPoint(x: 5, y: 0)
+    static let incomingBubbleOrigin = CGPoint(x: 12, y: 0)
 
     static let textMessageInsets = incomingTextViewTopInset + textViewBottomInset
     static let defaultTextMessageInsets = textViewBottomInset + textViewTopInset
@@ -84,10 +84,13 @@ class BaseMessageCell: UICollectionViewCell {
     lazy var bubbleView: UIView = {
         let view = UIView()
         view.isUserInteractionEnabled = true
-        view.cornerRadius = 15
+        view.layer.cornerRadius = 15
         view.layer.cornerCurve = .continuous
-        view.backgroundColor = .cyan
-
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowOpacity = 0.2
+        view.layer.shadowRadius = 1
+        view.layer.shadowOffset = CGSize(width: -0.5, height: 0.5)
+        
         return view
     }()
     
@@ -168,13 +171,8 @@ class BaseMessageCell: UICollectionViewCell {
     }
     
     func setupViews() {
-        backgroundColor = .clear
-        contentView.backgroundColor = .clear
         contentView.addSubview(bubbleView)
-        layer.cornerRadius = 15
-//        layer.cornerCurve = .continuous
-        clipsToBounds = true
-//        bubbleView.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(handleLongTap(_:))))
+        prepareViewsForReuse()
     }
 
     private func prepareViewsForReuse() {
@@ -183,8 +181,6 @@ class BaseMessageCell: UICollectionViewCell {
         timeLabel.backgroundColor = .clear
         backgroundColor = .clear
         contentView.backgroundColor = .clear
-        //layer.cornerRadius = 15
-//        layer.cornerCurve = .continuous
     }
 
     override func prepareForReuse() {

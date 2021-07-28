@@ -28,6 +28,27 @@ class CreateChannelController: UITableViewController {
     var channelDescription: String?
     var selectedImage: UIImage?
     
+    var startDatePickerExpanded = false {
+        willSet {
+            if newValue {
+                endDatePickerExpanded = false
+            }
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
+    }
+    var endDatePickerExpanded = false {
+        willSet {
+            if newValue {
+                startDatePickerExpanded = false
+            }
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
+    }
+    
     // for local use
     var startDate: Date?
     var endDate: Date?
@@ -488,41 +509,116 @@ extension CreateChannelController {
                 return cell
             }
         } else if indexPath.section == 2 {
-            if let datePickerIndexPathRow = datePickerIndexPath?.row, datePickerIndexPath != nil && datePickerIndexPathRow + 1 == indexPath.row {
-                let cell = tableView.dequeueReusableCell(withIdentifier: datePickerCellId, for: indexPath) as? DatePickerCell ?? DatePickerCell()
-                return cell
-            }
-            else if indexPath.row == 1 || indexPath.row == 3 {
-                let cell = tableView.dequeueReusableCell(withIdentifier: datePickerCellId, for: indexPath) as? DatePickerCell ?? DatePickerCell()
-
-                if let startDate = startDate, let endDate = endDate {
-                    if indexPath.row == 1 {
-                        cell.datePicker.date = startDate
-                    } else if indexPath.row == 3 {
-                        cell.datePicker.minimumDate = startDate
-                        cell.datePicker.date = endDate
-                    }
-                }
-
-                cell.delegate = self
-                return cell
-            } else {
+            
+            
+//            let datePickerCell = tableView.dequeueReusableCell(withIdentifier: datePickerCellId, for: indexPath) as? DatePickerCell ?? DatePickerCell()
+            
+            if indexPath.row == 0 {
+                // first line, always there, always same
                 let cell = tableView.dequeueReusableCell(withIdentifier: dateCellId, for: indexPath) as? DateCell ?? DateCell()
                 cell.textLabel?.text = indexPath.row == 0 ? thirdSection[0] : thirdSection[1]
-                if let startDate = startDate, let endDate = endDate {
-                    let startDateString = dateFormatter.string(from: startDate)
-                    let endDateString = dateFormatter.string(from: endDate)
-                    
-                    if indexPath.row == 0 {
-                        cell.dateLabel.text = dateFormatter.string(from: startDate)
-                        cell.timeLabel.text = timeFormatter.string(from: startDate)
-                    } else if indexPath.row == 2 {
-                        cell.timeLabel.text = timeFormatter.string(from: endDate)
-                        cell.dateLabel.text = startDateString == endDateString ? "" : dateFormatter.string(from: endDate)
-                    }
+                if let startDate = startDate {
+                    cell.dateLabel.text = dateFormatter.string(from: startDate)
+                    cell.timeLabel.text = timeFormatter.string(from: startDate)
                 }
                 return cell
+            } else {
+                // all other cases
+                if startDatePickerExpanded {
+                    // first already set, second row custom
+                    
+                    if indexPath.row == 1 {
+                        // second row, picker
+                        let cell = tableView.dequeueReusableCell(withIdentifier: datePickerCellId, for: indexPath) as? DatePickerCell ?? DatePickerCell()
+                        cell.delegate = self
+                        return cell
+                    } else {
+                        // third row, end date cell
+                        let cell = tableView.dequeueReusableCell(withIdentifier: dateCellId, for: indexPath) as? DateCell ?? DateCell()
+                        cell.textLabel?.text = indexPath.row == 0 ? thirdSection[0] : thirdSection[1]
+                        if let endDate = endDate {
+                            cell.dateLabel.text = dateFormatter.string(from: endDate)
+                            cell.timeLabel.text = timeFormatter.string(from: endDate)
+                        }
+                        return cell
+                    }
+                    
+                } else if endDatePickerExpanded {
+                    // first already set, thrid row custom
+                    
+                    if indexPath.row == 1 {
+                        // second row, end date cell
+                        let cell = tableView.dequeueReusableCell(withIdentifier: dateCellId, for: indexPath) as? DateCell ?? DateCell()
+                        cell.textLabel?.text = indexPath.row == 0 ? thirdSection[0] : thirdSection[1]
+                        if let endDate = endDate {
+                            cell.dateLabel.text = dateFormatter.string(from: endDate)
+                            cell.timeLabel.text = timeFormatter.string(from: endDate)
+                        }
+                        return cell
+                    } else {
+                        // third row, picker
+                        let cell = tableView.dequeueReusableCell(withIdentifier: datePickerCellId, for: indexPath) as? DatePickerCell ?? DatePickerCell()
+                        cell.delegate = self
+                        return cell
+                    }
+                    
+                } else {
+                    // both closed
+//                    let cell = tableView.dequeueReusableCell(withIdentifier: dateCellId, for: indexPath) as? DateCell ?? DateCell()
+//                    cell.textLabel?.text = indexPath.row == 0 ? thirdSection[0] : thirdSection[1]
+                    
+                    let cell = tableView.dequeueReusableCell(withIdentifier: dateCellId, for: indexPath) as? DateCell ?? DateCell()
+                    cell.textLabel?.text = indexPath.row == 0 ? thirdSection[0] : thirdSection[1]
+                    if let endDate = endDate, let startDate = startDate {
+                        let startDateString = dateFormatter.string(from: startDate)
+                        let endDateString = dateFormatter.string(from: endDate)
+                        cell.dateLabel.text = startDateString == endDateString ? "" : dateFormatter.string(from: endDate)
+                        cell.timeLabel.text = timeFormatter.string(from: endDate)
+                        
+                    }
+                    return cell
+                    
+                    // set first two same old
+                }
             }
+            
+            
+            
+//            if let datePickerIndexPathRow = datePickerIndexPath?.row, datePickerIndexPath != nil && datePickerIndexPathRow + 1 == indexPath.row {
+//                let cell = tableView.dequeueReusableCell(withIdentifier: datePickerCellId, for: indexPath) as? DatePickerCell ?? DatePickerCell()
+//                return cell
+//            }
+//            else if indexPath.row == 1 || indexPath.row == 3 {
+//                let cell = tableView.dequeueReusableCell(withIdentifier: datePickerCellId, for: indexPath) as? DatePickerCell ?? DatePickerCell()
+//
+//                if let startDate = startDate, let endDate = endDate {
+//                    if indexPath.row == 1 {
+//                        cell.datePicker.date = startDate
+//                    } else if indexPath.row == 3 {
+//                        cell.datePicker.minimumDate = startDate
+//                        cell.datePicker.date = endDate
+//                    }
+//                }
+//
+//                cell.delegate = self
+//                return cell
+//            } else {
+//                let cell = tableView.dequeueReusableCell(withIdentifier: dateCellId, for: indexPath) as? DateCell ?? DateCell()
+//                cell.textLabel?.text = indexPath.row == 0 ? thirdSection[0] : thirdSection[1]
+//                if let startDate = startDate, let endDate = endDate {
+//                    let startDateString = dateFormatter.string(from: startDate)
+//                    let endDateString = dateFormatter.string(from: endDate)
+//
+//                    if indexPath.row == 0 {
+//                        cell.dateLabel.text = dateFormatter.string(from: startDate)
+//                        cell.timeLabel.text = timeFormatter.string(from: startDate)
+//                    } else if indexPath.row == 2 {
+//                        cell.timeLabel.text = timeFormatter.string(from: endDate)
+//                        cell.dateLabel.text = startDateString == endDateString ? "" : dateFormatter.string(from: endDate)
+//                    }
+//                }
+//                return cell
+//            }
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: descriptionCellId, for: indexPath) as? DescriptionCell ?? DescriptionCell()
             cell.delegate = self
@@ -545,13 +641,28 @@ extension CreateChannelController {
         } else if indexPath.section == 1 {
             return UITableView.automaticDimension
         } else if indexPath.section == 2 {
-            if let datePickerIndexPathRow = datePickerIndexPath?.row, datePickerIndexPath != nil && datePickerIndexPathRow + 1 == indexPath.row {
-                return DatePickerCell().datePickerHeight
-            } else if indexPath.row == 1 || indexPath.row == 3 {
-                return 0
+//            if let datePickerIndexPathRow = datePickerIndexPath?.row, datePickerIndexPath != nil && datePickerIndexPathRow + 1 == indexPath.row {
+//                return DatePickerCell().datePickerHeight
+//            } else if indexPath.row == 1 || indexPath.row == 3 {
+//                return 0
+//            } else {
+            if startDatePickerExpanded {
+                if indexPath.row == 1 {
+                    return DatePickerCell().datePickerHeight
+                } else {
+                    return 50
+                }
+            } else if endDatePickerExpanded {
+                if indexPath.row == 2 {
+                    return DatePickerCell().datePickerHeight
+                } else {
+                    return 50
+                }
             } else {
                 return 50
             }
+            
+//            }
         } else {
             return UITableView.automaticDimension
         }
@@ -567,7 +678,11 @@ extension CreateChannelController {
         } else if section == 1 {
             return isRemote ? 1 : secondSection.count
         } else if section == 2 {
-            return 4
+            // only have one open at a time
+            if startDatePickerExpanded || endDatePickerExpanded {
+                return 3
+            }
+            return 2
             // return datePickerIndexPath != nil ? thirdSection.count + 1 : thirdSection.count
         } else {
             return fourthSection.count
@@ -595,13 +710,41 @@ extension CreateChannelController {
                 present(navController, animated: true, completion: nil)
             }
         } else if indexPath.section == 2 {
-            if datePickerIndexPath != nil {
-                // something is already expanded, therefore we should collapse
-                hideDatePicker(at: indexPath)
+            
+            if startDatePickerExpanded {
+                if indexPath.row == 0 {
+                    startDatePickerExpanded = false
+                } else if indexPath.row == 1 {
+                    // do nothing
+                } else {
+                    endDatePickerExpanded = true
+                }
+            } else if endDatePickerExpanded {
+                if indexPath.row == 0 {
+                    startDatePickerExpanded = true
+                } else if indexPath.row == 1 {
+                    endDatePickerExpanded = false
+                } else {
+                    // do nothing
+                }
             } else {
-                // nothing is expanded, therefore expand
-                showDatePicker(at: indexPath)
+                // nothing expanded
+                if indexPath.row == 0 {
+                    // open start
+                    startDatePickerExpanded = true
+                } else {
+                    //open end
+                    endDatePickerExpanded = true
+                }
             }
+            
+//            if datePickerIndexPath != nil {
+//                // something is already expanded, therefore we should collapse
+//                hideDatePicker(at: indexPath)
+//            } else {
+//                // nothing is expanded, therefore expand
+//                showDatePicker(at: indexPath)
+//            }
         }
     }
     

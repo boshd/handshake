@@ -251,7 +251,7 @@ public class InputAccessoryViewPlaceholder: UIView {
     @objc
     private func keyboardDidPresent(_ notification: Notification) {
         keyboardState = .presented
-        // delegate?.inputAccessoryPlaceholderKeyboardDidPresent()
+        delegate?.inputAccessoryPlaceholderKeyboardDidPresent()
     }
 
     @objc
@@ -273,7 +273,7 @@ public class InputAccessoryViewPlaceholder: UIView {
     @objc
     private func keyboardDidDismiss(_ notification: Notification) {
         keyboardState = .dismissed
-        //delegate?.inputAccessoryPlaceholderKeyboardDidDismiss()
+        delegate?.inputAccessoryPlaceholderKeyboardDidDismiss()
     }
     
     @objc

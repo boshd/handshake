@@ -20,154 +20,11 @@ import AVFoundation
 //}
 
 @objc
-final class InputContainerView: UIView {
-    
-//    private var keyboardState: KeyboardState = .dismissed
-    
-//    @objc
-//    public weak var delegate: InputContainerViewDelegate?
-    
-//    public enum KeyboardState: CustomStringConvertible {
-//        case dismissed
-//        case dismissing
-//        case presented
-//        case presenting(frame: CGRect)
-//
-//        public var description: String {
-//            switch self {
-//            case .dismissed:
-//                return "dismissed"
-//            case .dismissing:
-//                return "dismissing"
-//            case .presented:
-//                return "presented"
-//            case .presenting:
-//                return "presenting"
-//            }
-//        }
-//    }
-//
-//    /// The amount of the application frame that is overlapped
-//    /// by the keyboard.
-//    @objc
-//    public var keyboardOverlap: CGFloat {
-//        // Subtract our own height as this view is not actually
-//        // visible, but is represented in the keyboard.
-//
-//        let ownHeight = superview != nil ? desiredHeight : 0
-//
-//        return max(0, visibleKeyboardHeight - ownHeight)
-//    }
-//
-//    /// The height that the accessory view should take up. This is
-//    /// automatically subtracted from the keyboard overlap and is
-//    /// intended to represent the extent to which you want the
-//    /// accessory view to overlap the presenting view, primarily
-//    /// for the purpose of defining the start point for interactive
-//    /// dismissals.
-//    @objc
-//    public var desiredHeight: CGFloat {
-//        set {
-//            guard newValue != desiredHeight else { return }
-//            heightConstraint.constant = newValue
-//            UIView.performWithoutAnimation {
-//                heightConstraintView.layoutIfNeeded()
-//                self.layoutIfNeeded()
-//                superview?.layoutIfNeeded()
-//            }
-//        }
-//        get {
-//            return heightConstraint.constant
-//        }
-//    }
-//
-//    @objc
-//    weak var referenceView: UIView?
-//
-//    private var visibleKeyboardHeight: CGFloat {
-//        guard var keyboardFrame = transitioningKeyboardFrame ?? superview?.frame else { return 0 }
-//        guard keyboardFrame.height > 0 else { return 0 }
-//
-//        let referenceFrame: CGRect
-//
-//        if let referenceView = referenceView {
-//            keyboardFrame = referenceView.convert(keyboardFrame, from: nil)
-//            referenceFrame = referenceView.frame
-//            print("referenceView")
-//        } else {
-//            let keyWindow = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
-//            referenceFrame = keyWindow?.frame ?? .zero
-//        }
-//
-//        // Measure how much of the keyboard is currently offscreen.
-//        let offScreenHeight = keyboardFrame.maxY - referenceFrame.maxY
-//
-//        // The onscreen region represents the overlap.
-//        return max(0, keyboardFrame.height - offScreenHeight)
-//    }
-//
-//    private let heightConstraintView = UIView()
-//
-//    private lazy var heightConstraint: NSLayoutConstraint = {
-//        addSubview(heightConstraintView)
-//        //heightConstraintView.autoPinHeightToSuperview()
-//        return heightAnchor.constraint(equalToConstant: InputTextViewLayout.minHeight())
-//    }()
-//
-//    private var transitioningKeyboardFrame: CGRect? {
-//        switch keyboardState {
-//        case .dismissing:
-//            return .zero
-//        case .presenting(let frame):
-//            return frame
-//        default:
-//            return nil
-//        }
-//    }
+final class InputContainerView: BlurView {
     
     public init() {
         super.init(frame: .zero)
 
-//        autoresizingMask = .flexibleHeight
-//
-//        NotificationCenter.default.addObserver(
-//            self,
-//            selector: #selector(keyboardWillDismiss),
-//            name: UIResponder.keyboardWillHideNotification,
-//            object: nil
-//        )
-//        NotificationCenter.default.addObserver(
-//            self,
-//            selector: #selector(keyboardDidDismiss),
-//            name: UIResponder.keyboardDidHideNotification,
-//            object: nil
-//        )
-//        NotificationCenter.default.addObserver(
-//            self,
-//            selector: #selector(keyboardWillPresent),
-//            name: UIResponder.keyboardWillShowNotification,
-//            object: nil
-//        )
-//        NotificationCenter.default.addObserver(
-//            self,
-//            selector: #selector(keyboardDidPresent),
-//            name: UIResponder.keyboardDidShowNotification,
-//            object: nil
-//        )
-//
-//        // This is required to make the view grow vertically
-//        // self.autoresizingMask = UIView.AutoresizingMask.flexibleHeight
-//
-//        autoresizingMask = .flexibleHeight
-//
-//        // this is where the fram magic happens
-//
-//        NotificationCenter.default.addObserver(self, selector: #selector(inputViewResigned),
-//        name: .inputViewResigned, object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(inputViewResponded),
-//        name: .inputViewResponded, object: nil)
-////        addHeightConstraints()
-        
         addSubview(inputTextView)
         addSubview(sendButton)
         addSubview(placeholderLabel)
@@ -200,6 +57,8 @@ final class InputContainerView: UIView {
         } else {
             sendButton.rightAnchor.constraint(equalTo: rightAnchor, constant: -10).isActive = true
         }
+        
+        blurEffectView = UIVisualEffectView(effect: ThemeManager.currentTheme().tabBarBlurEffect)
 //
 //        let blurEffect = ThemeManager.currentTheme().tabBarBlurEffect
 //        let blurEffectView = UIVisualEffectView(effect: blurEffect)
@@ -208,7 +67,7 @@ final class InputContainerView: UIView {
 //
         
 //        self.blurEffectView = UIVisualEffectView(effect: ThemeManager.currentTheme().tabBarBlurEffect)
-        backgroundColor = ThemeManager.currentTheme().inputBarContainerViewBackgroundColor
+//        backgroundColor = ThemeManager.currentTheme().inputBarContainerViewBackgroundColor
         
 //        addSubview(blurEffectView)
         

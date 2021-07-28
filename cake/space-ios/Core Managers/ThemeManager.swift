@@ -330,7 +330,7 @@ enum Theme: Int {
     var imageViewBackground: UIColor {
         switch self {
             case .normal:
-                return .handshakeMediumGray
+                return .handshakeSecondaryLight
             case .dark:
                 return .offBlack()
         }
