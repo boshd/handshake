@@ -211,6 +211,7 @@ class MessagesFetcher: NSObject {
     }
 
     func preloadCellData(to dictionary: [String: AnyObject]) -> [String: AnyObject] {
+        print("PRELOAD CELL DATA")
         var dictionary = dictionary
         
         if let messageText = dictionary["text"] as? String {
@@ -283,5 +284,14 @@ class MessagesFetcher: NSObject {
                                                    options: options,
                                                    attributes: [NSAttributedString.Key.font: MessageFontsAppearance.defaultMessageTextFont],
                                                    context: nil).integral
+        
+//        //we make the height arbitrarily large so we don't undershoot height in calculation
+//        let height: CGFloat = 320
+//
+//        let size = CGSize(width: yourDesiredWidth, height: height)
+//        let options = NSStringDrawingOptions.UsesFontLeading.union(.UsesLineFragmentOrigin)
+//        let attributes = [NSFontAttributeName: UIFont.systemFontOfSize(18, weight: UIFontWeightLight)]
+//
+//        return NSString(string: text).boundingRectWithSize(size, options: options, attributes: attributes, context: nil)
     }
 }

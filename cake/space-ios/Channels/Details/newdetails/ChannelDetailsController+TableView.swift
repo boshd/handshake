@@ -59,12 +59,12 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if indexPath.section == 0 {
-            let cell = ChannelNameCell()
+            let cell = tableView.dequeueReusableCell(withIdentifier: channelNameCellId, for: indexPath) as? ChannelNameCell ?? ChannelNameCell()
             guard let channelName = channel?.name else { return cell }
             cell.textLabel?.text = channelName
             return cell
         } else if indexPath.section == 1 {
-            let cell = ChannelDetailsCell(style: .subtitle, reuseIdentifier: channelDetailsCellId)
+            let cell = tableView.dequeueReusableCell(withIdentifier: channelDetailsCellId, for: indexPath) as? ChannelDetailsCell ?? ChannelDetailsCell(style: .subtitle, reuseIdentifier: channelDetailsCellId)
             
             let startDate = Date(timeIntervalSince1970: Double(integerLiteral: (channel?.startTime.value ?? 0)))
             let endDate = Date(timeIntervalSince1970: Double(integerLiteral: (channel?.endTime.value ?? 0)))
@@ -94,7 +94,7 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
             cell.imageView?.tintColor = ThemeManager.currentTheme().generalTitleColor
             return cell
         } else if indexPath.section == 2 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: channelDescriptionCellId, for: indexPath) as? ChannelDescriptionCell ?? ChannelDescriptionCell()
+            let cell = tableView.dequeueReusableCell(withIdentifier: channelDescriptionCellId, for: indexPath) as? ChannelDescriptionCell ?? ChannelDescriptionCell(style: .subtitle, reuseIdentifier: channelDescriptionCellId)
             cell.textView.text = "No description available."
             guard let desc = channel?.description_ else { return cell }
             cell.textView.text = desc
@@ -107,7 +107,7 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
             return cell
         } else if indexPath.section == 3 {
             if let channelParticipantsCount = channel?.participantIds.count, isInitial && indexPath.row == attendees.count && initialNumberOfAttendees < channelParticipantsCount {
-                let cell = LoadMoreCell(style: .subtitle, reuseIdentifier: loadMoreCellId)
+                let cell = tableView.dequeueReusableCell(withIdentifier: loadMoreCellId, for: indexPath) as? LoadMoreCell ?? LoadMoreCell(style: .subtitle, reuseIdentifier: loadMoreCellId)
                 cell.textLabel?.text = "See more"
                 guard let channelParticipantsCount = channel?.participantIds.count else { return cell }
                 cell.textLabel?.text = "See \(channelParticipantsCount - attendees.count) more"
@@ -121,8 +121,7 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
                 return cell
             }
         } else {
-            let cell = LocationViewCell(style: .subtitle, reuseIdentifier: locationViewCellId)
-            
+            let cell = tableView.dequeueReusableCell(withIdentifier: locationViewCellId, for: indexPath) as? LocationViewCell ?? LocationViewCell(style: .subtitle, reuseIdentifier: channelDescriptionCellId)
             if let isRemote = channel?.isRemote.value, isRemote {
                 cell.locationView.removeFromSuperview()
                 cell.detailTextLabel?.text = "If you can't find any information regarding virtual meetings try reaching out to one of the event organizers."

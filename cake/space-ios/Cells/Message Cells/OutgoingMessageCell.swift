@@ -20,7 +20,7 @@ class OutgoingMessageCell: BaseMessageCell {
 
         textView.textColor = ThemeManager.currentTheme().outgoingMessageCellTextColor
         textView.backgroundColor = ThemeManager.currentTheme().outgoingMessageBackgroundColor
-        textView.font = ThemeManager.currentTheme().secondaryFont(with: IncomingMessageCell.messageTextSize)
+        
         return textView
     }()
 
@@ -63,6 +63,7 @@ class OutgoingMessageCell: BaseMessageCell {
                                                 BaseMessageCell.outgoingMessageHorisontalInsets,
                                                 frame.size.height)
         return portraitFrame.integral
+//        return CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
     }
     
     override func prepareForReuse() {

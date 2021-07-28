@@ -31,9 +31,11 @@ class ChannelLogContainerView: UIView {
     }()
 
     let collectionViewContainer: UIView = {
-        let collectionViewContainer = UIView()
-        collectionViewContainer.translatesAutoresizingMaskIntoConstraints = false
-        return collectionViewContainer
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .red
+        
+        return view
     }()
     
     let inputContainerSafeAreaView: UIView = {
@@ -44,20 +46,21 @@ class ChannelLogContainerView: UIView {
         return inputContainerSafeAreaView
     }()
     
-    let inputViewContainer: BlurView = {
-        let inputViewContainer = BlurView()
-        inputViewContainer.translatesAutoresizingMaskIntoConstraints = false
-        inputViewContainer.blurEffectView = UIVisualEffectView(effect: ThemeManager.currentTheme().tabBarBlurEffect)
-        inputViewContainer.backgroundColor = ThemeManager.currentTheme().inputBarContainerViewBackgroundColor
-        return inputViewContainer
-    }()
+//    let inputViewContainer: BlurView = {
+//        let inputViewContainer = BlurView()
+//        inputViewContainer.translatesAutoresizingMaskIntoConstraints = false
+//        inputViewContainer.blurEffectView = UIVisualEffectView(effect: ThemeManager.currentTheme().tabBarBlurEffect)
+//        inputViewContainer.backgroundColor = ThemeManager.currentTheme().inputBarContainerViewBackgroundColor
+//
+//        return inputViewContainer
+//    }()
     
     var refreshControl: UIRefreshControl = {
         var refreshControl = UIRefreshControl()
         refreshControl.transform = CGAffineTransform(scaleX: 0.7, y: 0.7)
         refreshControl.tintColor = .red
         refreshControl.addTarget(self, action: #selector(ChannelLogController.performRefresh), for: .valueChanged)
-      
+        
         return refreshControl
     }()
     
@@ -69,32 +72,32 @@ class ChannelLogContainerView: UIView {
     
     var headerHeightConstraint: NSLayoutConstraint?
     var headerTopConstraint: NSLayoutConstraint?
-    var bottomConstraint_: NSLayoutConstraint!
+//    var bottomConstraint_: NSLayoutConstraint!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-
+                
         backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         
         addSubview(collectionViewContainer)
-        addSubview(inputViewContainer)
+//        addSubview(inputViewContainer)
         addSubview(transparentView)
         addSubview(backgroundView)
         addSubview(channelLogHeaderView)
         
-//        channelLogHeaderView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
+        channelLogHeaderView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
         channelLogHeaderView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 7).isActive = true
         channelLogHeaderView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -7).isActive = true
-        headerHeightConstraint = channelLogHeaderView.heightAnchor.constraint(equalToConstant: 0) //65
+        headerHeightConstraint = channelLogHeaderView.heightAnchor.constraint(equalToConstant: 65) //65
         headerHeightConstraint?.isActive = true
         
-        headerTopConstraint = channelLogHeaderView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 5)
+        headerTopConstraint = channelLogHeaderView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 0)
         headerTopConstraint?.isActive = true
         
         backgroundView.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
         backgroundView.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
         backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        backgroundView.topAnchor.constraint(equalTo: inputViewContainer.bottomAnchor).isActive = true
+//        backgroundView.topAnchor.constraint(equalTo: inputViewContainer.bottomAnchor).isActive = true
         
         collectionViewContainer.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor).isActive = true
         if #available(iOS 11.0, *) {
@@ -105,14 +108,14 @@ class ChannelLogContainerView: UIView {
             collectionViewContainer.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
         }
 
-        if #available(iOS 11.0, *) {
-            inputViewContainer.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor).isActive = true
-            inputViewContainer.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor).isActive = true
-        } else {
-            inputViewContainer.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
-            inputViewContainer.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
-        }
-        bottomConstraint_ = inputViewContainer.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
+//        if #available(iOS 11.0, *) {
+//            inputViewContainer.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor).isActive = true
+//            inputViewContainer.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor).isActive = true
+//        } else {
+//            inputViewContainer.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
+//            inputViewContainer.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
+//        }
+//        bottomConstraint_ = inputViewContainer.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
         collectionViewContainer.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
 //        inputViewContainer.topAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor).isActive = true
     }
@@ -127,27 +130,27 @@ class ChannelLogContainerView: UIView {
     }
     
     func blockBottomConstraint(constant: CGFloat) {
-        bottomConstraint_.constant = constant
-        bottomConstraint_.isActive = true
+//        bottomConstraint_.constant = constant
+//        bottomConstraint_.isActive = true
     }
     
     func unblockBottomConstraint() {
-        bottomConstraint_.isActive = false
+//        bottomConstraint_.isActive = false
     }
     
-    func add(_ inputView: UIView) {
-        for subview in inputViewContainer.subviews
-        where subview is InputContainerView {
-            subview.removeFromSuperview()
-        }
-
-        inputView.translatesAutoresizingMaskIntoConstraints = false
-        inputViewContainer.addSubview(inputView)
-        inputView.topAnchor.constraint(equalTo: inputViewContainer.topAnchor).isActive = true
-        inputView.leftAnchor.constraint(equalTo: inputViewContainer.leftAnchor).isActive = true
-        inputView.rightAnchor.constraint(equalTo: inputViewContainer.rightAnchor).isActive = true
-        inputView.bottomAnchor.constraint(equalTo: inputViewContainer.bottomAnchor).isActive = true
-    }
+//    func add(_ inputView: UIView) {
+//        for subview in inputViewContainer.subviews
+//        where subview is InputContainerView {
+//            subview.removeFromSuperview()
+//        }
+//
+//        inputView.translatesAutoresizingMaskIntoConstraints = false
+//        inputViewContainer.addSubview(inputView)
+//        inputView.topAnchor.constraint(equalTo: inputViewContainer.topAnchor).isActive = true
+//        inputView.leftAnchor.constraint(equalTo: inputViewContainer.leftAnchor).isActive = true
+//        inputView.rightAnchor.constraint(equalTo: inputViewContainer.rightAnchor).isActive = true
+//        inputView.bottomAnchor.constraint(equalTo: inputViewContainer.bottomAnchor).isActive = true
+//    }
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!

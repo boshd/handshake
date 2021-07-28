@@ -161,7 +161,7 @@ extension ChannelLogController: ChannelManagerDelegate {
             messagesFetcher?.removeListener()
             self.inputContainerView.resignAllResponders()
             reloadInputViews()
-            reloadInputView(view: inputBlockerContainerView)
+            //reloadInputView(view: inputBlockerContainerView)
             
             channelLogContainerView.channelLogHeaderView.isUserInteractionEnabled = false
             channelLogContainerView.channelLogHeaderView.viewDetails.isHidden = true
@@ -170,7 +170,7 @@ extension ChannelLogController: ChannelManagerDelegate {
             handleTypingIndicatorAppearance(isEnabled: false)
             // removeSubtitleInGroupChat()
             reloadInputViews()
-            reloadInputView(view: inputBlockerContainerView)
+            //reloadInputView(view: inputBlockerContainerView)
             navigationItem.rightBarButtonItem?.isEnabled = false
             if typingIndicatorCollectionListener != nil {
                 typingIndicatorCollectionListener?.remove()

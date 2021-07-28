@@ -10,8 +10,6 @@ import UIKit
 import FirebaseDatabase
 import FirebaseAuth
 import Photos
-import AudioToolbox
-import SafariServices
 import RealmSwift
 import Firebase
 import AVFoundation
@@ -50,14 +48,13 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     private var localTyping = false
     public var isDismissingInteractively = false
     public var hasAppearedAndHasAppliedFirstLoad = false
+    public var canRefresh = true
     
     var groupedMessages = [MessageSection]()
     var typingIndicatorSection: [String] = []
     
     let contextMenuItems = [
-        ContextMenuItem(title: "Edit", index: 0),
-        ContextMenuItem(title: "Remove", index: 1),
-        ContextMenuItem(title: "Promote", index: 2)
+        ContextMenuItem(title: "Edit", index: 0)
     ]
     
     private var dayFormatter = DateFormatter()
@@ -72,6 +69,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     private let keyboardLayoutGuide = KeyboardLayoutGuide()
     public var channelLogContainerView = ChannelLogContainerView()
     public let realm = try! Realm(configuration: RealmKeychain.realmDefaultConfiguration())
+    public let inputAccessoryPlaceholder = InputAccessoryViewPlaceholder()
     
     public var keyboardHeight = CGFloat()
     
@@ -100,24 +98,38 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         -collectionView.adjustedContentInset.top
     }
     
-    lazy var inputContainerView: InputContainerView = {
-        var inputContainerView = InputContainerView()
-        inputContainerView.channelLogController = self
-        inputContainerView.delegate = self
-
-        return inputContainerView
-    }()
-    
-    private var collectionViewLoaded = false {
-        didSet {
-            if collectionViewLoaded && shouldScrollToBottom && !oldValue {
-                print("scrollToBottom")
-                scrollToBottom(animated: false)
-//                let newContentOffset = CGPoint(x: 0, y: maxContentOffsetY + inputContainerView.desiredHeight + view.safeAreaInsets.bottom)
-//                collectionView.setContentOffset(newContentOffset, animated: false)
+    var isTyping: Bool {
+        get {
+            return localTyping
+        }
+        set {
+            localTyping = newValue
+            guard let currentUserID = Auth.auth().currentUser?.uid else { return }
+            let typingData: NSDictionary = [currentUserID: newValue]
+            if localTyping {
+                sendTypingStatus(data: typingData)
+            } else {
+                guard let channelID = channel?.id else { return }
+                Firestore.firestore().collection("channels").document(channelID).collection("typingUserIds").document(currentUserID).delete()
             }
         }
     }
+    
+    let bottomBarContainer: UIView = {
+        let inputViewContainer = UIView()
+        inputViewContainer.translatesAutoresizingMaskIntoConstraints = false
+//        inputViewContainer.blurEffectView = UIVisualEffectView(effect: ThemeManager.currentTheme().tabBarBlurEffect)
+        inputViewContainer.backgroundColor = .green
+        
+        return inputViewContainer
+    }()
+    
+    lazy var inputContainerView: InputContainerView = {
+        var inputContainerView = InputContainerView()
+        inputContainerView.channelLogController = self
+        //inputContainerView.delegate = self
+        return inputContainerView
+    }()
     
     lazy var inputBlockerContainerView: InputBlockerContainerView = {
         var inputBlockerContainerView = InputBlockerContainerView()
@@ -126,9 +138,36 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
 
         return inputBlockerContainerView
     }()
+    
+    override var inputAccessoryView: UIView? {
+        get {
+            print("inputAccessoryView")
+            // This getter is being called twice, it might be because this is an overridden computed property.
+            return inputAccessoryPlaceholder
+        }
+    }
+    
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+    
+    override var canResignFirstResponder: Bool {
+        return true
+    }
+    
+    private var collectionViewLoaded = false {
+        didSet {
+            if collectionViewLoaded && shouldScrollToBottom && !oldValue {
+                scrollToBottom(animated: false)
+            }
+        }
+    }
 
     lazy var collectionView: ChannelCollectionView = {
         let collectionView = ChannelCollectionView()
+        
+        //collectionView.chatLayout.delegate = self
+        
         collectionView.isUserInteractionEnabled = true
         collectionView.allowsSelection = false
         collectionView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
@@ -152,17 +191,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         return bottomScrollContainer
     }()
     
-    override var inputAccessoryView: UIView? {
-        get {
-            print("inputAccessoryView", inputContainerView.frame.height)
-            return inputContainerView
-        }
-    }
-    
-    override var canBecomeFirstResponder: Bool {
-        return true
-    }
-    
     // MARK: - Controller Lifecycle
     
     override func loadView() {
@@ -172,6 +200,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("viewDidLoad \(collectionView.contentSize)")
         setupBottomScrollButton()
         setupHeaderView()
         addObservers()
@@ -180,6 +209,8 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     private func createContents() {
+        self.inputAccessoryPlaceholder.delegate = self
+        
         // We use the root view bounds as the initial frame for the collection
         // view so that its contents can be laid out immediately.
         //
@@ -197,7 +228,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
 
         // To minimize time to initial apearance, we initially disable prefetching, but then
         // re-enable it once the view has appeared.
-        self.collectionView.isPrefetchingEnabled = false
+//        self.collectionView.isPrefetchingEnabled = false
         
         channelLogHistoryFetcher.delegate = self
         channelManager.delegate = self
@@ -211,13 +242,21 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
             navigationItem.largeTitleDisplayMode = .never
         }
 
-        // configureRefreshControlInitialTintColor()
+         configureRefreshControlInitialTintColor()
     }
-    
+    func scrollToBottom(animated: Bool) {
+        view.layoutIfNeeded()
+        collectionView.setContentOffset(bottomOffset(), animated: animated)
+    }
+     
+    func bottomOffset() -> CGPoint {
+        return CGPoint(x: 0, y: max(-collectionView.contentInset.top, collectionView.contentSize.height - (collectionView.bounds.size.height - collectionView.contentInset.bottom - 20)))
+    }
     override func viewWillAppear(_ animated: Bool) {
+        print("viewWillAppear \(collectionView.contentSize)")
         super.viewWillAppear(animated)
         becomeFirstResponder()
-        
+//        scrollToBottom(animated: false)
         guard let channelParticipants = channel?.participantIds else { return }
         
         if let uid = Auth.auth().currentUser?.uid,
@@ -230,20 +269,21 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        print("viewDidAppear \(collectionView.contentSize)")
         self.hasAppearedAndHasAppliedFirstLoad = true
         
-        self.collectionView.isPrefetchingEnabled = true
+//        self.collectionView.isPrefetchingEnabled = true
         self.shouldAnimateKeyboardChanges = true
         
-        unblockInputViewConstraints()
-        
-        if savedContentOffset != nil {
-            UIView.performWithoutAnimation { [weak self] in
-                guard let unwrappedSelf = self else { return }
-                unwrappedSelf.view.layoutIfNeeded()
-                unwrappedSelf.collectionView.contentOffset = unwrappedSelf.savedContentOffset
-            }
-        }
+        //unblockInputViewConstraints()
+//        
+//        if savedContentOffset != nil {
+//            UIView.performWithoutAnimation { [weak self] in
+//                guard let unwrappedSelf = self else { return }
+//                unwrappedSelf.view.layoutIfNeeded()
+//                unwrappedSelf.collectionView.contentOffset = unwrappedSelf.savedContentOffset
+//            }
+//        }
         
         setupHeaderView()
         
@@ -297,7 +337,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         // this can get run multiple time when you drag to go back from details controller,
         // but change your mind multiple times
         
-        blockInputViewConstraints()
+        //blockInputViewConstraints()
         savedContentOffset = collectionView.contentOffset
         
         if let navigationBarTitleGestureRecognizer = navigationBarTitleGestureRecognizer {
@@ -312,16 +352,16 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         
     }
     
-    // MARK: - skmclsmf
+    // MARK: - Misc.
     
-    func scrollToBottom(animated: Bool) {
-        let newContentOffset = CGPoint(x: 0, y: maxContentOffsetY)
-        collectionView.setContentOffset(newContentOffset, animated: animated)
-    }
+//    func scrollToBottom(animated: Bool) {
+//        let newContentOffset = CGPoint(x: 0, y: maxContentOffsetY)
+//        collectionView.setContentOffset(newContentOffset, animated: animated)
+//    }
     
     /// fixes bug of not setting refresh control tint color on initial refresh
     fileprivate func configureRefreshControlInitialTintColor() {
-//        collectionView.contentOffset = CGPoint(x: 0, y: -refreshControl.frame.size.height)
+        collectionView.contentOffset = CGPoint(x: 0, y: -refreshControl.frame.size.height)
         refreshControl.beginRefreshing()
         refreshControl.endRefreshing()
     }
@@ -335,25 +375,28 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     public override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
-        updateContentInsets(animated: false)
+        print("viewSafeAreaInsetsDidChange \(collectionView.contentSize)")
+        // updateContentInsets(animated: false)
+//        scrollToBottom(animated: false)
     }
     
     override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         
         if let observedObject = object as? ChannelCollectionView, observedObject == collectionView {
+            print("observeValue")
             collectionViewLoaded = true
             collectionView.removeObserver(self, forKeyPath: "contentSize")
         }
         
     }
     
-    public func inputAccessoryPlaceholderKeyboardIsDismissingInteractively() {
-
-        // No animation, just follow along with the keyboard.
-        self.isDismissingInteractively = true
-        print("inputAccessoryPlaceholderKeyboardIsDismissingInteractively")
-        self.isDismissingInteractively = false
-    }
+//    public func inputAccessoryPlaceholderKeyboardIsDismissingInteractively() {
+//
+//        // No animation, just follow along with the keyboard.
+//        self.isDismissingInteractively = true
+//        print("inputAccessoryPlaceholderKeyboardIsDismissingInteractively")
+//        self.isDismissingInteractively = false
+//    }
     
     @objc private func instantMoveToBottom() {
         hapticFeedback(style: .impact)
@@ -379,17 +422,17 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         navigationController?.pushViewController(destination, animated: true)
     }
     
-    func configureCellContextMenuView() -> FTConfiguration {
-        let config = FTConfiguration()
-        config.backgoundTintColor = UIColor(red: 0.15, green: 0.15, blue: 0.15, alpha: 1.0)
-        config.borderColor = UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 0.0)
-        config.menuWidth = 100
-        config.menuSeparatorColor = .clear
-        config.menuRowHeight = 40
-        config.cornerRadius = 25
-        config.textAlignment = .center
-        return config
-    }
+//    func configureCellContextMenuView() -> FTConfiguration {
+//        let config = FTConfiguration()
+//        config.backgoundTintColor = UIColor(red: 0.15, green: 0.15, blue: 0.15, alpha: 1.0)
+//        config.borderColor = UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 0.0)
+//        config.menuWidth = 100
+//        config.menuSeparatorColor = .clear
+//        config.menuRowHeight = 40
+//        config.cornerRadius = 25
+//        config.textAlignment = .center
+//        return config
+//    }
     
     func getMessages() {
         let dates = channel!.messages.map({ $0.shortConvertedTimestamp ?? "" })
@@ -441,14 +484,13 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
 
         if let uid = Auth.auth().currentUser?.uid,
            channel.participantIds.contains(uid) {
-//            view.add(inputContainerView)
-//            inputAccessoryView = inputContainerView
+            inputAccessoryPlaceholder.add(inputContainerView)
             channelLogContainerView.channelLogHeaderView.isUserInteractionEnabled = true
             channelLogContainerView.channelLogHeaderView.viewDetails.isHidden = false
             navigationBarTitleGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(goToChannelDetails))
         } else {
             messagesFetcher?.removeListener()
-//            view.add(inputBlockerContainerView)
+            inputAccessoryPlaceholder.add(inputBlockerContainerView)
             if let navigationBarTitleGestureRecognizer = navigationBarTitleGestureRecognizer {
                 self.navigationController?.navigationBar.removeGestureRecognizer(navigationBarTitleGestureRecognizer)
             }
@@ -458,52 +500,52 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         self.view = view
     }
 
-    func reloadInputView(view: UIView) {
-        if let currentView = self.view as? ChannelLogContainerView {
-            DispatchQueue.main.async {
-                currentView.add(view)
-            }
-        }
-    }
+//    func reloadInputView(view: UIView) {
+////        if let currentView = self.view as? ChannelLogContainerView {
+////            DispatchQueue.main.async {
+////                currentView.add(view)
+////            }
+////        }
+//    }
     
-    private func setupInputView() {
-        guard let view = view as? ChannelLogContainerView else {
-            fatalError("Root view is not ChannelLogContainerView")
-        }
-//        view.addLayoutGuide(keyboardLayoutGuide)
-        
-        if #available(iOS 13.0, *) {
-            let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
-            if let bottom = window?.safeAreaInsets.bottom {
-                view.inputViewContainer.bottomAnchor.constraint(equalTo: keyboardLayoutGuide.topAnchor, constant: 0).isActive = true
-            }
-        } else {
-            view.inputViewContainer.bottomAnchor.constraint(equalTo: keyboardLayoutGuide.topAnchor).isActive = true
-        }
-    }
-    
-    func blockInputViewConstraints() {
-        guard let view = view as? ChannelLogContainerView else { return }
-        if let constant = keyboardLayoutGuide.topConstant {
-            if inputContainerView.inputTextView.isFirstResponder {
-                if #available(iOS 13.0, *) {
-                    let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
-                    if let bottom = window?.safeAreaInsets.bottom {
-                        view.blockBottomConstraint(constant: -constant + bottom)
-                    }
-                } else {
-                    view.blockBottomConstraint(constant: -constant)
-                }
-
-                view.layoutIfNeeded()
-            }
-        }
-    }
-
-    func unblockInputViewConstraints() {
-        guard let view = view as? ChannelLogContainerView else { return }
-        view.unblockBottomConstraint()
-    }
+//    private func setupInputView() {
+//        guard let view = view as? ChannelLogContainerView else {
+//            fatalError("Root view is not ChannelLogContainerView")
+//        }
+////        view.addLayoutGuide(keyboardLayoutGuide)
+//
+//        if #available(iOS 13.0, *) {
+//            let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
+//            if let bottom = window?.safeAreaInsets.bottom {
+////                view.inputViewContainer.bottomAnchor.constraint(equalTo: keyboardLayoutGuide.topAnchor, constant: 0).isActive = true
+//            }
+//        } else {
+////            view.inputViewContainer.bottomAnchor.constraint(equalTo: keyboardLayoutGuide.topAnchor).isActive = true
+//        }
+//    }
+//
+//    func blockInputViewConstraints() {
+//        guard let view = view as? ChannelLogContainerView else { return }
+//        if let constant = keyboardLayoutGuide.topConstant {
+//            if inputContainerView.inputTextView.isFirstResponder {
+//                if #available(iOS 13.0, *) {
+//                    let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
+//                    if let bottom = window?.safeAreaInsets.bottom {
+//                        view.blockBottomConstraint(constant: -constant + bottom)
+//                    }
+//                } else {
+//                    view.blockBottomConstraint(constant: -constant)
+//                }
+//
+//                view.layoutIfNeeded()
+//            }
+//        }
+//    }
+//
+//    func unblockInputViewConstraints() {
+//        guard let view = view as? ChannelLogContainerView else { return }
+//        view.unblockBottomConstraint()
+//    }
     
     @objc func closeChatLog() {
         channelLogPresenter.tryDeallocate(force: true)
@@ -541,22 +583,21 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         bottomScrollConainer.translatesAutoresizingMaskIntoConstraints = false
         bottomScrollConainer.widthAnchor.constraint(equalToConstant: 40).isActive = true
         bottomScrollConainer.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        
+//        if let view = inputAccessoryView {
+//            bottomScrollConainer.centerXAnchor.constraint(equalTo: view.centerXAnchor,
+//            constant: 0).isActive = true
+//            bottomScrollConainer.bottomAnchor.constraint(equalTo:  view.topAnchor,
+//            constant: -10).isActive = true
+//        }
 
-        guard let view = view as? ChannelLogContainerView else {
-            fatalError("Root view is not ChatLogContainerView")
-        }
-
-        bottomScrollConainer.centerXAnchor.constraint(equalTo: view.inputViewContainer.centerXAnchor,
-        constant: 0).isActive = true
-        bottomScrollConainer.bottomAnchor.constraint(equalTo: view.inputViewContainer.topAnchor,
-        constant: -10).isActive = true
     }
     
     fileprivate func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleThemeChange), name: .themeUpdated, object: nil)
     }
     
-    fileprivate func resetBadgeForSelf() {
+    func resetBadgeForSelf() {
         guard let unwrappedChannel = channel else { return }
         let channelObject = ThreadSafeReference(to: unwrappedChannel)
         guard let channel = realm.resolve(channelObject) else { return }
@@ -602,286 +643,14 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         }
     }
     
-    // MARK: - DATABASE TYPING INDICATOR // TO MOVE
-
-    var isTyping: Bool {
-        get {
-            return localTyping
-        }
-        set {
-            localTyping = newValue
-            guard let currentUserID = Auth.auth().currentUser?.uid else { return }
-            let typingData: NSDictionary = [currentUserID: newValue]
-            if localTyping {
-                sendTypingStatus(data: typingData)
-            } else {
-                guard let channelID = channel?.id else { return }
-                Firestore.firestore().collection("channels").document(channelID).collection("typingUserIds").document(currentUserID).delete()
-            }
-        }
+    @objc func pleasePopController() {
+        navigationController?.popViewController(animated: true)
     }
-    
-    func sendTypingStatus(data: NSDictionary) {
-        guard let currentUserID = Auth.auth().currentUser?.uid,
-              let channelID = channel?.id
-        else { return }
-        Firestore.firestore().collection("channels").document(channelID).collection("typingUserIds").document(currentUserID).setData(data as! [String : Any], merge: true)
-    }
-    
-    func observeTypingIndicator() {
-        guard let currentUserID = Auth.auth().currentUser?.uid,
-              let channelID = channel?.id
-        else { return }
-        
-        typingIndicatorCollectionListener = Firestore.firestore().collection("channels").document(channelID).collection("typingUserIds").addSnapshotListener { (snapshot, error) in
-            if error != nil {
-                print(error?.localizedDescription ?? "error")
-                self.handleTypingIndicatorAppearance(isEnabled: false)
-                return
-            }
-            
-            guard let empty = snapshot?.isEmpty else { return }
-            
-            if empty {
-                self.handleTypingIndicatorAppearance(isEnabled: false)
-            }
-            
-            snapshot?.documentChanges.forEach({ (change) in
-                if change.type == .added {
-                    if change.document.documentID != currentUserID {
-                        self.handleTypingIndicatorAppearance(isEnabled: true)
-                    }
-                    
-                }
-                if change.type == .removed {
-                    if let count = snapshot?.documents.count, count < 1 {
-                        self.handleTypingIndicatorAppearance(isEnabled: false)
-                    }
-                }
-            })
-            
-        }
-    }
-    
-    func handleTypingIndicatorAppearance(isEnabled: Bool) {
-        if isEnabled {
-            guard collectionView.numberOfSections == groupedMessages.count else { return }
-            hapticFeedback(style: .selectionChanged)
-            self.typingIndicatorSection = ["TypingIndicator"]
-            self.collectionView.performBatchUpdates ({
-                self.collectionView.insertSections([groupedMessages.count])
-            }, completion: { (isCompleted) in
-                if self.isScrollViewAtTheBottom() {
-                    if self.collectionView.contentSize.height < self.collectionView.bounds.height {
-                        return
-                    }
-                    self.scrollToBottom(animated: true)
-                }
-            })
-        } else {
-            guard collectionView.numberOfSections == groupedMessages.count + 1 else { return }
-            self.collectionView.performBatchUpdates ({
-                self.typingIndicatorSection.removeAll()
-
-                if self.collectionView.numberOfSections > groupedMessages.count {
-                    self.collectionView.deleteSections([groupedMessages.count])
-
-                    guard let cell = self.collectionView.cellForItem(at: IndexPath(item: 0, section: groupedMessages.count)) as? TypingIndicatorCell else {
-                        return
-                    }
-                    cell.typingIndicator.stopAnimating()
-                    if isScrollViewAtTheBottom() {
-                        self.scrollToBottom(animated: true)
-                    }
-                }
-            }, completion: nil)
-        }
-    }
-    
-    // MARK: - DATABASE MESSAGE STATUS
-    func updateMessageStatus(messageRef: DocumentReference) {
-        guard let uid = Auth.auth().currentUser?.uid, currentReachabilityStatus != .notReachable else { return }
-        var senderID: String?
-        
-        messageRef.getDocument { (snapshot, error) in
-            guard error == nil else { print(error?.localizedDescription ?? "error"); return }
-            
-            guard let data = snapshot?.data() else { return }
-            
-            senderID = data["fromId"] as? String
-            
-            guard uid != senderID,
-                  (UIApplication.topViewController() is ChannelLogController ||
-                    UIApplication.topViewController() is ChannelDetailsController ||
-                    UIApplication.topViewController() is ParticipantsController ||
-//                    UIApplication.topViewController() is UpdateChannelController ||
-                    UIApplication.topViewController() is INSPhotosViewController ||
-                    UIApplication.topViewController() is SFSafariViewController)
-            else { senderID = nil; return }
-            messageRef.updateData([
-                "seen": true,
-                "status": messageStatusRead
-            ]) { (error) in
-                if error != nil {
-                    print(error?.localizedDescription ?? "error")
-                }
-                self.resetBadgeForSelf()
-            }
-        }
-    }
-    
-    func updateMessageStatusUI(sentMessage: Message) {
-        guard let messageToUpdate = channel?.messages.filter("messageUID == %@", sentMessage.messageUID ?? "").first else { return }
-        try! realm.safeWrite {
-            messageToUpdate.status = sentMessage.status
-            let section = collectionView.numberOfSections - 1
-            if section >= 0 {
-                let index = self.collectionView.numberOfItems(inSection: section) - 1
-                if index >= 0 {
-                    UIView.performWithoutAnimation { [weak self] in
-                        self?.collectionView.reloadItems(at: [IndexPath(item: index, section: section)] )
-                    }
-                }
-            }
-        }
-        guard sentMessage.status == messageStatusDelivered,
-        messageToUpdate.messageUID == self.groupedMessages.last?.messages.last?.messageUID,
-        userDefaults.currentBoolObjectState(for: userDefaults.inAppSounds) else { return }
-        SystemSoundID.playFileNamed(fileName: "sent", withExtenstion: "caf")
-        
-//        AudioServicesPlaySystemSound (1004)
-    }
-    
-    // MARK: - Title view
     
     func setupTitle() {
         if let title = channel?.name {
             navigationItem.setTitle(title: title, subtitle: "Tap for more information")
         }
-    }
-
-    // MARK: Scroll view
-    func isScrollViewAtTheBottom() -> Bool {
-        if collectionView.contentOffset.y >= (collectionView.contentSize.height - collectionView.frame.size.height - 450) {
-            return true
-        }
-        return false
-    }
-
-    private var canRefresh = true
-
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if isScrollViewAtTheBottom() {
-            DispatchQueue.main.async {
-                self.bottomScrollConainer.isHidden = true
-            }
-        } else {
-            DispatchQueue.main.async {
-                self.bottomScrollConainer.isHidden = false
-            }
-        }
-
-        if scrollView.contentOffset.y <= 0 { //change 100 to whatever you want
-            if collectionView.contentSize.height < UIScreen.main.bounds.height - 50 {
-                canRefresh = false
-            }
-
-            if canRefresh && !refreshControl.isRefreshing {
-                canRefresh = false
-                refreshControl.beginRefreshing()
-                performRefresh()
-            }
-        } else if scrollView.contentOffset.y >= 0 {
-            canRefresh = true
-        }
-    }
-    
-    // MARK: Messages sending
-    @objc func sendMessage() {
-        hapticFeedback(style: .impact)
-        guard currentReachabilityStatus != .notReachable else {
-            basicErrorAlertWith(title: basicErrorTitleForAlert, message: noInternetError, controller: self)
-            return
-        }
-        isTyping = false
-        let text = inputContainerView.inputTextView.text
-        inputContainerView.prepareForSend()
-        guard let channel = self.channel else { return }
-//        scrollToBottom(animated: true)
-        let messageSender = MessageSender(realmChannel(from: channel), text: text)
-        messageSender.delegate = self
-        messageSender.sendMessage()
-    }
-    
-    @objc func presentResendActions(_ sender: UIButton) {
-        let controller = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        let resendAction = UIAlertAction(title: "Resend", style: .default) { (action) in
-            self.resendMessage(sender)
-        }
-
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        controller.addAction(resendAction)
-        controller.addAction(cancelAction)
-
-//        inputContainerView.resignAllResponders()
-        controller.modalPresentationStyle = .overCurrentContext
-        present(controller, animated: true, completion: nil)
-    }
-    
-    fileprivate func resendMessage(_ sender: UIButton) {
-        let point = collectionView.convert(CGPoint.zero, from: sender)
-        guard let indexPath = collectionView.indexPathForItem(at: point) else { return }
-        guard let channel = self.channel else { return }
-        let message = groupedMessages[indexPath.section].messages[indexPath.row]
-
-        guard currentReachabilityStatus != .notReachable else {
-            basicErrorAlertWith(title: basicErrorTitleForAlert, message: noInternetError, controller: self)
-            return
-        }
-        isTyping = false
-//        inputContainerView.prepareForSend()
-        resendTextMessage(channel, message.text, at: indexPath)
-    }
-
-    fileprivate func resendTextMessage(_ channel: Channel, _ text: String?, at indexPath: IndexPath) {
-        handleResend(channel: channel, text: text, indexPath: indexPath)
-    }
-    
-    fileprivate func handleResend(channel: Channel, text: String?, indexPath: IndexPath) {
-        let messageSender = MessageSender(channel, text: text)
-        messageSender.delegate = self
-        messageSender.sendMessage()
-
-        deleteLocalMessage(at: indexPath)
-    }
-    
-    fileprivate func deleteLocalMessage(at indexPath: IndexPath) {
-        let message = groupedMessages[indexPath.section].messages[indexPath.row]
-        try! realm.safeWrite {
-            guard let object = realm.object(ofType: Message.self, forPrimaryKey: message.messageUID ?? "") else { return }
-            realm.delete(object)
-
-            collectionView.performBatchUpdates({
-                collectionView.deleteItems(at: [indexPath])
-            }, completion: nil)
-        }
-    }
-    
-    fileprivate func realmChannel(from channel: Channel) -> Channel {
-        guard realm.objects(Channel.self).filter("id == %@", channel.id ?? "").first == nil else { return channel }
-        try! realm.safeWrite {
-            realm.create(Channel.self, value: channel, update: .modified)
-        }
-
-        let newChannel = realm.objects(Channel.self).filter("id == %@", channel.id ?? "").first
-        self.channel = newChannel
-        return newChannel ?? channel
-    }
-    
-    // MARK: - Misc.
-    
-    @objc func pleasePopController() {
-        navigationController?.popViewController(animated: true)
     }
     
 }

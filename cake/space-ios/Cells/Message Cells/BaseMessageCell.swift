@@ -84,7 +84,7 @@ class BaseMessageCell: UICollectionViewCell {
     lazy var bubbleView: UIView = {
         let view = UIView()
         view.isUserInteractionEnabled = true
-        view.cornerRadius = 10
+        view.cornerRadius = 15
         view.layer.cornerCurve = .continuous
         view.backgroundColor = .cyan
 
@@ -171,6 +171,9 @@ class BaseMessageCell: UICollectionViewCell {
         backgroundColor = .clear
         contentView.backgroundColor = .clear
         contentView.addSubview(bubbleView)
+        layer.cornerRadius = 15
+//        layer.cornerCurve = .continuous
+        clipsToBounds = true
 //        bubbleView.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(handleLongTap(_:))))
     }
 
@@ -180,6 +183,8 @@ class BaseMessageCell: UICollectionViewCell {
         timeLabel.backgroundColor = .clear
         backgroundColor = .clear
         contentView.backgroundColor = .clear
+        //layer.cornerRadius = 15
+//        layer.cornerCurve = .continuous
     }
 
     override func prepareForReuse() {

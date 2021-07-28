@@ -8,26 +8,82 @@
 
 import UIKit
 
-extension ChannelLogController: InputContainerViewDelegate {
-    func inputContainerViewKeyboardIsPresenting(animationDuration: TimeInterval, animationCurve: UIView.AnimationCurve) {
+extension ChannelLogController: InputAccessoryViewPlaceholderDelegate {
+    
+    func inputAccessoryPlaceholderKeyboardDidChangeFrame(beginFrame: CGRect, endFrame: CGRect, animationDuration: TimeInterval, animationCurve: UIView.AnimationCurve) {
+        print("beginFrame", beginFrame)
+        print("endFrame", endFrame)
         handleKeyboardStateChange(animationDuration: animationDuration,
                                   animationCurve: animationCurve)
     }
+
+    func inputAccessoryPlaceholderKeyboardIsPresenting(animationDuration: TimeInterval, animationCurve: UIView.AnimationCurve, beginFrame: CGRect, endFrame: CGRect) {
+        print("isPresenting")
+        //handleKeyboardStateChange(animationDuration: animationDuration, animationCurve: animationCurve)
+        animateHeaderView(shouldCollapse: true, animationDuration: animationDuration, animationCurve: animationCurve)
+        adjustContentForKeyboard(animationDuration: animationDuration, animationCurve: animationCurve, beginFrame: beginFrame, endFrame: endFrame, shown: true)
+    }
     
-    func inputContainerViewKeyboardDidPresent() {
+    func inputAccessoryPlaceholderKeyboardDidPresent() {
+        print("didPresent")
         updateContentInsets(animated: false)
     }
     
-    func inputContainerViewKeyboardIsDismissing(animationDuration: TimeInterval, animationCurve: UIView.AnimationCurve) {
-        handleKeyboardStateChange(animationDuration: animationDuration,
-                                  animationCurve: animationCurve)
+    func inputAccessoryPlaceholderKeyboardIsDismissing(animationDuration: TimeInterval, animationCurve: UIView.AnimationCurve, beginFrame: CGRect, endFrame: CGRect) {
+        //handleKeyboardStateChange(animationDuration: animationDuration, animationCurve: animationCurve)
+        animateHeaderView(shouldCollapse: false, animationDuration: animationDuration, animationCurve: animationCurve)
+        adjustContentForKeyboard(animationDuration: animationDuration, animationCurve: animationCurve, beginFrame: beginFrame, endFrame: endFrame, shown: false)
     }
     
-    func inputContainerViewKeyboardDidDismiss() {
+    func inputAccessoryPlaceholderKeyboardDidDismiss() {
         updateContentInsets(animated: false)
     }
     
-    func inputContainerViewKeyboardIsDismissingInteractively() {
+    func inputAccessoryPlaceholderKeyboardIsDismissingInteractively() {}
+    
+    
+    func adjustContentForKeyboard(animationDuration: TimeInterval, animationCurve: UIView.AnimationCurve, beginFrame: CGRect, endFrame: CGRect, shown: Bool) {
+//       guard shouldAdjustForKeyboard else { return }
+    
+       let keyboardHeight = shown ? endFrame.size.height : inputAccessoryPlaceholder.bounds.size.height
+       if collectionView.contentInset.bottom == keyboardHeight {
+           return
+       }
+    
+       let distanceFromBottom = bottomOffset().y - collectionView.contentOffset.y
+    
+       var insets = collectionView.contentInset
+       insets.bottom = keyboardHeight
+    
+       UIView.animate(withDuration: animationDuration, animations: {
+    
+           self.collectionView.contentInset = insets
+           self.collectionView.scrollIndicatorInsets = insets
+    
+           if distanceFromBottom < 10 {
+               self.collectionView.contentOffset = self.bottomOffset()
+           }
+       }, completion: nil)
+   }
+    
+    func animateHeaderView(shouldCollapse: Bool, animationDuration: TimeInterval, animationCurve: UIView.AnimationCurve) {
+        if shouldCollapse {
+            channelLogContainerView.headerTopConstraint?.constant = -75
+//            channelLogContainerView.headerHeightConstraint?.constant = 0
+        } else {
+            if channelLogContainerView.headerTopConstraint?.constant == -75 {
+                channelLogContainerView.headerTopConstraint?.constant = 10
+            }
+        }
+        
+        //UIView.animate(withDuration: 0.1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+        //    self.view.layoutIfNeeded()
+        //}, completion: nil)
+        
+        UIView.animate(withDuration: animationDuration) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
+        
     }
     
     private func handleKeyboardStateChange(animationDuration: TimeInterval,
@@ -57,6 +113,7 @@ extension ChannelLogController: InputContainerViewDelegate {
             return
         }
         if let interactivePopGestureRecognizer = navigationController.interactivePopGestureRecognizer {
+            print("interactivePopGestureRecognizer.state", interactivePopGestureRecognizer.state.rawValue)
             switch interactivePopGestureRecognizer.state {
             case .possible, .failed:
                 break
@@ -70,10 +127,10 @@ extension ChannelLogController: InputContainerViewDelegate {
         let oldInsets = collectionView.contentInset
         var newInsets = oldInsets
 
-        let keyboardOverlap = inputContainerView.keyboardOverlap
-        newInsets.bottom = (keyboardOverlap + inputContainerView.frame.height - view.safeAreaInsets.bottom)
+        let keyboardOverlap = inputAccessoryPlaceholder.keyboardOverlap
+        newInsets.bottom = (keyboardOverlap)
         // TODO:
-        // newInsets.top = messageActionsExtraContentInsetPadding + (bannerView?.height ?? 0)
+//         newInsets.top = messageActionsExtraContentInsetPadding + (bannerView?.height ?? 0)
 
          let wasScrolledToBottom = self.isScrollViewAtTheBottom()
 
@@ -99,9 +156,9 @@ extension ChannelLogController: InputContainerViewDelegate {
             // If content inset didn't change, no need to update content offset.
         } else if !hasAppearedAndHasAppliedFirstLoad {
             // Do nothing.
-//        } else if wasScrolledToBottom {
-            // If we were scrolled to the bottom, don't do any fancy math. Just stay at the bottom.
-//            scrollToBottom(animated: false)
+        } else if wasScrolledToBottom {
+             // If we were scrolled to the bottom, don't do any fancy math. Just stay at the bottom.
+            scrollToBottom(animated: false)
         } else {
             // If we were scrolled away from the bottom, shift the content in lockstep with the
             // keyboard, up to the limits of the content bounds.
@@ -127,76 +184,6 @@ extension ChannelLogController: InputContainerViewDelegate {
                 print(collectionView.contentOffset)
             }
         }
-    }
-    
-    @objc
-    public func updateContentInsets_(animated: Bool) {
-        
-        view.layoutIfNeeded()
-        
-        let oldInsets = collectionView.contentInset
-        var newInsets = oldInsets
-
-        // if keyboard is collapsed, inputContainerView.frame.height will include
-        // bottom safe area inset.
-        
-        
-        newInsets.bottom = (keyboardHeight + inputContainerView.frame.height)
-        
-        print("keyboardHeight", keyboardHeight)
-        
-        //newInsets.bottom = inputContainerView.frame.height
-        
-        // we'll figure this part out later
-        // if isChannelLogHeaderShowing {
-        //     newInsets.top = channelLogContainerView.channelLogHeaderView.frame.height
-        // }
-        
-        // (collectionView.contentSize.height - collectionView.bounds.size.height) + (collectionView.contentInset.bottom) + view.safeAreaInsets.bottom)
-
-        // Changing the contentInset can change the contentOffset, so make sure we
-        // stash the current value before making any changes.
-        let oldYOffset = collectionView.contentOffset.y
-
-        let didChangeInsets = oldInsets != newInsets
-        
-        // CONTENT INSETTING
-        UIView.performWithoutAnimation {
-            if didChangeInsets {
-                let contentOffset = collectionView.contentOffset
-                self.collectionView.contentInset = newInsets
-                //self.collectionView.setContentOffset(contentOffset, animated: false)
-                self.collectionView.contentOffset.y = (collectionView.contentSize.height - collectionView.bounds.size.height) + (collectionView.contentInset.bottom) + view.safeAreaInsets.bottom
-            }
-            self.collectionView.scrollIndicatorInsets = newInsets
-        }
-
-
-        // If we were scrolled away from the bottom, shift the content in lockstep with the
-        // keyboard, up to the limits of the content bounds.
-//        let insetChange = newInsets.bottom - oldInsets.bottom
-//
-//        // CONTENT OFFSETTING
-//
-//        // Only update the content offset if the inset has changed.
-//        if insetChange != 0 {
-//            print("will offset")
-//            // The content offset can go negative, up to the size of the top layout guide.
-//            // This accounts for the extended layout under the navigation bar.
-//            var minYOffset = -view.safeAreaInsets.top
-//
-//            if !channelLogContainerView.channelLogHeaderView.isHidden {
-//                minYOffset -= channelLogContainerView.channelLogHeaderView.frame.height
-//            }
-//
-//            let newYOffset = (oldYOffset + insetChange).clamped(to: minYOffset...safeContentHeight)
-//            let newOffset = CGPoint(x: 0, y: newYOffset)
-//
-//            // This offset change will be animated by UIKit's UIView animation block
-//            // which updateContentInsets() is called within
-//            collectionView.setContentOffset(newOffset, animated: false)
-//        }
-        
     }
 
 }

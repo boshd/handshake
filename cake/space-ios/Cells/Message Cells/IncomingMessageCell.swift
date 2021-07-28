@@ -19,7 +19,7 @@ class IncomingMessageCell: BaseMessageCell {
                                                     right: BaseMessageCell.incomingTextViewRightInset)
         textView.backgroundColor = ThemeManager.currentTheme().incomingMessageBackgroundColor
         textView.textColor = ThemeManager.currentTheme().incomingMessageCellTextColor
-        textView.font = ThemeManager.currentTheme().secondaryFont(with: IncomingMessageCell.messageTextSize)
+//        textView.font = ThemeManager.currentTheme().secondaryFont(with: IncomingMessageCell.messageTextSize)
         return textView
     }()
 

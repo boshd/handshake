@@ -17,7 +17,6 @@ class ChannelCollectionView: UICollectionView {
     let typingIndicatorCellID = "typingIndicatorCellID"
     let informationMessageCellID = "informationMessageCellID"
 
-
     required public init() {
         super.init(frame: .zero, collectionViewLayout: AutoSizingCollectionViewFlowLayout())
         showsVerticalScrollIndicator = false

@@ -218,6 +218,14 @@ PODS:
   - BoringSSL-GRPC/Implementation (0.0.7):
     - BoringSSL-GRPC/Interface (= 0.0.7)
   - BoringSSL-GRPC/Interface (0.0.7)
+  - ChatLayout (1.1.9):
+    - ChatLayout/Ultimate (= 1.1.9)
+  - ChatLayout/Core (1.1.9)
+  - ChatLayout/Extras (1.1.9):
+    - ChatLayout/Core
+  - ChatLayout/Ultimate (1.1.9):
+    - ChatLayout/Core
+    - ChatLayout/Extras
   - CropViewController (2.6.0)
   - Firebase/Analytics (8.2.0):
     - Firebase/Core
@@ -405,6 +413,7 @@ PODS:
   - SVProgressHUD (2.2.5)
 
 DEPENDENCIES:
+  - ChatLayout
   - CropViewController
   - Firebase/Analytics
   - Firebase/Auth
@@ -426,6 +435,7 @@ SPEC REPOS:
   trunk:
     - abseil
     - BoringSSL-GRPC
+    - ChatLayout
     - CropViewController
     - Firebase
     - FirebaseAnalytics
@@ -459,6 +469,7 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
+  ChatLayout: c947b3240dc782d0a90f9a47abfca735bd8c4098
   CropViewController: 7093b39ec3cb508531b22d35773e06cecd7378d8
   Firebase: 12c568897b807321964e89d2b263ef4c6cff3db6
   FirebaseAnalytics: 7a744b1e7dc50125cb37714c6bdaea167e412082
@@ -489,6 +500,6 @@ SPEC CHECKSUMS:
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
 
-PODFILE CHECKSUM: 5275085fca8ca9f3d0f0d0eaa305f200a2a60de2
+PODFILE CHECKSUM: 1576d1c16236d3af33958dd3a778e5cca876bc29
 
 COCOAPODS: 1.10.0

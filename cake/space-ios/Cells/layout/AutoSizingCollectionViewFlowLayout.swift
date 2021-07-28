@@ -7,33 +7,18 @@
 //
 
 import UIKit
+import Foundation
 
 var isInsertingCellsToTop: Bool = false
 var contentSizeWhenInsertingToTop: CGSize?
 
 class AutoSizingCollectionViewFlowLayout: UICollectionViewFlowLayout {
     
-//    override func prepare() {
-//        super.prepare()
-//
-//        sectionHeadersPinToVisibleBounds = true
-//        minimumLineSpacing = 5
-//        if isInsertingCellsToTop == true {
-//            if let collectionView = collectionView, let oldContentSize = contentSizeWhenInsertingToTop {
-//                let newContentSize = collectionViewContentSize
-//                let contentOffsetY = collectionView.contentOffset.y + (newContentSize.height - oldContentSize.height)
-//                let newOffset = CGPoint(x: collectionView.contentOffset.x, y: contentOffsetY)
-//                collectionView.setContentOffset(newOffset, animated: false)
-//            }
-//            contentSizeWhenInsertingToTop = nil
-//            isInsertingCellsToTop = false
-//        }
-//    }
-
     override func prepare() {
         super.prepare()
         minimumLineSpacing = 2
         sectionHeadersPinToVisibleBounds = true
+        
         if globalVariables.isInsertingCellsToTop == true {
             if let collectionView = collectionView, let oldContentSize = globalVariables.contentSizeWhenInsertingToTop {
                 let newContentSize = collectionViewContentSize
@@ -47,5 +32,4 @@ class AutoSizingCollectionViewFlowLayout: UICollectionViewFlowLayout {
             globalVariables.isInsertingCellsToTop = false
         }
     }
-
 }

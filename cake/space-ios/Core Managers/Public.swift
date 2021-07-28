@@ -228,14 +228,14 @@ private var backgroundView: UIView = {
 }()
 
 private var activityIndicator: UIActivityIndicatorView = {
-    var activityIndicator = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.gray)
-  activityIndicator.hidesWhenStopped = true
-  activityIndicator.frame = CGRect(x: 0.0, y: 0.0, width: 40.0, height: 40.0);
-    activityIndicator.style = UIActivityIndicatorView.Style.whiteLarge
-  activityIndicator.autoresizingMask = [.flexibleLeftMargin , .flexibleRightMargin , .flexibleTopMargin , .flexibleBottomMargin]
-  activityIndicator.isUserInteractionEnabled = false
-  
-  return activityIndicator
+    var activityIndicator = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.medium)
+    activityIndicator.hidesWhenStopped = true
+    activityIndicator.frame = CGRect(x: 0.0, y: 0.0, width: 40.0, height: 40.0);
+    activityIndicator.style = UIActivityIndicatorView.Style.large
+    activityIndicator.autoresizingMask = [.flexibleLeftMargin , .flexibleRightMargin , .flexibleTopMargin , .flexibleBottomMargin]
+    activityIndicator.isUserInteractionEnabled = false
+
+    return activityIndicator
 }()
 
 extension UIView {

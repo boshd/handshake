@@ -88,7 +88,7 @@ extension ChannelLogController: CollectionDelegate {
 //            return self.makeContextMenu(for: indexPath.row)
 //        })
 //    }
-//    
+//
 //    @available(iOS 13.0, *)
 //    fileprivate func makeContextMenu(for index:Int) -> UIMenu {
 //        var actions = [UIAction]()

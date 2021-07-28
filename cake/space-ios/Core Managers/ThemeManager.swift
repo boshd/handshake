@@ -588,7 +588,7 @@ enum Theme: Int {
     var inputBarContainerViewBackgroundColor: UIColor {
         switch self {
             case .normal:
-                return .clear
+                return .white
             case .dark:
                 return .clear
         }

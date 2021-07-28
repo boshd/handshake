@@ -9,8 +9,62 @@
 import UIKit
 import Firebase
 import Photos
+//import ChatLayout
 
 extension ChannelLogController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
+    
+//    func shouldPresentHeader(_ chatLayout: ChatLayout, at sectionIndex: Int) -> Bool {
+//        return true
+//    }
+//
+//    func shouldPresentFooter(_ chatLayout: ChatLayout, at sectionIndex: Int) -> Bool {
+//        return false
+//    }
+//
+//    func sizeForItem(_ chatLayout: ChatLayout, of kind: ItemKind, at indexPath: IndexPath) -> ItemSize {
+//        .estimated(selectSize(indexPath: indexPath))
+//
+//    }
+//
+//    func alignmentForItem(_ chatLayout: ChatLayout, of kind: ItemKind, at indexPath: IndexPath) -> ChatItemAlignment {
+//        let message = groupedMessages[indexPath.section].messages[indexPath.row]
+//        let isTextMessage = message.text != nil
+//        let isOutgoingMessage = message.fromId == Auth.auth().currentUser?.uid
+//        let isInformationMessage = message.isInformationMessage.value ?? false
+//
+//        if isTextMessage {
+//            if isOutgoingMessage {
+//                return .trailing
+//            } else if isInformationMessage {
+//                return .center
+//            } else {
+//                return .leading
+//            }
+//        } else {
+//            return .center
+//        }
+//    }
+//
+    
+    
+//    func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
+//        if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "lol",
+//        for: indexPath) as? ChannelLogViewControllerSupplementaryView {
+//            guard groupedMessages.indices.contains(indexPath.section),
+//            groupedMessages[indexPath.section].messages.indices.contains(indexPath.row) else { header.label.text = ""; return header }
+//            header.label.text = groupedMessages[indexPath.section].messages[indexPath.row].shortConvertedTimestamp
+//            return header
+//        }
+//        return UICollectionReusableView()
+//    }
+//    
+//    func initialLayoutAttributesForInsertedItem(_ chatLayout: ChatLayout, of kind: ItemKind, at indexPath: IndexPath, modifying originalAttributes: ChatLayoutAttributes, on state: InitialAttributesRequestType) {
+//        <#code#>
+//    }
+//
+//    func finalLayoutAttributesForDeletedItem(_ chatLayout: ChatLayout, of kind: ItemKind, at indexPath: IndexPath, modifying originalAttributes: ChatLayoutAttributes) {
+//        <#code#>
+//    }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return groupedMessages.count + typingIndicatorSection.count
@@ -25,8 +79,9 @@ extension ChannelLogController: UICollectionViewDelegateFlowLayout, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "lol",
-        for: indexPath) as? ChannelLogViewControllerSupplementaryView {
+        if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
+                                                                        withReuseIdentifier: "lol",
+                                                                        for: indexPath) as? ChannelLogViewControllerSupplementaryView {
             guard groupedMessages.indices.contains(indexPath.section),
             groupedMessages[indexPath.section].messages.indices.contains(indexPath.row) else { header.label.text = ""; return header }
             header.label.text = groupedMessages[indexPath.section].messages[indexPath.row].shortConvertedTimestamp
@@ -101,6 +156,7 @@ extension ChannelLogController: UICollectionViewDelegateFlowLayout, UICollection
     }
 
     func selectSize(indexPath: IndexPath) -> CGSize {
+        
         guard indexPath.section != groupedMessages.count else { return CGSize(width: collectionView.frame.width, height: 15) }
         let cellHeight: CGFloat = 80
         let message = groupedMessages[indexPath.section].messages[indexPath.item]
@@ -109,17 +165,25 @@ extension ChannelLogController: UICollectionViewDelegateFlowLayout, UICollection
         let isOutgoingMessage = message.fromId == Auth.auth().currentUser?.uid
 
         guard !isTextMessage else {
+            guard let estimate = message.estimatedFrameForText?.width.value else { return CGSize(width: collectionView.frame.width, height: 15) }
+            
+//            var width: CGFloat = CGFloat(estimate) + BaseMessageCell.outgoingMessageHorisontalInsets
+//            if (CGFloat(estimate) + BaseMessageCell.messageTimeWidth <=  BaseMessageCell.bubbleViewMaxWidth) ||
+//                CGFloat(estimate) <= BaseMessageCell.messageTimeWidth {
+//                width = width + BaseMessageCell.messageTimeWidth - 5
+//            }
+ 
             return CGSize(width: collectionView.frame.width,
                           height: collectionView.setupCellHeight(isOutgoingMessage: isOutgoingMessage,
                                                                  frame: message.estimatedFrameForText,
                                                                  indexPath: indexPath))
         }
-        
+
         guard !isInformationMessage else {
             guard let messagesFetcher = messagesFetcher else { return CGSize(width: 0, height: 0) }
             let infoMessageWidth = collectionView.frame.width
             guard let messageText = message.text else { return CGSize(width: 0, height: 0 ) }
-            
+
             let infoMessageHeight = messagesFetcher.estimateFrameForText(width: infoMessageWidth,
                                                                          text: messageText,
                                                                          font: MessageFontsAppearance.defaultInformationMessageTextFont).height + 25
