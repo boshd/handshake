@@ -101,6 +101,8 @@ class ChannelNameHeaderCell: UITableViewCell {
         channelNameField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         channelImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTapped)))
         
+        
+        
         setColor()
         contentView.addSubview(channelImageView)
         contentView.addSubview(channelImagePlaceholderLabel)
@@ -127,6 +129,16 @@ class ChannelNameHeaderCell: UITableViewCell {
             channelNameDescriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
             channelNameDescriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0),
         ])
+        
+//        channelNameField.becomeFirstResponder()
+    }
+    
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+    
+    override func becomeFirstResponder() -> Bool {
+        return channelNameField.becomeFirstResponder()
     }
     
     required init?(coder aDecoder: NSCoder) {

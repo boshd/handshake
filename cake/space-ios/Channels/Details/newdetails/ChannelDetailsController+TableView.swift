@@ -64,7 +64,7 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
             cell.textLabel?.text = channelName
             return cell
         } else if indexPath.section == 1 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: channelDetailsCellId, for: indexPath) as? ChannelDetailsCell ?? ChannelDetailsCell(style: .subtitle, reuseIdentifier: channelDetailsCellId)
+            let cell = ChannelDetailsCell(style: .subtitle, reuseIdentifier: channelDetailsCellId)
             
             let startDate = Date(timeIntervalSince1970: Double(integerLiteral: (channel?.startTime.value ?? 0)))
             let endDate = Date(timeIntervalSince1970: Double(integerLiteral: (channel?.endTime.value ?? 0)))
@@ -121,7 +121,7 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
                 return cell
             }
         } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: locationViewCellId, for: indexPath) as? LocationViewCell ?? LocationViewCell(style: .subtitle, reuseIdentifier: channelDescriptionCellId)
+            let cell = LocationViewCell(style: .subtitle, reuseIdentifier: channelDescriptionCellId)
             if let isRemote = channel?.isRemote.value, isRemote {
                 cell.locationView.removeFromSuperview()
                 cell.detailTextLabel?.text = "If you can't find any information regarding virtual meetings try reaching out to one of the event organizers."

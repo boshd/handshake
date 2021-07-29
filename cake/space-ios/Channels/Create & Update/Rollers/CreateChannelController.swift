@@ -288,8 +288,6 @@ class CreateChannelController: UITableViewController {
             cell.channelImagePlaceholderLabel.isHidden = false
         }
         
-        cell.channelNameField.becomeFirstResponder()
-        
         return cell
     }
     
