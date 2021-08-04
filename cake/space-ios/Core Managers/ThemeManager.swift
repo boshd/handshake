@@ -267,7 +267,7 @@ enum Theme: Int {
     var tabBarBlurEffect: UIBlurEffect {
         switch self {
             case .normal:
-                return UIBlurEffect(style: .regular)
+                return UIBlurEffect(style: .extraLight)
             case .dark:
                 return UIBlurEffect(style: .regular)
         }
@@ -588,7 +588,7 @@ enum Theme: Int {
     var inputBarContainerViewBackgroundColor: UIColor {
         switch self {
             case .normal:
-                return .white
+                return .clear
             case .dark:
                 return .clear
         }

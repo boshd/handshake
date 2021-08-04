@@ -556,6 +556,9 @@ extension CreateChannelController {
                     } else {
                         // third row, picker
                         let cell = tableView.dequeueReusableCell(withIdentifier: datePickerCellId, for: indexPath) as? DatePickerCell ?? DatePickerCell()
+                        if let startDate = startDate {
+                            cell.datePicker.minimumDate = startDate
+                        }
                         cell.delegate = self
                         return cell
                     }
