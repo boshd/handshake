@@ -166,6 +166,12 @@ class LocationSearchController: UIViewController {
         searchRequest = search
     }
     
+    func searchRequestCancel() {
+        searchCompletionRequest?.cancel()
+        searchRequestFuture?.invalidate()
+        searchRequest?.cancel()
+    }
+    
     func searchRequestDidComplete(withResponse response: MKLocalSearch.Response?, _ error: Error?, dismissKeyboard: Bool = false) {
         guard let response = response else {
             return
@@ -200,7 +206,7 @@ class LocationSearchController: UIViewController {
     // Search Completions Request are invoked on textDidChange in searchBar,
     // and region is updated upon regionDidChange in mapView.
     func searchCompletionRequest(didComplete searchCompletions: [MKLocalSearchCompletion]) {
-        //searchRequestCancel()
+        searchRequestCancel()
         self.searchCompletions = searchCompletions
         tableViewType = .searchCompletion
     }

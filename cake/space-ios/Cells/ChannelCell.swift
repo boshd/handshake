@@ -58,7 +58,7 @@ class ChannelCell: UITableViewCell {
         label.textAlignment = .left
         label.textColor = ThemeManager.currentTheme().generalSubtitleColor
         label.font = ThemeManager.currentTheme().secondaryFont(with: 12)
-        
+        label.numberOfLines = 2
         return label
     }()
     

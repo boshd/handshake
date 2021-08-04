@@ -30,7 +30,7 @@ class ChannelDetailsContainerView: UIView {
         let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
-        tableView.separatorStyle = .singleLine
+        tableView.separatorStyle = .none
         
         return tableView
     }()

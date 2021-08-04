@@ -19,6 +19,15 @@ class UserCell: UITableViewCell {
         
         return label
     }()
+    
+    let seperator: UIView = {
+        let seperator = UIView()
+        seperator.translatesAutoresizingMaskIntoConstraints = false
+        seperator.backgroundColor = ThemeManager.currentTheme().seperatorColor
+        
+        return seperator
+    }()
+    
     override func layoutSubviews() {
             super.layoutSubviews()
 
@@ -51,13 +60,20 @@ class UserCell: UITableViewCell {
         textLabel?.textColor = ThemeManager.currentTheme().generalTitleColor
         
         addSubview(rightLabel)
+        addSubview(seperator)
         
         NSLayoutConstraint.activate([
-            rightLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10)
+            rightLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            
+            seperator.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0),
+            seperator.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
+            seperator.leadingAnchor.constraint(equalTo: imageView?.trailingAnchor ?? leadingAnchor, constant: 0),
+            seperator.heightAnchor.constraint(equalToConstant: 1),
         ])
         
-        if textLabel != nil {
-            rightLabel.topAnchor.constraint(equalTo: textLabel!.topAnchor, constant: 0).isActive = true
+        if let textLabel = textLabel {
+//            seperator.leadingAnchor.constraint(equalTo: textLabel.leadingAnchor, constant: 0).isActive = true
+            rightLabel.topAnchor.constraint(equalTo: textLabel.topAnchor, constant: 0).isActive = true
         }
         
     }
@@ -91,4 +107,24 @@ class UserCell: UITableViewCell {
         textLabel?.textColor = ThemeManager.currentTheme().generalTitleColor
 //        imageView?.contentMode = .scaleAspectFill
     }
+}
+
+class HandshakeSeperator: UIView {
+    
+    init(frame: CGRect, color: UIColor) {
+        super.init(frame: frame)
+        self.backgroundColor = color
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {}
+    
 }

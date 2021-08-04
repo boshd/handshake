@@ -118,6 +118,7 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
                 cell.configureCell(for: indexPath, users: attendees, admin: channel?.admins.contains(userID) ?? false)
                 cell.accessoryView = .none
                 cell.accessoryType = .none
+                
                 return cell
             }
         } else {
