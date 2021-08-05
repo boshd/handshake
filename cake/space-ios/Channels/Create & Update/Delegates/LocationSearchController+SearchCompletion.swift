@@ -1,3 +1,15 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b2d41287b48076900fa8dfad96fd9c8fb9465d05b1030e571143cc78d64aa301
-size 411
+//
+//  LocationSearchController+SearchCompletion.swift
+//  space-ios
+//
+//  Created by Kareem Arab on 2021-05-18.
+//  Copyright © 2021 Kareem Arab. All rights reserved.
+//
+
+import MapKit
+
+extension LocationSearchController: MKLocalSearchCompleterDelegate {
+    public func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
+        searchCompletionRequest(didComplete: completer.results)
+    }
+}

@@ -19,7 +19,7 @@ class DescriptionCell: UITableViewCell {
 
     var textChanged: ((String) -> Void)?
     
-    let textView: UITextView = {
+    lazy var textView: UITextView = {
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.backgroundColor = .clear
@@ -27,13 +27,14 @@ class DescriptionCell: UITableViewCell {
         textView.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         textView.textColor = ThemeManager.currentTheme().generalSubtitleColor
         textView.returnKeyType = .done
-        textView.text = "Description"
+//        textView.text = "Description"
         textView.autocorrectionType = .default
         textView.autocapitalizationType = .none
         textView.tintColor = ThemeManager.currentTheme().tintColor
         textView.textContainer.lineFragmentPadding = 0
         textView.keyboardAppearance = ThemeManager.currentTheme().keyboardAppearance
-        textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+        textView.delegate = self
+//        textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
         
         return textView
     }()
@@ -43,8 +44,8 @@ class DescriptionCell: UITableViewCell {
         userInteractionEnabledWhileDragging = false
         contentView.isUserInteractionEnabled = true
         selectionStyle = .none
-        
-        textView.delegate = self
+//
+//        textView.delegate = self
 
         setColor()
         contentView.addSubview(textView)
@@ -78,13 +79,30 @@ class DescriptionCell: UITableViewCell {
 extension DescriptionCell: UITextViewDelegate {
     
     func textViewDidChangeSelection(_ textView: UITextView) {
+//        if self.contentView.window != nil {
+//            print("klm", textView.textColor!, ThemeManager.currentTheme().generalSubtitleColor)
+//            if textView.textColor == ThemeManager.currentTheme().generalSubtitleColor && (textView.text.isEmpty || textView.text == "Description") {
+//                print("IN IN")
+//                textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+//            } else {
+//                print("IN ELSES")
+//            }
+//        }
+    }
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
         if self.contentView.window != nil {
-            if textView.textColor == ThemeManager.currentTheme().generalSubtitleColor && textView.text.isEmpty {
-                textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+            print("klm", textView.textColor!, ThemeManager.currentTheme().generalSubtitleColor)
+            if textView.textColor == ThemeManager.currentTheme().generalSubtitleColor && (textView.text.isEmpty || textView.text == "Description") {
+                print("IN IN")
+                DispatchQueue.main.async {
+                    textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+                }
             } else {
-                
+                print("IN ELSES")
             }
         }
+
     }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
@@ -95,7 +113,7 @@ extension DescriptionCell: UITextViewDelegate {
 
             // If updated text view will be empty, add the placeholder
             // and set the cursor to the beginning of the text view
-        
+            print("REACHED INITIAL")
             
             if text == "\n" {
                 textView.resignFirstResponder()
@@ -104,6 +122,7 @@ extension DescriptionCell: UITextViewDelegate {
                 textView.text = "Description"
                 textView.textColor = ThemeManager.currentTheme().generalSubtitleColor
                 textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+                print("REACHED INITIAL2")
             } else if textView.textColor == ThemeManager.currentTheme().generalSubtitleColor && !text.isEmpty {
                 textView.textColor = ThemeManager.currentTheme().generalTitleColor
                 textView.text = text
@@ -114,25 +133,6 @@ extension DescriptionCell: UITextViewDelegate {
             // ...otherwise return false since the updates have already
             // been made
             return false
-//        let currentText:String = textView.text
-//        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: text)
-//
-//        if text == "\n" {
-//            textView.resignFirstResponder()
-//            return false
-//        } else if updatedText.isEmpty {
-//            textView.text = "Description"
-//            textView.textColor = ThemeManager.currentTheme().generalSubtitleColor
-//
-//            textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
-//        } else if textView.textColor == UIColor.lightGray && !text.isEmpty {
-//            textView.textColor = UIColor.black
-//            textView.text = text
-//        } else {
-//            return true
-//        }
-//
-//        return false
     }
     
     func textChanged(action: @escaping (String) -> Void) {
@@ -146,13 +146,13 @@ extension DescriptionCell: UITextViewDelegate {
         textChanged?(textView.text)
     }
     
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        if self.contentView.window != nil {
-            if textView.textColor == UIColor.lightGray {
-                textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
-            }
-        }
-    }
+//    func textViewDidBeginEditing(_ textView: UITextView) {
+//        if self.contentView.window != nil {
+////            if textView.textColor == UIColor.lightGray {
+////                textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+////            }
+//        }
+//    }
 }
 
 

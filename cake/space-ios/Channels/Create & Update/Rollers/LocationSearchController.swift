@@ -14,7 +14,7 @@ protocol LocationSearchDelegate: class {
     func didSelectMapItem(mapItem: MKMapItem)
 }
 
-class LocationSearchController: UIViewController {
+class LocationSearchController: UIViewController, CLLocationManagerDelegate {
     
     var delegate: LocationSearchDelegate?
     
@@ -31,6 +31,9 @@ class LocationSearchController: UIViewController {
     var searchRequestFuture: Timer?
     var searchRequest: MKLocalSearch?
     var searchMapItems = [MKMapItem]()
+    var currentRegion: MKCoordinateRegion?
+    
+    let locationManager = CLLocationManager()
     
     enum TableType {
         case searchCompletion
@@ -70,6 +73,7 @@ class LocationSearchController: UIViewController {
         super.viewDidLoad()
         configureTableView()
         configureNavigationBar()
+        configureCurrentLocation()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -90,6 +94,13 @@ class LocationSearchController: UIViewController {
     
     // MARK: - Controller setup/config.
     
+    fileprivate func configureCurrentLocation() {
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestAlwaysAuthorization()
+        locationManager.startUpdatingLocation()
+    }
+    
     fileprivate func configureTableView() {
         addObservers()
         
@@ -101,7 +112,7 @@ class LocationSearchController: UIViewController {
         searchTableContainerView.tableView.register(MapItemSearchCell.self, forCellReuseIdentifier: mapItemSearchCellId)
         searchTableContainerView.tableView.separatorStyle = .singleLine
         searchTableContainerView.tableView.tableFooterView = UIView()
-        searchTableContainerView.tableView.keyboardDismissMode = .onDrag
+        searchTableContainerView.tableView.keyboardDismissMode = .interactive
         
         searchCompletionRequest = MKLocalSearchCompleter()
         searchTableContainerView.searchBar.delegate = self
@@ -147,7 +158,7 @@ class LocationSearchController: UIViewController {
     
     // vcvcv
     func searchRequestStart(dismissKeyboard: Bool = false, isMapPan: Bool = false) {
-        //searchRequestCancel()
+        searchRequestCancel()
         
         guard let text = searchTableContainerView.searchBar.text, !text.isEmpty else {
             searchTableContainerView.searchBar.resignFirstResponder()
@@ -157,7 +168,10 @@ class LocationSearchController: UIViewController {
         }
         let request = MKLocalSearch.Request()
         request.naturalLanguageQuery = searchTableContainerView.searchBar.text
-        //request.region = mapSearchContainerView.mapView.region
+        if let currentRegion = currentRegion {
+            print("currentRegion not nil")
+            request.region = currentRegion
+        }
         let search = MKLocalSearch(request: request)
         search.start { [weak self] (response, error) in
             print("search request completion..?")
@@ -216,4 +230,26 @@ class LocationSearchController: UIViewController {
         //searchCompletionRequest?.region = mapSearchContainerView.mapView.region
         searchCompletionRequest?.delegate = self
     }
+    
+    // MARK: - Location Manager Delegate
+    
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        print("authorization status is: \(manager.authorizationStatus.rawValue)")
+        if manager.authorizationStatus == .notDetermined {
+            manager.requestWhenInUseAuthorization()
+        }
+        
+        // if authorization is denied, setting the region will be automatically skipped.
+        // if authorization is given, the region will be set.
+    }
+    
+    @objc
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        print("reached delegate")
+        if let coordinates = manager.location?.coordinate {
+            print("set currentRegion")
+            currentRegion = MKCoordinateRegion(center: coordinates, latitudinalMeters: 50000, longitudinalMeters: 50000)
+        }
+    }
 }
+

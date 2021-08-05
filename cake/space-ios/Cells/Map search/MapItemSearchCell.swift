@@ -46,6 +46,11 @@ class MapItemSearchCell: InteractiveTableViewCell {
         textLabel?.text = mapItem.name
         detailTextLabel?.text = mapItem.placemark.title
         imageView?.tintColor = tintColor
+        imageView?.backgroundColor = .black
+        
+        if let textLabel = textLabel, let imageView = imageView {
+            textLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor, constant: 10).isActive = true
+        }
     }
 }
 
