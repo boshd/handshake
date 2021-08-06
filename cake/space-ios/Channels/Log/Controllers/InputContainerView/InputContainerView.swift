@@ -20,7 +20,7 @@ import AVFoundation
 //}
 
 @objc
-final class InputContainerView: BlurView {
+final class InputContainerView: UIView {
     
     public init() {
         super.init(frame: .zero)
@@ -58,7 +58,7 @@ final class InputContainerView: BlurView {
             sendButton.rightAnchor.constraint(equalTo: rightAnchor, constant: -10).isActive = true
         }
         
-        blurEffectView = UIVisualEffectView(effect: ThemeManager.currentTheme().tabBarBlurEffect)
+//        blurEffectView = UIVisualEffectView(effect: ThemeManager.currentTheme().tabBarBlurEffect)
 //
 //        let blurEffect = ThemeManager.currentTheme().tabBarBlurEffect
 //        let blurEffectView = UIVisualEffectView(effect: blurEffect)

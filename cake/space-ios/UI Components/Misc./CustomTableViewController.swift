@@ -1,3 +1,20 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:fe4181299dd893611ebd8fa649c8d5ccc4eea3eba92850979cce91900cab1b2b
-size 506
+//
+//  CustomTableViewController.swift
+//  space-ios
+//
+//  Created by Kareem Arab on 2020-10-16.
+//  Copyright © 2020 Kareem Arab. All rights reserved.
+//
+
+import UIKit
+
+class CustomTableViewController: UITableViewController {
+    fileprivate let customNavigationItem = NavigationItem()
+    override func viewDidLoad() {
+        navigationController?.navigationBar.setValue(true, forKey: "hidesShadow")
+    }
+
+    override var navigationItem: NavigationItem {
+        return customNavigationItem
+    }
+}

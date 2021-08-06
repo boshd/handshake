@@ -57,6 +57,10 @@ class LocationView: UIView {
         return mapView
     }()
     
+    deinit {
+
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
 //        backgroundColor = ThemeManager.currentTheme().mapViewBackgroundColor

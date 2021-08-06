@@ -50,11 +50,11 @@ extension ChannelCell {
         self.channelId = channel.id
         
         if let url = channel.thumbnailImageUrl {
-            channelImageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "GroupIcon"), options: [.continueInBackground, .scaleDownLargeImages], completed: { (_, error, _, _) in
+            channelImageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "handshake"), options: [.continueInBackground, .scaleDownLargeImages], completed: { (_, error, _, _) in
                 print(error?.localizedDescription ?? "")
             })
         } else {
-            channelImageView.image = UIImage(named: "GroupIcon")
+            channelImageView.image = UIImage(named: "handshake")
         }
 
         let badgeInt = channels[indexPath.row].badge.value ?? 0

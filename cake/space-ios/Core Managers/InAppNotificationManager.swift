@@ -193,13 +193,13 @@ class InAppNotificationManager: NSObject {
     }
     
     fileprivate func channelAvatar(resource: String?) -> Any {
-        let placeHolderImage = UIImage(named: "GroupIcon")
+        let placeHolderImage = UIImage(named: "handshake")
         guard let imageURL = resource, imageURL != "" else { return placeHolderImage! }
         return URL(string: imageURL)!
     }
     
     fileprivate func channelPlaceholder() -> Data? {
-        let placeHolderImage = UIImage(named: "GroupIcon")
+        let placeHolderImage = UIImage(named: "handshake")
         guard let data = placeHolderImage?.asJPEGData else {
             return nil
         }
@@ -211,13 +211,13 @@ class InAppNotificationManager: NSObject {
     }
     
     fileprivate func conversationAvatar(resource: String?, isGroupChat: Bool) -> Any {
-        let placeHolderImage = UIImage(named: "GroupIcon")
+        let placeHolderImage = UIImage(named: "handshake")
         guard let imageURL = resource, imageURL != "" else { return placeHolderImage! }
         return URL(string: imageURL)!
     }
 
     fileprivate func conversationPlaceholder(isGroupChat: Bool) -> Data? {
-        let placeHolderImage = UIImage(named: "GroupIcon")
+        let placeHolderImage = UIImage(named: "handshake")
         guard let data = placeHolderImage?.asJPEGData else {
             return nil
         }

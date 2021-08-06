@@ -14,7 +14,7 @@ class UserCell: UITableViewCell {
     let rightLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = ThemeManager.currentTheme().secondaryFont(with: 12)
+        label.font = ThemeManager.currentTheme().secondaryFont(with: 9)
         label.textColor = ThemeManager.currentTheme().generalSubtitleColor
         
         return label

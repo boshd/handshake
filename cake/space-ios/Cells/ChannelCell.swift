@@ -59,6 +59,8 @@ class ChannelCell: UITableViewCell {
         label.textColor = ThemeManager.currentTheme().generalSubtitleColor
         label.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         label.numberOfLines = 2
+//        label.backgroundColor = .red
+//        label.lineBreakMode = .byWordWrapping
         return label
     }()
     
@@ -159,7 +161,7 @@ class ChannelCell: UITableViewCell {
             
             subTitle.centerYAnchor.constraint(equalTo: channelImageView.centerYAnchor, constant: 0),
             subTitle.leadingAnchor.constraint(equalTo: title.leadingAnchor, constant: 0),
-            subTitle.trailingAnchor.constraint(equalTo: title.trailingAnchor, constant: 0),
+            subTitle.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: 0),
             
             customAccessoryView.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: 0),
             customAccessoryView.topAnchor.constraint(equalTo: title.topAnchor, constant: 0),
@@ -188,13 +190,13 @@ class ChannelCell: UITableViewCell {
     }
     
     deinit {
-        invalidateTimer()
+//        invalidateTimer()
         channel = nil
     }
     
     @objc func invalidateTimer() {
-        timer?.invalidate()
-        timer = nil
+//        timer?.invalidate()
+//        timer = nil
     }
     
     override func prepareForReuse() {
@@ -210,6 +212,7 @@ class ChannelCell: UITableViewCell {
         backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         contentView.backgroundColor = .clear
         imageView?.image = nil
+        channelImageView.image = nil
         channel = nil
         invalidateTimer()
     }
@@ -221,80 +224,12 @@ class ChannelCell: UITableViewCell {
 extension ChannelCell {
     
     func startTimer() {
-        
-        // check if this is reasonable
-//        var timeInterval = 1.0
-//        let startDate = Date(timeIntervalSince1970: TimeInterval(channel?.startTime.value ?? 0))
-//
-//        if startDate.isInToday {
-//            timeInterval = 1.0
-//        } else {
-//            timeInterval = 30.0
-//        }
-        
-//        if #available(iOS 10.0, *) {
-//            timer = Timer(timeInterval: timeInterval,
-//                          repeats: true,
-//                          block: { [weak self] _ in
-//                            guard let strongSelf = self else { return }
-//                            strongSelf.onComplete()
-//            })
-//        } else {
-//            timer = Timer(timeInterval: timeInterval,
-//                          target: self,
-//                          selector: #selector(onComplete),
-//                          userInfo: nil,
-//                          repeats: true)
-//        }
-//        RunLoop.current.add(timer!, forMode: .common)
+      
     }
     
     @objc
     func onComplete() {
-//        let prevStatus = channel?.status
-//        guard let channelStatus = channel?.updateAndReturnStatus() else { return }
-//
-//        if channelStatus != prevStatus {
-//            let obj: [String: Any] = ["channelID": channel?.id ?? ""]
-//            NotificationCenter.default.post(name: .channlStatusUpdated, object: obj)
-//            print("posted")
-//        }
-//
-//        switch channelStatus {
-//            case .upcoming:
-//
-//                let startDate = Date(timeIntervalSince1970: Double(integerLiteral: (channel?.startTime.value ?? 0)))
-//                let calendar = Calendar.current
-//                let date1 = calendar.startOfDay(for: Date())
-//                let date2 = calendar.startOfDay(for: startDate)
-//                let components = calendar.dateComponents([.day], from: date1, to: date2)
-//                if let days = components.day {
-//                    if days == 1 {
-//                        eventStatus.text = "Tomorrow"
-//                    } else if days == 0 {
-//                        eventStatus.text = "Today"
-//                    } else {
-//                        eventStatus.text = "In \(days) days"
-//                    }
-//                }
-//
-////                eventStatus.textColor = .priorityGreen()
-////                eventStatus.backgroundColor = .greenEventStatusBackground()
-//            case .inProgress:
-//                eventStatus.text = "In progress"
-////                eventStatus.textColor = .priorityGreen()
-////                eventStatus.backgroundColor = .greenEventStatusBackground()
-//            case .expired:
-//                eventStatus.text = "Expired"
-////                eventStatus.textColor = .priorityRed()
-////                eventStatus.backgroundColor = .redEventStatusBackground()
-//                invalidateTimer()
-//            case .cancelled:
-//                eventStatus.text = "Cancelled"
-////                eventStatus.textColor = .priorityRed()
-////                eventStatus.backgroundColor = .redEventStatusBackground()
-//                invalidateTimer()
-//        }
+
     }
     
     func updateBadge(_ count: Int) {

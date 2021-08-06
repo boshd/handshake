@@ -31,7 +31,7 @@ class ChannelDescriptionCell: UITableViewCell {
         ]
         textView.attributedReadMoreText = NSAttributedString(string: "... Read more", attributes: readMoreTextAttributes)
         textView.attributedReadLessText = NSAttributedString(string: " Read less", attributes: readLessTextAttributes)
-        textView.maximumNumberOfLines = 3
+        textView.maximumNumberOfLines = 6
         textView.shouldTrim = true
         textView.layoutIfNeeded()
         textView.isSelectable = false

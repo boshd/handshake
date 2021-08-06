@@ -114,7 +114,7 @@ class TabBarController: UITabBarController {
     }
     
     let channelsController = ChannelsController()
-    let contactsController = ContactsController()
+    let contactsController = ContactsController(style: .insetGrouped)
     let exploreController = ExploreController()
     let settingsController = AccountSettingsController()
     

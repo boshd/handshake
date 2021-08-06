@@ -41,6 +41,8 @@ class ContactsController: CustomTableViewController {
     let realm = try! Realm(configuration: RealmKeychain.realmUsersConfiguration())
     let nonLocalRealm = try! Realm(configuration: RealmKeychain.realmNonLocalUsersConfiguration())
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureViewController()
@@ -179,6 +181,8 @@ class ContactsController: CustomTableViewController {
             do {
                 try realm.safeWrite {
                     realm.deleteAll()
+                }
+                try nonLocalRealm.safeWrite {
                     nonLocalRealm.deleteAll()
                 }
             } catch {}
@@ -356,6 +360,7 @@ extension ContactsController {
         for: indexPath) as? UsersTableViewCell ?? UsersTableViewCell()
         let parameter = indexPath.section == 0 ? users?[indexPath.row] : filteredContacts[indexPath.row]
         cell.configureCell(for: parameter)
+        cell.backgroundColor = ThemeManager.currentTheme().groupedInsetCellBackgroundColor
         return cell
     }
 

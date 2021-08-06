@@ -162,7 +162,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         channelImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(openChannelProfilePicture)))
         channelDetailsContainerView.tableView.tableHeaderView = channelImageView
         if let url = channel?.imageUrl {
-            channelImageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "GroupIcon"), options: [.continueInBackground, .scaleDownLargeImages], completed: { [weak self] (image, error, _, _) in
+            channelImageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "handshake"), options: [.continueInBackground, .scaleDownLargeImages], completed: { [weak self] (image, error, _, _) in
                 if error != nil { print(error?.localizedDescription ?? ""); return }
                 self?.channelImage = image
             })

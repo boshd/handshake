@@ -172,7 +172,7 @@ class CreateChannelController: UITableViewController {
         
         let createButton = UIBarButtonItem(title: "Create", style: .plain, target: self, action: #selector(doneAction))
         createButton.tintColor = ThemeManager.currentTheme().tintColor
-        createButton.setTitleTextAttributes([.font: ThemeManager.currentTheme().secondaryFont(with: 16)], for: .normal)
+        createButton.setTitleTextAttributes([.font: ThemeManager.currentTheme().secondaryFontBold(with: 14)], for: .normal)
         navigationItem.rightBarButtonItem = createButton
         
         if let navigationBar = navigationController?.navigationBar {

@@ -382,6 +382,15 @@ enum Theme: Int {
         }
     }
     
+    var typingIndicatorTextColor: UIColor {
+        switch self {
+            case .normal:
+                return .handshakeBlue
+            case .dark:
+                return .handshakeGreen
+        }
+    }
+    
     var chatInputTextViewBorder: UIColor {
         switch self {
             case .normal:
@@ -588,9 +597,9 @@ enum Theme: Int {
     var inputBarContainerViewBackgroundColor: UIColor {
         switch self {
             case .normal:
-                return .clear
+                return .white
             case .dark:
-                return .clear
+                return .black
         }
     }
     
