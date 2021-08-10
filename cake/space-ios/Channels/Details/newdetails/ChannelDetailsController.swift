@@ -577,7 +577,32 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
             }
             
             group.notify(queue: .main, execute: { [weak self] in
-                self?.channelDetailsContainerView.tableView.reloadData()
+                guard let self = self else { return }
+                
+//                var ordinaryAttendees = [User]()
+//                var adminAttendees = [User]()
+//                var sortedAttendees = [User]()
+//
+//                for attendee in self.attendees {
+//                    if let admins = self.channel?.admins, let id = attendee.id {
+//                        if admins.contains(id) {
+//                            adminAttendees.append(attendee)
+//                        } else {
+//                            ordinaryAttendees.append(attendee)
+//                        }
+//                    }
+//                }
+                
+//                self.attendees.removeAll()
+//
+//                if let globalCurrentUser = globalCurrentUser {
+//                    self.attendees.append(globalCurrentUser)
+//                }
+                
+//                sortedAttendees = adminAttendees + ordinaryAttendees
+//                self.attendees += sortedAttendees
+                
+                self.channelDetailsContainerView.tableView.reloadData()
             })
         }
         
@@ -672,7 +697,7 @@ extension ChannelDetailsController {
             globalIndicator.showSuccess(withStatus: "Removed")
             hapticFeedback(style: .success)
             if let name = nameToBeDeleted, let channelName = self.channel?.name {
-                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\(name) has been removed from the event", channel: self.channel)
+//                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\(name) has been removed from the event", channel: self.channel)
             }
 //            self.channelDetailsContainerView.tableView.reloadData()
         }

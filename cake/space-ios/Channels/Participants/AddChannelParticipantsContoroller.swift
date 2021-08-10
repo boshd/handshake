@@ -74,11 +74,11 @@ class AddChannelParticipantsController: SelectParticipantsController {
             }
             if let nameList = printableNameList {
                 
-                if  self.selectedUsers.count > 1 {
-                    self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: self.channel?.name ?? "", participantIDs: [], text: "\(nameList) have been added to the event", channel: self.channel)
-                } else {
-                    self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: self.channel?.name ?? "", participantIDs: [], text: "\(nameList) has been added to the event", channel: self.channel)
-                }
+//                if  self.selectedUsers.count > 1 {
+//                    self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: self.channel?.name ?? "", participantIDs: [], text: "\(nameList) have been added to the event", channel: self.channel)
+//                } else {
+//                    self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: self.channel?.name ?? "", participantIDs: [], text: "\(nameList) has been added to the event", channel: self.channel)
+//                }
             }
             self.delegate?.selectedUsers(shouldBeUpdatedTo: self.selectedUsers)
             self.dismiss(animated: true, completion: nil)

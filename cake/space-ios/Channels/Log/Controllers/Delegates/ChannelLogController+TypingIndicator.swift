@@ -38,6 +38,10 @@ extension ChannelLogController {
                 self.handleTypingIndicatorAppearance(isEnabled: false)
             }
             
+            if let typingIds = snapshot?.documents.map({ $0.documentID }) {
+                self.typingUserIds = typingIds
+            }
+            
             snapshot?.documentChanges.forEach({ (change) in
                 if change.type == .added {
                     if change.document.documentID != currentUserID {

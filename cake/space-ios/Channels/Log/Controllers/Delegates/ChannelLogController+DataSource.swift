@@ -103,7 +103,155 @@ extension ChannelLogController: UICollectionViewDelegateFlowLayout, UICollection
     fileprivate func showTypingIndicator(indexPath: IndexPath) -> UICollectionViewCell? {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: collectionView.typingIndicatorCellID, for: indexPath) as! TypingIndicatorCell
         cell.restart()
+
+        cell.label.text = getUserShit()
+        
         return cell
+    }
+    
+    func getUserShit() -> String {
+        
+        if typingUserIds.count == 0 {
+            if let typingUserId = typingUserIds.first {
+                if let realmUser = RealmKeychain.realmUsersArray().first(where: { $0.id == typingUserId }),
+                   let name = realmUser.localName {
+                    return "\(name) is typing..."
+                } else if let nonLocalRealmUser = RealmKeychain.realmNonLocalUsersArray().first(where: { $0.id == typingUserId }),
+                          let phone = nonLocalRealmUser.phoneNumber {
+                    return "\(phone) is typing..."
+                } else {
+                    // fetch user once and add to non local realm
+                    var retVal = ""
+                    UsersFetcher.fetchUser(id: typingUserId) { user, error in
+                        guard error == nil else { print(error?.localizedDescription ?? ""); return }
+                        // issues w/ initial state
+                        if let user = user {
+                            retVal = "\(user.phoneNumber) is typing..."
+                            autoreleasepool {
+                                if !self.nonLocalRealm.isInWriteTransaction {
+                                    self.nonLocalRealm.beginWrite()
+                                    self.nonLocalRealm.create(User.self, value: user, update: .modified)
+                                    try! self.nonLocalRealm.commitWrite()
+                                }
+                            }
+                        }
+                    }
+                    return retVal
+                }
+            }
+            
+        } else if typingUserIds.count > 0 {
+            var names = [String]()
+            
+            for id in typingUserIds {
+                
+                if let realmUser = RealmKeychain.realmUsersArray().first(where: { $0.id == id }),
+                   let name = realmUser.localName {
+                    names.append(name)
+                } else if let nonLocalRealmUser = RealmKeychain.realmNonLocalUsersArray().first(where: { $0.id == id }),
+                          let phone = nonLocalRealmUser.phoneNumber {
+                    names.append(phone)
+                } else {
+                    // fetch user once and add to non local realm
+//                    var retVal = ""
+                    UsersFetcher.fetchUser(id: id) { user, error in
+                        guard error == nil else { print(error?.localizedDescription ?? ""); return }
+                        // issues w/ initial state
+                        if let user = user {
+                            names.append(user.phoneNumber ?? "")
+                            autoreleasepool {
+                                if !self.nonLocalRealm.isInWriteTransaction {
+                                    self.nonLocalRealm.beginWrite()
+                                    self.nonLocalRealm.create(User.self, value: user, update: .modified)
+                                    try! self.nonLocalRealm.commitWrite()
+                                }
+                            }
+                        }
+                    }
+                    
+                }
+                
+                var printableNameList: String?
+                for name in names {
+                    if printableNameList == nil {
+                        printableNameList = name
+                    } else {
+                        printableNameList! += ", " + name
+                    }
+                }
+                
+                return "\(printableNameList ?? "") are typing.."
+                
+            }
+            
+            
+        }
+        
+        return "koko"
+//        if typingUserIds.count > 0 {
+//            if typingUserIds.count == 1 {
+//
+//            } else {
+//
+//            }
+//        }
+        
+//        if RealmKeychain.realmUsersArray().map({$0.id}).contains(user.id) {
+//            if let localRealmUser = RealmKeychain.usersRealm.object(ofType: User.self, forPrimaryKey: user.id),
+//               !user.isEqual_(to: localRealmUser) {
+//
+//                // update local realm user copy
+//                if !(self.localRealm.isInWriteTransaction) {
+//                    self.localRealm.beginWrite()
+//                    localRealmUser.email = user.email
+//                    localRealmUser.name = user.name
+//                    localRealmUser.localName = user.localName
+//                    localRealmUser.phoneNumber = user.phoneNumber
+//                    localRealmUser.userImageUrl = user.userImageUrl
+//                    localRealmUser.userThumbnailImageUrl = user.userThumbnailImageUrl
+//                    try! self.localRealm.commitWrite()
+//                }
+//
+//                // update array
+//                if let index = self.attendees.firstIndex(where: { user_ in
+//                    return user_.id == user.id
+//                }) {
+//                    self.attendees[index] = user
+//                }
+//            }
+//        } else if RealmKeychain.realmNonLocalUsersArray().map({$0.id}).contains(user.id) {
+//            if let nonLocalRealmUser = RealmKeychain.nonLocalUsersRealm.object(ofType: User.self, forPrimaryKey: user.id),
+//               !user.isEqual_(to: nonLocalRealmUser) {
+//
+//                // update local realm user copy
+//                if !(self.nonLocalRealm.isInWriteTransaction) {
+//                    self.nonLocalRealm.beginWrite()
+//                    nonLocalRealmUser.email = user.email
+//                    nonLocalRealmUser.name = user.name
+//                    nonLocalRealmUser.localName = user.localName
+//                    nonLocalRealmUser.phoneNumber = user.phoneNumber
+//                    nonLocalRealmUser.userImageUrl = user.userImageUrl
+//                    nonLocalRealmUser.userThumbnailImageUrl = user.userThumbnailImageUrl
+//                    try! self.nonLocalRealm.commitWrite()
+//                }
+//
+//                // update array
+//                if let index = self.attendees.firstIndex(where: { user_ in
+//                    return user_.id == user.id
+//                }) {
+//                    self.attendees[index] = user
+//                }
+//            }
+//        } else {
+//            autoreleasepool {
+//                if !self.nonLocalRealm.isInWriteTransaction {
+//                    self.nonLocalRealm.beginWrite()
+//                    self.nonLocalRealm.create(User.self, value: user, update: .modified)
+//                    try! self.nonLocalRealm.commitWrite()
+//                }
+//            }
+//            self.attendees.append(user)
+//        }
     }
     
     fileprivate func selectCell(for indexPath: IndexPath, isGroupChat: Bool) -> UICollectionViewCell? {

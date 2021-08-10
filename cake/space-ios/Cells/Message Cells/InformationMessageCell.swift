@@ -46,7 +46,8 @@ class InformationMessageCell: RevealableCollectionViewCell {
         NSLayoutConstraint.activate([
             information.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0),
             information.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 0),
-//            information.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -100),
+            information.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -50),
+            information.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 50),
 //            information.widthAnchor.constraint(equalToConstant: information.frame.width)
         ])
     }

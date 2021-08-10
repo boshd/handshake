@@ -52,6 +52,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     var groupedMessages = [MessageSection]()
     var typingIndicatorSection: [String] = []
+    var typingUserIds: [String] = []
     
     let contextMenuItems = [
         ContextMenuItem(title: "Edit", index: 0)
@@ -69,6 +70,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     private let keyboardLayoutGuide = KeyboardLayoutGuide()
     public var channelLogContainerView = ChannelLogContainerView()
     public let realm = try! Realm(configuration: RealmKeychain.realmDefaultConfiguration())
+    let nonLocalRealm = try! Realm(configuration: RealmKeychain.realmNonLocalUsersConfiguration())
     public let inputAccessoryPlaceholder = InputAccessoryViewPlaceholder()
     
     public var keyboardHeight = CGFloat()
