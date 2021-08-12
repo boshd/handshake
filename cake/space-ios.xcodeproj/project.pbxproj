@@ -302,6 +302,7 @@
 		BCC8E4C526AE0EF5004B5170 /* ChannelLogController+MessageStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC8E4C426AE0EF5004B5170 /* ChannelLogController+MessageStatus.swift */; };
 		BCC9A5EF237F6F340052446A /* ChannelsFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC9A5EE237F6F340052446A /* ChannelsFetcher.swift */; };
 		BCC9A5F1237FD29F0052446A /* InAppNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC9A5F0237FD29F0052446A /* InAppNotificationManager.swift */; };
+		BCCE297C26C5643C002F4ECF /* TypingIndicatorCell+ConfigureCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCE297B26C5643C002F4ECF /* TypingIndicatorCell+ConfigureCell.swift */; };
 		BCCF55062620999200AFBF7C /* TypingIndicatorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCF55052620999200AFBF7C /* TypingIndicatorCell.swift */; };
 		BCCF550C262099FE00AFBF7C /* TypingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCF550B262099FE00AFBF7C /* TypingIndicator.swift */; };
 		BCCF551426209A1900AFBF7C /* TypingBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCF551326209A1900AFBF7C /* TypingBubble.swift */; };
@@ -686,6 +687,7 @@
 		BCC8E4C426AE0EF5004B5170 /* ChannelLogController+MessageStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelLogController+MessageStatus.swift"; sourceTree = "<group>"; };
 		BCC9A5EE237F6F340052446A /* ChannelsFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsFetcher.swift; sourceTree = "<group>"; };
 		BCC9A5F0237FD29F0052446A /* InAppNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppNotificationManager.swift; sourceTree = "<group>"; };
+		BCCE297B26C5643C002F4ECF /* TypingIndicatorCell+ConfigureCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TypingIndicatorCell+ConfigureCell.swift"; sourceTree = "<group>"; };
 		BCCF55052620999200AFBF7C /* TypingIndicatorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingIndicatorCell.swift; sourceTree = "<group>"; };
 		BCCF550B262099FE00AFBF7C /* TypingIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingIndicator.swift; sourceTree = "<group>"; };
 		BCCF551326209A1900AFBF7C /* TypingBubble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingBubble.swift; sourceTree = "<group>"; };
@@ -1242,7 +1244,7 @@
 				BC3F6626251D7CFB009A44EE /* Message Cells */,
 				BC59276022A0EDAF006A5CEF /* ChannelCell.swift */,
 				BC59276A22A133C1006A5CEF /* ChannelCell+ConfigureCell.swift */,
-				BCCF55052620999200AFBF7C /* TypingIndicatorCell.swift */,
+				BCCE297A26C56401002F4ECF /* Typing Indicator */,
 				BCF48C8A2380A388004B8E21 /* SettingsCell.swift */,
 				BC08DF90236B335500A917D7 /* ParticipantCell.swift */,
 				BC08DF92236B338100A917D7 /* ParticipantCell+ConfigureCell.swift */,
@@ -1765,6 +1767,15 @@
 				BC6B9AE82489CD8700157725 /* CreateChannelExtendedCell.swift */,
 			);
 			path = Cellsd;
+			sourceTree = "<group>";
+		};
+		BCCE297A26C56401002F4ECF /* Typing Indicator */ = {
+			isa = PBXGroup;
+			children = (
+				BCCF55052620999200AFBF7C /* TypingIndicatorCell.swift */,
+				BCCE297B26C5643C002F4ECF /* TypingIndicatorCell+ConfigureCell.swift */,
+			);
+			path = "Typing Indicator";
 			sourceTree = "<group>";
 		};
 		BCCF550A262099D100AFBF7C /* TypingIndicator */ = {
@@ -2434,6 +2445,7 @@
 				BC3AE88824B9F1DD00619FCF /* AddLocationViewController+Map.swift in Sources */,
 				BCCF551F2620D7E100AFBF7C /* InAppNotification.swift in Sources */,
 				BC74F2BC22D0ED2700B37801 /* PhoneController.swift in Sources */,
+				BCCE297C26C5643C002F4ECF /* TypingIndicatorCell+ConfigureCell.swift in Sources */,
 				BC34685823C2904E00170FA7 /* ChatInputContainerView.swift in Sources */,
 				BC7D9D9726546C46008CBF8F /* LocationSearchController+SearchCompletion.swift in Sources */,
 				BC0F428D2359450C000D3DF0 /* CreateChannelOptionsContainerView.swift in Sources */,

@@ -102,16 +102,19 @@ extension ChannelLogController: UICollectionViewDelegateFlowLayout, UICollection
     
     fileprivate func showTypingIndicator(indexPath: IndexPath) -> UICollectionViewCell? {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: collectionView.typingIndicatorCellID, for: indexPath) as! TypingIndicatorCell
-        cell.restart()
 
-        cell.label.text = getUserShit()
+//        cell.label.text = getUserShit()
+        
+        cell.configureCell(for: typingUserIds)
+        
+        cell.restart()
         
         return cell
     }
     
     func getUserShit() -> String {
         
-        if typingUserIds.count == 0 {
+        if typingUserIds.count == 1 {
             if let typingUserId = typingUserIds.first {
                 if let realmUser = RealmKeychain.realmUsersArray().first(where: { $0.id == typingUserId }),
                    let name = realmUser.localName {
@@ -140,7 +143,7 @@ extension ChannelLogController: UICollectionViewDelegateFlowLayout, UICollection
                 }
             }
             
-        } else if typingUserIds.count > 0 {
+        } else if typingUserIds.count > 1 {
             var names = [String]()
             
             for id in typingUserIds {
@@ -180,7 +183,7 @@ extension ChannelLogController: UICollectionViewDelegateFlowLayout, UICollection
                     }
                 }
                 
-                return "\(printableNameList ?? "") are typing.."
+                return "\(printableNameList ?? "") are typing..."
                 
             }
             
@@ -304,14 +307,14 @@ extension ChannelLogController: UICollectionViewDelegateFlowLayout, UICollection
     }
 
     func selectSize(indexPath: IndexPath) -> CGSize {
-        
-        guard indexPath.section != groupedMessages.count else { return CGSize(width: collectionView.frame.width, height: 15) }
+        print("ARRVIING GERE1")
+        guard indexPath.section != groupedMessages.count else { return CGSize(width: collectionView.frame.width, height: 40) }
         let cellHeight: CGFloat = 80
         let message = groupedMessages[indexPath.section].messages[indexPath.item]
         let isInformationMessage = message.isInformationMessage.value ?? false
         let isTextMessage = message.text != nil && !isInformationMessage
         let isOutgoingMessage = message.fromId == Auth.auth().currentUser?.uid
-
+        print("ARRVIING GERE2")
         guard !isTextMessage else {
             guard let estimate = message.estimatedFrameForText?.width.value else { return CGSize(width: collectionView.frame.width, height: 15) }
             
@@ -326,7 +329,7 @@ extension ChannelLogController: UICollectionViewDelegateFlowLayout, UICollection
                                                                  frame: message.estimatedFrameForText,
                                                                  indexPath: indexPath))
         }
-
+        print("ARRVIING GERE2.5 \(isInformationMessage) ... \(message)")
         guard !isInformationMessage else {
             guard let messagesFetcher = messagesFetcher else { return CGSize(width: 0, height: 0) }
             let infoMessageWidth = collectionView.frame.width
@@ -337,7 +340,7 @@ extension ChannelLogController: UICollectionViewDelegateFlowLayout, UICollection
                                                                          font: MessageFontsAppearance.defaultInformationMessageTextFont).height + 25
             return CGSize(width: infoMessageWidth, height: infoMessageHeight)
         }
-
+        print("ARRVIING GERE3")
         return CGSize(width: collectionView.frame.width, height: cellHeight)
     }
     
