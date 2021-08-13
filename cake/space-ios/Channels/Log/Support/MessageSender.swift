@@ -142,9 +142,16 @@ class MessageSender: NSObject {
               let channelID = channel?.id
         else { return }
         
+        // diff between channels being updated or not
+        
         let ref = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID)
         ref.setData([
             "lastMessageId": messageID as Any
         ], merge: true)
+        
+//        let ref = Firestore.firestore().collection("channels").document(channelID)
+//        ref.setData([
+//            "lastMessageId": messageID as Any
+//        ], merge: true)
     }
 }

@@ -83,6 +83,7 @@ class ChannelsFetcher: NSObject {
                 self.group?.notify(queue: .main, execute: { [weak self] in
                     //guard let unwrappedSelf = self else { return }
                     if let delegate = self?.delegate {
+                        print("is group finished? YES!")
                         self?.isGroupAlreadyFinished = true
                         delegate.channels(didFinishFetching: true, channels: self!.channels)
                     }
@@ -153,23 +154,28 @@ class ChannelsFetcher: NSObject {
         else { return }
         
 //        let groupChannelDataReference = Firestore.firestore().collection("channels").document(channelID)
-        let personal = Firestore.firestore().collection("users")
+//        let personal = Firestore.firestore().collection("users")
         
+        // OBSERVATION HAPPENS HERE
         
-        
-        // groupChannelDataReference.getDocument { (documentSnapshot, error) in
-        currentUserChannelIDsReference.document(channelID).getDocument { (documentSnapshot, error) in
-            guard let data = documentSnapshot?.data() else {
+        let tempListener = currentUserChannelIDsReference.document(channelID).addSnapshotListener { snapshot, error in
+            print("TRIGGERED UPDATE IN PERSONAL CHANNEL REFERENCE")
+            guard let data = snapshot?.data() else {
                 if error != nil {
                     print("error // ", error!)
                 }
-                self.delegate?.channels(didFinishFetching: true, channels: self.channels)
+//                self.delegate?.channels(didFinishFetching: true, channels: self.channels)
                 return
             }
-            let channel = Channel(dictionary: data as [String : AnyObject])
             
-//            channel.lastMessageId = inheritedChannel.lastMessageId
-//            channel.badge = inheritedChannel.badge
+            guard var dictionary = snapshot?.data() as? [String: AnyObject], let exists = snapshot?.exists, exists else { return }
+            dictionary.updateValue(channelID as AnyObject, forKey: "id")
+            
+            if self.isGroupAlreadyFinished {
+                self.delegate?.channels(didStartUpdatingData: true)
+            }
+            
+            let channel = Channel(dictionary: dictionary)
             
             channel.isTyping.value = channel.getTyping()
             
@@ -179,6 +185,26 @@ class ChannelsFetcher: NSObject {
             }
             self.loadLastMessage(for: lastMessageID, channel: channel)
         }
+        individualChannelListenersDict[channelID] = tempListener
+        
+//        currentUserChannelIDsReference.document(channelID).getDocument { (documentSnapshot, error) in
+//            guard let data = documentSnapshot?.data() else {
+//                if error != nil {
+//                    print("error // ", error!)
+//                }
+//                self.delegate?.channels(didFinishFetching: true, channels: self.channels)
+//                return
+//            }
+//            let channel = Channel(dictionary: data as [String : AnyObject])
+//
+//            channel.isTyping.value = channel.getTyping()
+//
+//            guard let lastMessageID = channel.lastMessageId else {
+//                self.loadAdditionalMetadata(for: channel)
+//                return
+//            }
+//            self.loadLastMessage(for: lastMessageID, channel: channel)
+//        }
     }
     
     fileprivate func loadLastMessage(for messageID: String, channel: Channel) {
@@ -201,7 +227,8 @@ class ChannelsFetcher: NSObject {
     
     fileprivate func loadAdditionalMetadata(for channel: Channel) {
         guard let channelID = channel.id, let _ = Auth.auth().currentUser?.uid else { return }
-        let tempListener = Firestore.firestore().collection("channels").document(channelID).addSnapshotListener { (snapshot, error) in
+//        let tempListener = Firestore.firestore().collection("channels").document(channelID).addSnapshotListener { (snapshot, error) in
+        Firestore.firestore().collection("channels").document(channelID).getDocument { snapshot, error in
             if error != nil {
                 print(error as Any)
                 return
@@ -247,9 +274,10 @@ class ChannelsFetcher: NSObject {
                 channel.fcmTokens = convertRawFCMTokensToRealmCompatibleType(fcmTokensDict)
             }
             prefetchThumbnail(from: channel.thumbnailImageUrl == nil ? channel.imageUrl : channel.thumbnailImageUrl)
+            print("REACHED HERE BEFORE UPDATE CONVO ARRAY")
             self.updateConversationArrays(with: channel)
         }
-        individualChannelListenersDict[channelID] = tempListener
+//        individualChannelListenersDict[channelID] = tempListener
     }
     
     fileprivate let messagesFetcher = MessagesFetcher()
@@ -264,7 +292,6 @@ class ChannelsFetcher: NSObject {
         guard let channelID = channel.id else { return }
         
         if let index = channels.firstIndex(where: { (channel) -> Bool in
-            
             return channel.id == channelID
         }) {
             update(channel: channel, at: index)
@@ -275,6 +302,7 @@ class ChannelsFetcher: NSObject {
     }
     
     func update(channel: Channel, at index: Int) {
+        print("UPDATE IS CALLED!")
         if channel.isTyping.value == nil {
             let isTyping = channels[index].isTyping.value
             channel.isTyping.value = isTyping
