@@ -11,13 +11,15 @@ import Firebase
 
 extension ChannelLogController {
     
-    // MARK: - DATABASE TYPING INDICATOR // TO MOVE
-    
     func sendTypingStatus(data: NSDictionary) {
         guard let currentUserID = Auth.auth().currentUser?.uid,
               let channelID = channel?.id
         else { return }
         Firestore.firestore().collection("channels").document(channelID).collection("typingUserIds").document(currentUserID).setData(data as! [String : Any], merge: true)
+//        Firestore.firestore().collection("channels").document(channelID).collection("typingUserIds").document("XevIxNAQAPYxV4OWFhtQOIIJfH33").setData(data as! [String : Any], merge: true)
+//        Firestore.firestore().collection("channels").document(channelID).collection("typingUserIds").document("ZFi01vpuzMhcpJWduO3KuAebDPv2").setData(data as! [String : Any], merge: true)
+        
+        
     }
     
     func observeTypingIndicator() {
@@ -85,7 +87,7 @@ extension ChannelLogController {
                     guard let cell = self.collectionView.cellForItem(at: IndexPath(item: 0, section: groupedMessages.count)) as? TypingIndicatorCell else {
                         return
                     }
-                    cell.typingIndicator.stopAnimating()
+                    cell.invalidateTimer()
                     if isScrollViewAtTheBottom() {
                         self.scrollToBottom(animated: true)
                     }

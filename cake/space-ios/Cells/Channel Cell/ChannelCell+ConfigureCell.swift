@@ -56,8 +56,12 @@ extension ChannelCell {
         } else {
             channelImageView.image = UIImage(named: "handshake")
         }
+        
+        
 
         let badgeInt = channels[indexPath.row].badge.value ?? 0
+        
+        print("IN CHANNEL CELL CONFIGURATION \(badgeInt) ... \(channels[indexPath.row].lastMessage?.fromId != Auth.auth().currentUser?.uid)")
         
         guard badgeInt > 0, channels[indexPath.row].lastMessage?.fromId != Auth.auth().currentUser?.uid else {
             updateBadge(0)

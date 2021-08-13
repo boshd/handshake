@@ -113,6 +113,8 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
             } else {
                 guard let channelID = channel?.id else { return }
                 Firestore.firestore().collection("channels").document(channelID).collection("typingUserIds").document(currentUserID).delete()
+//                Firestore.firestore().collection("channels").document(channelID).collection("typingUserIds").document("XevIxNAQAPYxV4OWFhtQOIIJfH33").delete()
+//                Firestore.firestore().collection("channels").document(channelID).collection("typingUserIds").document("ZFi01vpuzMhcpJWduO3KuAebDPv2").delete()
             }
         }
     }

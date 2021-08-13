@@ -23,7 +23,6 @@ extension ChannelsController: ChannelUpdatesDelegate {
 
     func channels(didFinishFetching: Bool, channels: [Channel]) {
         notificationsManager.observersForNotifications(channels: channels)
-        
         if !isAppLoaded {
             observeDataSourceChanges()
         }
@@ -38,7 +37,7 @@ extension ChannelsController: ChannelUpdatesDelegate {
         if let realmChannels = realmChannels {
             notificationsManager.updateChannels(to: Array(realmChannels))
         }
-        
+        print("IN UPDATE CHANNEL.. is reload needed? \(reloadNeeded)")
         if reloadNeeded {
             handleReloadTable()
         }

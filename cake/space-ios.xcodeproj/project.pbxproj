@@ -1242,8 +1242,7 @@
 				BC1A780422A3F9FE005AC5CE /* RevealableCell */,
 				BC59276722A131F6006A5CEF /* layout */,
 				BC3F6626251D7CFB009A44EE /* Message Cells */,
-				BC59276022A0EDAF006A5CEF /* ChannelCell.swift */,
-				BC59276A22A133C1006A5CEF /* ChannelCell+ConfigureCell.swift */,
+				BCCE297D26C5C6F8002F4ECF /* Channel Cell */,
 				BCCE297A26C56401002F4ECF /* Typing Indicator */,
 				BCF48C8A2380A388004B8E21 /* SettingsCell.swift */,
 				BC08DF90236B335500A917D7 /* ParticipantCell.swift */,
@@ -1776,6 +1775,15 @@
 				BCCE297B26C5643C002F4ECF /* TypingIndicatorCell+ConfigureCell.swift */,
 			);
 			path = "Typing Indicator";
+			sourceTree = "<group>";
+		};
+		BCCE297D26C5C6F8002F4ECF /* Channel Cell */ = {
+			isa = PBXGroup;
+			children = (
+				BC59276022A0EDAF006A5CEF /* ChannelCell.swift */,
+				BC59276A22A133C1006A5CEF /* ChannelCell+ConfigureCell.swift */,
+			);
+			path = "Channel Cell";
 			sourceTree = "<group>";
 		};
 		BCCF550A262099D100AFBF7C /* TypingIndicator */ = {

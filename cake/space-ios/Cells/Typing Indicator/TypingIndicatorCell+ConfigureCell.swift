@@ -15,6 +15,7 @@ extension TypingIndicatorCell {
         
         if typingUserIds.count == 1 {
             print("its 1 person")
+            isIs = true
             if let typingUserId = typingUserIds.first {
                 getName(for: typingUserId) { name in
 //                    self.label.text = "\(name)"
@@ -23,6 +24,7 @@ extension TypingIndicatorCell {
                 }
             }
         } else if typingUserIds.count > 1 {
+            isIs = false
             let group = DispatchGroup()
             var names = [String]()
             
@@ -34,24 +36,27 @@ extension TypingIndicatorCell {
                 }
             }
             
-            group.notify(queue: .main) {
+            group.notify(queue: .main) { [weak self] in
                 // strigify names
-                self.currentLabelText = "\(names)"
+//                self.currentLabelText = "\(names)"
                 var printableNameList: String?
                 
-                if names.count > 3 {
+                if names.count > 2 {
                     for (index, name) in names.enumerated() {
-                        if index < 3 {
+                        if index < 2 {
                             if printableNameList == nil {
                                 printableNameList = name
                             } else {
                                 printableNameList! += ", " + name
                             }
                         } else {
-                            printableNameList! += " and \(names.count - 3) more"
-                            return
+                            printableNameList! += " and \(names.count - 2) more"
+//                            self.currentLabelText = "\(printableNameList!)"
+                            continue
                         }
                     }
+                    
+//                    self.currentLabelText = "\(printableNameList!)"
                 } else {
                     for name in names {
                         if printableNameList == nil {
@@ -60,7 +65,10 @@ extension TypingIndicatorCell {
                             printableNameList! += ", " + name
                         }
                     }
+//                    self.currentLabelText = "\(printableNameList!)"
                 }
+                
+                self?.currentLabelText = "\(printableNameList!)"
                 
 
             }
@@ -79,7 +87,7 @@ extension TypingIndicatorCell {
             completion(phone)
         } else {
             // fetch user once and add to non local realm
-            UsersFetcher.fetchUser(id: id) { user, error in
+            UsersFetcher.fetchUser(id: id) { [weak self] user, error in
                 guard error == nil else { print(error?.localizedDescription ?? ""); completion("somoene"); return }
                 // issues w/ initial state
                 if let user = user {
@@ -88,7 +96,7 @@ extension TypingIndicatorCell {
                     } else {
                         completion("somoene")
                     }
-                    self.addToRealm(user: user)
+                    self?.addToRealm(user: user)
                 } else {
                     completion("somoene")
                 }

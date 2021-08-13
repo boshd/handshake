@@ -211,7 +211,6 @@ class MessagesFetcher: NSObject {
     }
 
     func preloadCellData(to dictionary: [String: AnyObject]) -> [String: AnyObject] {
-        print("PRELOAD CELL DATA")
         var dictionary = dictionary
         
         if let messageText = dictionary["text"] as? String {

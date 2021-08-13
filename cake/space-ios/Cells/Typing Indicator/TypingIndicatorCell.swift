@@ -22,18 +22,20 @@ static let typingIndicatorHeight: CGFloat = 30
         case areTyping3 = " are typing..."
     }
     
+    var isIs = true
+    
     var currentLabelText: String?
     
     var currentTypingPrompt: TypingPrompt?
 
-    var typingIndicator: TypingBubble = {
-        var typingIndicator = TypingBubble()
-        typingIndicator.typingIndicator.isBounceEnabled = true
-        typingIndicator.typingIndicator.isFadeEnabled = true
-        typingIndicator.isPulseEnabled = true
-
-        return typingIndicator
-    }()
+//    var typingIndicator: TypingBubble = {
+//        var typingIndicator = TypingBubble()
+//        typingIndicator.typingIndicator.isBounceEnabled = true
+//        typingIndicator.typingIndicator.isFadeEnabled = true
+//        typingIndicator.isPulseEnabled = true
+//
+//        return typingIndicator
+//    }()
     
     var label: DynamicLabel = {
         var label = DynamicLabel(withInsets: 5, 5, 0, 0)
@@ -48,7 +50,7 @@ static let typingIndicatorHeight: CGFloat = 30
 
     override init(frame: CGRect) {
         super.init(frame: frame.integral)
-        
+        print("INITED")
         addSubview(label)
         
         NSLayoutConstraint.activate([
@@ -71,26 +73,30 @@ static let typingIndicatorHeight: CGFloat = 30
     override func prepareForReuse() {
         super.prepareForReuse()
         restart()
+        print("PREPARE FOR REUSE")
+//        invalidateTimer()
     }
 
     deinit {
         print("DEINITED")
-        typingIndicator.stopAnimating()
-        stopAnimating()
+        invalidateTimer()
     }
     
     weak var timer: Timer?
     func startTimer() {
-        timer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(animate), userInfo: nil, repeats: true)
+        if self.timer == nil {
+            self.timer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(animate), userInfo: nil, repeats: true)
+        }
     }
 
-    func stopAnimating()  {
-        timer?.invalidate()
+    func invalidateTimer()  {
+        self.timer?.invalidate()
+        self.timer = nil
     }
 
     func restart() {
-        if let valid = timer?.isValid, valid {
-            timer?.invalidate()
+        if timer != nil {
+            invalidateTimer()
             startTimer()
         } else {
             startTimer()
@@ -104,8 +110,14 @@ static let typingIndicatorHeight: CGFloat = 30
             print("in here")
             
             if currentTypingPrompt == nil {
-                label.text = currentLabelText + TypingPrompt.isTyping1.rawValue
-                currentTypingPrompt = .isTyping1
+                if isIs {
+                    label.text = currentLabelText + TypingPrompt.isTyping1.rawValue
+                    currentTypingPrompt = .isTyping1
+                } else {
+                    label.text = currentLabelText + TypingPrompt.areTyping1.rawValue
+                    currentTypingPrompt = .areTyping1
+                }
+                
             }
             
             switch currentTypingPrompt {

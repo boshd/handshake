@@ -152,8 +152,13 @@ class ChannelsFetcher: NSObject {
               let channelID = channelID
         else { return }
         
-        let groupChannelDataReference = Firestore.firestore().collection("channels").document(channelID)
-        groupChannelDataReference.getDocument { (documentSnapshot, error) in
+//        let groupChannelDataReference = Firestore.firestore().collection("channels").document(channelID)
+        let personal = Firestore.firestore().collection("users")
+        
+        
+        
+        // groupChannelDataReference.getDocument { (documentSnapshot, error) in
+        currentUserChannelIDsReference.document(channelID).getDocument { (documentSnapshot, error) in
             guard let data = documentSnapshot?.data() else {
                 if error != nil {
                     print("error // ", error!)
@@ -163,6 +168,8 @@ class ChannelsFetcher: NSObject {
             }
             let channel = Channel(dictionary: data as [String : AnyObject])
             
+//            channel.lastMessageId = inheritedChannel.lastMessageId
+//            channel.badge = inheritedChannel.badge
             
             channel.isTyping.value = channel.getTyping()
             
@@ -236,7 +243,6 @@ class ChannelsFetcher: NSObject {
             location.latitude = metaInfo.latitude.value ?? 0.0
             location.longitude = metaInfo.longitude.value ?? 0.0
             channel.location = location
-            
             if let fcmTokensDict = dictionary["fcmTokens"] as? [String:String] {
                 channel.fcmTokens = convertRawFCMTokensToRealmCompatibleType(fcmTokensDict)
             }
@@ -256,7 +262,9 @@ class ChannelsFetcher: NSObject {
     
     fileprivate func updateConversationArrays(with channel: Channel) {
         guard let channelID = channel.id else { return }
+        
         if let index = channels.firstIndex(where: { (channel) -> Bool in
+            
             return channel.id == channelID
         }) {
             update(channel: channel, at: index)
@@ -291,6 +299,7 @@ class ChannelsFetcher: NSObject {
             return
         }
         delegate?.channels(didFinishFetching: true, channels: channels)
+        
     }
     
     // MARK:- INDIVIDUAL CHANNEL LISENER
