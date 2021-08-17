@@ -2,16 +2,15 @@ import { db } from '../../core/admin'
 import { constants } from '../../core/constants'
 
 /**
-* given a list of phone numbers, we want to return a list of users that have this number
-*
-* @remarks
-* res: any is just to make the linter STFU about being any.
-*
-* @param req - request
-* @param res - response
-* @returns - nada
-*/
-
+ * given a list of phone numbers, we want to return a list of users that have this number
+ *
+ * @remarks
+ * res: any is just to make the linter STFU about being any.
+ *
+ * @param req - request
+ * @param res - response
+ * @returns - nada
+ */
 export const getUsersWithPreparedNumbers = (req: any, res: any) => {
 	try {
 		const preparedNumbers: Array<string> = req.body.data.preparedNumbers

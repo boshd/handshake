@@ -13,15 +13,29 @@ import AVFoundation
 extension ChannelLogController: CollectionDelegate {
     
     func collectionView(shouldUpdateOutgoingMessageStatusFrom reference: DocumentReference, message: Message) {
-        reference.addSnapshotListener { (snapshot, error) in
+        print("this line is called the same number of messages OR any subsequent messages \(message.text)")
+        var initial = true
+        lastOutgoingMessageListener = reference.addSnapshotListener { [weak self] (snapshot, error) in
+            print("CALLED")
+
             guard error == nil else { print(error?.localizedDescription ?? ""); return }
             guard let exists = snapshot?.exists, exists, let data = snapshot?.data(), let messageStatus = data["status"] as? String else { return }
             message.status = messageStatus
-            self.updateMessageStatusUI(sentMessage: message)
+            print("last outgoing message listener lmao \(messageStatus) \(data["text"])")
+            self?.updateMessageStatusUI(sentMessage: message)
+            if initial {
+                initial = false
+                return
+            } else {
+                self?.lastOutgoingMessageListener?.remove()
+                self?.lastOutgoingMessageListener = nil
+            }
         }
+        
         DispatchQueue.global(qos: .background).async {
             self.updateMessageStatus(messageRef: reference)
         }
+        
         updateMessageStatusUI(sentMessage: message)
     }
     

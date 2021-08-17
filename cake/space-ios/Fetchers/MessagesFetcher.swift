@@ -26,8 +26,10 @@ class MessagesFetcher: NSObject {
     private var messages = [Message]()
 
     var messageReference: DocumentReference!
+    
+    var userMessagesReference: Query!
 
-    private  let messagesToLoad = 5
+    private  let messagesToLoad = 3
 
     weak var delegate: MessagesDelegate?
 
@@ -52,10 +54,13 @@ class MessagesFetcher: NSObject {
     func loadMessagesData(for channel: Channel, controller: UIViewController?) {
         guard let currentUserID = Auth.auth().currentUser?.uid, let channelID = channel.id, let controller = controller else { return }
         
-        let reference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID).collection("messageIds").order(by: "timestamp", descending: true).limit(toLast: messagesToLoad)
+        // remember, the messageId docs don't have timestamps
+        userMessagesReference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID).collection("messageIds").order(by: "timestamp").limit(toLast: messagesToLoad)
+            
+            //.order(by: "timestamp", descending: true).limit(toLast: messagesToLoad)
         
         loadingMessagesGroup.enter()
-        newLoadMessages(reference: reference, channelID: channelID, channel: channel)
+        newLoadMessages(reference: userMessagesReference, channelID: channelID, channel: channel)
         
         loadingMessagesGroup.notify(queue: .main) {
             guard self.messages.count != 0 else {
@@ -92,19 +97,25 @@ class MessagesFetcher: NSObject {
                 return
             }
             guard let docCount = snapshot?.documents.count else { return }
-            for _ in 0 ..< docCount { loadedMessagesGroup.enter() }
             
+            print(snapshot?.documents.map({ $0.data() }))
+            
+            for _ in 0 ..< docCount { loadedMessagesGroup.enter() }
+
             loadedMessagesGroup.notify(queue: .main) { [weak self] in
                 self?.messages = loadedMessages
                 self?.loadingMessagesGroup.leave()
             }
-            
+
             self.threadListener = reference.addSnapshotListener { (snapshot, error) in
                 if error != nil {
                     print(error?.localizedDescription ?? "error")
                     return
                 }
                 guard let documentChanges = snapshot?.documentChanges else { return }
+                
+                print("in thread listener \(snapshot?.documents.count) messages")
+                
                 documentChanges.forEach { (diff) in
                     if diff.type == .added {
                         let messageUID = diff.document.documentID
@@ -114,7 +125,7 @@ class MessagesFetcher: NSObject {
                                 print(error?.localizedDescription ?? "error")
                                 return
                             }
-                            
+
                             guard var dictionary = snapshot?.data() as [String: AnyObject]? else { return }
                             dictionary.updateValue(messageUID as AnyObject, forKey: "messageUID")
                             dictionary = self.preloadCellData(to: dictionary)
@@ -122,10 +133,10 @@ class MessagesFetcher: NSObject {
                                 self.handleMessageInsertionInRuntime(newDictionary: dictionary)
                                 return
                             }
-                            
+
                             let message = Message(dictionary: dictionary)
                             message.channel = channel
-                            
+
                             if message.timestamp.value ?? 0 >= self.messages.first?.timestamp.value ?? 0 {
                                 loadedMessages.append(message)
                             }
@@ -229,6 +240,7 @@ class MessagesFetcher: NSObject {
     }
     
     func handleMessageInsertionInRuntime(newDictionary : [String: AnyObject]) {
+        print("handleMessageInsertionInRuntime")
         guard let currentUserID = Auth.auth().currentUser?.uid else { return }
         let message = Message(dictionary: newDictionary)
 
@@ -242,6 +254,7 @@ class MessagesFetcher: NSObject {
                     self.collectionDelegate?.collectionView(shouldBeUpdatedWith: messageWithName,
                                                             reference: self.messageReference)
                 } else {
+                    print("is outgoing tho")
                     self.collectionDelegate?.collectionView(shouldUpdateOutgoingMessageStatusFrom: self.messageReference,
                                                             message: messageWithName)
                 }

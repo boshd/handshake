@@ -1,35 +1,17 @@
-/*
-
-app.use((req, res) => {}, cors({maxAge: 84600}));
-https://github.com/dch133/Social-Media-App/blob/master/socialmedia-server/functions/index.js
-https://github.com/dalenguyen/serverless-rest-api/blob/master/functions/src/index.ts
-
-*/
-
-// import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 import { firestore } from 'firebase-admin'
 import { constructNotificationPayload } from './helpers/notifications'
 import * as functions from 'firebase-functions'
-// import * as express from 'express'
 import { db, admin } from './core/admin'
-// import {
-//     getUsersWithPreparedNumbers,
-// } from './handlers/users/getUsers'
 import { constants } from './core/constants'
-// import { incrementBadge, sendMessageToMember, updateChannelLastMessage } from './helpers/messaging'
-
-// API routes
-// const app = express()
-// app.get('/users', getUsersWithPreparedNumbers)
-// app.post('/users', getUsersWithPreparedNumbers)
-// app.put('/users', getUsersWithPreparedNumbers)
-// exports.api = functions.https.onRequest(app)
-
-// exports.getUsersWithPreparedNumbers = getUsersWithPreparedNumbers
 
 const LOGGER = functions.logger
 
-
+/**
+ * Returns users given prepaerd phone numbers.
+ *
+ * @param {!express:Request} req HTTP request context.
+ * @param {!express:Response} res HTTP response context.
+ */
 exports.getUsersWithPreparedNumbers = functions.https.onRequest((req, res) => {
 	try {
 		const preparedNumbers: Array<string> = req.body.data.preparedNumbers
@@ -66,86 +48,244 @@ exports.getUsersWithPreparedNumbers = functions.https.onRequest((req, res) => {
 	}
 })
 
-export const sendNotificationToDevice = functions.firestore
-    .document('users/{userId}/channelIds/{channelId}/messageIds/{messageId}')
-    .onCreate((userMessageSnapshot, context) => {
-        const userId: string = context.params['userId']
-        const channelId: string = context.params['toId']
-        const messageId: string = context.params['messageId']
+/**
+ * Returns users given prepaerd phone numbers.
+ *
+ * @param {!express:Request} req HTTP request context.
+ * @param {!express:Response} res HTTP response context.
+ */
+exports.handleNewMessage = functions.firestore
+.document(constants.MESSAGES_COLLECTION + '/{messageId}')
+.onCreate((snapshot, context) => {
+    const messageId: string = context.params['messageId']
 
-        if (userMessageSnapshot.exists) {
-            const userMessageData = userMessageSnapshot.data()
-            if (userMessageData !== undefined && userMessageData !== null) {
-                const fromId = userMessageData['fromId']
-                if (fromId !== userId) {
-                    try {
-                        admin
-                        .firestore()
-                        .doc('messages/'+messageId)
-                        .get()
-                        .then(async snapshot => {
-                            if (snapshot.exists) {
-                                const data = snapshot.data()
-                                if (data !== undefined && data !== null) {
-                                    const historicChannelName = data['historicChannelName']
-                                    const historicSenderName = data['historicSenderName']
-                                    const text: string = data['text']
-                                    const fcmTokens = data['fcmTokens']
-                                    let badge = 0
+    if (snapshot.exists) {
+        const messageData = snapshot.data()
 
-                                    admin
-                                    .firestore()
-                                    .doc('users/'+userId)
-                                    .get()
-                                    .then(userChannelSnapshot => {
-                                        if (userChannelSnapshot.exists) {
-                                            const userData = userChannelSnapshot.data()
-                                            if (userData !== undefined && userData !== null) {
-                                                badge = userData['badge']
-                                            }
-                                        }
+        const historicChannelName = messageData['historicChannelName']
+        const historicSenderName = messageData['historicSenderName']
+        const text: string = messageData['text']
+        const channelId = messageData['toId']
+        const timestamp = messageData['timestamp']
+        const fromId = messageData['fromId']
+        var badge = 0
+        var fcmTokens = messageData['fcmTokens']
 
-                                        functions.logger.info(badge)
-                                        functions.logger.info(fcmTokens)
-                                        const currentUserFCMToken = fcmTokens[userId]
+        fcmTokens = Object.keys(fcmTokens).map(key => fcmTokens[key])
 
-                                        const messagePayload = constructNotificationPayload(
-                                            currentUserFCMToken,
-                                            messageId,
-                                            channelId,
-                                            historicSenderName,
-                                            historicChannelName,
-                                            fromId,
-                                            text,
-                                            badge,
-                                        )
+        const messagePayload = constructNotificationPayload(
+            fcmTokens,
+            messageId,
+            channelId,
+            historicSenderName,
+            historicChannelName,
+            fromId,
+            text,
+            badge,
+        )
 
-                                        return admin.messaging().sendMulticast(messagePayload)
-                                        .then((res) => {
-                                            functions.logger.info('Successfully sent message // ', res);
-                                        })
-                                        .catch((error) => {
-                                            functions.logger.error('Error sending message // ', error)
-                                        })
-                                    })
-                                    .catch((error) => {
-                                        functions.logger.error(error)
-                                    })
-                                }
-                            }
-                            return null
-                        })
-                        .catch(err => {
-                            functions.logger.error(err)
-                        })
-                    } catch (err) {
-                        functions.logger.error(err)
-                    }
+        try {
+
+            sendMessageToAllButSender()
+            .then(() => {
+                LOGGER.log('sendMessageToAllButSender is done')
+                notifyAllButSender()
+            })
+            .catch(err => {
+                functions.logger.error('whole thing failed')
+            })
+
+            /*
+
+            what needs to happen after message is created?
+                - add message id to all members of group
+                - increment badge for each meember for group and global?
+                - notify
+            */
+
+
+        } catch (err) {
+            functions.logger.error(err)
+        }
+
+        function notifyAllButSender() {
+            admin
+            .messaging()
+            .sendMulticast(messagePayload)
+            .then((res) => { functions.logger.info('Successfully sent message // ', res) })
+            .catch((error) => { functions.logger.error('Error sending message // ', error) })
+        }
+
+        async function sendMessageToAllButSender() {
+            return await admin
+            .firestore()
+            .collection(constants.CHANNELS_COLLECTION + '/'+ channelId + '/participantIds')
+            .get()
+            .then(participantSnapshot => {
+                if (!participantSnapshot.empty) {
+                    const members = participantSnapshot.docs
+
+                    // members.forEach(member => {
+                    //     if (member.id !== fromId) {
+                    //         batchSetEverything(member.id)
+                    //         incrementBadge(member.id)
+                    //     }
+                    // })
                 }
+            })
+            .catch((error) => { functions.logger.error('Error sending message // ', error) })
+        }
+
+        async function setMessageIdInUserMessagsAndInChannel(members: any[]) {
+            const batch = admin.firestore().batch()
+
+            members.forEach(member => {
+                if (member.id !== fromId) {
+
+                    const ref = admin.firestore().collection('users').doc(member.id).collection('channelIds').doc(channelId)
+
+                    batch.set((
+
+                        .collection('messageIds')
+                        .doc(messageId)
+                    ), {
+                            'fromId': fromId,
+                            'timestamp': timestamp,
+                    }, {
+                        merge: true,
+                    })
+
+                    batchSetEverything(member.id)
+                    incrementBadge(member.id)
+                }
+            })
+
+
+
+            batch.set((
+                admin.firestore()
+                .collection('users')
+                .doc(memberId)
+                .collection('channelIds')
+                .doc(channelId)
+                .collection('messageIds')
+                .doc(messageId)
+            ), {
+                    'fromId': fromId,
+                    'timestamp': timestamp,
+            }, {
+                merge: true,
+            })
+
+            batch.set((
+                admin.firestore()
+                .collection('users')
+                .doc(memberId)
+                .collection('channelIds')
+                .doc(channelId)
+            ), {
+                'lastMessageId': messageId,
+            }, {
+                merge: true,
+            })
+
+            try {
+                return await batch
+                .commit()
+                .then(() => {
+                    functions.logger.info('successful batchSetEverything')
+                })
+                .catch(err => {
+                    functions.logger.error('error in batchSetEverything', err)
+                })
+            } catch (err) {
+
+            }
+
+        }
+
+        function incrementBadges(memberId: string) {
+            const userChannelRef = db
+            .collection('users')
+            .doc(memberId)
+            .collection('channelIds')
+            .doc(channelId)
+
+            const userRef = db
+            .collection('users')
+            .doc(memberId)
+
+            try {
+                return db
+                .runTransaction(async (updateFunction) => {
+                    const userChannelDoc: FirebaseFirestore.DocumentData = await updateFunction.get(userChannelRef)
+                    const userDoc: FirebaseFirestore.DocumentData = await updateFunction.get(userRef)
+
+                    const newUserChannelBadgeValue = (userChannelDoc.data()['badge'] || 0) + 1
+                    const newUserBadgeValue = (userDoc.data()['badge'] || 0) + 1
+
+                    updateFunction.update(userRef, {
+                        'badge': newUserBadgeValue
+                    })
+
+                    updateFunction.update(userChannelRef, {
+                        'badge': newUserChannelBadgeValue
+                    })
+
+                    badge = newUserBadgeValue
+                })
+                .then(_ => { functions.logger.info('success incrementing badges') })
+                .catch(err => { functions.logger.error('error in incrementing badges // ', err); badge = 0 })
+            } catch (err) {
+                LOGGER.error('Transaction failure:', err)
             }
         }
-    })
 
+        // function incrementBadge(memberId: string) {
+
+
+        //     try {
+
+
+
+        //         db.runTransaction(async (t) => {
+        //             const doc: FirebaseFirestore.DocumentData = await t.get(userRef)
+        //             const newValue = (doc.data()['badge'] || 0) + 1
+        //             t.update(userRef, {
+        //                 'badge': newValue,
+        //             })
+        //         })
+        //         .then(_ => { functions.logger.info('success incrementBadge') })
+        //         .catch(err => { functions.logger.error('error in incrementBadge // ', err) })
+
+        //         db.runTransaction(async (t) => {
+        //             const doc: FirebaseFirestore.DocumentData = await t.get(userChannelRef)
+        //             const newValue = (doc.data()['badge'] || 0) + 1
+        //             t.update(userChannelRef, {
+        //                 'badge': newValue,
+        //             })
+
+        //             badge = newValue
+        //         })
+        //         .then(_ => { functions.logger.info('success incrementBadge') })
+        //         .catch(err => { functions.logger.error('error in incrementBadge // ', err); badge = 0 })
+        //     } catch (e) {
+        //         functions.logger.error('Transaction failure:', e)
+        //     }
+
+        // }
+
+    }
+
+    return null
+})
+
+/**
+ * Returns users given prepaerd phone numbers.
+ *
+ * @param {!express:Request} req HTTP request context.
+ * @param {!express:Response} res HTTP response context.
+ */
 export const updateEventFCMTokenIdsArrayOnUpdate = functions.firestore
 	.document(constants.FCM_TOKENS_COLLECTION + '/{userId}')
 	.onUpdate((change, context) => {
@@ -185,158 +325,12 @@ export const updateEventFCMTokenIdsArrayOnUpdate = functions.firestore
 
     })
 
-    /*
-    CHANNEL OPERATIONS
-    */
-
-    exports.sendGroupMessage = functions.firestore
-    .document(constants.CHANNELS_COLLECTION + '/{channelId}/messageIds/{messageId}')
-    .onCreate((onCreateSnapshot, context) => {
-        console.log('message created and triggered this cloud f\'n')
-        const channelId = context.params.channelId
-        const messageId = context.params.messageId
-        const data = onCreateSnapshot.data()
-        functions.logger.log(data['fromId'])
-        const senderId = data['fromId']
-
-        if (senderId === null || senderId === '') {
-            return
-        }
-
-        console.log('pre-admin')
-
-        return db
-        .collection(constants.CHANNELS_COLLECTION + '/'+ channelId + '/participantIds')
-        .get()
-        .then(snapshot => {
-            if (!snapshot.empty) {
-                console.log('snapshot not empty')
-                const members = snapshot.docs
-                members.forEach(member => {
-                    console.log('sender id: ' + senderId + ' // member id: ' + member.id)
-
-                    if (member.id !== senderId) {
-                        functions.logger.info('member id is // ', member.id)
-                        batchSetEverything(member.id)
-                        incrementBadge(member.id)
-                    }
-                })
-            }
-        })
-        .then(snapshot => { functions.logger.info('success') })
-        .catch(err => { functions.logger.error(err) })
-
-        function batchSetEverything(memberId: string) {
-
-            const batch = admin.firestore().batch()
-
-            batch.set((
-                admin.firestore()
-                .collection('users')
-                .doc(memberId)
-                .collection('channelIds')
-                .doc(channelId)
-                .collection('messageIds')
-                .doc(messageId)
-            ), {
-                    'fromId': senderId,
-            }, {
-                merge: true,
-            })
-
-            batch.set((
-                admin.firestore()
-                .collection('users')
-                .doc(memberId)
-                .collection('channelIds')
-                .doc(channelId)
-            ), {
-                'lastMessageId': messageId,
-            }, {
-                merge: true,
-            })
-
-            batch
-            .commit()
-            .then(() => {
-                functions.logger.info('successful batch commmit')
-            })
-            .catch(err => {
-                functions.logger.error(err)
-            })
-
-        }
-
-        function incrementBadge(memberId: string) {
-            /*
-            increment badge for channel + increment for user total
-            */
-            functions.logger.log('executing incrementBadge..')
-
-            const channelRef = db
-            .collection('users')
-            .doc(memberId)
-            .collection('channelIds')
-            .doc(channelId)
-
-            const userRef = db
-            .collection('users')
-            .doc(memberId)
-
-            try {
-                db.runTransaction(async (t) => {
-                    const doc: FirebaseFirestore.DocumentData = await t.get(userRef)
-                    const newthing = (doc.data()['badge'] || 0) + 1
-                    t.update(userRef, {
-                        'badge': newthing,
-                    })
-                })
-                .then(snapshot => { functions.logger.info('success incrementBadge') })
-                .catch(err => { functions.logger.error('error in incrementBadge // ', err) })
-
-                db.runTransaction(async (t) => {
-                    const doc: FirebaseFirestore.DocumentData = await t.get(channelRef)
-                    const newthing = (doc.data()['badge'] || 0) + 1
-                    t.update(channelRef, {
-                        'badge': newthing,
-                    })
-                })
-                .then(snapshot => { functions.logger.info('success incrementBadge') })
-                .catch(err => { functions.logger.error('error in incrementBadge // ', err) })
-            } catch (e) {
-                functions.logger.error('Transaction failure:', e)
-            }
-
-        }
-    })
-
-// exports.updateChannelFCMTokens = functions.firestore
-//     .document(constants.CHANNELS_COLLECTION + '/{channelId}/participantIds}')
-//     .onWrite((snapshot, context) => {
-
-//         functions.logger.log('updateChannelFCMTokens')
-
-//         const userRef = db
-//         .collection('users')
-//         .doc(memberId)
-
-//         try {
-//             db.runTransaction(async (doc) => {
-//                 const doc: FirebaseFirestore.DocumentData = await t.get(userRef)
-//                 const newthing = (doc.data()['badge'] || 0) + 1
-
-//                 snapshot.update(userRef, {
-//                     'badge': newthing,
-//                 })
-//             })
-//             .then(snapshot => { functions.logger.info('success incrementBadge') })
-//             .catch(err => { functions.logger.error('error in incrementBadge // ', err) })
-//         } catch (e) {
-//             functions.logger.error('Transaction failure:', e)
-//         }
-
-//     })
-
+/**
+ * Returns users given prepaerd phone numbers.
+ *
+ * @param {!express:Request} req HTTP request context.
+ * @param {!express:Response} res HTTP response context.
+ */
 exports.updateChannelParticipantIdsUponDelete = functions.firestore
     .document(constants.USERS_COLLECTION + '/{userId}/channelIds/{channelId}')
     .onDelete((_, context) => {
@@ -382,41 +376,13 @@ exports.updateChannelParticipantIdsUponDelete = functions.firestore
 
     })
 
-// exports.updateChannelParticipantIdsUponCreate = functions.firestore
-//     .document(constants.USERS_COLLECTION + '/{userId}/channelIds/{channelId}')
-//     .onCreate((_, context) => {
 
-//         /*
-//         This function takes care of adding the userid to the channel, abstracting away
-//         the need to do it locally. It's not the client's responsibility anymore.
-//         */
-
-//         functions.logger.log('updateChannelParticipantIdsUponCreate')
-
-//         const channelId = context.params.channelId
-//         const userId = context.params.userId
-
-//         const channelReference = admin.firestore().collection('channels').doc(channelId)
-//         const channelParticipantReference = channelReference.collection('participantIds').doc(userId)
-
-//         var batch = admin.firestore().batch()
-
-//         batch.update(channelReference, {
-//             'participantIds': firestore.FieldValue.arrayUnion(userId),
-//         })
-
-//         batch.create(channelParticipantReference, {})
-
-//         batch.commit()
-//         .then(() => {
-//             console.log('successful batch commit')
-//         })
-//         .catch(error => {
-//             console.log(error)
-//         })
-
-//     })
-
+/**
+ * Returns users given prepaerd phone numbers.
+ *
+ * @param {!express:Request} req HTTP request context.
+ * @param {!express:Response} res HTTP response context.
+ */
 exports.channelCreationHandler = functions.firestore
     .document(constants.CHANNELS_COLLECTION + '/{channelId}')
     .onCreate((snapshot, context) => {

@@ -343,7 +343,7 @@ extension CreateChannelController {
         channelCreatingGroup.notify(queue: DispatchQueue.main) { [weak self] in
             hapticFeedback(style: .success)
 
-//            self?.informationMessageSender.sendInformationMessage(channelID: newChannelReference.documentID, channelName: self?.channelName ?? "", participantIDs: memberIDs.0, text: "New event has been created. Discuss and share ideas here.", channel: Channel(dictionary: self?.localChannelData))
+            self?.informationMessageSender.sendInformationMessage(channelID: newChannelReference.documentID, channelName: self?.channelName ?? "", participantIDs: memberIDs.0, text: "New event created. Discuss and share ideas here.", channel: Channel(dictionary: self?.localChannelData))
 
             self?.dismiss(animated: true, completion: nil)
             globalIndicator.dismiss()

@@ -14,7 +14,7 @@
 *
 * @beta
 */
-export function constructNotificationPayload(currentUserFCMToken: string, messageId: string, channelId: string, senderName: string, channelName: string, fromId: string, text: string, badge: number) {
+export function constructNotificationPayload(tokens: string[], messageId: string, channelId: string, senderName: string, channelName: string, fromId: string, text: string, badge: number) {
     let title: string = ''
     // var text: string = ''
 
@@ -49,6 +49,6 @@ export function constructNotificationPayload(currentUserFCMToken: string, messag
                 channelId: channelId,
             },
         },
-        tokens: [currentUserFCMToken],
+        tokens: tokens,
     };
 }

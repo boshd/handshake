@@ -116,11 +116,13 @@ class MessageSender: NSObject {
             
             let batch = Firestore.firestore().batch()
             
+//            batch.setData([
+//                "fromId": fromID,
+//                "timestamp": values["timstamp"] ?? NSNumber(value: Int(Date().timeIntervalSince1970))
+//            ], forDocument: Firestore.firestore().collection("channels").document(toID).collection("messageIds").document(reference.documentID), merge: true)
             batch.setData([
-                "fromId": fromID
-            ], forDocument: Firestore.firestore().collection("channels").document(toID).collection("messageIds").document(reference.documentID), merge: true)
-            batch.setData([
-                "fromId": fromID
+                "fromId": fromID,
+                "timestamp": values["timstamp"] ?? NSNumber(value: Int(Date().timeIntervalSince1970))
             ], forDocument: Firestore.firestore().collection("users").document(fromID).collection("channelIds").document(toID).collection("messageIds").document(reference.documentID), merge: true)
             
             batch.commit() { (error) in

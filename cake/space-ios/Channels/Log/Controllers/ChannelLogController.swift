@@ -37,6 +37,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     private var savedContentOffset: CGPoint!
     var channelListener: ListenerRegistration?
     var typingIndicatorCollectionListener: ListenerRegistration?
+    var lastOutgoingMessageListener: ListenerRegistration?
     
     var first = true
     let typingIndicatorDatabaseID = "typingIndicator"
@@ -49,6 +50,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     public var isDismissingInteractively = false
     public var hasAppearedAndHasAppliedFirstLoad = false
     public var canRefresh = true
+    public var isKeyboardInitial = true
     
     var groupedMessages = [MessageSection]()
     var typingIndicatorSection: [String] = []
@@ -330,6 +332,10 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
                 channelLogPresenter.tryDeallocate()
 
                 messagesFetcher?.removeListener()
+                if lastOutgoingMessageListener != nil {
+                    lastOutgoingMessageListener?.remove()
+                    lastOutgoingMessageListener = nil
+                }
                 messagesFetcher?.collectionDelegate = nil
                 messagesFetcher?.delegate = nil
             }

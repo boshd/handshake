@@ -25,9 +25,15 @@ extension ChannelLogController: InputAccessoryViewPlaceholderDelegate {
         adjustContentForKeyboard(animationDuration: animationDuration, animationCurve: animationCurve, beginFrame: beginFrame, endFrame: endFrame, shown: true)
     }
     
+    
+    
     func inputAccessoryPlaceholderKeyboardDidPresent() {
+        if isKeyboardInitial {
+            isKeyboardInitial = false
+            return
+        }
         print("didPresent")
-        animateHeaderView(shouldCollapse: true)
+        animateHeaderView(collapsed: true)
 //        updateContentInsets(animated: false)
     }
     
@@ -38,7 +44,7 @@ extension ChannelLogController: InputAccessoryViewPlaceholderDelegate {
     }
     
     func inputAccessoryPlaceholderKeyboardDidDismiss() {
-        animateHeaderView(shouldCollapse: false)
+        animateHeaderView(collapsed: false)
 //        updateContentInsets(animated: false)
     }
     
@@ -69,8 +75,8 @@ extension ChannelLogController: InputAccessoryViewPlaceholderDelegate {
        }, completion: nil)
    }
     
-    func animateHeaderView(shouldCollapse: Bool) {
-        if shouldCollapse {
+    func animateHeaderView(collapsed: Bool) {
+        if collapsed {
             channelLogContainerView.headerTopConstraint?.constant = -75
 //            channelLogContainerView.headerHeightConstraint?.constant = 0
         } else {
