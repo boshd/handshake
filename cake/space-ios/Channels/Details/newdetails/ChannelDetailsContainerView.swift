@@ -31,6 +31,7 @@ class ChannelDetailsContainerView: UIView {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         tableView.separatorStyle = .none
+        tableView.contentInsetAdjustmentBehavior = .never
         
         return tableView
     }()
@@ -77,7 +78,7 @@ class ChannelDetailsContainerView: UIView {
             tableView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 0),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
-            tableView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0),
+            tableView.bottomAnchor.constraint(equalTo: rsvpView.topAnchor, constant: 0),
             
             rsvpView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
             rsvpView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),

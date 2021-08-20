@@ -55,13 +55,14 @@ class TabBarController: UITabBarController {
     }
 
     @objc fileprivate func changeTheme() {
+        print("change theme called from tab bar controller")
         tabBar.unselectedItemTintColor = ThemeManager.currentTheme().unselectedButtonTintColor
-        tabBar.selectedImageTintColor = ThemeManager.currentTheme().selectedButtonTintColor
-//        setTranslucency()
+        // tabBar.selectedImageTintColor = ThemeManager.currentTheme().selectedButtonTintColor // deprecated
         UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().barTextColor],
         for: .normal)
         tabBar.unselectedItemTintColor = ThemeManager.currentTheme().unselectedButtonTintColor
         tabBar.tintColor = ThemeManager.currentTheme().selectedButtonTintColor
+        tabBar.barTintColor = ThemeManager.currentTheme().barBackgroundColor
         UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().selectedButtonTintColor], for: .selected)
     }
 
@@ -77,9 +78,6 @@ class TabBarController: UITabBarController {
     fileprivate func configureTabBar() {
         tabBar.backgroundImage = UIImage()
         tabBar.shadowImage = UIImage()
-        
-//        setTranslucency()
-        
         UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().barTextColor],
         for: .normal)
         tabBar.unselectedItemTintColor = ThemeManager.currentTheme().unselectedButtonTintColor
@@ -87,7 +85,6 @@ class TabBarController: UITabBarController {
         tabBar.isTranslucent = false
         tabBar.clipsToBounds = true
         UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().selectedButtonTintColor], for: .selected)
-        
         setTabs()
     }
     
@@ -129,20 +126,6 @@ class TabBarController: UITabBarController {
         let settingsNavigationController = CustomNavigationController(rootViewController: settingsController)
         settingsNavigationController.navigationBar.setValue(true, forKey: "hidesShadow")
 
-//        if #available(iOS 11.0, *) {
-//            settingsNavigationController.navigationBar.prefersLargeTitles = false
-//            channelsNavigationController.navigationItem.largeTitleDisplayMode = .always
-//            contactsNavigationController.navigationBar.prefersLargeTitles = false
-//            createNavigationController.navigationBar.prefersLargeTitles = false
-//        }
-
-//        if #available(iOS 11.0, *) {
-//            channelsNavigationController.navigationItem.largeTitleDisplayMode = .always
-//            
-//        }
-        
-        
-        
         let contactsImage =  UIImage(named: "Contacts")
         let eventsImage = UIImage(named: "Explore")
         let settingsImage = UIImage(named: "Setting")

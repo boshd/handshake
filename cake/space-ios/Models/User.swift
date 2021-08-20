@@ -55,7 +55,6 @@ final class User: Object {
     func isEqual_(to user: User) -> Bool {
         if self.id == user.id,
            self.name == user.name,
-           self.localName == user.localName,
            self.phoneNumber == user.phoneNumber,
            self.userImageUrl == user.userImageUrl,
            self.userThumbnailImageUrl == user.userThumbnailImageUrl

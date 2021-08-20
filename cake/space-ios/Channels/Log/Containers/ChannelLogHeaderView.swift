@@ -14,8 +14,8 @@ class ChannelLogHeaderView: UIView {
         DispatchQueue.main.async {
             self.alpha = 1.0
             UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveLinear, animations: {
-                self.alpha = 1.0
-//                self.backgroundColor = .handshakeBlue
+                self.alpha = 0.75
+                self.backgroundColor = ThemeManager.currentTheme().chatLogHeaderBackgroundColor
             }, completion: nil)
         }
     }
@@ -25,7 +25,7 @@ class ChannelLogHeaderView: UIView {
             self.alpha = 1.0
             UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveLinear, animations: {
                 self.alpha = 1.0
-//                self.backgroundColor = ThemeManager.currentTheme().chatLogHeaderBackgroundColor
+                self.backgroundColor = ThemeManager.currentTheme().chatLogHeaderBackgroundColor
             }, completion: nil)
         }
     }
@@ -35,7 +35,7 @@ class ChannelLogHeaderView: UIView {
             self.alpha = 1.0
             UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveLinear, animations: {
                 self.alpha = 1.0
-//                self.backgroundColor = ThemeManager.currentTheme().chatLogHeaderBackgroundColor
+                self.backgroundColor = ThemeManager.currentTheme().chatLogHeaderBackgroundColor
             }, completion: nil)
         }
     }

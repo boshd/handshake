@@ -29,7 +29,7 @@ class MessagesFetcher: NSObject {
     
     var userMessagesReference: Query!
 
-    private  let messagesToLoad = 3
+    private let messagesToLoad = 50
 
     weak var delegate: MessagesDelegate?
 
@@ -76,7 +76,6 @@ class MessagesFetcher: NSObject {
             // seen, badge and name loading are all chalked and looks like they're all tied to the same issues.
             // sometimes they work and sometimes they don't! Investigate!
             self.loadingNamesGroup.notify(queue: .main, execute: {
-                print("NOTIFICATION IN ACTION")
                 if self.isInitialChatMessagesLoad {
                     self.messages = self.sortedMessages(unsortedMessages: self.messages)
                 }
@@ -98,8 +97,6 @@ class MessagesFetcher: NSObject {
             }
             guard let docCount = snapshot?.documents.count else { return }
             
-            print(snapshot?.documents.map({ $0.data() }))
-            
             for _ in 0 ..< docCount { loadedMessagesGroup.enter() }
 
             loadedMessagesGroup.notify(queue: .main) { [weak self] in
@@ -113,8 +110,6 @@ class MessagesFetcher: NSObject {
                     return
                 }
                 guard let documentChanges = snapshot?.documentChanges else { return }
-                
-                print("in thread listener \(snapshot?.documents.count) messages")
                 
                 documentChanges.forEach { (diff) in
                     if diff.type == .added {
@@ -240,7 +235,6 @@ class MessagesFetcher: NSObject {
     }
     
     func handleMessageInsertionInRuntime(newDictionary : [String: AnyObject]) {
-        print("handleMessageInsertionInRuntime")
         guard let currentUserID = Auth.auth().currentUser?.uid else { return }
         let message = Message(dictionary: newDictionary)
 
@@ -254,7 +248,6 @@ class MessagesFetcher: NSObject {
                     self.collectionDelegate?.collectionView(shouldBeUpdatedWith: messageWithName,
                                                             reference: self.messageReference)
                 } else {
-                    print("is outgoing tho")
                     self.collectionDelegate?.collectionView(shouldUpdateOutgoingMessageStatusFrom: self.messageReference,
                                                             message: messageWithName)
                 }

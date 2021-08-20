@@ -82,6 +82,8 @@ class MessageSender: NSObject {
                                                 "fromId": fromID as AnyObject,
                                                 "timestamp": timestamp as AnyObject,
                                                 "text": text.trimmingCharacters(in: .whitespaces) as AnyObject,
+                                                "channelName": channel?.name as AnyObject,
+                                                "senderName": userDefaults.currentStringObjectState(for: userDefaults.currentUserName) as AnyObject,
                                                 "historicSenderName": userDefaults.currentStringObjectState(for: userDefaults.currentUserName) as AnyObject,
                                                 "historicChannelName": channel?.name as AnyObject,
                                                 "fcmTokens": fcmDict as AnyObject
@@ -116,10 +118,10 @@ class MessageSender: NSObject {
             
             let batch = Firestore.firestore().batch()
             
-//            batch.setData([
-//                "fromId": fromID,
-//                "timestamp": values["timstamp"] ?? NSNumber(value: Int(Date().timeIntervalSince1970))
-//            ], forDocument: Firestore.firestore().collection("channels").document(toID).collection("messageIds").document(reference.documentID), merge: true)
+            batch.setData([
+                "fromId": fromID,
+                "timestamp": values["timstamp"] ?? NSNumber(value: Int(Date().timeIntervalSince1970))
+            ], forDocument: Firestore.firestore().collection("channels").document(toID).collection("messageIds").document(reference.documentID), merge: true)
             batch.setData([
                 "fromId": fromID,
                 "timestamp": values["timstamp"] ?? NSNumber(value: Int(Date().timeIntervalSince1970))

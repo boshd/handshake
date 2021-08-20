@@ -30,6 +30,10 @@ extension ChannelLogController: InputAccessoryViewPlaceholderDelegate {
     func inputAccessoryPlaceholderKeyboardDidPresent() {
         if isKeyboardInitial {
             isKeyboardInitial = false
+            collectionView.contentInset.top = 75
+            UIView.performWithoutAnimation {
+                self.view.layoutIfNeeded()
+            }
             return
         }
         print("didPresent")
@@ -78,10 +82,14 @@ extension ChannelLogController: InputAccessoryViewPlaceholderDelegate {
     func animateHeaderView(collapsed: Bool) {
         if collapsed {
             channelLogContainerView.headerTopConstraint?.constant = -75
+            isChannelLogHeaderShowing = false
+            collectionView.contentInset.top = 20
 //            channelLogContainerView.headerHeightConstraint?.constant = 0
         } else {
             if channelLogContainerView.headerTopConstraint?.constant == -75 {
                 channelLogContainerView.headerTopConstraint?.constant = 10
+                isChannelLogHeaderShowing = true
+                collectionView.contentInset.top = 75
             }
         }
         

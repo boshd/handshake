@@ -16,6 +16,8 @@ class LoadMoreCell: UITableViewCell {
 //        imageView?.image = UIImage(named: "Arrow - Down Circle")
 //        imageView?.tintColor = ThemeManager.currentTheme().tintColor
 //        textLabel?.text = "See 10 more"
+        contentView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+        
         textLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         textLabel?.textColor = ThemeManager.currentTheme().tintColor
         
@@ -36,6 +38,11 @@ class LoadMoreCell: UITableViewCell {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        contentView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
     }
     
 }

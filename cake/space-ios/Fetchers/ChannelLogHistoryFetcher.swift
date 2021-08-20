@@ -42,10 +42,15 @@ class ChannelLogHistoryFetcher: NSObject {
     fileprivate func getFirstID(_ currentUserID: String, _ channelID: String) {
         let firstIDReference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID).collection("messageIds")
         let numberOfMessagesToLoad = messagesToLoad + messages.count
+        print("numberOfMessagesToLoad \(numberOfMessagesToLoad)")
         let firstIDQuery = firstIDReference.limit(to: numberOfMessagesToLoad)
         firstIDQuery.getDocuments { (snapshot, error) in
             guard let documents = snapshot?.documents else { print(error?.localizedDescription ?? "error"); return }
+            print("in getFirstID \(documents.count)")
             guard let firstDocument = documents.last else { return }
+            Firestore.firestore().collection("messages").document(firstDocument.documentID).getDocument { snapshot, error in
+                print("GOT FIRST DOC \(snapshot?.data()?["text"])")
+            }
             self.getLastID(firstDocument, currentUserID, channelID)
         }
     }
@@ -62,6 +67,9 @@ class ChannelLogHistoryFetcher: NSObject {
             }) {
               self.delegate?.channelLogHistory(isEmpty: false)
               return
+            }
+            Firestore.firestore().collection("messages").document(lastID).getDocument { snapshot, error in
+                print("GOT LAST DOC \(snapshot?.data()?["text"])")
             }
             self.getRange(firstDocument, lastDocument, currentUserID, channelID)
         }

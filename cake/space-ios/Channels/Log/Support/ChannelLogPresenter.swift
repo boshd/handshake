@@ -81,7 +81,6 @@ extension ChannelLogPresenter: MessagesDelegate {
     }
     
     func messages(shouldChangeMessageStatusToReadAt reference: DocumentReference, controller: UIViewController) {
-        print("IN FUCKING HERE")
         channelLogController?.updateMessageStatus(messageRef: reference)
     }
     

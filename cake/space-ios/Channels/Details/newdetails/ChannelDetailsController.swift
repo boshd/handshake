@@ -110,6 +110,8 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     }
 
     fileprivate func configureTableView() {
+        currentChannelReference = Firestore.firestore().collection("channels").document(channelID)
+        
         avatarOpener.delegate = self
         
         channelDetailsContainerView.tableView.delegate = self
@@ -132,7 +134,6 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         channelDetailsContainerView.rsvpButton.addTarget(self, action: #selector(presentRSVPOptions), for: .touchUpInside)
         
         guard let channelID = channel?.id else { return }
-        currentChannelReference = Firestore.firestore().collection("channels").document(channelID)
     }
     
     fileprivate func addObservers() {
@@ -198,7 +199,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         footerView.secondaryLabel.text = "Created \(createdAt)"
         
         
-        let footer = UIView(frame : CGRect(x: 0, y: 0, width: channelDetailsContainerView.tableView.frame.width, height: 115))
+        let footer = UIView(frame : CGRect(x: 0, y: 0, width: channelDetailsContainerView.tableView.frame.width, height: 50))
         footer.addSubview(footerView)
         NSLayoutConstraint.activate([
             footerView.leadingAnchor.constraint(equalTo: footer.leadingAnchor, constant: 0),
@@ -316,6 +317,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         let alert = CustomAlertController(title_: nil, message: nil, preferredStyle: .actionSheet)
         
         let goingAction = CustomAlertAction(title: "Going", style: .default , handler: { [weak self] in
+            print("GOING PRESSED")
             self?.rsvp(.going, memberID: currentUserID)
         })
         
@@ -508,19 +510,29 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
             }
             
             if RealmKeychain.realmUsersArray().map({$0.id}).contains(participantId) {
+                print("IN LOCAL REALM \(participantId)")
                 if let usr = RealmKeychain.realmUsersArray().first(where: {$0.id == participantId}) {
+                    print("IN IN LOCAL REALM \(usr.localName)")
                     attendees.append(usr)
                 }
             }
+            
             UsersFetcher.fetchUser(id: participantId) { user, error in
                 group.leave()
                 if let user = user {
                     guard error == nil else { print(error?.localizedDescription ?? "error"); return }
 
                     if RealmKeychain.realmUsersArray().map({$0.id}).contains(user.id) {
+                        print("AGAIN IN LOCAL REALM \(user.id)")
                         if let localRealmUser = RealmKeychain.usersRealm.object(ofType: User.self, forPrimaryKey: user.id),
                            !user.isEqual_(to: localRealmUser) {
-                            
+                            print("AGAIN in IN LOCAL REALM \(localRealmUser.localName)")
+                           
+                            print(user)
+                            print("--------------")
+                            print(localRealmUser)
+                            print()
+                            // this shouldn't pass....?
                             // update local realm user copy
                             if !(self.localRealm.isInWriteTransaction) {
                                 self.localRealm.beginWrite()
@@ -537,6 +549,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
                             if let index = self.attendees.firstIndex(where: { user_ in
                                 return user_.id == user.id
                             }) {
+                                print("replacing oldie")
                                 self.attendees[index] = user
                             }
                         }
@@ -755,14 +768,14 @@ extension ChannelDetailsController {
     }
     
     func rsvp(_ rsvp: EventRSVP, memberID: String) {
+        print("REACHED LOL ")
         if currentReachabilityStatus == .notReachable {
             displayErrorAlert(title: basicErrorTitleForAlert, message: noInternetError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
             return
         }
-        guard let channelReference = currentChannelReference,
-              let channelID = channel?.id
-        else { return }
-        
+        print("here1")
+        guard let channelReference = currentChannelReference else { return }
+        print("here2")
         globalIndicator.show()
         ChannelManager.rsvp(channelReference: channelReference, memberID: memberID, rsvp: rsvp) { error in
             if error != nil {

@@ -48,6 +48,11 @@ extension ChannelLogController {
                 if change.type == .added {
                     if change.document.documentID != currentUserID {
                         self.handleTypingIndicatorAppearance(isEnabled: true)
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 200.0) {
+                            self.handleTypingIndicatorAppearance(isEnabled: false)
+                        }
+                        
                     }
                     
                 }

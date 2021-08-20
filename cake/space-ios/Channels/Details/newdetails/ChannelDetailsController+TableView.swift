@@ -59,7 +59,7 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if indexPath.section == 0 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: channelNameCellId, for: indexPath) as? ChannelNameCell ?? ChannelNameCell()
+            let cell = tableView.dequeueReusableCell(withIdentifier: channelNameCellId, for: indexPath) as? ChannelNameCell ?? ChannelNameCell(style: .default, reuseIdentifier: channelNameCellId)
             guard let channelName = channel?.name else { return cell }
             cell.textLabel?.text = channelName
             return cell

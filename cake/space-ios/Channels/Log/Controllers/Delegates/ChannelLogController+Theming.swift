@@ -36,6 +36,10 @@ extension ChannelLogController {
         inputContainerView.setColors()
         refreshControl.tintColor = ThemeManager.currentTheme().generalTitleColor
         collectionView.updateColors()
+        
+        if let title = channel?.name {
+            navigationItem.setTitle(title: title, subtitle: "Tap for more information")
+        }
 
         DispatchQueue.main.async { [weak self] in
             self?.collectionView.reloadData()

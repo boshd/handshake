@@ -19,16 +19,17 @@ extension ChannelLogController: ChannelLogHistoryDelegate {
         let numberOfMessagesInDataSourceBeforeUpdate = groupedMessages.compactMap { (sectionedMessage) -> Int in
             return sectionedMessage.messages.count
         }.reduce(0, +)
-        
 
         updateRealmMessagesData(newMessages: newMessages) //saved: {
         let firstSectionTitle = groupedMessages.first?.title ?? ""
         let dates = newMessages.map({ $0.shortConvertedTimestamp ?? "" })
+        // possiible because of type of message listenr
         var datesSet = Set(dates)
 
         let rowsRange = updateFirstSection(firstSectionTitle, numberOfMessagesInDataSourceBeforeUpdate, numberOfMessagesInFirstSectionBeforeUpdate)
         datesSet.remove(firstSectionTitle)
         let sectionsRange = insertNewSections(datesSet)
+        
         batchInsertMS(rowsRange: rowsRange, sectionsRange: sectionsRange)
     }
     
@@ -43,6 +44,7 @@ extension ChannelLogController: ChannelLogHistoryDelegate {
     }
 
     fileprivate func batchInsertMS(rowsRange: Int, sectionsRange: Int) {
+        print("in batch insert")
         UIView.performWithoutAnimation {
             collectionView.performBatchUpdates({
                 var indexSet = IndexSet()
@@ -56,7 +58,6 @@ extension ChannelLogController: ChannelLogHistoryDelegate {
                     indexPaths.append(IndexPath(row: index, section: indexSet.count))
                 }
                 
-                
                 Array(0..<rowsRange).forEach({ (index) in
                     indexPaths.append(IndexPath(row: index, section: indexSet.count))
                 })
@@ -65,9 +66,11 @@ extension ChannelLogController: ChannelLogHistoryDelegate {
                 globalVariables.isInsertingCellsToTop = true
                 
                 collectionView.insertSections(indexSet)
+                print("indexset \(indexSet).. indexPaths \(indexPaths).. sectionsRange \(sectionsRange).. rowsRange \(rowsRange)")
                 collectionView.insertItems(at: indexPaths)
             }, completion: { (_) in
                 DispatchQueue.main.async {
+                    print("in bcomplete")
                     self.bottomScrollConainer.isHidden = false
                     self.refreshControl.endRefreshing()
                 }

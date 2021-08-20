@@ -42,7 +42,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     var first = true
     let typingIndicatorDatabaseID = "typingIndicator"
     let typingIndicatorStateDatabaseKeyID = "Is typing"
-    let messagesToLoad = 25
+    let messagesToLoad = 50
     var isChannelLogHeaderShowing = false
     var shouldAnimateKeyboardChanges = false
     private var shouldScrollToBottom: Bool = true
@@ -147,8 +147,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     override var inputAccessoryView: UIView? {
         get {
-            print("inputAccessoryView")
-            // This getter is being called twice, it might be because this is an overridden computed property.
             return inputAccessoryPlaceholder
         }
     }
@@ -375,10 +373,10 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         bottomScrollConainer.heightAnchor.constraint(equalToConstant: 40).isActive = true
         
 //        if let view = inputAccessoryView {
-//            bottomScrollConainer.centerXAnchor.constraint(equalTo: view.centerXAnchor,
-//            constant: 0).isActive = true
-//            bottomScrollConainer.bottomAnchor.constraint(equalTo:  view.topAnchor,
-//            constant: -10).isActive = true
+        bottomScrollConainer.centerXAnchor.constraint(equalTo: view.centerXAnchor,
+            constant: 0).isActive = true
+        bottomScrollConainer.bottomAnchor.constraint(equalTo:  view.safeAreaLayoutGuide.bottomAnchor,
+            constant: -50).isActive = true
 //        }
 
     }
@@ -616,8 +614,11 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         
         Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(toId).setData([
             "badge": 0
-        ], merge: true) { (error) in
+        ], merge: true) { [weak self] (error) in
             if error != nil { print("error // ", error?.localizedDescription ?? "error") }
+            try! self?.realm.safeWrite {
+                channel.badge.value = 0
+            }
         }
     }
     

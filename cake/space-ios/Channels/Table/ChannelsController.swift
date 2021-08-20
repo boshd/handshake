@@ -232,6 +232,12 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
             currentUserListenerReference?.remove()
         }
         
+        if let tabItems = tabBarController?.tabBar.items as NSArray?,
+           let tabItem = tabItems[Tabs.chats.rawValue] as? UITabBarItem {
+            tabItem.badgeValue = nil
+            UIApplication.shared.applicationIconBadgeNumber = 0
+        }
+        
         func deleteAll() {
             do {
                 try realm.safeWrite {
@@ -413,6 +419,8 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         let badge = realmChannels.compactMap({ (channel) -> Int in
             return channel.badge.value ?? 0
         }).reduce(0, +)
+        
+        print("in configure tab bar badge \(badge)")
 
         guard badge > 0 else {
             tabItem.badgeValue = nil
