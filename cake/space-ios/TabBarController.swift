@@ -47,6 +47,7 @@ class TabBarController: UITabBarController {
         super.viewDidLoad()
         //channelsController.delegate = self
         configureTabBar()
+        setOnlineStatus()
         NotificationCenter.default.addObserver(self, selector: #selector(changeTheme), name: .themeUpdated, object: nil)
     }
 

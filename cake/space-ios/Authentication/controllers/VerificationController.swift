@@ -171,7 +171,16 @@ extension VerificationController: UserExistenceDelegate {
         } else {
             // onboard and create user
             guard let currentUserID = Auth.auth().currentUser?.uid else { return }
-
+            setOnlineStatus()
+            
+            /*
+             
+             if Messaging.messaging().fcmToken != nil {
+                 setUserNotificationToken(token: Messaging.messaging().fcmToken!)
+             }
+             
+             */
+            
             let userReferenceReference = Firestore.firestore().collection("users").document(currentUserID)
             let childValues = [
                 "id": currentUserID,

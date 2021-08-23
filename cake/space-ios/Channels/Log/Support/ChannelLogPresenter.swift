@@ -99,6 +99,8 @@ extension ChannelLogPresenter: MessagesDelegate {
                     message.senderName = RealmKeychain.defaultRealm.object(ofType: Message.self, forPrimaryKey: message.messageUID ?? "")?.senderName
                 }
                 
+//                print("in realm creating new message \(message.text)")
+                
                 RealmKeychain.defaultRealm.create(Message.self, value: message, update: .modified)
             }
             try! RealmKeychain.defaultRealm.commitWrite()

@@ -14,11 +14,12 @@ class LocationViewCell: UITableViewCell {
     let locationView = LocationView()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        super.init(style: .subtitle, reuseIdentifier: nil)
         
         textLabel?.textColor = ThemeManager.currentTheme().generalTitleColor
         detailTextLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
-        
+        contentView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+        backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         textLabel?.numberOfLines = 0
         detailTextLabel?.numberOfLines = 0
         
@@ -29,37 +30,41 @@ class LocationViewCell: UITableViewCell {
         locationView.topAnchor.constraint(equalTo: topAnchor, constant: 15).isActive = true
         locationView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
         locationView.heightAnchor.constraint(equalToConstant: 230).isActive = true
+        
+        let startCoord = CLLocationCoordinate2DMake(37.766997, -122.422032)
+        let adjustedRegion = locationView.mapView.regionThatFits(MKCoordinateRegion(center: startCoord, latitudinalMeters: 500, longitudinalMeters: 500))
+        locationView.mapView.setRegion(adjustedRegion, animated: true)
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        contentView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+        backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+    }
+    
 }
 
 extension LocationViewCell {
-    func configureCell(title: String, subtitle: String?, lat: Double, lon: Double) {
+    func configureCell(title: String, subtitle: String?, annotation: MKAnnotation?, addy: String?) {
         locationView.locationNameLabel.text = title
         locationView.locationLabel.text = subtitle
         
-            let location = CLLocation(latitude: lat, longitude: lon)
-            let geoCoder = CLGeocoder()
-            geoCoder.reverseGeocodeLocation(location, completionHandler: { [weak self] placemarks, error -> Void in
-                if error != nil {
-                    print(error?.localizedDescription ?? "")
-                    return
-                }
-                guard let placeMark = placemarks?.first else { return }
-                let item = MKPlacemark(placemark: placeMark)
-
-                if subtitle == nil {
-                    self?.locationView.locationLabel.text = parseAddress(selectedItem: item)
-                }
-
-                let annotation = MKPointAnnotation()
-                annotation.coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
-                self?.locationView.mapView.addAnnotation(annotation)
-                self?.locationView.mapView.showAnnotations([annotation], animated: false)
-            })
+        
+        
+        if let addy = addy {
+            if subtitle == nil {
+                self.locationView.locationLabel.text = addy
+            }
+        }
+        
+        if let annotation = annotation {
+            self.locationView.mapView.addAnnotation(annotation)
+            self.locationView.mapView.showAnnotations([annotation], animated: true)
+        }
     }
 }

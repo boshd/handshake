@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import SafariServices
 
-class ChannelDescriptionCell: UITableViewCell {
+class ChannelDescriptionCell: UITableViewCell, UITextViewDelegate {
     /*
      must be an expandable cell for "Read more.." functionality
      */
@@ -34,7 +35,8 @@ class ChannelDescriptionCell: UITableViewCell {
         textView.maximumNumberOfLines = 6
         textView.shouldTrim = true
         textView.layoutIfNeeded()
-        textView.isSelectable = false
+        textView.dataDetectorTypes = .link
+        textView.isSelectable = true
         return textView
     }()
     
@@ -69,6 +71,29 @@ class ChannelDescriptionCell: UITableViewCell {
         textLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         textLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
         textView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+    }
+    
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+    
+        // check for the url string for performing your own custom actions here
+        let urlString = URL.absoluteString
+        openUrl(urlString)
+        // Return NO if you don't want iOS to open the link
+        return true
+    }
+    
+    func openUrl(_ url: String) {
+        var svc = SFSafariViewController(url: URL(string: url)!)
+
+        if #available(iOS 11.0, *) {
+            let configuration = SFSafariViewController.Configuration()
+            configuration.entersReaderIfAvailable = true
+            svc = SFSafariViewController(url: URL(string: url)!, configuration: configuration)
+        }
+
+        svc.preferredControlTintColor = ThemeManager.currentTheme().tintColor
+        svc.preferredBarTintColor = ThemeManager.currentTheme().generalBackgroundColor
+        //present(svc, animated: true, completion: nil)
     }
     
 }

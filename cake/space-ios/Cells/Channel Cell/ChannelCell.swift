@@ -14,7 +14,7 @@ class ChannelCell: UITableViewCell {
     private var timer: Timer?
     private var timeCounter: Double = 0
     
-    var channel: Channel?
+//    var channel: Channel?
     var channelId: String?
     
     let mainView: UIView = {
@@ -58,9 +58,21 @@ class ChannelCell: UITableViewCell {
         label.textAlignment = .left
         label.textColor = ThemeManager.currentTheme().generalSubtitleColor
         label.font = ThemeManager.currentTheme().secondaryFont(with: 12)
-        label.numberOfLines = 2
+        label.numberOfLines = 1
 //        label.backgroundColor = .red
 //        label.lineBreakMode = .byWordWrapping
+        return label
+    }()
+    
+    let messageLabel: DynamicLabel = {
+        let label = DynamicLabel(withInsets: 0, 0, 0, 0)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = .black
+        label.textAlignment = .left
+        label.textColor = ThemeManager.currentTheme().generalSubtitleColor
+        label.font = ThemeManager.currentTheme().secondaryFont(with: 12)
+        label.numberOfLines = 1
+        label.textAlignment = .left
         return label
     }()
     
@@ -103,8 +115,8 @@ class ChannelCell: UITableViewCell {
         imageView.cornerRadius = 35
         imageView.layer.cornerCurve = .circular
         imageView.contentMode = .scaleAspectFill
-        imageView.borderColor = .handshakeLightPurple
-        imageView.borderWidth = 2
+//        imageView.borderColor = .handshakeLightPurple
+//        imageView.borderWidth = 2
         return imageView
     }()
     
@@ -131,6 +143,7 @@ class ChannelCell: UITableViewCell {
         mainView.addSubview(channelImageView)
         mainView.addSubview(title)
         mainView.addSubview(subTitle)
+        mainView.addSubview(messageLabel)
         mainView.addSubview(badgeLabel)
         mainView.addSubview(customAccessoryView)
         mainView.addSubview(statusIndicator)
@@ -139,6 +152,7 @@ class ChannelCell: UITableViewCell {
         
         backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         contentView.backgroundColor = .clear
+        selectionColor = ThemeManager.currentTheme().cellSelectionColor
         
         NSLayoutConstraint.activate([
             mainView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
@@ -156,12 +170,16 @@ class ChannelCell: UITableViewCell {
             channelImageView.heightAnchor.constraint(equalToConstant: 70),
             channelImageView.widthAnchor.constraint(equalToConstant: 70),
             
-            title.topAnchor.constraint(equalTo: channelImageView.topAnchor, constant: 0),
+            title.bottomAnchor.constraint(equalTo: subTitle.topAnchor, constant: -7),
             title.leadingAnchor.constraint(equalTo: channelImageView.trailingAnchor, constant: 15),
             
             subTitle.centerYAnchor.constraint(equalTo: channelImageView.centerYAnchor, constant: 0),
             subTitle.leadingAnchor.constraint(equalTo: title.leadingAnchor, constant: 0),
             subTitle.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: 0),
+            
+            messageLabel.topAnchor.constraint(equalTo: subTitle.bottomAnchor, constant: 7),
+            messageLabel.leadingAnchor.constraint(equalTo: channelImageView.trailingAnchor, constant: 15),
+            messageLabel.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: 0),
             
             customAccessoryView.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: 0),
             customAccessoryView.topAnchor.constraint(equalTo: title.topAnchor, constant: 0),
@@ -186,12 +204,12 @@ class ChannelCell: UITableViewCell {
               deletedChannelID == channelID
         else { return }
         invalidateTimer()
-        channel = nil
+//        channel = nil
     }
     
     deinit {
 //        invalidateTimer()
-        channel = nil
+//        channel = nil
     }
     
     @objc func invalidateTimer() {
@@ -207,13 +225,18 @@ class ChannelCell: UITableViewCell {
         badgeLabel.text = "0"
         badgeLabel.isHidden = true
         mainView.backgroundColor = .clear
+        selectionColor = ThemeManager.currentTheme().cellSelectionColor
         title.textColor = ThemeManager.currentTheme().generalTitleColor
         subTitle.textColor = ThemeManager.currentTheme().generalSubtitleColor
         backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         contentView.backgroundColor = .clear
         imageView?.image = nil
         channelImageView.image = nil
-        channel = nil
+        textLabel?.text = ""
+        messageLabel.text = ""
+        title.text = ""
+        subTitle.text = ""
+//        channel = nil
         invalidateTimer()
     }
     

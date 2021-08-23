@@ -26,7 +26,9 @@ extension ChannelsController: ChannelUpdatesDelegate {
         if !isAppLoaded {
             observeDataSourceChanges()
         }
+        print("is this reached cmonn11")
         guard let token1 = realmChannelsNotificationToken else { return }
+        print("is this reached cmonn22")
         realmManager.update(channels: channels, tokens: [token1])
         handleReloadTable()
         hideActivityTitle(title: .updating)
@@ -45,7 +47,9 @@ extension ChannelsController: ChannelUpdatesDelegate {
         hideActivityTitle(title: .updating)
     }
 
-    func channels(didRemove: Bool, channelID: String) {}
+    func channels(didRemove: Bool, channelID: String) {
+        //typingIndicatorManager.removeTypingIndicator(for: channelID)
+    }
 
     func channels(addedNewChannel: Bool, channelID: String) {
         guard isAppLoaded else { return }

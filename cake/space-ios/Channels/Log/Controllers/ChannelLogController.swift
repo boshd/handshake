@@ -304,7 +304,10 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         super.viewDidDisappear(animated)
         self.shouldAnimateKeyboardChanges = true
         if self.navigationController?.visibleViewController is ChannelDetailsController { return }
-        isTyping = false
+        
+        if isTyping {
+            isTyping = false
+        }
         
         if typingIndicatorCollectionListener != nil {
             typingIndicatorCollectionListener?.remove()
@@ -317,6 +320,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        isKeyboardInitial = true
         if let viewControllers = self.navigationController?.viewControllers {
             if viewControllers.count > 1 && viewControllers[viewControllers.count-2] == self {
                 // do nothing
@@ -339,7 +343,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
             }
         }
         
-        // this can get run multiple time when you drag to go back from details controller,
+        // this can get run multiple times when you drag to go back from details controller,
         // but change your mind multiple times
         
         //blockInputViewConstraints()
@@ -591,16 +595,22 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     @objc
     func handleDeleteAndExitEvent() {
         hapticFeedback(style: .impact)
+        isTyping = false
         guard let channelID = channel?.id else { return }
-        let alert = CustomAlertController(title_: "Confirmation", message: "Are you sure you want to delete and exit this event?", preferredStyle: .alert)
-        alert.addAction(CustomAlertAction(title: "No", style: .default, handler: nil))
-        alert.addAction(CustomAlertAction(title: "Yes", style: .destructive, handler: { [weak self] in
-//            let obj: [String: Any] = ["channelID": channelID]
-//            NotificationCenter.default.post(name: .deleteAndExit, object: obj)
-//            self?.deleteAndExitHandler()
-            
-        }))
-        self.present(alert, animated: true, completion: nil)
+        navigationController?.popViewController(animated: true)
+        deleteAndExitDelegate?.deleteAndExit(from: channelID)
+//        guard let channelID = channel?.id else { return }
+//        let alert = CustomAlertController(title_: "Confirmation", message: "Are you sure you want to delete and exit this event?", preferredStyle: .alert)
+//        alert.addAction(CustomAlertAction(title: "No", style: .default, handler: nil))
+//        alert.addAction(CustomAlertAction(title: "Yes", style: .destructive, handler: { [weak self] in
+////            let obj: [String: Any] = ["channelID": channelID]
+////            NotificationCenter.default.post(name: .deleteAndExit, object: obj)
+////            self?.deleteAndExitHandler()
+//
+//
+//
+//        }))
+//        self.present(alert, animated: true, completion: nil)
     }
     
     func resetBadgeForSelf() {

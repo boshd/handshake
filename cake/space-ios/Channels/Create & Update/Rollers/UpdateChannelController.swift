@@ -46,6 +46,27 @@ class UpdateChannelController: CreateChannelController {
         }
     }
     
+    override var locationCoordinates: (Double, Double)? {
+        didSet {
+            print("newchannel init")
+            checkDifference()
+        }
+    }
+    
+    override var locationName: String? {
+        didSet {
+            print("newchannel init")
+            checkDifference()
+        }
+    }
+    
+    override var locationDescription: String? {
+        didSet {
+            print("newchannel init")
+            checkDifference()
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -75,7 +96,7 @@ class UpdateChannelController: CreateChannelController {
         guard let channel = channel else { dismissController(); return }
         
         newChannel = Channel(value: channel)
-        print("viewdidload")
+
         if let channelName = channel.name {
             self.channelName = channelName
         }
@@ -92,7 +113,7 @@ class UpdateChannelController: CreateChannelController {
             self.locationDescription = locationDescription
         }
         
-        if let latitude = channel.latitude.value, let longitude = channel.latitude.value {
+        if let latitude = channel.latitude.value, let longitude = channel.longitude.value {
             self.locationCoordinates = (latitude, longitude)
         }
         
@@ -116,7 +137,10 @@ class UpdateChannelController: CreateChannelController {
             channel.name != channelName ||
             channel.description_ != channelDescription ||
             channel.startTime.value != startTime ||
-            channel.endTime.value != endTime {
+            channel.latitude.value != locationCoordinates?.0 ||
+            channel.longitude.value != locationCoordinates?.1 ||
+            channel.locationName != locationName ||
+            channel.locationDescription != locationDescription {
             print("difference observed")
             navigationItem.rightBarButtonItem?.isEnabled = true
         } else {
@@ -154,13 +178,28 @@ class UpdateChannelController: CreateChannelController {
 
         let channelReference = Firestore.firestore().collection("channels").document(channelID)
         
+        /*
+         
+         "latitude": locationCoordinates?.0 as AnyObject,
+         "longitude": locationCoordinates?.1 as AnyObject,
+         "locationName": locationName as AnyObject,
+         "locationDescription": locationDescription as AnyObject,
+         
+         */
+        
         channelReference.updateData([
             "name": channelName as AnyObject,
             "isRemote": isRemote as AnyObject,
-            "locationName": isRemote ? FieldValue.delete() : channel?.locationName ?? "" as AnyObject,
-            "locationDescription": isRemote ? FieldValue.delete() : channel?.locationName ?? "" as AnyObject,
-            "latitude":  isRemote ? FieldValue.delete() : channel?.latitude ?? 0.0 as AnyObject,
-            "longitude": isRemote ? FieldValue.delete() : channel?.latitude ?? 0.0 as AnyObject,
+            
+            "latitude": isRemote ? FieldValue.delete() : locationCoordinates?.0 as AnyObject,
+            "longitude": isRemote ? FieldValue.delete() : locationCoordinates?.1 as AnyObject,
+            "locationName": isRemote ? FieldValue.delete() : locationName as AnyObject,
+            "locationDescription": isRemote ? FieldValue.delete() : locationDescription as AnyObject,
+            
+//            "locationName": isRemote ? FieldValue.delete() : channel?.locationName ?? "" as AnyObject,
+//            "locationDescription": isRemote ? FieldValue.delete() : locationDescription ?? "" as AnyObject,
+//            "latitude":  isRemote ? FieldValue.delete() : channel?.latitude ?? 0.0 as AnyObject,
+//            "longitude": isRemote ? FieldValue.delete() : channel?.latitude ?? 0.0 as AnyObject,
             "startTime": startTime as AnyObject,
             "endTime": endTime as AnyObject,
             "description": channelDescription as AnyObject

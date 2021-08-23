@@ -328,7 +328,9 @@ extension CreateChannelController {
             "locationName": locationName as AnyObject,
             "locationDescription": locationDescription as AnyObject,
             "isCancelled": false as AnyObject,
-            "isRemote": isRemote as AnyObject
+            "isRemote": isRemote as AnyObject,
+            "imageUrl": "" as AnyObject,
+            "thumbnailImageUrl": "" as AnyObject,
         ]
 
         localChannelData = channelData
@@ -342,7 +344,7 @@ extension CreateChannelController {
 
         channelCreatingGroup.notify(queue: DispatchQueue.main) { [weak self] in
             hapticFeedback(style: .success)
-
+            print("notify reached")
             self?.informationMessageSender.sendInformationMessage(channelID: newChannelReference.documentID, channelName: self?.channelName ?? "", participantIDs: memberIDs.0, text: "New event created. Discuss and share ideas here.", channel: Channel(dictionary: self?.localChannelData))
 
             self?.dismiss(animated: true, completion: nil)
@@ -377,14 +379,14 @@ extension CreateChannelController {
 
     func uploadImage(reference: DocumentReference, image: UIImage?) {
         guard let image = selectedImage else {
-//            reference.updateData([:]) { [weak self] (error) in
-//                self?.channelCreatingGroup.leave()
-//                if error != nil {
-//                    print("error // ", error?.localizedDescription as Any)
-//                    return
-//                }
-//            }
-            self.channelCreatingGroup.leave()
+            reference.updateData([:]) { [weak self] (error) in
+                self?.channelCreatingGroup.leave()
+                if error != nil {
+                    print("error // ", error?.localizedDescription as Any)
+                    return
+                }
+            }
+//            self.channelCreatingGroup.leave()
             return
         }
         
@@ -692,7 +694,7 @@ extension CreateChannelController {
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let view = UIView()
-        view.backgroundColor = ThemeManager.currentTheme().generalBackgroundSecondaryColor
+        view.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
         return view
     }
     

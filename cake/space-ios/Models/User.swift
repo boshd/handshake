@@ -24,7 +24,8 @@ final class User: Object {
     
     @objc dynamic var localContactIdentifier: String? {
         didSet {
-            self.localName = globalVariables.localContacts.first(where: { $0.identifier == localContactIdentifier })?.givenName
+//            self.localName = globalVariables.localContacts.first(where: { $0.identifier == localContactIdentifier })?.givenName
+//            self.localName = globalVariables.localContacts[
         }
     }
     

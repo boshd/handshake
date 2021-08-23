@@ -35,6 +35,9 @@ class ChannelsRealmManager {
                 RealmKeychain.defaultRealm.create(Channel.self, value: channel, update: .modified)
                 if let message = channel.lastMessageRuntime {
                     message.senderName = RealmKeychain.defaultRealm.object(ofType: Message.self, forPrimaryKey: message.messageUID ?? "")?.senderName
+                    print()
+                    print("REACHED THE MESSAGE CREATION IN REALM \(message.text)")
+                    print()
                     RealmKeychain.defaultRealm.create(Message.self, value: message, update: .modified)
                 }
             }

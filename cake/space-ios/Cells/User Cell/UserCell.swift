@@ -28,22 +28,41 @@ class UserCell: UITableViewCell {
         return seperator
     }()
     
+//    - (void)layoutSubviews {
+//        [super layoutSubviews];
+//        self.imageView.frame = CGRectMake(0,0,32,32);
+//    }
+    
     override func layoutSubviews() {
             super.layoutSubviews()
 
-            if(self.imageView?.image != nil){
+//        self.imageView?.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+        
+//            if(self.imageView?.image != nil){
+//
+//                let cellFrame = self.frame
+//                let textLabelFrame = self.textLabel?.frame
+//                let detailTextLabelFrame = self.detailTextLabel?.frame
+//                let imageViewFrame = self.imageView?.frame
+//
+//                self.imageView?.contentMode = .scaleAspectFill
+//                self.imageView?.clipsToBounds = true
+//                self.imageView?.frame = CGRect(x: (imageViewFrame?.origin.x)!,y: (imageViewFrame?.origin.y)! + 1,width: 40,height: 40)
+//                self.textLabel!.frame = CGRect(x: 50 + (imageViewFrame?.origin.x)! , y: (textLabelFrame?.origin.y)!, width: cellFrame.width-(70 + (imageViewFrame?.origin.x)!), height: textLabelFrame!.height)
+//                self.detailTextLabel!.frame = CGRect(x: 50 + (imageViewFrame?.origin.x)!, y: (detailTextLabelFrame?.origin.y)!, width: cellFrame.width-(70 + (imageViewFrame?.origin.x)!), height: detailTextLabelFrame!.height)
+//            }
+        
+        let itemSize = CGSize.init(width: 40, height: 40)
+        UIGraphicsBeginImageContextWithOptions(itemSize, false, UIScreen.main.scale)
+        let imageRect = CGRect.init(origin: CGPoint.zero, size: itemSize)
+        self.imageView?.image!.draw(in: imageRect)
+        self.imageView?.image! = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
 
-                let cellFrame = self.frame
-                let textLabelFrame = self.textLabel?.frame
-                let detailTextLabelFrame = self.detailTextLabel?.frame
-                let imageViewFrame = self.imageView?.frame
-
-                self.imageView?.contentMode = .scaleAspectFill
-                self.imageView?.clipsToBounds = true
-                self.imageView?.frame = CGRect(x: (imageViewFrame?.origin.x)!,y: (imageViewFrame?.origin.y)! + 1,width: 40,height: 40)
-                self.textLabel!.frame = CGRect(x: 50 + (imageViewFrame?.origin.x)! , y: (textLabelFrame?.origin.y)!, width: cellFrame.width-(70 + (imageViewFrame?.origin.x)!), height: textLabelFrame!.height)
-                self.detailTextLabel!.frame = CGRect(x: 50 + (imageViewFrame?.origin.x)!, y: (detailTextLabelFrame?.origin.y)!, width: cellFrame.width-(70 + (imageViewFrame?.origin.x)!), height: detailTextLabelFrame!.height)
-            }
+        self.imageView?.layer.cornerRadius = itemSize.width / 2
+        self.imageView?.contentMode = .scaleAspectFit
+        self.imageView?.clipsToBounds = true
+        
         }
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
@@ -51,13 +70,14 @@ class UserCell: UITableViewCell {
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
+        super.init(style: .default, reuseIdentifier: reuseIdentifier)
         selectionStyle = .default
         backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         textLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         detailTextLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         detailTextLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
         textLabel?.textColor = ThemeManager.currentTheme().generalTitleColor
+//        imageView?.image = UIImage(named: "UserpicIcon")
         
         addSubview(rightLabel)
         addSubview(seperator)
@@ -99,7 +119,7 @@ class UserCell: UITableViewCell {
 //        imageView?.layer.cornerRadius = (itemSize.width) / 2
 //        imageView?.contentMode = .scaleAspectFit
 //        imageView?.clipsToBounds = true
-        
+//        imageView?.image = UIImage(named: "UserpicIcon")
         backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         textLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         detailTextLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 12)

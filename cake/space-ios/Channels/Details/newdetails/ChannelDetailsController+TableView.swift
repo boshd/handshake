@@ -111,6 +111,7 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
                 cell.textLabel?.text = "See more"
                 guard let channelParticipantsCount = channel?.participantIds.count else { return cell }
                 cell.textLabel?.text = "See \(channelParticipantsCount - attendees.count) more"
+                cell.backgroundColor = ThemeManager.currentTheme().modalGroupedInsetCellBackgroundColor
                 return cell
             } else {
                 let cell = UITableViewCell(style: .value2, reuseIdentifier: userCellId) as? UserCell ?? UserCell(style: .subtitle, reuseIdentifier: userCellId)
@@ -119,23 +120,23 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
                 cell.accessoryView = .none
                 cell.accessoryType = .none
                 
+                
+                cell.backgroundColor = ThemeManager.currentTheme().modalGroupedInsetCellBackgroundColor
+                
                 return cell
             }
         } else {
-            let cell = LocationViewCell(style: .subtitle, reuseIdentifier: channelDescriptionCellId)
+            let cell = tableView.dequeueReusableCell(withIdentifier: locationViewCellId, for: indexPath) as? LocationViewCell ?? LocationViewCell(style: .subtitle, reuseIdentifier: locationViewCellId)
             if let isRemote = channel?.isRemote.value, isRemote {
                 cell.locationView.removeFromSuperview()
                 cell.detailTextLabel?.text = "If you can't find any information regarding virtual meetings try reaching out to one of the event organizers."
+                cell.contentView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+                cell.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
             } else {
                 cell.locationView.locationNameLabel.text = ""
                 cell.locationView.locationLabel.text = ""
-                
-                guard let locationName = channel?.locationName,
-                      let lat = channel?.latitude.value,
-                      let lon = channel?.longitude.value
-                else { return cell }
-                
-                cell.configureCell(title: locationName, subtitle: channel?.locationDescription, lat: lat, lon: lon)
+                guard let locationName = channel?.locationName else { return cell }
+                cell.configureCell(title: locationName, subtitle: channel?.locationDescription, annotation: mapAnnotation, addy: mapAddress)
             }
             
             return cell
@@ -166,6 +167,7 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        channelDetailsContainerView.tableView.translatesAutoresizingMaskIntoConstraints = true
         if let cell = channelDetailsContainerView.tableView.cellForRow(at: indexPath) {
             cell.accessoryType = .none
         }

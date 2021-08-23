@@ -42,8 +42,11 @@ class ChannelLogHistoryFetcher: NSObject {
     fileprivate func getFirstID(_ currentUserID: String, _ channelID: String) {
         let firstIDReference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID).collection("messageIds")
         let numberOfMessagesToLoad = messagesToLoad + messages.count
+        
+        // messages to load = all existing messages, so 25 initialy + the amount we want which is 5 for example. So load 30 plz.
+        
         print("numberOfMessagesToLoad \(numberOfMessagesToLoad)")
-        let firstIDQuery = firstIDReference.limit(to: numberOfMessagesToLoad)
+        let firstIDQuery = firstIDReference.order(by: "timestamp").limit(to: numberOfMessagesToLoad)
         firstIDQuery.getDocuments { (snapshot, error) in
             guard let documents = snapshot?.documents else { print(error?.localizedDescription ?? "error"); return }
             print("in getFirstID \(documents.count)")
@@ -58,7 +61,7 @@ class ChannelLogHistoryFetcher: NSObject {
     fileprivate func getLastID(_ firstDocument: DocumentSnapshot, _ currentUserID: String, _ channelID: String) {
         let nextMessageIndex = messages.count + 1
         let lastIDReference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID).collection("messageIds")
-        let lastIDQuery = lastIDReference.limit(to: nextMessageIndex)
+        let lastIDQuery = lastIDReference.order(by: "timestamp").limit(to: nextMessageIndex)
         lastIDQuery.getDocuments { (snapshot, error) in
             guard let documents = snapshot?.documents else { print(error?.localizedDescription ?? "error"); return }
             guard let lastID = documents.last?.documentID, let lastDocument = documents.last else { return }

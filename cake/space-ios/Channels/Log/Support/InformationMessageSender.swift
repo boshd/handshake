@@ -40,8 +40,8 @@ class InformationMessageSender: NSObject {
             "timestamp": timestamp,
             "text": text as AnyObject,
             "isInformationMessage": true as AnyObject,
-            "historicSenderName": "" as AnyObject,
-            "historicChannelName": channelName as AnyObject,
+            "senderName": "" as AnyObject,
+            "channelName": channelName as AnyObject,
             "fcmTokens": fcmDict as AnyObject
         ]
         
@@ -52,10 +52,12 @@ class InformationMessageSender: NSObject {
             }
             let batch = Firestore.firestore().batch()
             batch.setData([
-                "fromId": fromId
+                "fromId": fromId,
+                "timestamp": NSNumber(value: Int(Date().timeIntervalSince1970))
             ], forDocument: Firestore.firestore().collection("channels").document(toId).collection("messageIds").document(newInformationMessageReference.documentID), merge: true)
             batch.setData([
-                "fromId": fromId
+                "fromId": fromId,
+                "timestamp": NSNumber(value: Int(Date().timeIntervalSince1970))
             ], forDocument: Firestore.firestore().collection("users").document(fromId).collection("channelIds").document(toId).collection("messageIds").document(newInformationMessageReference.documentID), merge: true)
             
             batch.commit { (error) in

@@ -157,20 +157,21 @@ extension ChannelLogController: ChannelManagerDelegate {
         
         if isCurrentUserMemberOfCurrentGroup() {
             setupTitle()
+            inputAccessoryPlaceholder.add(inputContainerView)
         } else {
             messagesFetcher?.removeListener()
             self.inputContainerView.resignAllResponders()
             reloadInputViews()
-            //reloadInputView(view: inputBlockerContainerView)
             
             channelLogContainerView.channelLogHeaderView.isUserInteractionEnabled = false
             channelLogContainerView.channelLogHeaderView.viewDetails.isHidden = true
             
             self.inputContainerView.resignAllResponders()
             handleTypingIndicatorAppearance(isEnabled: false)
-            // removeSubtitleInGroupChat()
+            removeSubtitleInGroupChat()
             reloadInputViews()
-            //reloadInputView(view: inputBlockerContainerView)
+            
+            inputAccessoryPlaceholder.add(inputBlockerContainerView)
             navigationItem.rightBarButtonItem?.isEnabled = false
             if typingIndicatorCollectionListener != nil {
                 typingIndicatorCollectionListener?.remove()
@@ -183,5 +184,13 @@ extension ChannelLogController: ChannelManagerDelegate {
         guard let membersIDs = channel?.participantIds,
               let uid = Auth.auth().currentUser?.uid, membersIDs.contains(uid) else { return false }
         return true
+    }
+    
+    fileprivate func removeSubtitleInGroupChat() {
+        if let title = channel?.name {
+            let subtitle = ""
+            navigationItem.setTitle(title: title, subtitle: subtitle)
+            return
+        }
     }
 }

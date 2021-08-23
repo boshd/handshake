@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import SafariServices
 
-class WelcomeContainerView: UIView {
+class WelcomeContainerView: UIView, UITextViewDelegate {
     
     let signupButton: InteractiveButton = {
         let button = InteractiveButton()
@@ -67,7 +68,7 @@ class WelcomeContainerView: UIView {
     var disclaimerTextView: UITextView = {
         var textView =  UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.backgroundColor = .clear
+        textView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         textView.textAlignment = .center
         textView.font = ThemeManager.currentTheme().secondaryFont(with: 11)
         textView.textColor = ThemeManager.currentTheme().generalTitleColor
@@ -145,28 +146,55 @@ class WelcomeContainerView: UIView {
     }
     
     func configureDisclaimer() {
-        let mainString = "By using Handshake, you agree to our Terms of Service.\nYou can learn more about how we process your data in our Privacy Policy."
-        let privacyString = "Privacy Policy"
-        let termsString = "Terms of Service"
-        let mutableAttributedString = NSMutableAttributedString.init(string: mainString)
-        let termsRange = (mainString as NSString).range(of: termsString)
-        let privacyRange = (mainString as NSString).range(of: privacyString)
-        mutableAttributedString.setAttributes([.link: "https://kareemarab.now.sh/terms"], range: termsRange)
-        mutableAttributedString.setAttributes([.link: "https://kareemarab.now.sh/privacy"], range: privacyRange)
-        disclaimerTextView.attributedText = mutableAttributedString
         
-        disclaimerTextView.isUserInteractionEnabled = true
-        disclaimerTextView.isSelectable = false
-        disclaimerTextView.isEditable = false
+        let termsUrl = "https://www.notion.so/e0cc5b02ebfa4071ac97a204c7db25eb"
+        let privacyUrl = "https://www.notion.so/Your-privacy-matters-to-us-419248ff0f624d66ad9915e1b090fe1f"
         
-        disclaimerTextView.dataDetectorTypes = .all
+//        Add a link to your attributed string:
+
+        let originalText = "By using Handshake, you agree to our Terms of Service.\nYou can learn more about how we process your data in our Privacy Policy."
+        let attributedOriginalText = NSMutableAttributedString(string: originalText)
+        
+        let termsLinkRange = attributedOriginalText.mutableString.range(of: "Terms of Service")
+        attributedOriginalText.addAttribute(.link, value: termsUrl, range: termsLinkRange)
+        
+        let privacyLinkRange = attributedOriginalText.mutableString.range(of: "Privacy Policy")
+        attributedOriginalText.addAttribute(.link, value: privacyUrl, range: privacyLinkRange)
+
+        disclaimerTextView.attributedText = attributedOriginalText
+        
         disclaimerTextView.linkTextAttributes = [
-            .foregroundColor: ThemeManager.currentTheme().tintColor
+            .foregroundColor : ThemeManager.currentTheme().tintColor,
         ]
         
-        disclaimerTextView.font = ThemeManager.currentTheme().secondaryFont(with: 11)
         disclaimerTextView.textAlignment = .center
-        disclaimerTextView.textColor = ThemeManager.currentTheme().generalTitleColor
+        
+//        let mainString = "By using Handshake, you agree to our Terms of Service.\nYou can learn more about how we process your data in our Privacy Policy."
+//        let privacyString = "Privacy Policy"
+//        let termsString = "Terms of Service"
+//        let mutableAttributedString = NSMutableAttributedString.init(string: mainString)
+//        let termsRange = (mainString as NSString).range(of: termsString)
+//        let privacyRange = (mainString as NSString).range(of: privacyString)
+//        mutableAttributedString.setAttributes([.link: "https://www.notion.so/e0cc5b02ebfa4071ac97a204c7db25eb"], range: termsRange)
+//        mutableAttributedString.setAttributes([.link: NSMutableAttributedString(string: "https://www.notion.so/Your-privacy-matters-to-us-419248ff0f624d66ad9915e1b090fe1f")], range: privacyRange)
+//
+//        disclaimerTextView.attributedText = mutableAttributedString
+//
+//        disclaimerTextView.isUserInteractionEnabled = true
+        disclaimerTextView.isSelectable = true
+        disclaimerTextView.isEditable = false
+//        disclaimerTextView.linkTextAttributes = [.link: NSMutableAttributedString(string: "https://www.notion.so/Your-privacy-matters-to-us-419248ff0f624d66ad9915e1b090fe1f")]
+//
+//        disclaimerTextView.delegate = self
+//
+//        disclaimerTextView.dataDetectorTypes = .link
+//        disclaimerTextView.linkTextAttributes = [
+//            .foregroundColor: ThemeManager.currentTheme().tintColor
+//        ]
+//
+//        disclaimerTextView.font = ThemeManager.currentTheme().secondaryFont(with: 11)
+//        disclaimerTextView.textAlignment = .center
+//        disclaimerTextView.textColor = ThemeManager.currentTheme().generalTitleColor
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -182,5 +210,29 @@ class WelcomeContainerView: UIView {
         configureDisclaimer()
     }
     
+    // MARK: - Text view link clicking
+    
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange) -> Bool {
+        if (URL.absoluteString == "https://www.mywebsite.com") {
+            // Do whatever you want here as the action to the user pressing your 'actionString'
+            print("detected")
+            openUrl("google.com")
+        }
+        return false
+    }
+    
+    func openUrl(_ url: String) {
+        var svc = SFSafariViewController(url: URL(string: url)!)
+
+        if #available(iOS 11.0, *) {
+            let configuration = SFSafariViewController.Configuration()
+            configuration.entersReaderIfAvailable = true
+            svc = SFSafariViewController(url: URL(string: url)!, configuration: configuration)
+        }
+
+        svc.preferredControlTintColor = ThemeManager.currentTheme().tintColor
+        svc.preferredBarTintColor = ThemeManager.currentTheme().generalBackgroundColor
+//        present(svc, animated: true, completion: nil)
+    }
 }
 

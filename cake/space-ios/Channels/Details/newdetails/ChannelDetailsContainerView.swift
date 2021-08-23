@@ -40,7 +40,7 @@ class ChannelDetailsContainerView: UIView {
         var view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.isUserInteractionEnabled = true
-        view.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
+        view.backgroundColor = ThemeManager.currentTheme().rsvpViewBackgroundColor
         return view
     }()
 
@@ -97,7 +97,7 @@ class ChannelDetailsContainerView: UIView {
     func setColors() {
         rsvpButton.backgroundColor = ThemeManager.currentTheme().buttonColor
         rsvpButton.titleLabel?.textColor = .white
-        rsvpView.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
+        rsvpView.backgroundColor = ThemeManager.currentTheme().rsvpViewBackgroundColor
         tableView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         channelImageView.backgroundColor = ThemeManager.currentTheme().imageViewBackground
     }

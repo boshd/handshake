@@ -1727,3 +1727,30 @@ extension NSLayoutManager {
     }
     
 }
+
+var isOfflineForDatabase = [
+    "state": "offline",
+    "last_changed": NSNumber(value: Int(Date().timeIntervalSince1970)),
+] as [String : Any]
+
+var isOnlineForDatabase = [
+    "state": "online",
+    "last_changed": NSNumber(value: Int(Date().timeIntervalSince1970)),
+] as [String : Any]
+
+func setOnlineStatus()  {
+    guard Auth.auth().currentUser != nil, let currentUID = Auth.auth().currentUser?.uid else { return }
+
+    let onlineStatusReference = Database.database().reference().child("status").child(currentUID).child("state")
+    let lastChangedReference = Database.database().reference().child("status").child(currentUID).child("last_changed")
+    let connectedRef = Database.database().reference(withPath: ".info/connected")
+
+    connectedRef.observe(.value, with: { (snapshot) in
+        guard let connected = snapshot.value as? Bool, connected else { return }
+        onlineStatusReference.setValue("online")
+        lastChangedReference.setValue(NSNumber(value: Int(Date().timeIntervalSince1970)))
+
+        onlineStatusReference.onDisconnectSetValue("offline")
+        lastChangedReference.onDisconnectSetValue(NSNumber(value: Int(Date().timeIntervalSince1970)))
+    })
+}

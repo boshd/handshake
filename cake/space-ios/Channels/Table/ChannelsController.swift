@@ -166,7 +166,7 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorStyle = .singleLine
-        tableView.separatorInset = UIEdgeInsets(top: 0, left: 100, bottom: 0, right: 0)
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: 90, bottom: 0, right: 0)
         tableView.tableFooterView = UIView()
     }
     
@@ -218,6 +218,22 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
 //        NotificationCenter.default.addObserver(self, selector:#selector(setGreeting), name: .NSCalendarDayChanged, object:nil)
     }
     
+    fileprivate func managePresense() {
+        if currentReachabilityStatus == .notReachable {
+            showActivityTitle(title: .connecting)
+        }
+
+        let connectedReference = Database.database().reference(withPath: ".info/connected")
+        connectedReference.observe(.value, with: { [weak self] (snapshot) in
+
+            if self?.currentReachabilityStatus != .notReachable {
+                self?.hideActivityTitle(title: .noInternet)
+            } else {
+                self?.showActivityTitle(title: .noInternet)
+            }
+        })
+    }
+    
     // MARK: - @objc methods
     
     @objc fileprivate func cleanUpController() {
@@ -256,8 +272,9 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         tableView.indicatorStyle = ThemeManager.currentTheme().scrollBarStyle
         tableView.sectionIndexBackgroundColor = view.backgroundColor
         tableView.backgroundColor = view.backgroundColor
+        tableView.separatorColor = ThemeManager.currentTheme().seperatorColor
         tableView.isOpaque = true
-        
+//        tableView.selectionColor = ThemeManager.currentTheme().cellSelectionColor
         DispatchQueue.main.async { [weak self] in
             self?.tableView.reloadData()
         }
@@ -271,25 +288,28 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         
         channelsFetcher.fetchChannels()
         checkConnectivity()
+        managePresense()
+        setupDataSource()
         
         currentUserReference = Firestore.firestore().collection("users").document(currentUserID)
         listenToCurrentUser()
-        
+    }
+    
+    fileprivate func setupDataSource() {
         let currentDateInt64 = Int64(Int(Date().timeIntervalSince1970))
         
         let objects = RealmKeychain.defaultRealm.objects(Channel.self).sorted(byKeyPath: "startTime", ascending: false)
-        let pastObjects = objects.filter("startTime < \(currentDateInt64) && endTime < \(currentDateInt64)").sorted(byKeyPath: "startTime", ascending: false)
-        let upcomingObjects = objects.filter("startTime > \(currentDateInt64) && endTime > \(currentDateInt64)").sorted(byKeyPath: "startTime", ascending: false)
-        let inProgressObjects = objects.filter("startTime < \(currentDateInt64) && endTime > \(currentDateInt64)").sorted(byKeyPath: "startTime", ascending: false)
+//        let pastObjects = objects.filter("startTime < \(currentDateInt64) && endTime < \(currentDateInt64)").sorted(byKeyPath: "startTime", ascending: false)
+//        let upcomingObjects = objects.filter("startTime > \(currentDateInt64) && endTime > \(currentDateInt64)").sorted(byKeyPath: "startTime", ascending: false)
+//        let inProgressObjects = objects.filter("startTime < \(currentDateInt64) && endTime > \(currentDateInt64)").sorted(byKeyPath: "startTime", ascending: false)
         let theObjects = objects.sorted(byKeyPath: "startTime", ascending: false)
         // filter past objects newer than 24 hrs ago
         
-        pastRealmChannels = pastObjects
-        upcomingRealmChannels = upcomingObjects
-        inProgressRealmChannels = inProgressObjects
+//        pastRealmChannels = pastObjects
+//        upcomingRealmChannels = upcomingObjects
+//        inProgressRealmChannels = inProgressObjects
         realmChannels = objects
         theRealmChannels = theObjects
-        
     }
     
     private func setDate() {

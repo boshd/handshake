@@ -10,6 +10,7 @@ import UIKit
 import Firebase
 import RealmSwift
 import EventKit
+import MapKit
 
 class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     
@@ -41,6 +42,9 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     let channelDescriptionCellId = "channelDescriptionCellId"
     let channelDetailsCellId = "channelDetailsCellId"
     let loadMoreCellId = "loadMoreCellId"
+    
+    var mapAnnotation: MKAnnotation?
+    var mapAddress: String?
     
     let tableSectionHeaderHeight: CGFloat = 27.5
     
@@ -81,6 +85,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         super.viewDidLoad()
         configureTableView()
         configureNaviationBar()
+        configureMapView()
         addObservers()
     }
     
@@ -132,8 +137,27 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         
 //        channelDetailsContainerView.rsvpButton.target(forAction: #selector(presentRSVPOptions), withSender: self)
         channelDetailsContainerView.rsvpButton.addTarget(self, action: #selector(presentRSVPOptions), for: .touchUpInside)
-        
-        guard let channelID = channel?.id else { return }
+    }
+    
+    fileprivate func configureMapView() {
+        print("configureMapView called")
+        guard let lat = channel?.latitude.value, let lon = channel?.longitude.value else { return }
+        let location = CLLocation(latitude: lat, longitude: lon)
+        let geoCoder = CLGeocoder()
+        geoCoder.reverseGeocodeLocation(location, completionHandler: { [weak self] placemarks, error -> Void in
+            if error != nil {
+                print(error?.localizedDescription ?? "")
+                return
+            }
+            guard let placeMark = placemarks?.first else { return }
+            let item = MKPlacemark(placemark: placeMark)
+
+            self?.mapAddress = parseAddress(selectedItem: item)
+            
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+            self?.mapAnnotation = annotation
+        })
     }
     
     fileprivate func addObservers() {
@@ -199,7 +223,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         footerView.secondaryLabel.text = "Created \(createdAt)"
         
         
-        let footer = UIView(frame : CGRect(x: 0, y: 0, width: channelDetailsContainerView.tableView.frame.width, height: 50))
+        let footer = UIView(frame : CGRect(x: 0, y: 0, width: channelDetailsContainerView.tableView.frame.width, height: 70))
         footer.addSubview(footerView)
         NSLayoutConstraint.activate([
             footerView.leadingAnchor.constraint(equalTo: footer.leadingAnchor, constant: 0),
@@ -286,7 +310,14 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         let addToCalendarAction = CustomAlertAction(title: "Add to Calendar", style: .default , handler: { [weak self] in
             self?.addToCalendar()
         })
-        let deleteAction = CustomAlertAction(title: "Delete and Exit", style: .destructive , handler: nil)
+        let deleteAction = CustomAlertAction(title: "Leave", style: .destructive , handler: { [weak self] in
+            let alert = CustomAlertController(title_: "Confirmation", message: "Are you sure you want to leave this event?", preferredStyle: .alert)
+            alert.addAction(CustomAlertAction(title: "No", style: .default, handler: nil))
+            alert.addAction(CustomAlertAction(title: "Yes", style: .destructive, handler: { [weak self] in
+                self?.leaveEvent()
+            }))
+            self?.present(alert, animated: true, completion: nil)
+        })
         
         alert.addAction(addToCalendarAction)
         alert.addAction(deleteAction)
@@ -364,16 +395,56 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         let alert = CustomAlertController(title_: nil, message: nil, preferredStyle: .actionSheet)
 
         alert.addAction(CustomAlertAction(title: "Maps", style: .default, handler: { [weak self] in
-            //self?.openInMaps(type: "apple")
+            self?.openInMaps(type: "apple")
         }))
 
         alert.addAction(CustomAlertAction(title: "Google Maps", style: .default, handler: { [weak self] in
-            //self?.openInMaps(type: "google")
+            self?.openInMaps(type: "google")
         }))
 
         self.present(alert, animated: true, completion: {
             print("completion block")
         })
+    }
+    
+    @objc
+    func leaveEvent() {
+        guard let channelID = channel?.id, let currentUserID = Auth.auth().currentUser?.uid else { return }
+        
+        guard let index = attendees.firstIndex(where: { (user) -> Bool in
+            return user.id == currentUserID
+        }) else { return }
+        guard let memberName = attendees[index].name else { return }
+        let text = "\(memberName) left the group"
+        
+        let channelName = self.channel?.name ?? ""
+        
+        let channelCopy = Channel(value: channel)
+        
+        let channelParticipantReference = Firestore.firestore().collection("channels").document(channelID).collection("participantIds").document(currentUserID)
+        let channelReference = Firestore.firestore().collection("channels").document(channelID)
+        let participantChannelReference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID)
+        
+        let batch = Firestore.firestore().batch()
+        
+        batch.deleteDocument(channelParticipantReference)
+        batch.deleteDocument(participantChannelReference)
+        batch.updateData(["participantIds": FieldValue.arrayRemove([currentUserID])], forDocument: channelReference)
+        batch.updateData(["fcmTokens": FieldValue.arrayRemove([currentUserID])], forDocument: channelReference)
+        
+        batch.commit { [weak self] error in
+            guard let self = self else { return }
+            if error != nil {
+                print(error?.localizedDescription ?? "err")
+                return
+            }
+            
+            self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: self.attendees.map({$0.id ?? ""}), text: text, channel: channelCopy)
+            
+            
+            self.navigationController?.popViewController(animated: true)
+        }
+        
     }
     
     // MARK: - Datasource Observers
@@ -397,6 +468,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
                 self?.configureChannelImageHeaderView()
 //            }
             self?.configureFooterView()
+            self?.configureMapView()
 //            if self?.channel?.participantIds != channel.participantIds {
                 self?.populateAttendees()
 //            }
@@ -513,6 +585,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
                 print("IN LOCAL REALM \(participantId)")
                 if let usr = RealmKeychain.realmUsersArray().first(where: {$0.id == participantId}) {
                     print("IN IN LOCAL REALM \(usr.localName)")
+//                    print("in in in local realm \(globalVariables.localContacts)")
                     attendees.append(usr)
                 }
             }
@@ -523,6 +596,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
                     guard error == nil else { print(error?.localizedDescription ?? "error"); return }
 
                     if RealmKeychain.realmUsersArray().map({$0.id}).contains(user.id) {
+                        print("1 if")
                         print("AGAIN IN LOCAL REALM \(user.id)")
                         if let localRealmUser = RealmKeychain.usersRealm.object(ofType: User.self, forPrimaryKey: user.id),
                            !user.isEqual_(to: localRealmUser) {
@@ -554,6 +628,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
                             }
                         }
                     } else if RealmKeychain.realmNonLocalUsersArray().map({$0.id}).contains(user.id) {
+                        print("2 if")
                         if let nonLocalRealmUser = RealmKeychain.nonLocalUsersRealm.object(ofType: User.self, forPrimaryKey: user.id),
                            !user.isEqual_(to: nonLocalRealmUser) {
                             
@@ -577,6 +652,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
                             }
                         }
                     } else {
+                        print("3 if")
                         autoreleasepool {
                             if !self.nonLocalRealm.isInWriteTransaction {
                                 self.nonLocalRealm.beginWrite()
@@ -677,7 +753,7 @@ extension ChannelDetailsController {
                 displayErrorAlert(title: basicErrorTitleForAlert, message: genericOperationError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
                 return
             }
-            globalIndicator.showSuccess(withStatus: "Done")
+            globalIndicator.showSuccess(withStatus: nil)
             hapticFeedback(style: .success)
             if let name = self.attendees.filter({ $0.id == memberID }).first?.name, let channelName = self.channel?.name {
                 self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\(name) is now an Organizer", channel: self.channel)
@@ -714,6 +790,42 @@ extension ChannelDetailsController {
             }
 //            self.channelDetailsContainerView.tableView.reloadData()
         }
+    }
+    
+    @objc
+    func openInMaps(type: String) {
+        guard let lat = channel?.latitude.value, let lon = channel?.longitude.value else { return }
+        
+        if type == "apple" {
+            let latitude: CLLocationDegrees = lat
+            let longitude: CLLocationDegrees = lon
+
+            let regionDistance:CLLocationDistance = 10000
+            let coordinates = CLLocationCoordinate2DMake(latitude, longitude)
+            let regionSpan = MKCoordinateRegion.init(center: coordinates, latitudinalMeters: regionDistance, longitudinalMeters: regionDistance)
+            let options = [
+               MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: regionSpan.center),
+               MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: regionSpan.span)
+            ]
+            let placemark = MKPlacemark(coordinate: coordinates, addressDictionary: nil)
+            let mapItem = MKMapItem(placemark: placemark)
+            mapItem.name = "Event Location"
+            mapItem.openInMaps(launchOptions: options)
+        } else {
+            if (UIApplication.shared.canOpenURL(URL(string:"comgooglemaps://")!)) {  //if phone has an app
+
+                if let url = URL(string: "comgooglemaps-x-callback://?saddr=&daddr=\(lat),\(lon)&directionsmode=driving") {
+                    UIApplication.shared.open(url, options: [:])
+            }} else {
+            //Open in browser
+                if let urlDestination = URL.init(string: "https://www.google.co.in/maps/dir/?saddr=&daddr=\(lat),\(lon)&directionsmode=driving") {
+                    UIApplication.shared.open(urlDestination)
+                }
+            }
+        }
+        
+        
+
     }
     
     @objc func addToCalendar() {
@@ -784,7 +896,7 @@ extension ChannelDetailsController {
                 displayErrorAlert(title: basicErrorTitleForAlert, message: "Operation could not be completed", preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
                 return
             }
-            globalIndicator.showSuccess(withStatus: "Done")
+            globalIndicator.showSuccess(withStatus: nil)
             hapticFeedback(style: .success)
             if let name = globalCurrentUser?.name, let channelName = self.channel?.name {
                 var text = ""

@@ -183,6 +183,15 @@ enum Theme: Int {
         }
     }
     
+    var generalLocationViewBackgroundColor: UIColor {
+        switch self {
+            case .normal:
+                return .white
+            case .dark:
+                return .handshakeSecondaryDark
+        }
+    }
+    
     var barTintColor: UIColor {
         switch self {
             case .normal:
@@ -364,6 +373,15 @@ enum Theme: Int {
         }
     }
     
+    var rsvpViewBackgroundColor: UIColor {
+        switch self {
+            case .normal:
+                return .handshakeSecondaryLight
+            case .dark:
+                return .handshakeSecondaryDark
+        }
+    }
+    
     var barBackgroundColor: UIColor {
         switch self {
             case .normal:
@@ -376,7 +394,7 @@ enum Theme: Int {
     var seperatorColor: UIColor {
         switch self {
             case .normal:
-                return .handshakeSecondaryLight
+                return .handshakeMediumGray 
             case .dark:
                 return .handshakeSecondaryDark
         }
@@ -588,18 +606,18 @@ enum Theme: Int {
     var inputTextViewColor: UIColor {
         switch self {
             case .normal:
-                return .handshakeSecondaryLight
+                return .white
             case .dark:
-                return .handshakeSecondaryDark
+                return .black
         }
     }
     
     var inputBarContainerViewBackgroundColor: UIColor {
         switch self {
             case .normal:
-                return .white
+                return .handshakeSecondaryLight
             case .dark:
-                return .black
+                return .handshakeSecondaryDark
         }
     }
     

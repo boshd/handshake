@@ -201,6 +201,8 @@ class UsersFetcher: NSObject {
                 
                 user.localContactIdentifier = contactID
                 
+                user.localName = globalVariables.localContacts.first(where: { $0.identifier == contactID })?.givenName
+                
                 if let thumbnail = user.userThumbnailImageUrl, let url = URL(string: thumbnail) {
                     SDWebImagePrefetcher.shared.prefetchURLs([url])
                 }

@@ -22,65 +22,7 @@ class InAppNotificationManager: NSObject {
     func updateChannels(to channels: [Channel]) {
         self.channels = channels
     }
-    
-//    @objc func handleChannelAdded(_ notification: Notification) {
-//        guard let obj = notification.object as? [String: Any], let addedChannelID = obj["channelID"] as? String else { return }
-        
-//        if self.channels.map({ $0.id }).contains(removedChannelID) {
-//        if individualChannelListenersDict[addedChannelID] == nil {
-//            var first = true
-//            notificationReference = Firestore.firestore().collection("channels").document(addedChannelID).collection("thread")
-//            let listener = notificationReference.order(by: "timestamp", descending: true).addSnapshotListener { (querySnapshot, error) in
-//                guard let documents = querySnapshot?.documents else {
-//                    print("error // ", error!)
-//                    return
-//                }
-//
-//                if documents.count > 0 { // if channel thread isn't empty
-//                    let document = documents[0]
-//
-//                    if (first) {
-//                        first = false
-//                        return
-//                    }
-//
-//                    let messageID = document.documentID
-//
-//                    var dictionary = document.data()
-//                    dictionary.updateValue(messageID as AnyObject, forKey: "messageUID")
-//
-//                    let message = Message(dictionary: dictionary as [String : AnyObject])
-//                    guard let uid = Auth.auth().currentUser?.uid, message.fromId != uid else { return }
-//                    let tmpChannels = Array(self.channels)
-////                    guard let channel = tmpChannels.first(where: { $0.id == addedChannelID }) else { return }
-////
-////
-////                    self.handleInAppSoundPlaying(message: message, channel: channel, channels: self.channels)
-//                }
-//            }
-//
-//            individualChannelListenersDict[addedChannelID] = listener
-//            print("\(individualChannelListenersDict.count) // \(addedChannelID) // listener added")
-//        }
-//        }
-//    }
-    
-//    @objc func handleChannelRemovedDiff(_ notification: Notification) {
-//        guard let obj = notification.object as? [String: Any], let removedChannelID = obj["channelID"] as? String else { return }
-        
-////        if self.channels.map({ $0.id }).contains(removedChannelID) {
-//            if let _ = individualChannelListenersDict[removedChannelID] {
-//                individualChannelListenersDict[removedChannelID]?.remove()
-//                if let index = individualChannelListenersDict.firstIndex(where: { (k, v) -> Bool in
-//                    return k == removedChannelID
-//                }) {
-//                    individualChannelListenersDict.remove(at: index)
-//                }
-//                print("\(individualChannelListenersDict.count) // \(removedChannelID) // listener removed")
-//            }
-//        }
-//    }
-   
+
     public func removeAllObservers() {
 //        channels.removeAll()
         if !individualChannelListenersDict.isEmpty {
@@ -129,13 +71,17 @@ class InAppNotificationManager: NSObject {
                             
                             guard var dictionary = snapshot?.data() else { return }
                             dictionary.updateValue(messageID as AnyObject, forKey: "messageUID")
+                            print()
+                            print("EXISTS \(RealmKeychain.defaultRealm.object(ofType: Message.self, forPrimaryKey: messageID ?? ""))")
+                            
                             let message = Message(dictionary: dictionary as [String : AnyObject])
+                            
+                            print("EXISTS2 \(RealmKeychain.defaultRealm.object(ofType: Message.self, forPrimaryKey: messageID ?? ""))")
+                            print()
                             
                             guard let uid = Auth.auth().currentUser?.uid, message.fromId != uid else { return }
                             
-//                            if let notified = message.notified.value, !notified {
                             self.handleInAppSoundPlaying(message: message, channel: channel, channels: self.channels)
-//                            }
                         }
                     }
                 }

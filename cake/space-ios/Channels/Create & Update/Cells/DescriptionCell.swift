@@ -26,7 +26,7 @@ class DescriptionCell: UITableViewCell {
         textView.isScrollEnabled = false
         textView.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         textView.textColor = ThemeManager.currentTheme().generalSubtitleColor
-        textView.returnKeyType = .done
+//        textView.returnKeyType = 
 //        textView.text = "Description"
         textView.autocorrectionType = .default
         textView.autocapitalizationType = .none
@@ -34,6 +34,8 @@ class DescriptionCell: UITableViewCell {
         textView.textContainer.lineFragmentPadding = 0
         textView.keyboardAppearance = ThemeManager.currentTheme().keyboardAppearance
         textView.delegate = self
+        textView.dataDetectorTypes = .link
+        textView.isSelectable = true
 //        textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
         
         return textView
@@ -115,10 +117,11 @@ extension DescriptionCell: UITextViewDelegate {
             // and set the cursor to the beginning of the text view
             print("REACHED INITIAL")
             
-            if text == "\n" {
-                textView.resignFirstResponder()
-                return false
-            } else if updatedText.isEmpty {
+//            if text == "\n" {
+//                textView.resignFirstResponder()
+//                return false
+//            } else
+            if updatedText.isEmpty {
                 textView.text = "Description"
                 textView.textColor = ThemeManager.currentTheme().generalSubtitleColor
                 textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)

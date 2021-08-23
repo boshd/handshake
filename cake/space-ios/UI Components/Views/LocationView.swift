@@ -29,7 +29,6 @@ class LocationView: UIView {
         label.sizeToFit()
         label.textAlignment = .left
         label.numberOfLines = 2
-        label.text = "Dunton Tower"
         
         return label
     }()

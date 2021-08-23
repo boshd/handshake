@@ -644,6 +644,8 @@ extension ParticipantsController {
         
         let userReference = Firestore.firestore().collection("users").document(memberID)
         
+        let nameToBeDeleted = self.participants.filter({ $0.id == memberID }).first?.name
+         
         globalIndicator.show()
         ChannelManager.removeMember(channelReference: channelReference, userReference: userReference, memberID: memberID, channelID: channelID) { error in
             guard error == nil else {
@@ -654,12 +656,92 @@ extension ParticipantsController {
             }
             globalIndicator.showSuccess(withStatus: "Removed")
             hapticFeedback(style: .success)
-            if let name = self.participants.filter({ $0.id == memberID }).first?.name, let channelName = self.channel?.name {
-                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\(name) has been removed from the event", channel: self.channel)
+            if let name = nameToBeDeleted, let channelName = self.channel?.name {
+//                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\(name) has been removed from the event", channel: self.channel)
             }
-//            self.channelDetailsContainerView.tableView.reloadData()
+            self.participantsContainerView.tableView.reloadData()
         }
     }
+    
+//    @objc func viewProfile(member: User) {
+//        let destination = ParticipantProfileController()
+//        destination.member = member
+//        destination.userProfileContainerView.addPhotoLabel.isHidden = true
+//        navigationController?.pushViewController(destination, animated: true)
+//    }
+//
+//    @objc func removeAdmin(memberID: String) {
+//        if currentReachabilityStatus == .notReachable {
+//            displayErrorAlert(title: basicErrorTitleForAlert, message: noInternetError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+//            return
+//        }
+//        guard let ref = currentChannelReference, let channelID = channel?.id else { return }
+//        globalIndicator.show()
+//        ChannelManager.removeAdmin(ref: ref, memberID: memberID, channelID: channelID) { error in
+//            guard error == nil else {
+//                globalIndicator.dismiss()
+//                print(error?.localizedDescription ?? "")
+//                displayErrorAlert(title: basicErrorTitleForAlert, message: genericOperationError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+//                return
+//            }
+//            globalIndicator.showSuccess(withStatus: "Dismissed")
+//            hapticFeedback(style: .success)
+//            if let name = self.participants.filter({ $0.id == memberID }).first?.name, let channelName = self.channel?.name {
+//                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\(name) has been dismissed as Organizer", channel: self.channel)
+//            }
+//        }
+//    }
+//
+//    @objc func makeAdmin(memberID: String) {
+//        if currentReachabilityStatus == .notReachable {
+//            displayErrorAlert(title: basicErrorTitleForAlert, message: noInternetError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+//            return
+//        }
+//        guard let ref = currentChannelReference, let channelID = channel?.id else { return }
+//        globalIndicator.show()
+//        ChannelManager.makeAdmin(ref: ref, memberID: memberID, channelID: channelID) { error in
+//            guard error == nil else {
+//                globalIndicator.dismiss()
+//                print(error?.localizedDescription ?? "")
+//                displayErrorAlert(title: basicErrorTitleForAlert, message: genericOperationError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+//                return
+//            }
+//            globalIndicator.showSuccess(withStatus: "Done")
+//            hapticFeedback(style: .success)
+//            if let name = self.participants.filter({ $0.id == memberID }).first?.name, let channelName = self.channel?.name {
+//                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\(name) is now an Organizer", channel: self.channel)
+//            }
+//        }
+//    }
+//
+//
+//    @objc func removeMember(memberID: String) {
+//        if currentReachabilityStatus == .notReachable {
+//            displayErrorAlert(title: basicErrorTitleForAlert, message: noInternetError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+//            return
+//        }
+//        guard let channelReference = currentChannelReference,
+//              let channelID = channel?.id
+//        else { return }
+//
+//        let userReference = Firestore.firestore().collection("users").document(memberID)
+//
+//        globalIndicator.show()
+//        ChannelManager.removeMember(channelReference: channelReference, userReference: userReference, memberID: memberID, channelID: channelID) { error in
+//            guard error == nil else {
+//                globalIndicator.dismiss()
+//                print(error?.localizedDescription ?? "")
+//                displayErrorAlert(title: basicErrorTitleForAlert, message: genericOperationError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+//                return
+//            }
+//            globalIndicator.showSuccess(withStatus: "Removed")
+//            hapticFeedback(style: .success)
+//            if let name = self.participants.filter({ $0.id == memberID }).first?.name, let channelName = self.channel?.name {
+//                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\(name) has been removed from the event", channel: self.channel)
+//            }
+////            self.channelDetailsContainerView.tableView.reloadData()
+//        }
+//    }
     
     
 }
@@ -727,7 +809,7 @@ extension ParticipantsController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 65
+        return 50
     }
     
     fileprivate func report(memberID: String, currentID: String) {
@@ -740,6 +822,7 @@ extension ParticipantsController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         hapticFeedback(style: .selectionChanged)
+        tableView.deselectRow(at: indexPath, animated: true)
         if let cell = participantsContainerView.tableView.cellForRow(at: indexPath) {
             cell.accessoryType = .none
         }
@@ -768,52 +851,52 @@ extension ParticipantsController: UITableViewDelegate, UITableViewDataSource {
             navigationController?.pushViewController(destination, animated: true)
         }))
         
-        guard let channelAdminIds = channel?.admins,
-              let channelAuthor = channel?.author
-        else { return }
-
-        guard channelAdminIds.contains(currentUserID) else {
-            self.present(alert, animated: true, completion: {})
-            return
-        }
-        
-        guard let memberID = member.id else { return }
-        if memberID != currentUserID {
-            if channelAdminIds.contains(memberID) {
-                alert.addAction(CustomAlertAction(title: "Dismiss as Organizer", style: .default , handler: { [unowned self] in
-                    if memberID == channelAuthor {
-                        displayErrorAlert(title: "Not Allowed", message: "You cannot dismiss this person as admin because they created the event", preferredStyle: .alert, actionTitle: "Got it", controller: self)
-                    } else {
-                        self.removeAdmin(memberID: memberID)
-                    }
-                }))
-            } else {
-                alert.addAction(CustomAlertAction(title: "Make Organizer", style: .default , handler: { [weak self] in
-                    self?.makeAdmin(memberID: memberID)
-                }))
-            }
-
-            alert.addAction(CustomAlertAction(title: "Remove from event", style: .destructive , handler: { [unowned self] in
-
-
-                let alert = CustomAlertController(title_: "Confirmation", message: "Are you sure you want to remove them from the event?", preferredStyle: .alert)
-                alert.addAction(CustomAlertAction(title: "No", style: .default, handler: nil))
-                alert.addAction(CustomAlertAction(title: "Yes", style: .destructive, handler: {
-                    guard self.currentReachabilityStatus != .notReachable else {
-                        basicErrorAlertWith(title: basicErrorTitleForAlert, message: noInternetError, controller: self)
-                        return
-                    }
-                    if memberID == channelAuthor && channelAdminIds.contains(memberID) {
-                        displayErrorAlert(title: "Not Allowed", message: "You cannot remove this person because they created the channel", preferredStyle: .alert, actionTitle: "Got it", controller: self)
-                    } else {
-                        self.removeMember(memberID: memberID)
-                    }
-                }))
-                self.present(alert, animated: true, completion: nil)
-            }))
+//        guard let channelAdminIds = channel?.admins,
+//              let channelAuthor = channel?.author
+//        else { return }
+//
+//        guard channelAdminIds.contains(currentUserID) else {
+//            self.present(alert, animated: true, completion: {})
+//            return
+//        }
+//
+//        guard let memberID = member.id else { return }
+//        if memberID != currentUserID {
+//            if channelAdminIds.contains(memberID) {
+//                alert.addAction(CustomAlertAction(title: "Dismiss as Organizer", style: .default , handler: { [unowned self] in
+//                    if memberID == channelAuthor {
+//                        displayErrorAlert(title: "Not Allowed", message: "You cannot dismiss this person as admin because they created the event", preferredStyle: .alert, actionTitle: "Got it", controller: self)
+//                    } else {
+//                        self.removeAdmin(memberID: memberID)
+//                    }
+//                }))
+//            } else {
+//                alert.addAction(CustomAlertAction(title: "Make Organizer", style: .default , handler: { [weak self] in
+//                    self?.makeAdmin(memberID: memberID)
+//                }))
+//            }
+//
+//            alert.addAction(CustomAlertAction(title: "Remove from event", style: .destructive , handler: { [unowned self] in
+//
+//
+//                let alert = CustomAlertController(title_: "Confirmation", message: "Are you sure you want to remove them from the event?", preferredStyle: .alert)
+//                alert.addAction(CustomAlertAction(title: "No", style: .default, handler: nil))
+//                alert.addAction(CustomAlertAction(title: "Yes", style: .destructive, handler: {
+//                    guard self.currentReachabilityStatus != .notReachable else {
+//                        basicErrorAlertWith(title: basicErrorTitleForAlert, message: noInternetError, controller: self)
+//                        return
+//                    }
+//                    if memberID == channelAuthor && channelAdminIds.contains(memberID) {
+//                        displayErrorAlert(title: "Not Allowed", message: "You cannot remove this person because they created the channel", preferredStyle: .alert, actionTitle: "Got it", controller: self)
+//                    } else {
+//                        self.removeMember(memberID: memberID)
+//                    }
+//                }))
+//                self.present(alert, animated: true, completion: nil)
+//            }))
             self.present(alert, animated: true, completion: nil)
             reloadTable()
-        }
+//        }
     }
     
 }

@@ -227,222 +227,6 @@ exports.incrementBadgeOnUserMessageCreation = functions.firestore
  * @param {!express:Request} req HTTP request context.
  * @param {!express:Response} res HTTP response context.
  */
-// exports.handleNewMessage = functions.firestore
-// .document(constants.MESSAGES_COLLECTION + '/{messageId}')
-// .onCreate((snapshot, context) => {
-//     const messageId: string = context.params['messageId']
-
-//     if (snapshot.exists) {
-//         const messageData = snapshot.data()
-
-//         const historicChannelName = messageData['historicChannelName']
-//         const historicSenderName = messageData['historicSenderName']
-//         const text: string = messageData['text']
-//         const channelId = messageData['toId']
-//         const timestamp = messageData['timestamp']
-//         const fromId = messageData['fromId']
-//         var badge = 0
-//         var fcmTokens = messageData['fcmTokens']
-
-//         fcmTokens = Object.keys(fcmTokens).map(key => fcmTokens[key])
-
-//         const messagePayload = constructNotificationPayload(
-//             fcmTokens,
-//             messageId,
-//             channelId,
-//             historicSenderName,
-//             historicChannelName,
-//             fromId,
-//             text,
-//             badge,
-//         )
-
-//         try {
-
-
-
-//             sendMessageToAllButSender()
-//             .then(() => {
-//                 LOGGER.log('sendMessageToAllButSender is done')
-//                 notifyAllButSender()
-//             })
-//             .catch(err => {
-//                 functions.logger.error('whole thing failed')
-//             })
-
-//             /*
-
-//             what needs to happen after message is created?
-//                 - add message id to all members of group
-//                 - increment badge for each meember for group and global?
-//                 - notify
-//             */
-
-
-//         } catch (err) {
-//             functions.logger.error(err)
-//         }
-
-//         function notifyAllButSender() {
-//             admin
-//             .messaging()
-//             .sendMulticast(messagePayload)
-//             .then((res) => { functions.logger.info('Successfully sent message // ', res) })
-//             .catch((error) => { functions.logger.error('Error sending message // ', error) })
-//         }
-
-//         async function sendMessageToAllButSender() {
-//             return await admin
-//             .firestore()
-//             .collection(constants.CHANNELS_COLLECTION + '/'+ channelId + '/participantIds')
-//             .get()
-//             .then(participantSnapshot => {
-//                 if (!participantSnapshot.empty) {
-//                     const members = participantSnapshot.docs
-
-//                     setMessageIdInUserMessages(members)
-//                     ?.then(() => {
-
-//                     })
-
-//                     // members.forEach(member => {
-//                     //     if (member.id !== fromId) {
-//                     //         batchSetEverything(member.id)
-//                     //         incrementBadge(member.id)
-//                     //     }
-//                     // })
-//                 }
-//             })
-//             .catch((error) => { functions.logger.error('Error sending message // ', error) })
-//         }
-
-//         function setMessageIdInUserMessages(members: any[]) {
-//             const batch = admin.firestore().batch()
-
-//             try {
-//                 members.forEach(member => {
-//                     if (member.id !== fromId) {
-//                         const userChannelReference = admin.firestore().collection('users').doc(member.id).collection('channelIds').doc(channelId)
-//                         batch.set((
-//                             userChannelReference
-//                             .collection('messageIds')
-//                             .doc(messageId)
-//                         ), {
-//                                 'fromId': fromId,
-//                                 'timestamp': timestamp,
-//                                 'text':
-//                         }, { merge: true, })
-
-//                         // one function to set id in messages
-//                         // another function to deal with creation of this id
-
-//                         batch.set((
-//                             userChannelReference
-//                         ), {
-//                             'lastMessageId': messageId,
-//                         }, { merge: true, })
-//                     }
-//                 })
-
-//                 LOGGER.info('Promise completed')
-
-//                 return batch.commit()
-//                 .then(() => {
-//                     LOGGER.info('Batch commit successful')
-//                 })
-//                 .catch(err => {
-//                     LOGGER.error(err)
-//                 })
-
-//             } catch (err) {
-//                 LOGGER.error('failed batch write ', err)
-//                 return null
-//             }
-
-//         }
-
-//         function incrementBadges(members: string) {
-//             const userChannelRef = db
-//             .collection('users')
-//             .doc(memberId)
-//             .collection('channelIds')
-//             .doc(channelId)
-
-//             const userRef = db
-//             .collection('users')
-//             .doc(memberId)
-
-//             try {
-//                 return db.runTransaction(async (updateFunction) => {
-//                     const userChannelDoc: FirebaseFirestore.DocumentData = await updateFunction.get(userChannelRef)
-//                     const userDoc: FirebaseFirestore.DocumentData = await updateFunction.get(userRef)
-
-//                     const newUserChannelBadgeValue = (userChannelDoc.data()['badge'] || 0) + 1
-//                     const newUserBadgeValue = (userDoc.data()['badge'] || 0) + 1
-
-//                     updateFunction.update(userRef, {
-//                         'badge': newUserBadgeValue
-//                     })
-
-//                     updateFunction.update(userChannelRef, {
-//                         'badge': newUserChannelBadgeValue
-//                     })
-
-//                     badge = newUserBadgeValue
-//                 })
-//                 .then(_ => { functions.logger.info('success incrementing badges') })
-//                 .catch(err => { functions.logger.error('error in incrementing badges // ', err); badge = 0 })
-//             } catch (err) {
-//                 LOGGER.error('Transaction failure:', err)
-//                 return null
-//             }
-//         }
-
-//         // function incrementBadge(memberId: string) {
-
-
-//         //     try {
-
-
-
-//         //         db.runTransaction(async (t) => {
-//         //             const doc: FirebaseFirestore.DocumentData = await t.get(userRef)
-//         //             const newValue = (doc.data()['badge'] || 0) + 1
-//         //             t.update(userRef, {
-//         //                 'badge': newValue,
-//         //             })
-//         //         })
-//         //         .then(_ => { functions.logger.info('success incrementBadge') })
-//         //         .catch(err => { functions.logger.error('error in incrementBadge // ', err) })
-
-//         //         db.runTransaction(async (t) => {
-//         //             const doc: FirebaseFirestore.DocumentData = await t.get(userChannelRef)
-//         //             const newValue = (doc.data()['badge'] || 0) + 1
-//         //             t.update(userChannelRef, {
-//         //                 'badge': newValue,
-//         //             })
-
-//         //             badge = newValue
-//         //         })
-//         //         .then(_ => { functions.logger.info('success incrementBadge') })
-//         //         .catch(err => { functions.logger.error('error in incrementBadge // ', err); badge = 0 })
-//         //     } catch (e) {
-//         //         functions.logger.error('Transaction failure:', e)
-//         //     }
-
-//         // }
-
-//     }
-
-//     return null
-// })
-
-/**
- * Returns users given prepaerd phone numbers.
- *
- * @param {!express:Request} req HTTP request context.
- * @param {!express:Response} res HTTP response context.
- */
 export const updateEventFCMTokenIdsArrayOnUpdate = functions.firestore
 	.document(constants.FCM_TOKENS_COLLECTION + '/{userId}')
 	.onUpdate((change, context) => {
@@ -608,12 +392,65 @@ exports.channelCreationHandler = functions.firestore
 
     })
 
+// Create a new function which is triggered on changes to /status/{uid}
+// Note: This is a Realtime Database trigger, *not* Firestore.
+exports.onUserStatusChangedInRealtimeDB = functions.database.ref('/status/{uid}').onUpdate(
+    async (change, context) => {
 
+        // Get the data written to Realtime DatabasE
+        const eventStatus = change.after.val()
 
+        // Then use other event data to create a reference to the
+        // corresponding Firestore document.
+        const userStatusFirestoreRef = admin.firestore().doc(`status/${context.params.uid}`)
 
+        // It is likely that the Realtime Database change that triggered
+        // this event has already been overwritten by a fast change in
+        // online / offline status, so we'll re-read the current data
+        // and compare the timestamps.
+        const statusSnapshot = await change.after.ref.once('value')
+        const status = statusSnapshot.val()
+        LOGGER.log(status, eventStatus)
+        LOGGER.log(status.state)
+        LOGGER.log(eventStatus.state)
+        // If the current timestamp for this data is newer than
+        // the data that triggered this event, we exit this function.
+        if (status.last_changed > eventStatus.last_changed) {
+            return null;
+        }
 
-/*
+        // Otherwise, we convert the last_changed field to a Date
+        eventStatus.last_changed = new Date(eventStatus.last_changed);
 
+        // ... and write it to Firestore.
+        return userStatusFirestoreRef.set(eventStatus);
+    }
+)
 
+exports.onUserStatusChangedInFirestore = functions.firestore
+.document('status/{uid}')
+.onUpdate((_, context) => {
 
-*/
+    const userId = context.params.uid
+
+    admin.firestore().collection(constants.USERS_COLLECTION+'/'+userId+'/channelIds').get()
+    .then(snapshot => {
+        if (!snapshot.empty) {
+            snapshot.docs.forEach(doc => {
+                const typingIndReference = admin.firestore().doc(constants.CHANNELS_COLLECTION + '/' + doc.id + '/typingUserIds/' + userId)
+                typingIndReference.delete()
+                .then(() => {
+                    LOGGER.log('successfuly removed typing reference')
+                })
+                .catch(err => {
+                    LOGGER.log('Failed to remove typing reference: ', err)
+                })
+
+            })
+        }
+    })
+    .catch(err => {
+        LOGGER.log('Failed to fetch user channels: ', err)
+    })
+
+})

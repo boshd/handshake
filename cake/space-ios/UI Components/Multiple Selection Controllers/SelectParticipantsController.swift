@@ -115,6 +115,8 @@ class SelectParticipantsController: UIViewController {
         }
         navigationItem.rightBarButtonItem?.isEnabled = false
         navigationItem.rightBarButtonItem?.tintColor = ThemeManager.currentTheme().tintColor
+        
+        navigationItem.rightBarButtonItem?.setTitleTextAttributes([.font: ThemeManager.currentTheme().secondaryFontBold(with: 14)], for: .normal)
     }
 
     @objc func rightBarButtonTapped() {
