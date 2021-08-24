@@ -251,7 +251,7 @@ class CreateChannelController: UITableViewController {
             return false
         }
         guard let channelName = channelName, !channelName.trimmingCharacters(in: .whitespaces).isEmpty else {
-            displayErrorAlert(title: basicErrorTitleForAlert, message: "Please provide a name for the event", preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+            displayErrorAlert(title: basicErrorTitleForAlert, message: "Event name can't be empty.", preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
             return false
         }
 
@@ -265,7 +265,7 @@ class CreateChannelController: UITableViewController {
             }
         } else {
             guard locationName != nil else {
-                displayErrorAlert(title: basicErrorTitleForAlert, message: "Please provide a location for the event", preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+                displayErrorAlert(title: basicErrorTitleForAlert, message: "Please choose a location for the event.", preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
                 return false
             }
         }
@@ -344,7 +344,6 @@ extension CreateChannelController {
 
         channelCreatingGroup.notify(queue: DispatchQueue.main) { [weak self] in
             hapticFeedback(style: .success)
-            print("notify reached")
             self?.informationMessageSender.sendInformationMessage(channelID: newChannelReference.documentID, channelName: self?.channelName ?? "", participantIDs: memberIDs.0, text: "New event created. Discuss and share ideas here.", channel: Channel(dictionary: self?.localChannelData))
 
             self?.dismiss(animated: true, completion: nil)

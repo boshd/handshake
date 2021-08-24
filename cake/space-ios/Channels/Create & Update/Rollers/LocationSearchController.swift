@@ -169,12 +169,10 @@ class LocationSearchController: UIViewController, CLLocationManagerDelegate {
         let request = MKLocalSearch.Request()
         request.naturalLanguageQuery = searchTableContainerView.searchBar.text
         if let currentRegion = currentRegion {
-            print("currentRegion not nil")
             request.region = currentRegion
         }
         let search = MKLocalSearch(request: request)
         search.start { [weak self] (response, error) in
-            print("search request completion..?")
             self?.searchRequestDidComplete(withResponse: response, error, dismissKeyboard: dismissKeyboard)
         }
         searchRequest = search
@@ -234,7 +232,6 @@ class LocationSearchController: UIViewController, CLLocationManagerDelegate {
     // MARK: - Location Manager Delegate
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        print("authorization status is: \(manager.authorizationStatus.rawValue)")
         if manager.authorizationStatus == .notDetermined {
             manager.requestWhenInUseAuthorization()
         }
@@ -245,9 +242,7 @@ class LocationSearchController: UIViewController, CLLocationManagerDelegate {
     
     @objc
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print("reached delegate")
         if let coordinates = manager.location?.coordinate {
-            print("set currentRegion")
             currentRegion = MKCoordinateRegion(center: coordinates, latitudinalMeters: 50000, longitudinalMeters: 50000)
         }
     }

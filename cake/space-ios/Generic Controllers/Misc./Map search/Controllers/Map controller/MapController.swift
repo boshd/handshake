@@ -61,7 +61,6 @@ class MapController: UIViewController {
         print(userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme))
         if #available(iOS 13, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) &&
             userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme) {
-            print("srsfsf")
             if traitCollection.userInterfaceStyle == .light {
                 ThemeManager.applyTheme(theme: .normal)
             } else {

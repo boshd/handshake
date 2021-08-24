@@ -41,28 +41,24 @@ class UpdateChannelController: CreateChannelController {
     // overriden vars
     override var newChannel: Channel? {
         didSet {
-            print("newchannel init")
             checkDifference()
         }
     }
     
     override var locationCoordinates: (Double, Double)? {
         didSet {
-            print("newchannel init")
             checkDifference()
         }
     }
     
     override var locationName: String? {
         didSet {
-            print("newchannel init")
             checkDifference()
         }
     }
     
     override var locationDescription: String? {
         didSet {
-            print("newchannel init")
             checkDifference()
         }
     }
@@ -141,10 +137,8 @@ class UpdateChannelController: CreateChannelController {
             channel.longitude.value != locationCoordinates?.1 ||
             channel.locationName != locationName ||
             channel.locationDescription != locationDescription {
-            print("difference observed")
             navigationItem.rightBarButtonItem?.isEnabled = true
         } else {
-            print("difference NOT observed")
             navigationItem.rightBarButtonItem?.isEnabled = false
         }
         

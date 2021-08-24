@@ -19,7 +19,6 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     
     var channelID = String() {
         didSet {
-            print("didset")
             observeChannel()
             observeChannelAttendeesChanges()
         }
@@ -140,7 +139,6 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     fileprivate func configureMapView() {
-        print("configureMapView called")
         guard let lat = channel?.latitude.value, let lon = channel?.longitude.value else { return }
         let location = CLLocation(latitude: lat, longitude: lon)
         let geoCoder = CLGeocoder()
@@ -310,7 +308,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         let addToCalendarAction = CustomAlertAction(title: "Add to Calendar", style: .default , handler: { [weak self] in
             self?.addToCalendar()
         })
-        let deleteAction = CustomAlertAction(title: "Leave", style: .destructive , handler: { [weak self] in
+        let deleteAction = CustomAlertAction(title: "Leave Event", style: .destructive , handler: { [weak self] in
             let alert = CustomAlertController(title_: "Confirmation", message: "Are you sure you want to leave this event?", preferredStyle: .alert)
             alert.addAction(CustomAlertAction(title: "No", style: .default, handler: nil))
             alert.addAction(CustomAlertAction(title: "Yes", style: .destructive, handler: { [weak self] in
@@ -348,7 +346,6 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         let alert = CustomAlertController(title_: nil, message: nil, preferredStyle: .actionSheet)
         
         let goingAction = CustomAlertAction(title: "Going", style: .default , handler: { [weak self] in
-            print("GOING PRESSED")
             self?.rsvp(.going, memberID: currentUserID)
         })
         
@@ -453,7 +450,6 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     
     fileprivate func observeChannel() {
         channelListener = Firestore.firestore().collection("channels").document(channelID).addSnapshotListener({ [weak self] snapshot, error in
-            print("detected channel changes")
             if error != nil {
                 print(error?.localizedDescription ?? "error")
                 return
@@ -495,7 +491,6 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
             }
             snapshot?.documentChanges.forEach({ diff in
                 if diff.type == .added {
-                    print("here0 \(self?.attendees.count)", self?.attendees.map({$0.name}))
                     UsersFetcher.fetchUser(id: diff.document.documentID) { user, error in
                         guard error == nil else { print(error?.localizedDescription ?? ""); return }
                         // issues w/ initial state
@@ -529,7 +524,6 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
                         }
                     }
                 } else if diff.type == .removed {
-                    print("DETECTED ATTENDEE REMOVAL")
                     guard let memberIndex = self?.attendees.firstIndex(where: { (member) -> Bool in
                         return member.id == diff.document.documentID
                     }) else { return }
@@ -553,7 +547,6 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
               let participantIds = self.channel?.participantIds
         else { return }
         
-        print("POPULATE ATTENDEES \(participantIds.count)")
         
         attendees.removeAll()
         
@@ -582,10 +575,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
             }
             
             if RealmKeychain.realmUsersArray().map({$0.id}).contains(participantId) {
-                print("IN LOCAL REALM \(participantId)")
                 if let usr = RealmKeychain.realmUsersArray().first(where: {$0.id == participantId}) {
-                    print("IN IN LOCAL REALM \(usr.localName)")
-//                    print("in in in local realm \(globalVariables.localContacts)")
                     attendees.append(usr)
                 }
             }
@@ -596,16 +586,8 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
                     guard error == nil else { print(error?.localizedDescription ?? "error"); return }
 
                     if RealmKeychain.realmUsersArray().map({$0.id}).contains(user.id) {
-                        print("1 if")
-                        print("AGAIN IN LOCAL REALM \(user.id)")
                         if let localRealmUser = RealmKeychain.usersRealm.object(ofType: User.self, forPrimaryKey: user.id),
                            !user.isEqual_(to: localRealmUser) {
-                            print("AGAIN in IN LOCAL REALM \(localRealmUser.localName)")
-                           
-                            print(user)
-                            print("--------------")
-                            print(localRealmUser)
-                            print()
                             // this shouldn't pass....?
                             // update local realm user copy
                             if !(self.localRealm.isInWriteTransaction) {
@@ -623,12 +605,10 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
                             if let index = self.attendees.firstIndex(where: { user_ in
                                 return user_.id == user.id
                             }) {
-                                print("replacing oldie")
                                 self.attendees[index] = user
                             }
                         }
                     } else if RealmKeychain.realmNonLocalUsersArray().map({$0.id}).contains(user.id) {
-                        print("2 if")
                         if let nonLocalRealmUser = RealmKeychain.nonLocalUsersRealm.object(ofType: User.self, forPrimaryKey: user.id),
                            !user.isEqual_(to: nonLocalRealmUser) {
                             
@@ -652,7 +632,6 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
                             }
                         }
                     } else {
-                        print("3 if")
                         autoreleasepool {
                             if !self.nonLocalRealm.isInWriteTransaction {
                                 self.nonLocalRealm.beginWrite()
@@ -880,14 +859,11 @@ extension ChannelDetailsController {
     }
     
     func rsvp(_ rsvp: EventRSVP, memberID: String) {
-        print("REACHED LOL ")
         if currentReachabilityStatus == .notReachable {
             displayErrorAlert(title: basicErrorTitleForAlert, message: noInternetError, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
             return
         }
-        print("here1")
         guard let channelReference = currentChannelReference else { return }
-        print("here2")
         globalIndicator.show()
         ChannelManager.rsvp(channelReference: channelReference, memberID: memberID, rsvp: rsvp) { error in
             if error != nil {

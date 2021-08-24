@@ -254,7 +254,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         return CGPoint(x: 0, y: max(-collectionView.contentInset.top, collectionView.contentSize.height - (collectionView.bounds.size.height - collectionView.contentInset.bottom - 20)))
     }
     override func viewWillAppear(_ animated: Bool) {
-        print("viewWillAppear \(collectionView.contentSize)")
         super.viewWillAppear(animated)
         becomeFirstResponder()
 //        scrollToBottom(animated: false)
@@ -270,7 +269,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print("viewDidAppear \(collectionView.contentSize)")
         self.hasAppearedAndHasAppliedFirstLoad = true
         
         self.collectionView.isPrefetchingEnabled = true
@@ -412,15 +410,12 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     public override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
-        print("viewSafeAreaInsetsDidChange \(collectionView.contentSize)")
          updateContentInsets(animated: false)
-//        scrollToBottom(animated: false)
     }
     
     override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         
         if let observedObject = object as? ChannelCollectionView, observedObject == collectionView {
-            print("observeValue")
             collectionViewLoaded = true
             collectionView.removeObserver(self, forKeyPath: "contentSize")
         }

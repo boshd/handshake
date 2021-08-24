@@ -20,7 +20,6 @@ extension ChannelLogController: ChannelManagerDelegate {
     }
     
     func nameUpdated(name: String) {
-        print("name updated")
         try! realm.safeWrite {
             self.channel?.name = name
         }
@@ -30,7 +29,6 @@ extension ChannelLogController: ChannelManagerDelegate {
     }
     
     func nameUpdated(description: String) {
-        print("description updated")
         try! realm.safeWrite {
             self.channel?.description_ = description
         }
@@ -52,7 +50,6 @@ extension ChannelLogController: ChannelManagerDelegate {
     
     
     func startTimeUpdated(startTime: Int64) {
-        print("start time updated")
         try! realm.safeWrite {
             self.channel?.startTime = RealmOptional(startTime)
         }
@@ -62,7 +59,6 @@ extension ChannelLogController: ChannelManagerDelegate {
     }
     
     func endTimeUpdated(endTime: Int64) {
-        print("end time updated")
         try! realm.safeWrite {
             self.channel?.endTime = RealmOptional(endTime)
         }
@@ -135,7 +131,6 @@ extension ChannelLogController: ChannelManagerDelegate {
     }
     
     func removeMember(id: String) {
-        print("MEMBER REMOVED")
         guard let channel = self.channel, !channel.isInvalidated else { return }
         
         guard let members = self.channel?.participantIds else { return }

@@ -11,17 +11,11 @@ import UIKit
 extension ChannelLogController: InputAccessoryViewPlaceholderDelegate {
     
     func inputAccessoryPlaceholderKeyboardDidChangeFrame(beginFrame: CGRect, endFrame: CGRect, animationDuration: TimeInterval, animationCurve: UIView.AnimationCurve) {
-        print("beginFrame", beginFrame)
-        print("endFrame", endFrame)
-//        channelLogContainerView.headerTopConstraint?.constant = endFrame.height
         handleKeyboardStateChange(animationDuration: animationDuration,
                                   animationCurve: animationCurve)
     }
 
     func inputAccessoryPlaceholderKeyboardIsPresenting(animationDuration: TimeInterval, animationCurve: UIView.AnimationCurve, beginFrame: CGRect, endFrame: CGRect) {
-        print("isPresenting")
-        //handleKeyboardStateChange(animationDuration: animationDuration, animationCurve: animationCurve)
-        
         adjustContentForKeyboard(animationDuration: animationDuration, animationCurve: animationCurve, beginFrame: beginFrame, endFrame: endFrame, shown: true)
     }
     
@@ -36,7 +30,6 @@ extension ChannelLogController: InputAccessoryViewPlaceholderDelegate {
             }
             return
         }
-        print("didPresent")
         animateHeaderView(collapsed: true)
 //        updateContentInsets(animated: false)
     }
@@ -130,7 +123,6 @@ extension ChannelLogController: InputAccessoryViewPlaceholderDelegate {
             return
         }
         if let interactivePopGestureRecognizer = navigationController.interactivePopGestureRecognizer {
-            print("interactivePopGestureRecognizer.state", interactivePopGestureRecognizer.state.rawValue)
             switch interactivePopGestureRecognizer.state {
             case .possible, .failed:
                 break
@@ -156,7 +148,6 @@ extension ChannelLogController: InputAccessoryViewPlaceholderDelegate {
         let oldYOffset = collectionView.contentOffset.y
 
         let didChangeInsets = oldInsets != newInsets
-        print("didChangeInsets", didChangeInsets)
         UIView.performWithoutAnimation {
             if didChangeInsets {
                 let contentOffset = self.collectionView.contentOffset
@@ -180,15 +171,10 @@ extension ChannelLogController: InputAccessoryViewPlaceholderDelegate {
             // If we were scrolled away from the bottom, shift the content in lockstep with the
             // keyboard, up to the limits of the content bounds.
             let insetChange = Double(newInsets.bottom).rounded(toPlaces: 5) - Double(oldInsets.bottom).rounded(toPlaces: 5)
-            print("newInsets.bottom", newInsets.bottom)
-            print("oldInsets.bottom", oldInsets.bottom)
-            
             // Only update the content offset if the inset has changed.
             if insetChange != 0 {
                 // The content offset can go negative, up to the size of the top layout guide.
                 // This accounts for the extended layout under the navigation bar.
-                print("insetChange", insetChange)
-                print("oldYOffset", oldYOffset)
                 let minYOffset = -view.safeAreaInsets.top
                 let newYOffset = (oldYOffset + CGFloat(insetChange)).clamped(to: minYOffset...safeContentHeight)
                 let newOffset = CGPoint(x: 0, y: newYOffset)
@@ -196,9 +182,6 @@ extension ChannelLogController: InputAccessoryViewPlaceholderDelegate {
                 // This offset change will be animated by UIKit's UIView animation block
                 // which updateContentInsets() is called within
                 collectionView.setContentOffset(newOffset, animated: false)
-                print("new offset", newYOffset)
-                print(collectionView.contentInset)
-                print(collectionView.contentOffset)
             }
         }
     }

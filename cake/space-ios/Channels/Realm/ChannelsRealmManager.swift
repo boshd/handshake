@@ -12,11 +12,9 @@ import RealmSwift
 class ChannelsRealmManager {
     
     func update(channel: Channel) {
-        print("channel about to change, name in realm rn: \(RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: channel.id)?.name)")
         autoreleasepool {
             try! RealmKeychain.defaultRealm.safeWrite {
                 RealmKeychain.defaultRealm.create(Channel.self, value: channel, update: .modified)
-                print("channel changed, name in realm rn: \(RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: channel.id)?.name)")
             }
         }
     }
@@ -24,7 +22,6 @@ class ChannelsRealmManager {
     func update(channels: [Channel], tokens: [NotificationToken]) {
         autoreleasepool {
             guard !RealmKeychain.defaultRealm.isInWriteTransaction else {
-                print("Update Array operation, realm is in write transaction in \(String(describing: ChannelsRealmManager.self))")
                 return
             }
 
@@ -35,9 +32,6 @@ class ChannelsRealmManager {
                 RealmKeychain.defaultRealm.create(Channel.self, value: channel, update: .modified)
                 if let message = channel.lastMessageRuntime {
                     message.senderName = RealmKeychain.defaultRealm.object(ofType: Message.self, forPrimaryKey: message.messageUID ?? "")?.senderName
-                    print()
-                    print("REACHED THE MESSAGE CREATION IN REALM \(message.text)")
-                    print()
                     RealmKeychain.defaultRealm.create(Message.self, value: message, update: .modified)
                 }
             }

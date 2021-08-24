@@ -91,7 +91,6 @@ class ChannelsFetcher: NSObject {
                 self.group?.notify(queue: .main, execute: { [weak self] in
                     //guard let unwrappedSelf = self else { return }
                     if let delegate = self?.delegate {
-                        print("is group finished? YES!")
                         self?.isGroupAlreadyFinished = true
                         delegate.channels(didFinishFetching: true, channels: self!.channels)
                     }
@@ -121,7 +120,6 @@ class ChannelsFetcher: NSObject {
                         self?.delegate?.channels(addedNewChannel: true, channelID: channelID)
                         self?.loadConversation(for: channelID)
                     } else if (diff.type == .removed) {
-                        print("remoedddddddddd")
 //                        let obj: [String: Any] = ["channelID": channelID]
 //                        NotificationCenter.default.post(name: .channelRemoved, object: obj)
                         if self?.individualChannelListenersDict.count != 0 {
@@ -178,8 +176,6 @@ class ChannelsFetcher: NSObject {
         var index = 0
         
         let tempListener = currentUserChannelIDsReference.document(channelID).addSnapshotListener { snapshot, error in
-            index += 1
-            print("TRIGGERED\(index) TIMES")
             guard let data = snapshot?.data() else {
                 if error != nil {
                     print("error // ", error!)
@@ -241,9 +237,6 @@ class ChannelsFetcher: NSObject {
             channel.lastMessageTimestamp.value = message.timestamp.value
             message.channel = channel
             channel.lastMessageRuntime = message
-            print()
-            print("LOAD LAST MESSAGE CALLED!! \(message.text)")
-            print()
             self.loadAdditionalMetadata(for: channel)
         }
     }
@@ -297,7 +290,6 @@ class ChannelsFetcher: NSObject {
                 channel.fcmTokens = convertRawFCMTokensToRealmCompatibleType(fcmTokensDict)
             }
             prefetchThumbnail(from: channel.thumbnailImageUrl == nil ? channel.imageUrl : channel.thumbnailImageUrl)
-            print("REACHED HERE BEFORE UPDATE CONVO ARRAY")
             self.updateConversationArrays(with: channel)
         }
         individualChannelListenersDict[channelID] = tempListener
@@ -325,7 +317,6 @@ class ChannelsFetcher: NSObject {
     }
     
     func update(channel: Channel, at index: Int) {
-        print("UPDATE IS CALLED!")
         if channel.isTyping.value == nil {
             let isTyping = channels[index].isTyping.value
             channel.isTyping.value = isTyping
@@ -353,35 +344,6 @@ class ChannelsFetcher: NSObject {
         delegate?.channels(didFinishFetching: true, channels: channels)
         
     }
-    
-    // MARK:- INDIVIDUAL CHANNEL LISENER
-    
-//    fileprivate func listenToChannel(with channelID: String) {
-//        let channelReference = Firestore.firestore().collection("channels").document(channelID)
-//        let listener = channelReference.addSnapshotListener { (snapshot, error) in
-//            // listening to ACTUAL channel
-//            if error != nil {
-//                print(error?.localizedDescription ?? "error")
-//                return
-//            }
-//
-//            print("BTW WE GOT A CHANNEL UPDATE JS")
-//
-//            guard let data = snapshot?.data() as [String:AnyObject]? else { return }
-//
-//            let updatedChannel = Channel(dictionary: data)
-//            guard let updatedChannelID = updatedChannel.id else { return }
-//
-//            guard let index = self.channels.firstIndex(where: { (channel) -> Bool in
-//                return channel.id == updatedChannelID
-//            }) else { return }
-//
-//            self.channels[index] = updatedChannel
-//            self.delegate?.channels(update: self.channels[index], reloadNeeded: true)
-//        }
-//
-//        individualChannelListenersDict[channelID] = listener
-//    }
     
 }
 

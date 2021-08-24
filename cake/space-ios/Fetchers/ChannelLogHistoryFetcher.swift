@@ -45,15 +45,10 @@ class ChannelLogHistoryFetcher: NSObject {
         
         // messages to load = all existing messages, so 25 initialy + the amount we want which is 5 for example. So load 30 plz.
         
-        print("numberOfMessagesToLoad \(numberOfMessagesToLoad)")
         let firstIDQuery = firstIDReference.order(by: "timestamp").limit(to: numberOfMessagesToLoad)
         firstIDQuery.getDocuments { (snapshot, error) in
             guard let documents = snapshot?.documents else { print(error?.localizedDescription ?? "error"); return }
-            print("in getFirstID \(documents.count)")
             guard let firstDocument = documents.last else { return }
-            Firestore.firestore().collection("messages").document(firstDocument.documentID).getDocument { snapshot, error in
-                print("GOT FIRST DOC \(snapshot?.data()?["text"])")
-            }
             self.getLastID(firstDocument, currentUserID, channelID)
         }
     }
@@ -70,9 +65,6 @@ class ChannelLogHistoryFetcher: NSObject {
             }) {
               self.delegate?.channelLogHistory(isEmpty: false)
               return
-            }
-            Firestore.firestore().collection("messages").document(lastID).getDocument { snapshot, error in
-                print("GOT LAST DOC \(snapshot?.data()?["text"])")
             }
             self.getRange(firstDocument, lastDocument, currentUserID, channelID)
         }

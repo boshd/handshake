@@ -70,7 +70,7 @@ class UserCell: UITableViewCell {
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: .default, reuseIdentifier: reuseIdentifier)
+        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         selectionStyle = .default
         backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         textLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 12)
@@ -84,6 +84,7 @@ class UserCell: UITableViewCell {
         
         NSLayoutConstraint.activate([
             rightLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            rightLabel.topAnchor.constraint(equalTo: imageView?.topAnchor ?? topAnchor, constant: 0),
             
             seperator.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0),
             seperator.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),

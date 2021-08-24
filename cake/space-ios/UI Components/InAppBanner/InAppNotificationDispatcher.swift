@@ -242,12 +242,10 @@ public class InAppNotificationDispatcher {
     
     // MARK: - UI Interactions
     @objc private func bannerClicked(_ sender: UITapGestureRecognizer) {
-        print("BANNER CLICK BEGINNING")
         guard let banner = sender.view as? InAppNotificationBanner else { return }
         guard let notification = banner.notification else { return }
         bannerClickCallback?(notification)
        hideBanner(animated: true) {}
-        print("BANNER CLICK END")
 //        hideBanner(animated: true) {
 //            self.timer?.invalidate()
 //            self.timer = nil

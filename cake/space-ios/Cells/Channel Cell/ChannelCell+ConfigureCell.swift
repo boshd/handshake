@@ -24,9 +24,6 @@ extension ChannelCell {
         
         
         let channel = channels[indexPath.row]
-        print()
-        print("CONFIGURING CELL AT INDEX \(indexPath.row) -- txt is: \(channel.lastMessage?.text)")
-        print()
         // channel name
         title.text = "\(channel.name ?? "")"
         
@@ -102,8 +99,6 @@ extension ChannelCell {
         
 
         let badgeInt = channels[indexPath.row].badge.value ?? 0
-        
-        print("IN CHANNEL CELL CONFIGURATION \(badgeInt) ... \(channels[indexPath.row].lastMessage?.fromId != Auth.auth().currentUser?.uid)")
         
         guard badgeInt > 0, channels[indexPath.row].lastMessage?.fromId != Auth.auth().currentUser?.uid else {
             updateBadge(0)

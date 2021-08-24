@@ -26,7 +26,7 @@ class DescriptionCell: UITableViewCell {
         textView.isScrollEnabled = false
         textView.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         textView.textColor = ThemeManager.currentTheme().generalSubtitleColor
-//        textView.returnKeyType = 
+//        textView.returnKeyType =
 //        textView.text = "Description"
         textView.autocorrectionType = .default
         textView.autocapitalizationType = .none
@@ -94,14 +94,10 @@ extension DescriptionCell: UITextViewDelegate {
     
     func textViewDidBeginEditing(_ textView: UITextView) {
         if self.contentView.window != nil {
-            print("klm", textView.textColor!, ThemeManager.currentTheme().generalSubtitleColor)
             if textView.textColor == ThemeManager.currentTheme().generalSubtitleColor && (textView.text.isEmpty || textView.text == "Description") {
-                print("IN IN")
                 DispatchQueue.main.async {
                     textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
                 }
-            } else {
-                print("IN ELSES")
             }
         }
 
@@ -115,7 +111,6 @@ extension DescriptionCell: UITextViewDelegate {
 
             // If updated text view will be empty, add the placeholder
             // and set the cursor to the beginning of the text view
-            print("REACHED INITIAL")
             
 //            if text == "\n" {
 //                textView.resignFirstResponder()
@@ -125,7 +120,6 @@ extension DescriptionCell: UITextViewDelegate {
                 textView.text = "Description"
                 textView.textColor = ThemeManager.currentTheme().generalSubtitleColor
                 textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
-                print("REACHED INITIAL2")
             } else if textView.textColor == ThemeManager.currentTheme().generalSubtitleColor && !text.isEmpty {
                 textView.textColor = ThemeManager.currentTheme().generalTitleColor
                 textView.text = text

@@ -36,6 +36,8 @@ class AddParticipantsController: SelectionTableViewController {
         
         tableView.addSubview(doneButton)
         
+        doneButton.setAttributedTitle(NSAttributedString(string: "Done", attributes: [.font: ThemeManager.currentTheme().secondaryFontBold(with: 14)]), for: .normal)
+        
         doneButton.bindToKeyboard()
         
         NSLayoutConstraint.activate([
@@ -58,6 +60,7 @@ class AddParticipantsController: SelectionTableViewController {
         navigationItem.leftBarButtonItem = backButton
         
         let nextButton = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(donePressed))
+        nextButton.setTitleTextAttributes([.font: ThemeManager.currentTheme().secondaryFontBold(with: 14)], for: .normal)
         nextButton.tintColor = ThemeManager.currentTheme().tintColor
         navigationItem.rightBarButtonItem = nextButton
     }

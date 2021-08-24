@@ -44,7 +44,6 @@ extension ChannelLogController: ChannelLogHistoryDelegate {
     }
 
     fileprivate func batchInsertMS(rowsRange: Int, sectionsRange: Int) {
-        print("in batch insert")
         UIView.performWithoutAnimation {
             collectionView.performBatchUpdates({
                 var indexSet = IndexSet()
@@ -66,11 +65,9 @@ extension ChannelLogController: ChannelLogHistoryDelegate {
                 globalVariables.isInsertingCellsToTop = true
                 
                 collectionView.insertSections(indexSet)
-                print("indexset \(indexSet).. indexPaths \(indexPaths).. sectionsRange \(sectionsRange).. rowsRange \(rowsRange)")
                 collectionView.insertItems(at: indexPaths)
             }, completion: { (_) in
                 DispatchQueue.main.async {
-                    print("in bcomplete")
                     self.bottomScrollConainer.isHidden = false
                     self.refreshControl.endRefreshing()
                 }

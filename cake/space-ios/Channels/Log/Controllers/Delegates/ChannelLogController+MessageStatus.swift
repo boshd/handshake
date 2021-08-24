@@ -21,13 +21,10 @@ extension ChannelLogController {
         
         messageRef.getDocument { (snapshot, error) in
             guard error == nil else { print(error?.localizedDescription ?? "error"); return }
-            print("GOT DOCUMENT")
             guard let data = snapshot?.data() else { return }
             
             senderID = data["fromId"] as? String
             // message here is being sent from current id? is it stuck at a specific message?
-            print(data["text"])
-            print("current id \(uid) .. sender id \(senderID) .. ocomparre \(uid != senderID) ... \(UIApplication.topViewController())")
             
             guard uid != senderID,
                   (UIApplication.topViewController() is ChannelLogController ||
@@ -37,7 +34,6 @@ extension ChannelLogController {
                     UIApplication.topViewController() is INSPhotosViewController ||
                     UIApplication.topViewController() is SFSafariViewController)
             else { senderID = nil; return }
-            print("PAST THE GUARD")
             messageRef.updateData([
                 "seen": true,
                 "status": messageStatusRead
@@ -45,7 +41,6 @@ extension ChannelLogController {
                 if error != nil {
                     print(error?.localizedDescription ?? "error")
                 }
-                print("RESETTING")
                 self.resetBadgeForSelf()
             }
         }

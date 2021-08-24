@@ -439,8 +439,6 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         let badge = realmChannels.compactMap({ (channel) -> Int in
             return channel.badge.value ?? 0
         }).reduce(0, +)
-        
-        print("in configure tab bar badge \(badge)")
 
         guard badge > 0 else {
             tabItem.badgeValue = nil
@@ -486,7 +484,6 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         }
 
         let destination = SelectChannelParticipantsController()
-        print("skdncskjdncjksdjc sdkjc \(RealmKeychain.realmUsersArray().count)")
         // remove blocked users
         let users = RealmKeychain.realmUsersArray()
         destination.users = users

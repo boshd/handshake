@@ -14,12 +14,10 @@ extension TypingIndicatorCell {
     func configureCell(for typingUserIds: [String]) {
         
         if typingUserIds.count == 1 {
-            print("its 1 person")
             isIs = true
             if let typingUserId = typingUserIds.first {
                 getName(for: typingUserId) { name in
 //                    self.label.text = "\(name)"
-                    print("arrive")
                     self.currentLabelText = name
                 }
             }

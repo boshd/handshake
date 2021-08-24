@@ -32,7 +32,6 @@ extension ChannelsController {
     }
     
     func deleteChannel(at indexPath: IndexPath) {
-        print("HERE AT ROW ACTIONS")
         guard currentReachabilityStatus != .notReachable else {
             displayErrorAlert(title: "Error", message: noInternetError, preferredStyle: .alert, actionTitle: "Dismiss", controller: self)
             return
@@ -68,76 +67,20 @@ extension ChannelsController {
             if theRealmChannels.count == 0 {
                 channelsFetcher.cleanFetcherChannels()
             }
-//            globalIndicator.showSuccess(withStatus: "Deleted")
-            print("channel deleted")
         }
-        
-//        if participantIds.contains(currentUserID) {
-            
             let batch = Firestore.firestore().batch()
             batch.deleteDocument(currentUserDocToDelete)
-//            if admins.count == 1 && participantIds.count > 1 && admins.contains(currentUserID) {
-//                if let replacementUserId = participantIds.filter({ $0 != currentUserID }).first {
-//                    batch.updateData([
-//                        "admins": FieldValue.arrayUnion([replacementUserId])
-//                    ], forDocument: docToUpdate)
-//                }
-//            }
             batch.deleteDocument(channelDocToDelete)
-//            batch.updateData([
-//                "participantIds": FieldValue.arrayRemove([currentUserID]),
-//                "admins": FieldValue.arrayRemove([currentUserID]),
-//                "goingIds": FieldValue.arrayRemove([currentUserID]),
-//                "maybeIds": FieldValue.arrayRemove([currentUserID]),
-//                "notGoingIds": FieldValue.arrayRemove([currentUserID])
-//            ], forDocument: docToUpdate)
-//
             batch.commit { (error) in
                 if error != nil {
                     print(error?.localizedDescription ?? "")
                     return
                 }
-                
-//                Firestore.firestore().runTransaction { (transaction, errorPointer) -> Any? in
-//                    let document: DocumentSnapshot
-//                    do {
-//                        try document = transaction.getDocument(docToUpdate)
-//                    } catch let fetchError as NSError {
-//                        errorPointer?.pointee = fetchError
-//                        return nil
-//                    }
-//                    guard let oldFCMTokensMap = document.data()?["fcmTokens"] as? [String:String] else {
-//                       let error = NSError(domain: "AppErrorDomain", code: -1, userInfo: [
-//                               NSLocalizedDescriptionKey: "Unable to retrieve fcmTokens from snapshot \(document)"
-//                           ]
-//                       )
-//                       errorPointer?.pointee = error
-//                       return nil
-//                    }
-//                    var newFCMTokensMap = oldFCMTokensMap
-//                    newFCMTokensMap.removeValue(forKey: currentUserID)
-//                    transaction.updateData(["fcmTokens": newFCMTokensMap], forDocument: docToUpdate)
-//                    return nil
-//                } completion: { (object, error) in
-//                    if let error = error {
-//                        print("Transaction failed: \(error)")
-//                    } else {
-//                        print("Transaction successfully committed!")
-//                    }
-//                }
-                
-//                self.informationMessageSender.sendInformationMessage(channelID: deletedChannelID, channelName: deletedChannelName, participantIDs: participantIds, text: "\(globalCurrentUser?.name ?? "") has left the event", channel: channelToBeRemoved)
 
                 if let realmChannels = self.realmChannels, realmChannels.count <= 0 {
                     self.checkIfThereAnyActiveChats(isEmpty: true)
                 }
             }
-//        } else {
-//            print("NOT THERE DAMN.")
-//            if let realmChannels = self.realmChannels, realmChannels.count <= 0 {
-//                self.checkIfThereAnyActiveChats(isEmpty: true)
-//            }
-//        }
         
         
     }

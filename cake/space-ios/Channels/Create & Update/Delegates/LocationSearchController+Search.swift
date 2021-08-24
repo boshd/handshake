@@ -41,7 +41,6 @@ extension LocationSearchController: UISearchBarDelegate {
     }
     
     public func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        print("fragment")
         searchRequestFuture?.invalidate()
         if !searchText.isEmpty {
             searchCompletionRequest?.queryFragment = searchText

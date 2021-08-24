@@ -18,7 +18,7 @@ class LoadMoreCell: UITableViewCell {
 //        textLabel?.text = "See 10 more"
         contentView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         
-        textLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 12)
+        textLabel?.font = ThemeManager.currentTheme().secondaryFontBold(with: 12)
         textLabel?.textColor = ThemeManager.currentTheme().tintColor
         
 //        textLabel?.backgroundColor = .handshakeLightPurple

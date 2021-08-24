@@ -152,7 +152,6 @@ class ContactsController: CustomTableViewController {
         guard Auth.auth().currentUser != nil else { return }
         removeContactsObserver()
         DispatchQueue.global(qos: .userInteractive).async { [weak self] in
-            print("start fetch")
             self?.usersFetcher.loadUsers()
             self?.contactsFetcher.fetchContacts()
         }

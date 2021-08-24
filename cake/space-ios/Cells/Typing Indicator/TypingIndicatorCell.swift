@@ -50,7 +50,6 @@ static let typingIndicatorHeight: CGFloat = 30
 
     override init(frame: CGRect) {
         super.init(frame: frame.integral)
-        print("INITED")
         addSubview(label)
         
         NSLayoutConstraint.activate([
@@ -73,12 +72,10 @@ static let typingIndicatorHeight: CGFloat = 30
     override func prepareForReuse() {
         super.prepareForReuse()
         restart()
-        print("PREPARE FOR REUSE")
 //        invalidateTimer()
     }
 
     deinit {
-        print("DEINITED")
         invalidateTimer()
     }
     
@@ -105,9 +102,7 @@ static let typingIndicatorHeight: CGFloat = 30
     
     @objc
     func animate() {
-        print("called")
         if let currentLabelText = currentLabelText {
-            print("in here")
             
             if currentTypingPrompt == nil {
                 if isIs {

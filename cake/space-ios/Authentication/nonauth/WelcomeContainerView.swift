@@ -215,8 +215,7 @@ class WelcomeContainerView: UIView, UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange) -> Bool {
         if (URL.absoluteString == "https://www.mywebsite.com") {
             // Do whatever you want here as the action to the user pressing your 'actionString'
-            print("detected")
-            openUrl("google.com")
+//            openUrl(URL)
         }
         return false
     }

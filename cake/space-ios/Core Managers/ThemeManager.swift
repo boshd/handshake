@@ -427,6 +427,15 @@ enum Theme: Int {
         }
     }
     
+    var selectedChatLogHeaderBackgroundColor: UIColor {
+        switch self {
+            case .normal:
+                return .handshakeLightPurpleSelected
+            case .dark:
+                return .defaultMediumDarkGray()
+        }
+    }
+    
     var chatLogHeaderTextColor: UIColor {
         switch self {
             case .normal:

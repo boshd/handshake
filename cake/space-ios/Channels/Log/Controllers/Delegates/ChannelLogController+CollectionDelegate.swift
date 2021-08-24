@@ -13,15 +13,12 @@ import AVFoundation
 extension ChannelLogController: CollectionDelegate {
     
     func collectionView(shouldUpdateOutgoingMessageStatusFrom reference: DocumentReference, message: Message) {
-        print("this line is called the same number of messages OR any subsequent messages \(message.text)")
         var initial = true
         lastOutgoingMessageListener = reference.addSnapshotListener { [weak self] (snapshot, error) in
-            print("CALLED")
 
             guard error == nil else { print(error?.localizedDescription ?? ""); return }
             guard let exists = snapshot?.exists, exists, let data = snapshot?.data(), let messageStatus = data["status"] as? String else { return }
             message.status = messageStatus
-            print("last outgoing message listener lmao \(messageStatus) \(data["text"])")
             self?.updateMessageStatusUI(sentMessage: message)
             if initial {
                 initial = false
@@ -95,27 +92,7 @@ extension ChannelLogController: CollectionDelegate {
         }
         try! self.realm.commitWrite()
     }
-    
-//    @available(iOS 13.0, *)
-//    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-//        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { suggestedActions in
-//            return self.makeContextMenu(for: indexPath.row)
-//        })
-//    }
-//
-//    @available(iOS 13.0, *)
-//    fileprivate func makeContextMenu(for index:Int) -> UIMenu {
-//        var actions = [UIAction]()
-//        for item in self.contextMenuItems {
-//            let action = UIAction(title: item.title, identifier: nil, discoverabilityTitle: nil) { _ in
-//                // self.didSelectContextMenu(menuIndex: item.index, cellIndex: index)  // Here I have both cell index & context menu item index
-//            }
-//            actions.append(action)
-//        }
-//        let cancel = UIAction(title: "Cancel", attributes: .destructive) { _ in}
-//        actions.append(cancel)
-//        return UIMenu(title: "", children: actions)
-//    }
+
     
     fileprivate func isInsertingToTheBottom(message: Message) -> Bool {
         let firstObject = groupedMessages.last?.messages.first?.timestamp.value ?? 0

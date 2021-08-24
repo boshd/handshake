@@ -56,7 +56,6 @@ class TabBarController: UITabBarController {
     }
 
     @objc fileprivate func changeTheme() {
-        print("change theme called from tab bar controller")
         tabBar.unselectedItemTintColor = ThemeManager.currentTheme().unselectedButtonTintColor
         // tabBar.selectedImageTintColor = ThemeManager.currentTheme().selectedButtonTintColor // deprecated
         UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().barTextColor],

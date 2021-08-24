@@ -58,8 +58,6 @@ class InAppNotificationManager: NSObject {
                 
                 guard let changes = querySnapshot?.documentChanges else { return }
                 
-                print("\n\n\nIN SNAPSHOT FOR NOTIFICATIONS, \(changes.count), channel count \(self.channels.count)\n\n\n")
-                
                 changes.forEach { (diff) in
                     
                     if diff.type == .added {
@@ -71,13 +69,8 @@ class InAppNotificationManager: NSObject {
                             
                             guard var dictionary = snapshot?.data() else { return }
                             dictionary.updateValue(messageID as AnyObject, forKey: "messageUID")
-                            print()
-                            print("EXISTS \(RealmKeychain.defaultRealm.object(ofType: Message.self, forPrimaryKey: messageID ?? ""))")
                             
                             let message = Message(dictionary: dictionary as [String : AnyObject])
-                            
-                            print("EXISTS2 \(RealmKeychain.defaultRealm.object(ofType: Message.self, forPrimaryKey: messageID ?? ""))")
-                            print()
                             
                             guard let uid = Auth.auth().currentUser?.uid, message.fromId != uid else { return }
                             
@@ -174,7 +167,6 @@ class InAppNotificationManager: NSObject {
         
         let notification: InAppNotification = InAppNotification(resource: resource, title: title, subtitle: subtitle, data: placeholder)
         InAppNotificationDispatcher.shared.show(notification: notification) { (_) in
-            print("PRE PRE OPEN", UIApplication.shared.windows.first?.rootViewController)
 //            print(UIApplication.shared.windows.filter({ $0.isKeyWindow }).first?., "UIApplication.shared.windows.filter({ $0.isKeyWindow }).first?.rootViewController")
             
             
@@ -195,7 +187,6 @@ class InAppNotificationManager: NSObject {
                 channelLogPresenter.open(channel, controller: controller)
                 return
             }
-            print("PRE OPEN")
             channelLogPresenter.open(realmChannel, controller: controller)
         }
     }

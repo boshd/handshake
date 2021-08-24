@@ -64,7 +64,6 @@ class ContactsFetcher: NSObject {
         
         // guard userDefaults.currentBoolObjectState(for: userDefaults.contactsContiniousSync) == true else { return }
         if forcedSync || !userDefaults.isContactsCountExists() || defaultContactsCount != contactsCount || syncronizationStatus != true {
-            print("arriving here ")
             forcedSync = false
             userDefaults.updateObject(for: userDefaults.contactsCount, with: contactsCount)
             self.delegate?.contacts(shouldPerformSyncronization: true)

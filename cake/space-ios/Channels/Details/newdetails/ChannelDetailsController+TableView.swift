@@ -111,7 +111,7 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
                 cell.textLabel?.text = "See more"
                 guard let channelParticipantsCount = channel?.participantIds.count else { return cell }
                 cell.textLabel?.text = "See \(channelParticipantsCount - attendees.count) more"
-                cell.backgroundColor = ThemeManager.currentTheme().modalGroupedInsetCellBackgroundColor
+//                cell.backgroundColor = ThemeManager.currentTheme().modalGroupedInsetCellBackgroundColor
                 return cell
             } else {
                 let cell = UITableViewCell(style: .value2, reuseIdentifier: userCellId) as? UserCell ?? UserCell(style: .subtitle, reuseIdentifier: userCellId)
@@ -121,7 +121,7 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
                 cell.accessoryType = .none
                 
                 
-                cell.backgroundColor = ThemeManager.currentTheme().modalGroupedInsetCellBackgroundColor
+//                cell.backgroundColor = ThemeManager.currentTheme().modalGroupedInsetCellBackgroundColor
                 
                 return cell
             }
@@ -255,9 +255,9 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
             let button = UIButton()
             button.translatesAutoresizingMaskIntoConstraints = false
             button.setTitleColor(ThemeManager.currentTheme().tintColor, for: .normal)
-            button.setTitle("RSVP LIST", for: .normal)
+            button.setTitle("RSVP List", for: .normal)
             button.contentHorizontalAlignment = .right
-            button.titleLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 12)
+            button.titleLabel?.font = ThemeManager.currentTheme().secondaryFontBold(with: 12)
             button.addTarget(self, action: #selector(presentRSVPList), for: .touchUpInside)
             headerView.addSubview(button)
             

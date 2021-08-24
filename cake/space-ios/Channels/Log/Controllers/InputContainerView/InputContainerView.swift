@@ -187,7 +187,6 @@ final class InputContainerView: UIView {
     @objc func toggleTextView () {
 //        inputTextView.inputView = nil
 //        inputTextView.reloadInputViews()
-        print("sdckmd1")
         UIView.performWithoutAnimation {
             inputTextView.resignFirstResponder()
             inputTextView.becomeFirstResponder()

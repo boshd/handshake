@@ -12,19 +12,15 @@ class ChannelLogHeaderView: UIView {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         DispatchQueue.main.async {
-            self.alpha = 1.0
             UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveLinear, animations: {
-                self.alpha = 0.75
-                self.backgroundColor = ThemeManager.currentTheme().chatLogHeaderBackgroundColor
+                self.backgroundColor = ThemeManager.currentTheme().selectedChatLogHeaderBackgroundColor
             }, completion: nil)
         }
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         DispatchQueue.main.async {
-            self.alpha = 1.0
             UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveLinear, animations: {
-                self.alpha = 1.0
                 self.backgroundColor = ThemeManager.currentTheme().chatLogHeaderBackgroundColor
             }, completion: nil)
         }
@@ -32,9 +28,7 @@ class ChannelLogHeaderView: UIView {
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         DispatchQueue.main.async {
-            self.alpha = 1.0
             UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveLinear, animations: {
-                self.alpha = 1.0
                 self.backgroundColor = ThemeManager.currentTheme().chatLogHeaderBackgroundColor
             }, completion: nil)
         }

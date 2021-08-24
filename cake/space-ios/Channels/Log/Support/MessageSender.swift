@@ -94,7 +94,6 @@ class MessageSender: NSObject {
                 print("error // ", error?.localizedDescription ?? "")
                 return
             }
-            print("BOUT TO LEAVE")
             messageSendingGroup.leave()
             delegateGroup.leave()
         }
@@ -106,7 +105,6 @@ class MessageSender: NSObject {
         }
         
         messageSendingGroup.notify(queue: .global(qos: .background), execute: {
-            print("IM NOTIFIED!")
             self.updateDatabase(at: newMessageReference, with: defaultData, toID: toID, fromID: fromID)
         })
     }

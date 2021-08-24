@@ -30,6 +30,10 @@ extension UIColor {
         get { return UIColor(red: 0.91, green: 0.89, blue: 0.99, alpha: 1.00) }
     }
     
+    open class var handshakeLightPurpleSelected: UIColor {
+        get { return UIColor(red: 0.86, green: 0.81, blue: 0.99, alpha: 1.00) }
+    }
+    
     open class var handshakeLightGray: UIColor {
         get { return UIColor(red: 0.97, green: 0.97, blue: 0.98, alpha: 1.00) }
     }

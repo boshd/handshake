@@ -46,7 +46,7 @@ public class InputAccessoryViewPlaceholder: UIView {
 
     private var visibleKeyboardHeight: CGFloat {
         guard var keyboardFrame = transitioningKeyboardFrame ?? superview?.frame else { return 0 }
-        print("keyboardFrame", keyboardFrame)
+
         guard keyboardFrame.height > 0 else { return 0 }
 
         let referenceFrame: CGRect

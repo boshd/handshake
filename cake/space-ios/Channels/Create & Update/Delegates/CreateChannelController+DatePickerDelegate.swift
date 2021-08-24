@@ -1,3 +1,46 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:503d2f16bafbccbc58db19907f00903eb954e04aa3b83849dd45dad38e38a8d2
-size 1783
+//
+//  CreateChannelController+DatePickerDelegate.swift
+//  space-ios
+//
+//  Created by Kareem Arab on 2021-05-17.
+//  Copyright © 2021 Kareem Arab. All rights reserved.
+//
+
+import Firebase
+
+extension CreateChannelController: DatePickerDelegate {
+    func didChangeDate(cell: UITableViewCell, date: Date) {
+        let indexPath = tableView.indexPath(for: cell)
+        let cell = cell as! DatePickerCell
+        
+        cell.datePicker.date = date
+        if indexPath?.row == 1 {
+            if let endTime = endTime {
+                if Int64(date.timeIntervalSince1970) > endTime {
+                    self.endTime = Int64(date.nextHour.timeIntervalSince1970)
+//                    let prevHr = Date(timeIntervalSince1970: TimeInterval(endTime)).previousHour
+//                    if prevHr < Date() {
+//                        startTime = Int64(Date().timeIntervalSince1970)
+//                    } else {
+//                        startTime = Int64(prevHr.timeIntervalSince1970)
+//                    }
+//                    return
+                }
+            }
+            startTime = Int64(date.timeIntervalSince1970)
+        } else if indexPath?.row == 3 {
+            if let startTime = startTime {
+                if Int64(date.timeIntervalSince1970) < startTime {
+                    endTime = Int64(Date(timeIntervalSince1970: TimeInterval(startTime)).nextHour.timeIntervalSince1970)
+                    cell.datePicker.date = Date(timeIntervalSince1970: TimeInterval(startTime)).nextHour
+                    return
+                }
+            }
+            endTime = Int64(date.timeIntervalSince1970)
+        }
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.reloadData()
+        }
+        
+    }
+}

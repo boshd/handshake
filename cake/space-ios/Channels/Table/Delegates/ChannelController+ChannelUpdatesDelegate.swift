@@ -26,9 +26,7 @@ extension ChannelsController: ChannelUpdatesDelegate {
         if !isAppLoaded {
             observeDataSourceChanges()
         }
-        print("is this reached cmonn11")
         guard let token1 = realmChannelsNotificationToken else { return }
-        print("is this reached cmonn22")
         realmManager.update(channels: channels, tokens: [token1])
         handleReloadTable()
         hideActivityTitle(title: .updating)
@@ -39,7 +37,6 @@ extension ChannelsController: ChannelUpdatesDelegate {
         if let realmChannels = realmChannels {
             notificationsManager.updateChannels(to: Array(realmChannels))
         }
-        print("IN UPDATE CHANNEL.. is reload needed? \(reloadNeeded)")
         if reloadNeeded {
             handleReloadTable()
         }
