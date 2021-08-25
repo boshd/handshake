@@ -54,11 +54,17 @@ class ChannelCollectionView: UICollectionView {
                    animated: animated)
     }
     
-    public func setupCellHeight(isOutgoingMessage: Bool, frame: RealmCGRect?, indexPath: IndexPath) -> CGFloat {
+    public func setupCellHeight(message: Message, isOutgoingMessage: Bool, frame: RealmCGRect?, indexPath: IndexPath) -> CGFloat {
         guard let frame = frame, let height = frame.height.value else { return 0 }
-
+        
         if !isOutgoingMessage {
-            return CGFloat(height) + BaseMessageCell.textMessageInsets
+            if let isFirst = message.isFirstInSection.value, isFirst {
+                return CGFloat(height) + BaseMessageCell.textFirstMessageInsets
+            } else if let isCrooked = message.isCrooked.value, isCrooked {
+                return CGFloat(height) + BaseMessageCell.textMessageInsets + 15
+            } else {
+                return CGFloat(height) + BaseMessageCell.textMessageInsets
+            }
         } else {
             return CGFloat(height) + BaseMessageCell.defaultTextMessageInsets
         }

@@ -35,7 +35,7 @@ struct MessageFontsAppearance {
     }
 
     static var defaultMessageAuthorNameFont: UIFont {
-        return ThemeManager.currentTheme().secondaryFontBold(with: 11)
+        return ThemeManager.currentTheme().secondaryFont(with: 13)
     }
     
     static var defaultDeliveryStatusTextFont: UIFont {
@@ -53,11 +53,14 @@ class BaseMessageCell: UICollectionViewCell {
     
     static let scrollIndicatorInset: CGFloat = 5
 
-    static let textViewTopInset: CGFloat = 7
-    static let textViewBottomInset: CGFloat = 15
+    static let textViewTopInset: CGFloat = 15
+    static let textViewBottomInset: CGFloat = 20
     
     static let bubbleViewMaxWidth: CGFloat = CellSizes.bubbleViewMaxWidth()
     static let bubbleViewMaxHeight: CGFloat = 10000
+    
+    static let userImageViewHeight: Double = 25.0
+    static let userImageViewWidth: Double = 25.0
     
     static let messageTimeHeight: CGFloat = 20
     static var messageTimeWidth: CGFloat = 68
@@ -68,15 +71,21 @@ class BaseMessageCell: UICollectionViewCell {
     
     static let incomingTextViewLeftInset: CGFloat = 10
     static let incomingTextViewRightInset: CGFloat = 3
-    static let incomingTextViewTopInset: CGFloat = incomingMessageAuthorNameLabelHeight
+    static let incomingTextViewTopInset: CGFloat = 10
+    static let incomingFirstTextViewTopInset: CGFloat = incomingMessageAuthorNameLabelHeight + 5
     static let incomingMessageHorisontalInsets = 2 * (incomingTextViewLeftInset + incomingTextViewRightInset)
     static let incomingMessageAuthorNameLeftInset = incomingTextViewLeftInset + 5
     static let incomingMessageAuthorNameLabelMaxWidth = bubbleViewMaxWidth - incomingMessageHorisontalInsets
     static let incomingMessageAuthorNameLabelHeight: CGFloat = 25 // 25
     static let incomingGroupMessageAuthorNameLabelHeightWithInsets: CGFloat = incomingMessageAuthorNameLabelHeight
-    static let incomingBubbleOrigin = CGPoint(x: 12, y: 0)
-
+    static let incomingBubbleOrigin = CGPoint(x: 20 + userImageViewWidth, y: 0)
+    static let incomingFirstBubbleOrigin = CGPoint(x: 20 + userImageViewWidth, y: 0)
+    static let incomingUserImageViewOrigin = CGPoint(x: 12, y: 20)
+    static let incomingFirstNameLabelOrigin = CGPoint(x: 30 + userImageViewWidth, y: 8)
+    
     static let textMessageInsets = incomingTextViewTopInset + textViewBottomInset
+    static let textFirstMessageInsets = incomingFirstTextViewTopInset + textViewBottomInset
+    
     static let defaultTextMessageInsets = textViewBottomInset + textViewTopInset
     
     static let messageTextSize: CGFloat = 13
@@ -84,12 +93,12 @@ class BaseMessageCell: UICollectionViewCell {
     lazy var bubbleView: UIView = {
         let view = UIView()
         view.isUserInteractionEnabled = true
-        view.layer.cornerRadius = 15
+        view.layer.cornerRadius = 17
         view.layer.cornerCurve = .continuous
-        view.layer.shadowColor = UIColor.black.cgColor
-        view.layer.shadowOpacity = 0.2
-        view.layer.shadowRadius = 1
-        view.layer.shadowOffset = CGSize(width: -0.5, height: 0.5)
+//        view.layer.shadowColor = UIColor.black.cgColor
+//        view.layer.shadowOpacity = 0.2
+//        view.layer.shadowRadius = 1
+//        view.layer.shadowOffset = CGSize(width: -0.5, height: 0.5)
         
         return view
     }()
@@ -109,7 +118,8 @@ class BaseMessageCell: UICollectionViewCell {
         label.backgroundColor = .clear
         label.textColor = ThemeManager.currentTheme().authorNameTextColor
         label.frame.size.height = BaseMessageCell.incomingMessageAuthorNameLabelHeight
-        label.frame.origin = CGPoint(x: BaseMessageCell.incomingMessageAuthorNameLeftInset, y: BaseMessageCell.textViewTopInset)
+        //label.frame.origin = CGPoint(x: BaseMessageCell.incomingMessageAuthorNameLeftInset, y: BaseMessageCell.textViewTopInset)
+        label.frame.origin = BaseMessageCell.incomingFirstNameLabelOrigin
 
         return label
     }()
@@ -208,6 +218,56 @@ class BaseMessageCell: UICollectionViewCell {
         }
 
         let rect = CGRect(x: x, y: 0, width: width, height: cellHeight).integral
+        
+        
+        return rect
+    }
+    
+    func setupFrameWithLabelForFirst(_ x: CGFloat,
+                             _ bubbleMaxWidth: CGFloat,
+                             _ estimate: CGFloat,
+                             _ insets: CGFloat,
+                             _ cellHeight: CGFloat,
+                             _ spacer: CGFloat = 10) -> CGRect {
+        
+        var x = x
+        if (estimate + BaseMessageCell.messageTimeWidth <=  bubbleMaxWidth) ||
+            estimate <= BaseMessageCell.messageTimeWidth {
+            x = x - BaseMessageCell.messageTimeWidth + spacer
+        }
+
+        var width: CGFloat = estimate + insets
+        if (estimate + BaseMessageCell.messageTimeWidth <=  bubbleMaxWidth) ||
+            estimate <= BaseMessageCell.messageTimeWidth {
+            width = width + BaseMessageCell.messageTimeWidth - spacer
+        }
+
+        let rect = CGRect(x: x, y: 0, width: width, height: cellHeight - BaseMessageCell.incomingMessageAuthorNameLabelHeight).integral
+        
+        
+        return rect
+    }
+    
+    func setupFrameWithLabelForLast(_ x: CGFloat,
+                             _ bubbleMaxWidth: CGFloat,
+                             _ estimate: CGFloat,
+                             _ insets: CGFloat,
+                             _ cellHeight: CGFloat,
+                             _ spacer: CGFloat = 10) -> CGRect {
+        
+        var x = x
+        if (estimate + BaseMessageCell.messageTimeWidth <=  bubbleMaxWidth) ||
+            estimate <= BaseMessageCell.messageTimeWidth {
+            x = x - BaseMessageCell.messageTimeWidth + spacer
+        }
+
+        var width: CGFloat = estimate + insets
+        if (estimate + BaseMessageCell.messageTimeWidth <=  bubbleMaxWidth) ||
+            estimate <= BaseMessageCell.messageTimeWidth {
+            width = width + BaseMessageCell.messageTimeWidth - spacer
+        }
+
+        let rect = CGRect(x: x, y: 0, width: width, height: cellHeight - 15).integral
         
         
         return rect

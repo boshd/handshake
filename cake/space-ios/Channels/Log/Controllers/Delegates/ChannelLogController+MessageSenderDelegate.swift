@@ -22,6 +22,7 @@ extension ChannelLogController: MessageSenderDelegate {
                 let message = Message(dictionary: preloadedCellData(values: values))
                 message.status = messageStatusSending
                 message.channel = channel
+                message.isCrooked.value = false
                 realm.create(Message.self, value: message, update: .modified)
 
                 guard let newSectionTitle = message.shortConvertedTimestamp else { realm.cancelWrite(); return }
@@ -44,9 +45,12 @@ extension ChannelLogController: MessageSenderDelegate {
                     self.groupedMessages[sectionIndex].messages.count - 1 : 0
 
                     if self.groupedMessages[sectionIndex].messages.indices.contains(rowIndex - 1),
-                    self.groupedMessages[sectionIndex].messages[rowIndex - 1].fromId == message.fromId {}
+                       self.groupedMessages[sectionIndex].messages[rowIndex - 1].fromId == message.fromId {
+                        self.groupedMessages[sectionIndex].messages[rowIndex - 1].isCrooked.value = false
+                    }
                     self.collectionView.insertItems(at: [IndexPath(row: rowIndex, section: sectionIndex)])
                 }
+                self.groupedMessages.last?.messages.last?.isCrooked.value = true
                 try! realm.commitWrite()
             }, completion: { (isCompleted) in
 

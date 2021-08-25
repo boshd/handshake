@@ -111,8 +111,8 @@ class MessageSender: NSObject {
     
     fileprivate func updateDatabase(at reference: DocumentReference, with values: [String: AnyObject], toID: String, fromID: String ) {
         
-        reference.setData(values) { (error) in
-            guard error == nil else { print(error?.localizedDescription ?? "error"); return }
+//        reference.setData(values) { (error) in
+//            guard error == nil else { print(error?.localizedDescription ?? "error"); return }
             
             let batch = Firestore.firestore().batch()
             
@@ -120,10 +120,17 @@ class MessageSender: NSObject {
                 "fromId": fromID,
                 "timestamp": values["timstamp"] ?? NSNumber(value: Int(Date().timeIntervalSince1970))
             ], forDocument: Firestore.firestore().collection("channels").document(toID).collection("messageIds").document(reference.documentID), merge: true)
-            batch.setData([
-                "fromId": fromID,
-                "timestamp": values["timstamp"] ?? NSNumber(value: Int(Date().timeIntervalSince1970))
-            ], forDocument: Firestore.firestore().collection("users").document(fromID).collection("channelIds").document(toID).collection("messageIds").document(reference.documentID), merge: true)
+            
+            
+//            self.channel?.participantIds.forEach({ id in
+                batch.setData([
+                    "fromId": fromID,
+                    "timestamp": values["timstamp"] ?? NSNumber(value: Int(Date().timeIntervalSince1970))
+                ], forDocument: Firestore.firestore().collection("users").document(fromID).collection("channelIds").document(toID).collection("messageIds").document(reference.documentID), merge: true)
+//            })
+            
+            
+            
             
             batch.commit() { (error) in
                 if error != nil {
@@ -132,7 +139,7 @@ class MessageSender: NSObject {
                 }
                 self.updateLastMessage(with: reference.documentID)
             }
-        }
+//        }
         
     }
 

@@ -135,7 +135,6 @@ extension ChannelLogController: UICollectionViewDelegateFlowLayout, UICollection
                     cell.channelLogController = self
                     cell.setupData(message: message)
                     cell.contentView.isUserInteractionEnabled = true
-        
                     return cell
             }
         }
@@ -176,7 +175,8 @@ extension ChannelLogController: UICollectionViewDelegateFlowLayout, UICollection
 //            }
  
             return CGSize(width: collectionView.frame.width,
-                          height: collectionView.setupCellHeight(isOutgoingMessage: isOutgoingMessage,
+                          height: collectionView.setupCellHeight(message: message,
+                                                                 isOutgoingMessage: isOutgoingMessage,
                                                                  frame: message.estimatedFrameForText,
                                                                  indexPath: indexPath))
         }

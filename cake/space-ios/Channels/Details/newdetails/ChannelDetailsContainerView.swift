@@ -31,6 +31,7 @@ class ChannelDetailsContainerView: UIView {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         tableView.separatorStyle = .none
+        tableView.showsVerticalScrollIndicator = false
         tableView.contentInsetAdjustmentBehavior = .never
         
         return tableView

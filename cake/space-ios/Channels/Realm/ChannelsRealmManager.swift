@@ -32,6 +32,8 @@ class ChannelsRealmManager {
                 RealmKeychain.defaultRealm.create(Channel.self, value: channel, update: .modified)
                 if let message = channel.lastMessageRuntime {
                     message.senderName = RealmKeychain.defaultRealm.object(ofType: Message.self, forPrimaryKey: message.messageUID ?? "")?.senderName
+                    message.isCrooked.value = RealmKeychain.defaultRealm.object(ofType: Message.self, forPrimaryKey: message.messageUID ?? "")?.isCrooked.value
+                    message.isFirstInSection.value = RealmKeychain.defaultRealm.object(ofType: Message.self, forPrimaryKey: message.messageUID ?? "")?.isFirstInSection.value
                     RealmKeychain.defaultRealm.create(Message.self, value: message, update: .modified)
                 }
             }

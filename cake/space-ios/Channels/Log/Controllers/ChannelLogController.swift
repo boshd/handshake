@@ -42,7 +42,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     var first = true
     let typingIndicatorDatabaseID = "typingIndicator"
     let typingIndicatorStateDatabaseKeyID = "Is typing"
-    let messagesToLoad = 50
+    let messagesToLoad = 10
     var isChannelLogHeaderShowing = false
     var shouldAnimateKeyboardChanges = false
     private var shouldScrollToBottom: Bool = true
@@ -378,7 +378,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         bottomScrollConainer.centerXAnchor.constraint(equalTo: view.centerXAnchor,
             constant: 0).isActive = true
         bottomScrollConainer.bottomAnchor.constraint(equalTo:  view.safeAreaLayoutGuide.bottomAnchor,
-            constant: -50).isActive = true
+            constant: -60).isActive = true
 //        }
 
     }
@@ -466,6 +466,34 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
 //        return config
 //    }
     
+    func configureBubblesTails(for messages: Results<Message>) {
+        try! realm.safeWrite {
+            for index in (0..<messages.count).reversed() {
+                let isLastMessage = index == messages.count - 1
+                if isLastMessage { messages[index].isCrooked.value = true }
+                guard messages.indices.contains(index - 1) else { return }
+                let isPreviousMessageSenderDifferent = messages[index - 1].fromId != messages[index].fromId
+                messages[index - 1].isCrooked.value = isPreviousMessageSenderDifferent ? true : messages[index].isInformationMessage.value ?? false
+                
+//                if index > 0 {
+//                    print("AT INDEX \(index) with message: \(messages[index].text) -- crooked: \(messages[index].isCrooked.value)")
+//                }
+            }
+        }
+    }
+    
+    func configureIsFirstnessInSection(for messages: Results<Message>) {
+        try! realm.safeWrite {
+            for index in (0..<messages.count).reversed() {
+                let isLastMessage = index == messages.count - 1
+                if isLastMessage { messages[index].isFirstInSection.value = true }
+                guard messages.indices.contains(index - 1) else { return }
+                let isPreviousMessageSenderDifferent = messages[index - 1].fromId != messages[index].fromId
+                messages[index].isFirstInSection.value = isPreviousMessageSenderDifferent ? true : messages[index].isInformationMessage.value ?? false
+            }
+        }
+    }
+    
     func getMessages() {
         let dates = channel!.messages.map({ $0.shortConvertedTimestamp ?? "" })
         let uniqueDates = Array(Set(dates))
@@ -500,9 +528,14 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
                     loadedCount += messages.count
                 }
                 
+                configureBubblesTails(for: messages)
+                configureIsFirstnessInSection(for: messages)
+                
                 let section = MessageSection(messages: messages, title: date)
                 groupedMessages.insert(section, at: 0)
             }
+            
+            print(groupedMessages)
         }
     }
     

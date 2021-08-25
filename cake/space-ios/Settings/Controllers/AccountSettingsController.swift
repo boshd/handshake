@@ -175,17 +175,17 @@ class AccountSettingsController: UITableViewController, MFMailComposeViewControl
     }
     
     func actualLogout() {
-        let channels = RealmKeychain.defaultRealm.objects(Channel.self)
-        let group = DispatchGroup()
-        for channel in channels {
-            group.enter()
-            Messaging.messaging().unsubscribe(fromTopic: channel.id ?? "") { (error) in
-                group.leave()
-                if error != nil { print(error?.localizedDescription ?? ""); return }
-            }
-        }
+//        let channels = RealmKeychain.defaultRealm.objects(Channel.self)
+//        let group = DispatchGroup()
+//        for channel in channels {
+//            group.enter()
+//            Messaging.messaging().unsubscribe(fromTopic: channel.id ?? "") { (error) in
+//                group.leave()
+//                if error != nil { print(error?.localizedDescription ?? ""); return }
+//            }
+//        }
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "clearUserData"), object: nil)
-        group.notify(queue: .main) {
+//        group.notify(queue: .main) {
             let firebaseAuth = Auth.auth()
             do {
               try firebaseAuth.signOut()
@@ -202,7 +202,7 @@ class AccountSettingsController: UITableViewController, MFMailComposeViewControl
             } catch let signOutError as NSError {
                 print ("Error signing out: %@", signOutError)
             }
-        }
+//        }
         
     }
     

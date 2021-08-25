@@ -50,7 +50,12 @@ extension ChannelLogController: CollectionDelegate {
     fileprivate func batch(message: Message, reference: DocumentReference) {
         guard !realm.isInWriteTransaction else { return }
         realm.beginWrite()
+        groupedMessages.last?.messages.last?.isCrooked.value = false
+        groupedMessages.last?.messages.first?.isFirstInSection.value = false
         message.channel = channel
+        message.isCrooked.value = false
+        message.isFirstInSection.value = false
+        
         realm.create(Message.self, value: message, update: .modified)
         guard let newSectionTitle = message.shortConvertedTimestamp else { try! self.realm.commitWrite(); return }
         let lastSectionTitle = groupedMessages.last?.title ?? ""
@@ -73,6 +78,8 @@ extension ChannelLogController: CollectionDelegate {
             }
             
             groupedMessages.insert(newSection, at: insertionIndex)
+            groupedMessages.last?.messages.last?.isCrooked.value = true
+            //groupedMessages.last?.messages.first?.isFirstInSection.value = true
             collectionView.performBatchUpdates({
                     collectionView.insertSections([insertionIndex])
             }) { (isCompleted) in
@@ -80,7 +87,25 @@ extension ChannelLogController: CollectionDelegate {
             }
         } else {
             guard let indexPath = Message.get(indexPathOf: message, in: groupedMessages) else { try! self.realm.commitWrite(); return }
-
+            if let isInfo = message.isInformationMessage.value, !isInfo {
+                groupedMessages.last?.messages.last?.isCrooked.value = true
+                
+                if let index = groupedMessages.last?.messages.count, index > 1 {
+                    if groupedMessages.last?.messages[index - 2].fromId != groupedMessages.last?.messages.last?.fromId {
+                        groupedMessages.last?.messages.last?.isFirstInSection.value = true
+                    } else {
+                        groupedMessages.last?.messages[index - 2].isCrooked.value = false
+                    }
+                    print("message: \(message.text), groupedMessages.last?.messages.last?: \(groupedMessages.last?.messages[index - 2].text)")
+                }
+            }
+            
+//            if let i = groupedMessages.last?.messages.count, i > 1 {
+//                if groupedMessages.last?.messages[i - 2].fromId == groupedMessages.last?.messages.last?.fromId {
+//                    groupedMessages.last?.messages[i - 2].isCrooked.value = false
+//                }
+//            }
+            
             // temporary due to inefficiency
             UIView.performWithoutAnimation {
                 collectionView.performBatchUpdates({

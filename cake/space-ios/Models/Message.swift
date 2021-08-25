@@ -33,6 +33,9 @@ final class Message: Object {
     @objc dynamic var shortConvertedTimestamp: String?
     @objc dynamic var senderName: String?
     
+    let isCrooked = RealmOptional<Bool>() // local only
+    let isFirstInSection = RealmOptional<Bool>() // local only -- first in section
+    
     // the sender and channel names at the time. this is for push notifications
     @objc dynamic var historicChannelName: String?
     @objc dynamic var historicSenderName: String?

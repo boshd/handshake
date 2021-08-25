@@ -95,6 +95,14 @@ extension ChannelLogPresenter: MessagesDelegate {
             RealmKeychain.defaultRealm.beginWrite()
             for message in messages {
                 
+                if message.isCrooked.value == nil {
+                    message.isCrooked.value = RealmKeychain.defaultRealm.object(ofType: Message.self, forPrimaryKey: message.messageUID ?? "")?.isCrooked.value
+                }
+                
+                if message.isFirstInSection.value == nil {
+                    message.isFirstInSection.value = RealmKeychain.defaultRealm.object(ofType: Message.self, forPrimaryKey: message.messageUID ?? "")?.isFirstInSection.value
+                }
+                
                 if message.senderName == nil {
                     message.senderName = RealmKeychain.defaultRealm.object(ofType: Message.self, forPrimaryKey: message.messageUID ?? "")?.senderName
                 }

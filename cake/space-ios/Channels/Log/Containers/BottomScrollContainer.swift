@@ -20,14 +20,14 @@ class BottomScrollContainer: UIView {
         scrollButton.layer.cornerCurve = .circular
         scrollButton.layer.shadowOffset = CGSize(width: 0, height: 4)
         scrollButton.setImage(UIImage(named: "arrowDownWhite")?.withRenderingMode(.alwaysTemplate), for: .normal)
-        scrollButton.backgroundColor = ThemeManager.currentTheme().tintColor
+        scrollButton.backgroundColor = ThemeManager.currentTheme().instantScrollButtonBackgroundColor
         scrollButton.tintColor = .white
         
         scrollButton.imageView?.contentMode = .scaleAspectFit
         scrollButton.contentMode = .center
         
-        scrollButton.borderWidth = 0.5
-        scrollButton.borderColor = ThemeManager.currentTheme().generalBackgroundColor
+//        scrollButton.borderWidth = 0.5
+//        scrollButton.borderColor = ThemeManager.currentTheme().generalBackgroundColor
         
         scrollButton.imageEdgeInsets = UIEdgeInsets(top: 7, left: 13, bottom: 3, right: 13)
 

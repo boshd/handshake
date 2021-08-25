@@ -70,7 +70,7 @@ class InformationMessageSender: NSObject {
     
     fileprivate func updateLastMessage(with channelID: String, messageID: String) {
         guard let fromID = Auth.auth().currentUser?.uid else { return }
-        let channelReference = Firestore.firestore().collection("users").document(fromID).collection("channelIds").document(channelID).collection("messageIds").document(messageID)
+        let channelReference = Firestore.firestore().collection("users").document(fromID).collection("channelIds").document(channelID)
         channelReference.setData([
             "lastMessageId": messageID
         ], merge: true)

@@ -87,7 +87,7 @@ class AppearanceExampleCollectionView: ChannelCollectionView, UICollectionViewDe
         let isOutgoingMessage = indexPath.row == 1
 
         guard !isTextMessage else {
-            return CGSize(width: frame.width, height: setupCellHeight(isOutgoingMessage: isOutgoingMessage, frame: message.estimatedFrameForText, indexPath: indexPath))
+            return CGSize(width: frame.width, height: setupCellHeight(message: message, isOutgoingMessage: isOutgoingMessage, frame: message.estimatedFrameForText, indexPath: indexPath))
         }
     }
 }

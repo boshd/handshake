@@ -129,6 +129,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         channelDetailsContainerView.tableView.register(ChannelDetailsCell.self, forCellReuseIdentifier: channelDetailsCellId)
         channelDetailsContainerView.tableView.register(LoadMoreCell.self, forCellReuseIdentifier: loadMoreCellId)
         
+        
         channelImageView = UIImageView(frame: CGRect(x: 0, y:0, width: channelDetailsContainerView.tableView.frame.width, height: 250))
         
         configureChannelImageHeaderView()

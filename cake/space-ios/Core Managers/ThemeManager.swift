@@ -156,6 +156,15 @@ enum Theme: Int {
         }
     }
     
+    var instantScrollButtonBackgroundColor: UIColor {
+        switch self {
+            case .normal:
+                return .handshakeLightPurple
+            case .dark:
+                return .handshakeLightPurple
+        }
+    }
+    
     var windowBackground: UIColor {
         switch self {
             case .normal:
@@ -731,12 +740,7 @@ enum Theme: Int {
     }
     
     var authorNameTextColor: UIColor {
-        switch self {
-            case .normal:
-                return .black
-            case .dark:
-                return UIColor(red: 0.55, green: 0.77, blue: 1.0, alpha: 1.0)
-        }
+        return generalSubtitleColor
     }
     
     var keyboardAppearance: UIKeyboardAppearance {

@@ -57,7 +57,6 @@ extension ChannelCell {
             ], range: range)
             messageLabel.attributedText = mutableAttributedString
             
-            print("main text \(mainText) \(name) \(range)")
             
 //            messageLabel.text = mainText
         }

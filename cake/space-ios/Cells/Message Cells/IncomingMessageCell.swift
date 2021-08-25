@@ -8,6 +8,7 @@
 
 import UIKit
 import SafariServices
+import SDWebImage
 
 class IncomingMessageCell: BaseMessageCell {
     
@@ -22,6 +23,19 @@ class IncomingMessageCell: BaseMessageCell {
 //        textView.font = ThemeManager.currentTheme().secondaryFont(with: IncomingMessageCell.messageTextSize)
         return textView
     }()
+    
+    let userImageView: UIImageView = {
+        let imageView = UIImageView()
+        // not using autolayout
+        //imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.cornerRadius = 12.5
+        imageView.layer.cornerCurve = .circular
+        //imageView.image = UIImage(named: "GroupIcon")
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        
+        return imageView
+    }()
 
     override func setupViews() {
         super.setupViews()
@@ -31,10 +45,11 @@ class IncomingMessageCell: BaseMessageCell {
         
         textView.delegate = self
         bubbleView.addSubview(textView)
-        textView.addSubview(nameLabel)
+        contentView.addSubview(nameLabel)
         bubbleView.addSubview(timeLabel)
+        contentView.addSubview(userImageView)
 
-        bubbleView.frame.origin = BaseMessageCell.incomingBubbleOrigin
+        
         timeLabel.backgroundColor = .clear
         timeLabel.textColor = ThemeManager.currentTheme().incomingTimestampTextColor
         bubbleView.backgroundColor = ThemeManager.currentTheme().incomingMessageBackgroundColor
@@ -46,7 +61,7 @@ class IncomingMessageCell: BaseMessageCell {
         textView.backgroundColor = .clear
         textView.textColor = ThemeManager.currentTheme().incomingMessageCellTextColor
         textView.font = ThemeManager.currentTheme().secondaryFont(with: IncomingMessageCell.messageTextSize)
-        
+        userImageView.image = nil
         bubbleView.frame.origin = BaseMessageCell.incomingBubbleOrigin
         timeLabel.backgroundColor = .clear
         timeLabel.textColor = ThemeManager.currentTheme().incomingTimestampTextColor
@@ -55,12 +70,20 @@ class IncomingMessageCell: BaseMessageCell {
 
     func setupData(message: Message) {
         guard let messageText = message.text else { return }
-        textView.text = messageText
-
-       
-        nameLabel.text = message.senderName ?? ""
-        nameLabel.sizeToFit()
+        
+        if let isFirst = message.isFirstInSection.value, isFirst {
+//            bubbleView.frame.origin = BaseMessageCell.incomingFirstBubbleOrigin
+            bubbleView.frame.origin = CGPoint(x: 20 + CGFloat(BaseMessageCell.userImageViewWidth), y: BaseMessageCell.incomingMessageAuthorNameLabelHeight)
+            
+            nameLabel.text = message.senderName ?? ""
+            nameLabel.sizeToFit()
+        } else {
+            bubbleView.frame.origin = BaseMessageCell.incomingBubbleOrigin
+        }
+        
         bubbleView.frame.size = setupGroupBubbleViewSize(message: message)
+        
+        textView.text = messageText
 
         textView.textContainerInset.top = BaseMessageCell.incomingTextViewTopInset
         textView.frame.size = CGSize(width: bubbleView.frame.width.rounded(), height: bubbleView.frame.height.rounded())
@@ -69,17 +92,56 @@ class IncomingMessageCell: BaseMessageCell {
         timeLabel.frame.origin = CGPoint(x: bubbleView.frame.width-timeLabel.frame.width,
                                          y: bubbleView.frame.height-timeLabel.frame.height-5)
         timeLabel.text = message.convertedTimestamp
+        
+        userImageView.frame.size = CGSize(width: BaseMessageCell.userImageViewWidth, height: BaseMessageCell.userImageViewHeight)
+        userImageView.frame.origin = CGPoint(x: 10, y: bubbleView.frame.height - CGFloat(BaseMessageCell.userImageViewHeight))
+        
+        if let isCrooked = message.isCrooked.value, isCrooked {
+            if RealmKeychain.realmUsersArray().map({ $0.id }).contains(message.fromId) {
+                guard let url = RealmKeychain.realmUsersArray().first(where: { $0.id == message.fromId })?.userThumbnailImageUrl else { return }
+                userImageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "UserpicIcon"), options: [.scaleDownLargeImages, .continueInBackground, .avoidAutoSetImage], completed: { [weak self] (image, _, cacheType, _) in
+                    guard image != nil else { return }
+                    
+                    
+                    
+                    guard cacheType != SDImageCacheType.memory, cacheType != SDImageCacheType.disk else {
+                        self?.userImageView.image = image
+                        return
+                    }
+
+                    UIView.transition(with: self?.userImageView ?? UIImageView(image: UIImage(named: "UserpicIcon")),
+                                      duration: 0.2,
+                                      options: .transitionCrossDissolve,
+                                      animations: { self?.userImageView.image = image },
+                                      completion: nil)
+                    
+
+                })
+            }
+        }
+        
+        
     }
     
     fileprivate func setupGroupBubbleViewSize(message: Message) -> CGSize {
         guard let portaritWidth = message.estimatedFrameForText?.width.value else { return CGSize() }
         let portraitBubbleMaxW = BaseMessageCell.bubbleViewMaxWidth
         let portraitAuthorMaxW = BaseMessageCell.incomingMessageAuthorNameLabelMaxWidth
-
-
-        return getGroupBubbleSize(messageWidth: CGFloat(portaritWidth),
-                                  bubbleMaxWidth: portraitBubbleMaxW,
-                                  authorMaxWidth: portraitAuthorMaxW)
+        
+        if let isFirst = message.isFirstInSection.value, isFirst {
+            return getGroupBubbleSizeForFirst(messageWidth: CGFloat(portaritWidth),
+                                      bubbleMaxWidth: portraitBubbleMaxW,
+                                      authorMaxWidth: portraitAuthorMaxW)
+        
+        } else if let isCrooked = message.isCrooked.value, isCrooked {
+            return getGroupBubbleSizeForLast(messageWidth: CGFloat(portaritWidth),
+                                      bubbleMaxWidth: portraitBubbleMaxW,
+                                      authorMaxWidth: portraitAuthorMaxW)
+        } else {
+            return getGroupBubbleSize(messageWidth: CGFloat(portaritWidth),
+                                      bubbleMaxWidth: portraitBubbleMaxW,
+                                      authorMaxWidth: portraitAuthorMaxW)
+        }
         
     }
 
@@ -87,23 +149,39 @@ class IncomingMessageCell: BaseMessageCell {
         let horisontalInsets = BaseMessageCell.incomingMessageHorisontalInsets
 
         let rect = setupFrameWithLabel(bubbleView.frame.origin.x,
+                                               bubbleMaxWidth,
+                                               messageWidth,
+                                               horisontalInsets,
+                                       frame.size.height, 10).integral
+
+        return rect.size
+    }
+    
+    fileprivate func getGroupBubbleSizeForFirst(messageWidth: CGFloat, bubbleMaxWidth: CGFloat, authorMaxWidth: CGFloat) -> CGSize {
+        let horisontalInsets = BaseMessageCell.incomingMessageHorisontalInsets
+
+        let rect = setupFrameWithLabelForFirst(bubbleView.frame.origin.x,
                                        bubbleMaxWidth,
                                        messageWidth,
                                        horisontalInsets,
                                        frame.size.height, 10).integral
 
-        if nameLabel.frame.size.width >= rect.width - horisontalInsets {
-            if nameLabel.frame.size.width >= authorMaxWidth {
-                nameLabel.frame.size.width = authorMaxWidth
-                return CGSize(width: bubbleMaxWidth, height: frame.size.height.rounded())
-            }
-            return CGSize(width: (nameLabel.frame.size.width + horisontalInsets).rounded(),
-                          height: frame.size.height.rounded())
-        } else {
-            return rect.size
-        }
+        return rect.size
+    
     }
     
+    fileprivate func getGroupBubbleSizeForLast(messageWidth: CGFloat, bubbleMaxWidth: CGFloat, authorMaxWidth: CGFloat) -> CGSize {
+        let horisontalInsets = BaseMessageCell.incomingMessageHorisontalInsets
+
+        let rect = setupFrameWithLabelForLast(bubbleView.frame.origin.x,
+                                       bubbleMaxWidth,
+                                       messageWidth,
+                                       horisontalInsets,
+                                       frame.size.height, 10).integral
+
+        return rect.size
+    
+    }
 }
 
 extension IncomingMessageCell: UIContextMenuInteractionDelegate {
