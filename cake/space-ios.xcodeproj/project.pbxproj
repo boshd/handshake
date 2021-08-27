@@ -1326,8 +1326,8 @@
 				BC68C0BC258A9BD500D3A730 /* ChannelLogController+ChannelManager.swift */,
 				BC6C60B52384507D003DBB53 /* ChannelLogController+MessageSenderDelegate.swift */,
 				BC82CF9B2377A104003B2360 /* ChannelLogController+CollectionDelegate.swift */,
-				BC82CF9D2377A236003B2360 /* ChannelLogController+DataSource.swift */,
 				BC82CF9F2378538D003B2360 /* ChannelLogController+ChannelLogHistoryFetcher.swift */,
+				BC82CF9D2377A236003B2360 /* ChannelLogController+DataSource.swift */,
 			);
 			path = Delegates;
 			sourceTree = "<group>";

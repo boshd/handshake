@@ -132,13 +132,16 @@ extension ChannelLogController: ChannelLogHistoryDelegate {
             let limitedMessagesForFirstSection = messagesInFirstSectionAfterUpdate.filter("timestamp >= %@", timestampOfLastMessageToDisplay)
             messagesInFirstSectionAfterUpdate = limitedMessagesForFirstSection
             let updatedFirstSection = MessageSection(messages: messagesInFirstSectionAfterUpdate, title: firstSectionTitle)
-            //configureBubblesTails(for: updatedFirstSection.messages)
+            configureBubblesTails(for: updatedFirstSection.messages)
+            configureIsFirstnessInSection(for: updatedFirstSection.messages)
             groupedMessages[0] = updatedFirstSection
             let numberOfMessagesInFirstSectionAfterLimiting = groupedMessages[0].messages.count
             return numberOfMessagesInFirstSectionAfterLimiting - numberOfMessagesInFirstSectionBeforeUpdate
         } else {
             let updatedFirstSection = MessageSection(messages: messagesInFirstSectionAfterUpdate, title: firstSectionTitle)
-            //configureBubblesTails(for: updatedFirstSection.messages)
+            // combine?
+            configureBubblesTails(for: updatedFirstSection.messages)
+            configureIsFirstnessInSection(for: updatedFirstSection.messages)
             groupedMessages[0] = updatedFirstSection
             return numberOfMessagesInFirstSectionAfterUpdate - numberOfMessagesInFirstSectionBeforeUpdate
         }

@@ -42,7 +42,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     var first = true
     let typingIndicatorDatabaseID = "typingIndicator"
     let typingIndicatorStateDatabaseKeyID = "Is typing"
-    let messagesToLoad = 10
+    let messagesToLoad = 5
     var isChannelLogHeaderShowing = false
     var shouldAnimateKeyboardChanges = false
     private var shouldScrollToBottom: Bool = true

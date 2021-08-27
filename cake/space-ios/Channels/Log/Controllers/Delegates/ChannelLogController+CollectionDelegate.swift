@@ -68,6 +68,7 @@ extension ChannelLogController: CollectionDelegate {
         }
         
         if mustCreateNewSection {
+            print("must new section")
             guard let messages = channel?.messages.filter("shortConvertedTimestamp == %@", newSectionTitle)
                 .sorted(byKeyPath: "timestamp", ascending: true) else { try! self.realm.commitWrite(); return }
 
@@ -78,26 +79,47 @@ extension ChannelLogController: CollectionDelegate {
             }
             
             groupedMessages.insert(newSection, at: insertionIndex)
+            
             groupedMessages.last?.messages.last?.isCrooked.value = true
+            
+//            if let index = groupedMessages.last?.messages.count, index > 1 {
+//                if groupedMessages.last?.messages[index - 2].fromId != groupedMessages.last?.messages.last?.fromId {
+//                    groupedMessages.last?.messages.last?.isFirstInSection.value = true
+//                } else {
+//                    // removes crookedness from before
+//                    if groupedMessages.last?.messages[index - 2].isCrooked.value == true {
+//                        groupedMessages.last?.messages[index - 2].isCrooked.value = false
+//                    }
+//                }
+//                print("message: \(message.text), groupedMessages.last?.messages.last?: \(groupedMessages.last?.messages[index - 2].text)")
+//            } else {
+//                print("LEFT OUT")
+//            }
+            
             //groupedMessages.last?.messages.first?.isFirstInSection.value = true
+            
             collectionView.performBatchUpdates({
                     collectionView.insertSections([insertionIndex])
             }) { (isCompleted) in
                 self.performAdditionalUpdates(reference: reference)
             }
         } else {
+            print("no new section")
             guard let indexPath = Message.get(indexPathOf: message, in: groupedMessages) else { try! self.realm.commitWrite(); return }
-            if let isInfo = message.isInformationMessage.value, !isInfo {
+            if message.isInformationMessage.value == nil || !(message.isInformationMessage.value ?? false) {
+                print("not info")
                 groupedMessages.last?.messages.last?.isCrooked.value = true
                 
-                if let index = groupedMessages.last?.messages.count, index > 1 {
-                    if groupedMessages.last?.messages[index - 2].fromId != groupedMessages.last?.messages.last?.fromId {
-                        groupedMessages.last?.messages.last?.isFirstInSection.value = true
-                    } else {
-                        groupedMessages.last?.messages[index - 2].isCrooked.value = false
-                    }
-                    print("message: \(message.text), groupedMessages.last?.messages.last?: \(groupedMessages.last?.messages[index - 2].text)")
-                }
+//                if let index = groupedMessages.last?.messages.count, index > 1 {
+//                    if groupedMessages.last?.messages[index - 2].fromId != groupedMessages.last?.messages.last?.fromId {
+//                        groupedMessages.last?.messages.last?.isFirstInSection.value = true
+//                    } else {
+//                        groupedMessages.last?.messages[index - 2].isCrooked.value = false
+//                    }
+//                    print("message: \(message.text), groupedMessages.last?.messages.last?: \(groupedMessages.last?.messages[index - 2].text)")
+//                } else {
+//                    print("LEFT OUT")
+//                }
             }
             
 //            if let i = groupedMessages.last?.messages.count, i > 1 {

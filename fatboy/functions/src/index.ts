@@ -100,28 +100,29 @@ exports.addMessageReferenceToParticipantsOnMessageCreation = functions.firestore
 .onCreate((snapshot, context) => {
    const messageId: string = context.params['messageId']
 
-   if (snapshot.exists) {
+    if (snapshot.exists) {
        const messageData = snapshot.data()
        const channelId = messageData['toId']
        const timestamp = messageData['timestamp']
        const fromId = messageData['fromId']
 
-       return admin
-       .firestore()
-       .collection(constants.CHANNELS_COLLECTION + '/'+ channelId + '/participantIds')
-       .get()
-       .then(participantSnapshot => {
-           if (!participantSnapshot.empty) {
-               const batch = admin.firestore().batch()
-               const members = participantSnapshot.docs
+        admin
+        .firestore()
+        .collection(constants.CHANNELS_COLLECTION).doc(channelId).collection('participantIds')
+        .get()
+        .then(participantSnapshot => {
+            if (!participantSnapshot.empty) {
+                const batch = admin.firestore().batch()
+                const members = participantSnapshot.docs
 
-               members.forEach(member => {
-                   if (member.id !== fromId) {
-                        const userChannelReference = admin.firestore().collection(constants.USERS_COLLECTION ).doc(member.id).collection('channelIds').doc(channelId)
+                members.forEach(member => {
+                    if (member.id !== fromId) {
+                        LOGGER.log('writing for id: ', member.id)
+                        const userChannelReference = admin.firestore().collection(constants.USERS_COLLECTION).doc(member.id).collection('channelIds').doc(channelId)
                         batch.set((
-                           userChannelReference
-                           .collection('messageIds')
-                           .doc(messageId)
+                        userChannelReference
+                        .collection('messageIds')
+                        .doc(messageId)
                         ), {
                             'fromId': fromId,
                             'timestamp': timestamp,
@@ -132,23 +133,23 @@ exports.addMessageReferenceToParticipantsOnMessageCreation = functions.firestore
                         ), {
                             'lastMessageId': messageId,
                         }, { merge: true })
-                   }
-               })
+                    }
+                })
 
-               try {
-                   return batch.commit()
-                   .then(() => { LOGGER.log('SUCCESS setting id for each user') })
-                   .catch((err) => { LOGGER.error(err) })
-               } catch (err) {
-                   LOGGER.error(err)
-                   return null
-               }
-           }
-           return null
-       })
-       .catch((error) => { functions.logger.error('Error sending message // ', error) })
-   }
-   return null
+                try {
+                    return batch.commit()
+                    .then(() => { LOGGER.log('SUCCESS setting id for each user') })
+                    .catch((err) => { LOGGER.error(err) })
+                } catch (err) {
+                    LOGGER.error(err)
+                    return null
+                }
+            }
+            return null
+        })
+        .catch((error) => { functions.logger.error('Error sending message // ', error) })
+    }
+    return null
 
 })
 

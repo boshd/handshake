@@ -74,7 +74,7 @@ class IncomingMessageCell: BaseMessageCell {
         if let isFirst = message.isFirstInSection.value, isFirst {
 //            bubbleView.frame.origin = BaseMessageCell.incomingFirstBubbleOrigin
             bubbleView.frame.origin = CGPoint(x: 20 + CGFloat(BaseMessageCell.userImageViewWidth), y: BaseMessageCell.incomingMessageAuthorNameLabelHeight)
-            
+
             nameLabel.text = message.senderName ?? ""
             nameLabel.sizeToFit()
         } else {
@@ -97,13 +97,15 @@ class IncomingMessageCell: BaseMessageCell {
         userImageView.frame.origin = CGPoint(x: 10, y: bubbleView.frame.height - CGFloat(BaseMessageCell.userImageViewHeight))
         
         if let isCrooked = message.isCrooked.value, isCrooked {
+//            bubbleView.backgroundColor = .red
+            print("SHOULD BE RED")
             if RealmKeychain.realmUsersArray().map({ $0.id }).contains(message.fromId) {
                 guard let url = RealmKeychain.realmUsersArray().first(where: { $0.id == message.fromId })?.userThumbnailImageUrl else { return }
                 userImageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "UserpicIcon"), options: [.scaleDownLargeImages, .continueInBackground, .avoidAutoSetImage], completed: { [weak self] (image, _, cacheType, _) in
                     guard image != nil else { return }
-                    
-                    
-                    
+
+
+
                     guard cacheType != SDImageCacheType.memory, cacheType != SDImageCacheType.disk else {
                         self?.userImageView.image = image
                         return
@@ -114,7 +116,7 @@ class IncomingMessageCell: BaseMessageCell {
                                       options: .transitionCrossDissolve,
                                       animations: { self?.userImageView.image = image },
                                       completion: nil)
-                    
+
 
                 })
             }

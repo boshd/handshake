@@ -113,6 +113,7 @@ extension ChannelLogController: UICollectionViewDelegateFlowLayout, UICollection
     fileprivate func selectCell(for indexPath: IndexPath, isGroupChat: Bool) -> UICollectionViewCell? {
         
         let message = groupedMessages[indexPath.section].messages[indexPath.row]
+        
         let isTextMessage = message.text != nil
         let isOutgoingMessage = message.fromId == Auth.auth().currentUser?.uid
         let isInformationMessage = message.isInformationMessage.value ?? false
@@ -162,6 +163,11 @@ extension ChannelLogController: UICollectionViewDelegateFlowLayout, UICollection
         guard indexPath.section != groupedMessages.count else { return CGSize(width: collectionView.frame.width, height: 40) }
         let cellHeight: CGFloat = 80
         let message = groupedMessages[indexPath.section].messages[indexPath.item]
+        
+
+        
+        
+        
         let isInformationMessage = message.isInformationMessage.value ?? false
         let isTextMessage = message.text != nil && !isInformationMessage
         let isOutgoingMessage = message.fromId == Auth.auth().currentUser?.uid
