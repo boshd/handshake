@@ -35,7 +35,7 @@ struct MessageFontsAppearance {
     }
 
     static var defaultMessageAuthorNameFont: UIFont {
-        return ThemeManager.currentTheme().secondaryFont(with: 13)
+        return ThemeManager.currentTheme().secondaryFont(with: 12)
     }
     
     static var defaultDeliveryStatusTextFont: UIFont {
@@ -81,7 +81,7 @@ class BaseMessageCell: UICollectionViewCell {
     static let incomingBubbleOrigin = CGPoint(x: 20 + userImageViewWidth, y: 0)
     static let incomingFirstBubbleOrigin = CGPoint(x: 20 + userImageViewWidth, y: 0)
     static let incomingUserImageViewOrigin = CGPoint(x: 12, y: 20)
-    static let incomingFirstNameLabelOrigin = CGPoint(x: 30 + userImageViewWidth, y: 8)
+    static let incomingFirstNameLabelOrigin = CGPoint(x: 30 + userImageViewWidth, y: 7)
     
     static let textMessageInsets = incomingTextViewTopInset + textViewBottomInset
     static let textFirstMessageInsets = incomingFirstTextViewTopInset + textViewBottomInset
@@ -90,17 +90,25 @@ class BaseMessageCell: UICollectionViewCell {
     
     static let messageTextSize: CGFloat = 13
     
-    lazy var bubbleView: UIView = {
-        let view = UIView()
-        view.isUserInteractionEnabled = true
-        view.layer.cornerRadius = 17
-        view.layer.cornerCurve = .continuous
-//        view.layer.shadowColor = UIColor.black.cgColor
-//        view.layer.shadowOpacity = 0.2
-//        view.layer.shadowRadius = 1
-//        view.layer.shadowOffset = CGSize(width: -0.5, height: 0.5)
-        
-        return view
+//    lazy var bubbleView: UIView = {
+//        let view = UIView()
+//        view.isUserInteractionEnabled = true
+//        view.layer.cornerRadius = 17
+//        view.layer.cornerCurve = .continuous
+////        view.layer.shadowColor = UIColor.black.cgColor
+////        view.layer.shadowOpacity = 0.2
+////        view.layer.shadowRadius = 1
+////        view.layer.shadowOffset = CGSize(width: -0.5, height: 0.5)
+//
+//        return view
+//    }()
+//
+    
+    lazy var bubbleView: UIImageView = {
+        let bubbleView = UIImageView()
+        bubbleView.isUserInteractionEnabled = true
+
+        return bubbleView
     }()
     
     lazy var resendButton: UIButton = {
@@ -120,7 +128,7 @@ class BaseMessageCell: UICollectionViewCell {
         label.frame.size.height = BaseMessageCell.incomingMessageAuthorNameLabelHeight
         //label.frame.origin = CGPoint(x: BaseMessageCell.incomingMessageAuthorNameLeftInset, y: BaseMessageCell.textViewTopInset)
         label.frame.origin = BaseMessageCell.incomingFirstNameLabelOrigin
-
+        label.clipsToBounds = false
         return label
     }()
 
@@ -191,6 +199,7 @@ class BaseMessageCell: UICollectionViewCell {
         timeLabel.backgroundColor = .clear
         backgroundColor = .clear
         contentView.backgroundColor = .clear
+        bubbleView.image = nil
     }
 
     override func prepareForReuse() {

@@ -20,6 +20,14 @@ class ContactsDetailController: UITableViewController {
     var contactPhoto: UIImage!
     var contactPhoneNumbers = [CNLabeledValue<CNPhoneNumber>]()
 
+    override init(style: UITableView.Style) {
+        super.init(style: .insetGrouped)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = contactName
@@ -62,7 +70,7 @@ class ContactsDetailController: UITableViewController {
             let contact = contactPhoneNumbers[indexPath.row]
             cell.configureCell(contact: contact)
         } else {
-            cell.textLabel?.textColor = view.tintColor
+            cell.textLabel?.textColor = ThemeManager.currentTheme().tintColor
             cell.textLabel?.font = ThemeManager.currentTheme().secondaryFontBold(with: 20)
             cell.textLabel?.text = "Invite to Handshake 🙌"
         }

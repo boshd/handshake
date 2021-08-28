@@ -38,7 +38,7 @@ class OutgoingMessageCell: BaseMessageCell {
         addSubview(resendButton)
         timeLabel.backgroundColor = .clear
         timeLabel.textColor = ThemeManager.currentTheme().outgoingTimestampTextColor
-        bubbleView.backgroundColor = ThemeManager.currentTheme().outgoingMessageBackgroundColor
+        bubbleView.tintColor = ThemeManager.currentTheme().outgoingMessageBackgroundColor
         //bubbleView.tintColor = ThemeManager.currentTheme().outgoingBubbleTintColor
     }
     
@@ -51,7 +51,11 @@ class OutgoingMessageCell: BaseMessageCell {
         textView.frame.size = CGSize(width: bubbleView.frame.width, height: bubbleView.frame.height)
         timeLabel.frame.origin = CGPoint(x: bubbleView.frame.width-timeLabel.frame.width, y: bubbleView.frame.height-timeLabel.frame.height-5)
 
-        // bubbleView.image = ThemeManager.currentTheme().outgoingPartialBubble
+        if let isCrooked = message.isCrooked.value, isCrooked {
+            bubbleView.image = ThemeManager.currentTheme().outgoingBubble
+        } else {
+            bubbleView.image = ThemeManager.currentTheme().outgoingPartialBubble
+        }
     }
     
     fileprivate func setupBubbleViewFrame(message: Message) -> CGRect {
@@ -74,7 +78,7 @@ class OutgoingMessageCell: BaseMessageCell {
         timeLabel.textColor = ThemeManager.currentTheme().outgoingTimestampTextColor
         textView.textColor = ThemeManager.currentTheme().outgoingMessageCellTextColor
         textView.backgroundColor = .clear
-        bubbleView.backgroundColor = ThemeManager.currentTheme().outgoingMessageBackgroundColor
+        bubbleView.tintColor = ThemeManager.currentTheme().outgoingMessageBackgroundColor
         
     }
     

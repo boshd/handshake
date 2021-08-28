@@ -21,7 +21,7 @@ class BottomScrollContainer: UIView {
         scrollButton.layer.shadowOffset = CGSize(width: 0, height: 4)
         scrollButton.setImage(UIImage(named: "arrowDownWhite")?.withRenderingMode(.alwaysTemplate), for: .normal)
         scrollButton.backgroundColor = ThemeManager.currentTheme().instantScrollButtonBackgroundColor
-        scrollButton.tintColor = .white
+        scrollButton.tintColor = ThemeManager.currentTheme().tintColor
         
         scrollButton.imageView?.contentMode = .scaleAspectFit
         scrollButton.contentMode = .center
@@ -37,7 +37,7 @@ class BottomScrollContainer: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         changeTheme()
-        NotificationCenter.default.addObserver(self, selector: #selector(changeTheme), name: .themeUpdated, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(changeTheme), name: .themeUpdated, object: nil)
 
         addSubview(scrollButton)
 //        scrollButton.layer.cornerRadius = 22.5
@@ -55,7 +55,8 @@ class BottomScrollContainer: UIView {
         NotificationCenter.default.removeObserver(self)
     }
 
-    @objc fileprivate func changeTheme() {
-//        scrollButton.backgroundColor = .offBlack()
+    func changeTheme() {
+        scrollButton.backgroundColor = ThemeManager.currentTheme().instantScrollButtonBackgroundColor
+        scrollButton.tintColor = ThemeManager.currentTheme().tintColor
     }
 }

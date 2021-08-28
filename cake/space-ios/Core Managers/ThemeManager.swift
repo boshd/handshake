@@ -138,6 +138,44 @@ enum Theme: Int {
         return UIFont(name: "PlayfairDisplay-BoldItalic", size: fontSize)!
     }
     
+    var incomingBubble: UIImage {
+      switch self {
+      case .normal:
+        return UIImage(named: "FMIncomingFull")!.stretchableImage(withLeftCapWidth: 23, topCapHeight: 16).withRenderingMode(.alwaysTemplate)
+      case .dark:
+        return UIImage(named: "FMIncomingFull")!.stretchableImage(withLeftCapWidth: 23, topCapHeight: 16).withRenderingMode(.alwaysTemplate)
+        
+      }
+    }
+    
+    var incomingPartialBubble: UIImage {
+      switch self {
+        case .normal:
+        return UIImage(named: "partialDefaultIncoming")!.stretchableImage(withLeftCapWidth: 23, topCapHeight: 16).withRenderingMode(.alwaysTemplate)
+      case .dark:
+        return UIImage(named: "partialDefaultIncoming")!.stretchableImage(withLeftCapWidth: 23, topCapHeight: 16).withRenderingMode(.alwaysTemplate)
+      }
+
+    }
+    
+    var outgoingBubble: UIImage {
+      switch self {
+      case .normal:
+        return UIImage(named: "FMOutgoingFull")!.stretchableImage(withLeftCapWidth: 17, topCapHeight: 16).withRenderingMode(.alwaysTemplate)
+      case .dark:
+        return UIImage(named: "FMOutgoingFull")!.stretchableImage(withLeftCapWidth: 17, topCapHeight: 16).withRenderingMode(.alwaysTemplate)
+      }
+    }
+    
+    var outgoingPartialBubble: UIImage {
+      switch self {
+      case .normal:
+        return UIImage(named: "partialDefaultOutgoing")!.stretchableImage(withLeftCapWidth: 17, topCapHeight: 16).withRenderingMode(.alwaysTemplate)
+      case .dark:
+        return UIImage(named: "partialDefaultOutgoing")!.stretchableImage(withLeftCapWidth: 17, topCapHeight: 16).withRenderingMode(.alwaysTemplate)
+      }
+    }
+    
     var generalOverrideUserInterfaceStyle: UIUserInterfaceStyle {
         switch self {
             case .normal:
@@ -159,9 +197,9 @@ enum Theme: Int {
     var instantScrollButtonBackgroundColor: UIColor {
         switch self {
             case .normal:
-                return .handshakeLightPurple
+                return .handshakeSecondaryLight
             case .dark:
-                return .handshakeLightPurple
+                return .handshakeSecondaryDark
         }
     }
     

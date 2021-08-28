@@ -38,6 +38,12 @@ class UpdateChannelController: CreateChannelController {
         }
     }
     
+    override var endTime: Int64? {
+        didSet {
+            checkDifference()
+        }
+    }
+    
     // overriden vars
     override var newChannel: Channel? {
         didSet {
@@ -120,8 +126,8 @@ class UpdateChannelController: CreateChannelController {
         if let startTime = channel.startTime.value, let endTime = channel.endTime.value {
             self.startTime = startTime
             self.endTime = endTime
-            self.startDate = Date(timeIntervalSince1970: TimeInterval(startTime))
-            self.endDate = Date(timeIntervalSince1970: TimeInterval(endTime))
+            self.startDateLocal = Date(timeIntervalSince1970: TimeInterval(startTime))
+            self.endDateLocal = Date(timeIntervalSince1970: TimeInterval(endTime))
         }
         
     }
@@ -133,6 +139,7 @@ class UpdateChannelController: CreateChannelController {
             channel.name != channelName ||
             channel.description_ != channelDescription ||
             channel.startTime.value != startTime ||
+            channel.endTime.value != endTime ||
             channel.latitude.value != locationCoordinates?.0 ||
             channel.longitude.value != locationCoordinates?.1 ||
             channel.locationName != locationName ||

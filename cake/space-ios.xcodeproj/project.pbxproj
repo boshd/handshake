@@ -126,6 +126,7 @@
 		BC49305C253A194200441F62 /* ContactsTableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC49305B253A194200441F62 /* ContactsTableViewHeader.swift */; };
 		BC493C4C25AA2C1E006E5C99 /* InteractiveButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC493C4B25AA2C1E006E5C99 /* InteractiveButton.swift */; };
 		BC493C5125AA34C1006E5C99 /* InteractiveTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC493C5025AA34C1006E5C99 /* InteractiveTableViewCell.swift */; };
+		BC4A351E26DA59280048F513 /* ChannelLogController+ProfileOpening.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4A351D26DA59280048F513 /* ChannelLogController+ProfileOpening.swift */; };
 		BC4C95EF23752223000579F4 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4C95EE23752223000579F4 /* ThemeManager.swift */; };
 		BC4F145125B8B9FE00490ACC /* SetupMeetingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4F145025B8B9FE00490ACC /* SetupMeetingController.swift */; };
 		BC4F145925B8BB5A00490ACC /* ServiceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4F145825B8BB5A00490ACC /* ServiceCell.swift */; };
@@ -511,6 +512,7 @@
 		BC49305B253A194200441F62 /* ContactsTableViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsTableViewHeader.swift; sourceTree = "<group>"; };
 		BC493C4B25AA2C1E006E5C99 /* InteractiveButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveButton.swift; sourceTree = "<group>"; };
 		BC493C5025AA34C1006E5C99 /* InteractiveTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveTableViewCell.swift; sourceTree = "<group>"; };
+		BC4A351D26DA59280048F513 /* ChannelLogController+ProfileOpening.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelLogController+ProfileOpening.swift"; sourceTree = "<group>"; };
 		BC4C95EE23752223000579F4 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		BC4F145025B8B9FE00490ACC /* SetupMeetingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupMeetingController.swift; sourceTree = "<group>"; };
 		BC4F145825B8BB5A00490ACC /* ServiceCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCell.swift; sourceTree = "<group>"; };
@@ -1318,6 +1320,7 @@
 			isa = PBXGroup;
 			children = (
 				BC166B5226A9B06B00A159EB /* ChannelLogController+Keyboard.swift */,
+				BC4A351D26DA59280048F513 /* ChannelLogController+ProfileOpening.swift */,
 				BC166B5626A9EE3300A159EB /* ChannelLogController+Theming.swift */,
 				BCC8E4C226AE0DE1004B5170 /* ChannelLogController+TypingIndicator.swift */,
 				BCC8E4BE26AE0D34004B5170 /* ChannelLogController+MessageSending.swift */,
@@ -2352,6 +2355,7 @@
 				BC5BAFD225A24F1B00996DCB /* ActionSheetContainerView.swift in Sources */,
 				BCB027E7256845A90082B318 /* AppearanceTextSizeTableViewCell.swift in Sources */,
 				BCCF551926209A2D00AFBF7C /* BubbleCircle.swift in Sources */,
+				BC4A351E26DA59280048F513 /* ChannelLogController+ProfileOpening.swift in Sources */,
 				BC5C499725475064007AF964 /* ChannelController+ChannelUpdatesDelegate.swift in Sources */,
 				BCDE18652558220000A64499 /* ParticipantsController+SelectedUsersDelegate.swift in Sources */,
 				BC8C118025BB38E9000CBD25 /* UpdateChannelController+DatePicker.swift in Sources */,

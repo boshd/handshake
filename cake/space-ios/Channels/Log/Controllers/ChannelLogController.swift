@@ -42,7 +42,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     var first = true
     let typingIndicatorDatabaseID = "typingIndicator"
     let typingIndicatorStateDatabaseKeyID = "Is typing"
-    let messagesToLoad = 5
+    let messagesToLoad = 50
     var isChannelLogHeaderShowing = false
     var shouldAnimateKeyboardChanges = false
     private var shouldScrollToBottom: Bool = true
@@ -50,7 +50,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     public var isDismissingInteractively = false
     public var hasAppearedAndHasAppliedFirstLoad = false
     public var canRefresh = true
-    public var isKeyboardInitial = true
+    public var isKeyboardShowing = true
     
     var groupedMessages = [MessageSection]()
     var typingIndicatorSection: [String] = []
@@ -173,7 +173,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         collectionView.isUserInteractionEnabled = true
         collectionView.allowsSelection = false
         collectionView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
-        
+        collectionView.contentInset.top = 75
         return collectionView
     }()
 
@@ -318,7 +318,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        isKeyboardInitial = true
+//        isKeyboardInitial = true
         if let viewControllers = self.navigationController?.viewControllers {
             if viewControllers.count > 1 && viewControllers[viewControllers.count-2] == self {
                 // do nothing

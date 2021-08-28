@@ -29,7 +29,7 @@ class MessagesFetcher: NSObject {
     
     var userMessagesReference: Query!
 
-    private let messagesToLoad = 5
+    private let messagesToLoad = 50
 
     weak var delegate: MessagesDelegate?
 

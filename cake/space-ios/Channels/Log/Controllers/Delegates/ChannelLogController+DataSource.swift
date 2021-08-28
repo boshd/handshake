@@ -136,6 +136,7 @@ extension ChannelLogController: UICollectionViewDelegateFlowLayout, UICollection
                     cell.channelLogController = self
                     cell.setupData(message: message)
                     cell.contentView.isUserInteractionEnabled = true
+                    cell.delegate = self
                     return cell
             }
         }

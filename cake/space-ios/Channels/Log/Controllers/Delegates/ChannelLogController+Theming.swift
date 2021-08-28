@@ -30,6 +30,7 @@ extension ChannelLogController {
             ThemeManager.setNavigationBarAppearance(navigationBar)
         }
         channelLogContainerView.channelLogHeaderView.setColors()
+        bottomScrollConainer.changeTheme()
 //        channelLogContainerView.inputViewContainer.blurEffectView = UIVisualEffectView(effect: ThemeManager.currentTheme().tabBarBlurEffect)
 //        channelLogContainerView.inputViewContainer.backgroundColor = ThemeManager.currentTheme().inputBarContainerViewBackgroundColor
         inputContainerView.inputTextView.changeTheme()

@@ -27,8 +27,14 @@ extension UserCell {
             textLabel?.text = "You"
         } else {
             
-            if let localName = users[indexPath.row].localName {
-                textLabel?.text = localName
+            if let name = RealmKeychain.realmUsersArray().first(where: {$0.id == users[indexPath.row].id})?.localName {
+                textLabel?.text = name
+            } else if let name = RealmKeychain.realmUsersArray().first(where: {$0.id == users[indexPath.row].id})?.name {
+                textLabel?.text = name
+            } else if let name = RealmKeychain.realmNonLocalUsersArray().first(where: {$0.id == users[indexPath.row].id})?.localName {
+                textLabel?.text = name
+            } else if let name = RealmKeychain.realmNonLocalUsersArray().first(where: {$0.id == users[indexPath.row].id})?.name {
+                textLabel?.text = name
             } else {
                 let username = users[indexPath.row].name
                 let phoneNumber = users[indexPath.row].phoneNumber

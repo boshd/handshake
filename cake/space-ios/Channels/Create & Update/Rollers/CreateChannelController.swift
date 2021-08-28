@@ -50,8 +50,8 @@ class CreateChannelController: UITableViewController {
     }
     
     // for local use
-    var startDate: Date?
-    var endDate: Date?
+    var startDateLocal: Date?
+    var endDateLocal: Date?
     
     var selectedUsers = [User]()
     
@@ -149,9 +149,12 @@ class CreateChannelController: UITableViewController {
         dateFormatter.dateFormat = "MMMM d, yyyy"
         timeFormatter.dateFormat = "h:mm a"
         
-        let nearestHour = Date().nearestHour()
-        startTime = Int64(nearestHour.timeIntervalSince1970)
-        endTime = Int64(nearestHour.nextHour.timeIntervalSince1970)
+        if startTime == nil && endTime == nil {
+            print("they nil")
+            let nearestHour = Date().nearestHour()
+            startTime = Int64(nearestHour.timeIntervalSince1970)
+            endTime = Int64(nearestHour.nextHour.timeIntervalSince1970)
+        }
     }
     
     func addObservers() {
@@ -470,9 +473,10 @@ extension CreateChannelController {
 extension CreateChannelController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
+        // redundant check, for peace of mind
         if let startTime = startTime, let endTime = endTime {
-            startDate = Date(timeIntervalSince1970: TimeInterval(startTime))
-            endDate = Date(timeIntervalSince1970: TimeInterval(endTime))
+            startDateLocal = Date(timeIntervalSince1970: TimeInterval(startTime))
+            endDateLocal = Date(timeIntervalSince1970: TimeInterval(endTime))
         }
         
         if indexPath.section == 0 {
@@ -508,17 +512,13 @@ extension CreateChannelController {
                 return cell
             }
         } else if indexPath.section == 2 {
-            
-            
-//            let datePickerCell = tableView.dequeueReusableCell(withIdentifier: datePickerCellId, for: indexPath) as? DatePickerCell ?? DatePickerCell()
-            
             if indexPath.row == 0 {
                 // first line, always there, always same
                 let cell = tableView.dequeueReusableCell(withIdentifier: dateCellId, for: indexPath) as? DateCell ?? DateCell()
-                cell.textLabel?.text = indexPath.row == 0 ? thirdSection[0] : thirdSection[1]
-                if let startDate = startDate {
-                    cell.dateLabel.text = dateFormatter.string(from: startDate)
-                    cell.timeLabel.text = timeFormatter.string(from: startDate)
+                cell.textLabel?.text = thirdSection[0]
+                if let startDateLocal = startDateLocal {
+                    cell.dateLabel.text = dateFormatter.string(from: startDateLocal)
+                    cell.timeLabel.text = timeFormatter.string(from: startDateLocal)
                 }
                 return cell
             } else {
@@ -530,14 +530,17 @@ extension CreateChannelController {
                         // second row, picker
                         let cell = tableView.dequeueReusableCell(withIdentifier: datePickerCellId, for: indexPath) as? DatePickerCell ?? DatePickerCell()
                         cell.delegate = self
+                        if let startDateLocal = startDateLocal {
+                            cell.datePicker.date = startDateLocal
+                        }
                         return cell
                     } else {
                         // third row, end date cell
                         let cell = tableView.dequeueReusableCell(withIdentifier: dateCellId, for: indexPath) as? DateCell ?? DateCell()
                         cell.textLabel?.text = indexPath.row == 0 ? thirdSection[0] : thirdSection[1]
-                        if let endDate = endDate {
-                            cell.dateLabel.text = dateFormatter.string(from: endDate)
-                            cell.timeLabel.text = timeFormatter.string(from: endDate)
+                        if let endDateLocal = endDateLocal {
+                            cell.dateLabel.text = dateFormatter.string(from: endDateLocal)
+                            cell.timeLabel.text = timeFormatter.string(from: endDateLocal)
                         }
                         return cell
                     }
@@ -549,16 +552,19 @@ extension CreateChannelController {
                         // second row, end date cell
                         let cell = tableView.dequeueReusableCell(withIdentifier: dateCellId, for: indexPath) as? DateCell ?? DateCell()
                         cell.textLabel?.text = indexPath.row == 0 ? thirdSection[0] : thirdSection[1]
-                        if let endDate = endDate {
-                            cell.dateLabel.text = dateFormatter.string(from: endDate)
-                            cell.timeLabel.text = timeFormatter.string(from: endDate)
+                        if let endDateLocal = endDateLocal {
+                            cell.dateLabel.text = dateFormatter.string(from: endDateLocal)
+                            cell.timeLabel.text = timeFormatter.string(from: endDateLocal)
                         }
                         return cell
                     } else {
                         // third row, picker
                         let cell = tableView.dequeueReusableCell(withIdentifier: datePickerCellId, for: indexPath) as? DatePickerCell ?? DatePickerCell()
-                        if let startDate = startDate {
-                            cell.datePicker.minimumDate = startDate
+                        if let endDateLocal = endDateLocal {
+                            cell.datePicker.date = endDateLocal
+                        }
+                        if let startDateLocal = startDateLocal {
+                            cell.datePicker.minimumDate = startDateLocal
                         }
                         cell.delegate = self
                         return cell
@@ -571,11 +577,11 @@ extension CreateChannelController {
                     
                     let cell = tableView.dequeueReusableCell(withIdentifier: dateCellId, for: indexPath) as? DateCell ?? DateCell()
                     cell.textLabel?.text = indexPath.row == 0 ? thirdSection[0] : thirdSection[1]
-                    if let endDate = endDate, let startDate = startDate {
-                        let startDateString = dateFormatter.string(from: startDate)
-                        let endDateString = dateFormatter.string(from: endDate)
-                        cell.dateLabel.text = startDateString == endDateString ? "" : dateFormatter.string(from: endDate)
-                        cell.timeLabel.text = timeFormatter.string(from: endDate)
+                    if let endDateLocal = endDateLocal, let startDateLocal = startDateLocal {
+                        let startDateString = dateFormatter.string(from: startDateLocal)
+                        let endDateString = dateFormatter.string(from: endDateLocal)
+                        cell.dateLabel.text = startDateString == endDateString ? "" : dateFormatter.string(from: endDateLocal)
+                        cell.timeLabel.text = timeFormatter.string(from: endDateLocal)
                         
                     }
                     return cell

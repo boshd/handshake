@@ -10,7 +10,15 @@ import UIKit
 import SafariServices
 import SDWebImage
 
+protocol ProfileOpeningDelegate: class {
+    func openProfile(fromId: String)
+}
+
 class IncomingMessageCell: BaseMessageCell {
+    
+    weak var delegate: ProfileOpeningDelegate?
+    
+    var fromId: String?
     
     lazy var textView: MessageTextView = {
         let textView = MessageTextView()
@@ -52,7 +60,7 @@ class IncomingMessageCell: BaseMessageCell {
         
         timeLabel.backgroundColor = .clear
         timeLabel.textColor = ThemeManager.currentTheme().incomingTimestampTextColor
-        bubbleView.backgroundColor = ThemeManager.currentTheme().incomingMessageBackgroundColor
+        bubbleView.tintColor = ThemeManager.currentTheme().incomingMessageBackgroundColor
         //bubbleView.tintColor = ThemeManager.currentTheme().incomingBubbleTintColor
     }
 
@@ -65,11 +73,15 @@ class IncomingMessageCell: BaseMessageCell {
         bubbleView.frame.origin = BaseMessageCell.incomingBubbleOrigin
         timeLabel.backgroundColor = .clear
         timeLabel.textColor = ThemeManager.currentTheme().incomingTimestampTextColor
-        bubbleView.backgroundColor = ThemeManager.currentTheme().incomingMessageBackgroundColor
+//        bubbleView.backgroundColor = ThemeManager.currentTheme().incomingMessageBackgroundColor
+        bubbleView.tintColor = ThemeManager.currentTheme().incomingMessageBackgroundColor
     }
 
     func setupData(message: Message) {
         guard let messageText = message.text else { return }
+        
+        fromId = message.fromId
+        print("FROM ID IS \(fromId)")
         
         if let isFirst = message.isFirstInSection.value, isFirst {
 //            bubbleView.frame.origin = BaseMessageCell.incomingFirstBubbleOrigin
@@ -77,6 +89,15 @@ class IncomingMessageCell: BaseMessageCell {
 
             nameLabel.text = message.senderName ?? ""
             nameLabel.sizeToFit()
+            
+            if let name = RealmKeychain.realmUsersArray().first(where: { $0.id == message.fromId })?.localName {
+                nameLabel.text = name
+            } else if let name = RealmKeychain.realmUsersArray().first(where: { $0.id == message.fromId })?.name {
+                nameLabel.text = name
+            } else {
+                nameLabel.text = message.senderName ?? ""
+            }
+            
         } else {
             bubbleView.frame.origin = BaseMessageCell.incomingBubbleOrigin
         }
@@ -97,6 +118,7 @@ class IncomingMessageCell: BaseMessageCell {
         userImageView.frame.origin = CGPoint(x: 10, y: bubbleView.frame.height - CGFloat(BaseMessageCell.userImageViewHeight))
         
         if let isCrooked = message.isCrooked.value, isCrooked {
+            bubbleView.image = ThemeManager.currentTheme().incomingBubble
 //            bubbleView.backgroundColor = .red
             print("SHOULD BE RED")
             if RealmKeychain.realmUsersArray().map({ $0.id }).contains(message.fromId) {
@@ -104,7 +126,10 @@ class IncomingMessageCell: BaseMessageCell {
                 userImageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "UserpicIcon"), options: [.scaleDownLargeImages, .continueInBackground, .avoidAutoSetImage], completed: { [weak self] (image, _, cacheType, _) in
                     guard image != nil else { return }
 
-
+                    
+                    let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self?.imageTapped(tapGestureRecognizer:)))
+                    self?.userImageView.isUserInteractionEnabled = true
+                    self?.userImageView.addGestureRecognizer(tapGestureRecognizer)
 
                     guard cacheType != SDImageCacheType.memory, cacheType != SDImageCacheType.disk else {
                         self?.userImageView.image = image
@@ -116,13 +141,28 @@ class IncomingMessageCell: BaseMessageCell {
                                       options: .transitionCrossDissolve,
                                       animations: { self?.userImageView.image = image },
                                       completion: nil)
-
-
                 })
             }
+        } else {
+            bubbleView.image = ThemeManager.currentTheme().incomingPartialBubble
         }
         
         
+    }
+    
+    @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer)
+    {
+        let tappedImage = tapGestureRecognizer.view as! UIImageView
+        
+        print("RECOGNIZED")
+        
+        if let fromId = fromId {
+            delegate?.openProfile(fromId: fromId)
+        }
+        
+        
+        
+        // Your action
     }
     
     fileprivate func setupGroupBubbleViewSize(message: Message) -> CGSize {

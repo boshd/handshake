@@ -109,7 +109,7 @@ public class InputAccessoryViewPlaceholder: UIView {
         return NSLayoutConstraint()
     }()
 
-    private enum KeyboardState: CustomStringConvertible {
+    enum KeyboardState: CustomStringConvertible {
         case dismissed
         case dismissing
         case presented
@@ -128,7 +128,7 @@ public class InputAccessoryViewPlaceholder: UIView {
             }
         }
     }
-    private var keyboardState: KeyboardState = .dismissed
+    var keyboardState: KeyboardState = .dismissed
 
     public init() {
         super.init(frame: .zero)

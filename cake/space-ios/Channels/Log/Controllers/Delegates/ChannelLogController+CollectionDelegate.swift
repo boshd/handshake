@@ -81,6 +81,7 @@ extension ChannelLogController: CollectionDelegate {
             groupedMessages.insert(newSection, at: insertionIndex)
             
             groupedMessages.last?.messages.last?.isCrooked.value = true
+            groupedMessages.last?.messages.last?.isFirstInSection.value = true
             
 //            if let index = groupedMessages.last?.messages.count, index > 1 {
 //                if groupedMessages.last?.messages[index - 2].fromId != groupedMessages.last?.messages.last?.fromId {
@@ -109,7 +110,7 @@ extension ChannelLogController: CollectionDelegate {
             if message.isInformationMessage.value == nil || !(message.isInformationMessage.value ?? false) {
                 print("not info")
                 groupedMessages.last?.messages.last?.isCrooked.value = true
-                
+                groupedMessages.last?.messages.last?.isFirstInSection.value = true
 //                if let index = groupedMessages.last?.messages.count, index > 1 {
 //                    if groupedMessages.last?.messages[index - 2].fromId != groupedMessages.last?.messages.last?.fromId {
 //                        groupedMessages.last?.messages.last?.isFirstInSection.value = true

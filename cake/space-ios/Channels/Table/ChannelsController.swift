@@ -171,6 +171,8 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
     }
     
     fileprivate func configureNavigationBar() {
+//        addBlurEffect()
+        
         navigationItem.title = "Events"
         if #available(iOS 11.0, *) {
              navigationController?.navigationBar.prefersLargeTitles = true

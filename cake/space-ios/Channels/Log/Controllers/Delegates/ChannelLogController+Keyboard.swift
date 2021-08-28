@@ -16,32 +16,41 @@ extension ChannelLogController: InputAccessoryViewPlaceholderDelegate {
     }
 
     func inputAccessoryPlaceholderKeyboardIsPresenting(animationDuration: TimeInterval, animationCurve: UIView.AnimationCurve, beginFrame: CGRect, endFrame: CGRect) {
+//        animateHeaderView(collapsed: true)
         adjustContentForKeyboard(animationDuration: animationDuration, animationCurve: animationCurve, beginFrame: beginFrame, endFrame: endFrame, shown: true)
     }
     
     
     
     func inputAccessoryPlaceholderKeyboardDidPresent() {
-        if isKeyboardInitial {
-            isKeyboardInitial = false
-            collectionView.contentInset.top = 75
-            UIView.performWithoutAnimation {
-                self.view.layoutIfNeeded()
-            }
-            return
-        }
-        animateHeaderView(collapsed: true)
+//        if isKeyboardInitial {
+//            isKeyboardInitial = false
+//            collectionView.contentInset.top = 75
+//            UIView.performWithoutAnimation {
+//                self.view.layoutIfNeeded()
+//            }
+//            return
+//        }
+    
+//        if inputAccessoryPlaceholder == !inputAccessoryPlaceholder.Key
+    
+        
 //        updateContentInsets(animated: false)
+        
+//        if isKeyboardShowing {
+            
+//        }
+        
     }
     
     func inputAccessoryPlaceholderKeyboardIsDismissing(animationDuration: TimeInterval, animationCurve: UIView.AnimationCurve, beginFrame: CGRect, endFrame: CGRect) {
         //handleKeyboardStateChange(animationDuration: animationDuration, animationCurve: animationCurve)
-        
+//        animateHeaderView(collapsed: false)
         adjustContentForKeyboard(animationDuration: animationDuration, animationCurve: animationCurve, beginFrame: beginFrame, endFrame: endFrame, shown: false)
     }
     
     func inputAccessoryPlaceholderKeyboardDidDismiss() {
-        animateHeaderView(collapsed: false)
+//        animateHeaderView(collapsed: false)
 //        updateContentInsets(animated: false)
     }
     
@@ -74,11 +83,14 @@ extension ChannelLogController: InputAccessoryViewPlaceholderDelegate {
     
     func animateHeaderView(collapsed: Bool) {
         if collapsed {
+//            if inputAccessoryPlaceholder.accessibilityActivate()
+            print("gonna collapse ... state is \(inputAccessoryPlaceholder.keyboardState)")
             channelLogContainerView.headerTopConstraint?.constant = -75
             isChannelLogHeaderShowing = false
             collectionView.contentInset.top = 20
 //            channelLogContainerView.headerHeightConstraint?.constant = 0
         } else {
+            print("gonna UNcollapse ... state is \(inputAccessoryPlaceholder.keyboardState)")
             if channelLogContainerView.headerTopConstraint?.constant == -75 {
                 channelLogContainerView.headerTopConstraint?.constant = 10
                 isChannelLogHeaderShowing = true

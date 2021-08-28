@@ -384,7 +384,7 @@ extension ContactsController {
             self.present(alert, animated: true, completion: nil)
 
         } else if indexPath.section == 1 {
-            let destination = ContactsDetailController()
+            let destination = ContactsDetailController(style: .plain)
             destination.contactName = filteredContacts[indexPath.row].givenName + " " + filteredContacts[indexPath.row].familyName
             if let photo = filteredContacts[indexPath.row].thumbnailImageData {
               destination.contactPhoto = UIImage(data: photo)
