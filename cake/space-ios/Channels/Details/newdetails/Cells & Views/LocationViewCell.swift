@@ -15,7 +15,7 @@ class LocationViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: nil)
-        
+        selectionStyle = .none
         textLabel?.textColor = ThemeManager.currentTheme().generalTitleColor
         detailTextLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
         contentView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
@@ -23,17 +23,7 @@ class LocationViewCell: UITableViewCell {
         textLabel?.numberOfLines = 0
         detailTextLabel?.numberOfLines = 0
         
-        addSubview(locationView)
-        selectionStyle = .none
-        locationView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15).isActive = true
-        locationView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15).isActive = true
-        locationView.topAnchor.constraint(equalTo: topAnchor, constant: 15).isActive = true
-        locationView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
-        locationView.heightAnchor.constraint(equalToConstant: 230).isActive = true
-        
-        let startCoord = CLLocationCoordinate2DMake(37.766997, -122.422032)
-        let adjustedRegion = locationView.mapView.regionThatFits(MKCoordinateRegion(center: startCoord, latitudinalMeters: 500, longitudinalMeters: 500))
-        locationView.mapView.setRegion(adjustedRegion, animated: true)
+        addLocationView()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -45,6 +35,19 @@ class LocationViewCell: UITableViewCell {
         
         contentView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+    }
+    
+    func addLocationView() {
+        addSubview(locationView)
+        locationView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15).isActive = true
+        locationView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15).isActive = true
+        locationView.topAnchor.constraint(equalTo: topAnchor, constant: 15).isActive = true
+        locationView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
+        locationView.heightAnchor.constraint(equalToConstant: 230).isActive = true
+        
+//        let startCoord = CLLocationCoordinate2DMake(37.766997, -122.422032)
+//        let adjustedRegion = locationView.mapView.regionThatFits(MKCoordinateRegion(center: startCoord, latitudinalMeters: 500, longitudinalMeters: 500))
+//        locationView.mapView.setRegion(adjustedRegion, animated: true)
     }
     
 }

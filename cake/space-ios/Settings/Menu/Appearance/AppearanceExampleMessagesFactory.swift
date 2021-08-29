@@ -19,7 +19,7 @@ final class AppearanceExampleMessagesFactory {
         let date = Date(timeIntervalSince1970: TimeInterval(timestamp))
         let convertedTimestamp = timestampOfChatLogMessage(date) as AnyObject
         let shortConvertedTimestamp = date.getShortDateStringFromUTC() as AnyObject
-        let outgoingMessageText = "It's great! You can submit feedback to me@kareemarab.com"
+        let outgoingMessageText = "It's great!"
         let outgoingRect = RealmCGRect(messagesFetcher.estimateFrameForText(outgoingMessageText, orientation: .portrait), id: messageUID)
         let outgoingLRect = RealmCGRect(messagesFetcher.estimateFrameForText(outgoingMessageText, orientation: .landscapeLeft),
                                                                         id: messageUID + "landscape")

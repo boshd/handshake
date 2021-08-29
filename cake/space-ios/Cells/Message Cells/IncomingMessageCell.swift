@@ -48,8 +48,8 @@ class IncomingMessageCell: BaseMessageCell {
     override func setupViews() {
         super.setupViews()
         
-        let interaction = UIContextMenuInteraction(delegate: self)
-        bubbleView.addInteraction(interaction)
+//        let interaction = UIContextMenuInteraction(delegate: self)
+//        bubbleView.addInteraction(interaction)
         
         textView.delegate = self
         bubbleView.addSubview(textView)
@@ -81,7 +81,6 @@ class IncomingMessageCell: BaseMessageCell {
         guard let messageText = message.text else { return }
         
         fromId = message.fromId
-        print("FROM ID IS \(fromId)")
         
         if let isFirst = message.isFirstInSection.value, isFirst {
 //            bubbleView.frame.origin = BaseMessageCell.incomingFirstBubbleOrigin
@@ -119,8 +118,6 @@ class IncomingMessageCell: BaseMessageCell {
         
         if let isCrooked = message.isCrooked.value, isCrooked {
             bubbleView.image = ThemeManager.currentTheme().incomingBubble
-//            bubbleView.backgroundColor = .red
-            print("SHOULD BE RED")
             if RealmKeychain.realmUsersArray().map({ $0.id }).contains(message.fromId) {
                 guard let url = RealmKeychain.realmUsersArray().first(where: { $0.id == message.fromId })?.userThumbnailImageUrl else { return }
                 userImageView.sd_setImage(with: URL(string: url), placeholderImage: UIImage(named: "UserpicIcon"), options: [.scaleDownLargeImages, .continueInBackground, .avoidAutoSetImage], completed: { [weak self] (image, _, cacheType, _) in
@@ -143,6 +140,10 @@ class IncomingMessageCell: BaseMessageCell {
                                       completion: nil)
                 })
             }
+            
+            if let isFirst = message.isFirstInSection.value, isFirst {
+                userImageView.frame.origin = CGPoint(x: 10, y: bubbleView.frame.height - CGFloat(BaseMessageCell.userImageViewHeight) + CGFloat(BaseMessageCell.incomingMessageAuthorNameLabelHeight))
+            }
         } else {
             bubbleView.image = ThemeManager.currentTheme().incomingPartialBubble
         }
@@ -150,19 +151,10 @@ class IncomingMessageCell: BaseMessageCell {
         
     }
     
-    @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer)
-    {
-        let tappedImage = tapGestureRecognizer.view as! UIImageView
-        
-        print("RECOGNIZED")
-        
+    @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
         if let fromId = fromId {
             delegate?.openProfile(fromId: fromId)
         }
-        
-        
-        
-        // Your action
     }
     
     fileprivate func setupGroupBubbleViewSize(message: Message) -> CGSize {

@@ -66,10 +66,17 @@ class AppearanceExampleCollectionView: ChannelCollectionView, UICollectionViewDe
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: outgoingMessageCellID, for: indexPath) as? OutgoingMessageCell ?? OutgoingMessageCell()
             cell.textView.font = ThemeManager.currentTheme().secondaryFont(with: IncomingMessageCell.messageTextSize)
             cell.setupData(message: message)
+            
+            message.isCrooked.value = true
 
             return cell
         case false:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: incomingMessageCellID, for: indexPath) as? IncomingMessageCell ?? IncomingMessageCell()
+            
+            message.isFirstInSection.value = true
+            message.isCrooked.value = true
+            
+            cell.userImageView.image = UIImage(named: "bruno-mars")
             cell.textView.font = ThemeManager.currentTheme().secondaryFont(with: OutgoingMessageCell.messageTextSize)
             cell.nameLabel.text = "Bruno Mars"
             cell.setupData(message: message)

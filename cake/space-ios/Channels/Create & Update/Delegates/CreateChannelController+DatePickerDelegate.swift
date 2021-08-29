@@ -18,7 +18,7 @@ extension CreateChannelController: DatePickerDelegate {
         if indexPath?.row == 1 {
             if let endTime = endTime {
                 if Int64(date.timeIntervalSince1970) > endTime {
-                    self.endTime = Int64(date.nextHour.timeIntervalSince1970)
+                    self.endTime = Int64(Calendar.current.date(byAdding: .hour, value: 1, to: date)!.timeIntervalSince1970)
 //                    let prevHr = Date(timeIntervalSince1970: TimeInterval(endTime)).previousHour
 //                    if prevHr < Date() {
 //                        startTime = Int64(Date().timeIntervalSince1970)

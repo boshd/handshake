@@ -15,11 +15,12 @@
 * @beta
 */
 export function constructNotificationPayload(tokens: string[], messageId: string, channelId: string, senderName: string, channelName: string, fromId: string, text: string, badge: number) {
-    let title: string = ''
-    // var text: string = ''
+    var title: string = ''
+    var textString: string = text
 
     if (senderName && channelName) {
-        title = senderName + ' @ ' + channelName
+        title =  channelName
+        textString = '@' + senderName + ': ' + text
     } else if (channelName) {
         title = channelName
     } else {
@@ -31,7 +32,7 @@ export function constructNotificationPayload(tokens: string[], messageId: string
         sound: 'default',
         notification: {
             title: title,
-            body: text,
+            body: textString,
         },
         apns: {
             headers: {

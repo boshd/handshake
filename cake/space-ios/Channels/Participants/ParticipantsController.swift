@@ -193,7 +193,7 @@ class ParticipantsController: UIViewController {
             }
         }
         var goingTitle = "Going"
-        var maybeTitle = "Tentative"
+        var maybeTitle = "Maybe"
         var notGoingTitle = "Not going"
         var noResponseTitle = "No response"
         
@@ -286,6 +286,7 @@ class ParticipantsController: UIViewController {
                             
                             // update local realm user copy
                             if !(self.localRealm.isInWriteTransaction) {
+                                
                                 self.localRealm.beginWrite()
                                 localRealmUser.email = user.email
                                 localRealmUser.name = user.name
@@ -537,7 +538,7 @@ class ParticipantsController: UIViewController {
             viewPlaceholder.remove(from: view, priority: .medium)
             return
         }
-        viewPlaceholder.add(for: view, title: .nothingHere, subtitle: .nothingHere, priority: .medium, position: .top)
+        viewPlaceholder.add(for: view, title: .nothingHere, subtitle: .empty, priority: .medium, position: .top)
     }
     
     func reloadTable() {

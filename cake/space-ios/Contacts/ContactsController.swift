@@ -18,7 +18,13 @@ import RealmSwift
 private let usersCellID = "usersCellID"
 private let currentUserCellID = "currentUserCellID"
 
-class ContactsController: CustomTableViewController {
+//private let currentUserCellID = "currentUserCellID"
+private let contactPhoneNnumberTableViewCellID = "contactPhoneNnumberTableViewCellID"
+private let invitationText = "Hey 👋, I'm inviting you to join Handshake's beta program. Handshake is a new private events app that features group chat, rsvp, location and more. Sign up here with your Apple account email: https://forms.gle/eoCN5hkBV9tPfLu37"
+
+class ContactsController: CustomTableViewController, MFMessageComposeViewControllerDelegate {
+
+    
 
     var contacts = [CNContact]()
     var filteredContacts = [CNContact]()
@@ -384,16 +390,55 @@ extension ContactsController {
             self.present(alert, animated: true, completion: nil)
 
         } else if indexPath.section == 1 {
-            let destination = ContactsDetailController(style: .plain)
-            destination.contactName = filteredContacts[indexPath.row].givenName + " " + filteredContacts[indexPath.row].familyName
-            if let photo = filteredContacts[indexPath.row].thumbnailImageData {
-              destination.contactPhoto = UIImage(data: photo)
-            }
-            destination.contactPhoneNumbers.removeAll()
-            destination.hidesBottomBarWhenPushed = true
-            destination.contactPhoneNumbers = filteredContacts[indexPath.row].phoneNumbers
-            navigationController?.pushViewController(destination, animated: true)
+            let alert = CustomAlertController(title_: nil, message: nil, preferredStyle: .actionSheet)
+            
+            alert.addAction(CustomAlertAction(title: "Invite to Handshake 🙌", style: .default , handler: { [unowned self] in
+                if MFMessageComposeViewController.canSendText() {
+                    guard filteredContacts[indexPath.row].phoneNumbers.indices.contains(0) else {
+                        basicErrorAlertWith(title: "Error",
+                        message: "This user doesn't have any phone number provided.",
+                        controller: self)
+                        return
+                    }
+                    let destination = MFMessageComposeViewController()
+                    destination.body = invitationText
+                    destination.recipients = [filteredContacts[indexPath.row].phoneNumbers[0].value.stringValue]
+                    destination.messageComposeDelegate = self
+                    present(destination, animated: true, completion: nil)
+                } else {
+                    basicErrorAlertWith(title: "Error", message: "You cannot send texts.", controller: self)
+                }
+            }))
+            
+            self.present(alert, animated: true, completion: nil)
+//            let destination = ContactsDetailController(style: .plain)
+//            destination.contactName = filteredContacts[indexPath.row].givenName + " " + filteredContacts[indexPath.row].familyName
+//            if let photo = filteredContacts[indexPath.row].thumbnailImageData {
+//              destination.contactPhoto = UIImage(data: photo)
+//            }
+//            destination.contactPhoneNumbers.removeAll()
+//            destination.hidesBottomBarWhenPushed = true
+//            destination.contactPhoneNumbers = filteredContacts[indexPath.row].phoneNumbers
+//            navigationController?.pushViewController(destination, animated: true)
         }
+    }
+    
+    func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
+        switch (result){
+        case .cancelled:
+            print("Message cancelled")
+            break
+        case .sent:
+            print("Message sent")
+            break
+        case .failed:
+            print("Message sent failure.")
+            break
+        default:
+            break
+        }
+        // Close the Mail Interface
+        controller.dismiss(animated: true)
     }
     
 }

@@ -13,6 +13,7 @@ import CoreData
 import Photos
 import RealmSwift
 import SVProgressHUD
+import Contacts
 
 func setUserNotificationToken(token: String) {
     guard let uid = Auth.auth().currentUser?.uid else { return }
@@ -61,6 +62,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             tabBarController.presentOnboardingController()
         }
 
+        fetchContacts()
         
         pushManager.registerForPushNotifications()
         
@@ -70,7 +72,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
 
-    
+    fileprivate func fetchContacts() {
+        let status = CNContactStore.authorizationStatus(for: .contacts)
+        let store = CNContactStore()
+        if status == .denied || status == .restricted {
+            return
+        }
+
+        store.requestAccess(for: .contacts) { granted, error in
+            guard granted, error == nil else {
+                return
+            }
+
+            let keys = [CNContactIdentifierKey, CNContactGivenNameKey, CNContactFamilyNameKey,
+            CNContactImageDataKey, CNContactPhoneNumbersKey,
+            CNContactThumbnailImageDataKey, CNContactImageDataAvailableKey]
+            let request = CNContactFetchRequest(keysToFetch: keys as [CNKeyDescriptor])
+            var contacts = [String:CNContact]()
+            do {
+                try store.enumerateContacts(with: request) { contact, _ in
+                    contacts[contact.identifier] = contact
+                }
+            } catch {}
+            
+            let phoneNumbers = contacts.values.flatMap({$0.phoneNumbers.map({$0.value.stringValue.digits})})
+            globalVariables.localContactsDict = contacts
+            globalVariables.localPhones = phoneNumbers
+        }
+    }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
         Auth.auth().canHandle(url)

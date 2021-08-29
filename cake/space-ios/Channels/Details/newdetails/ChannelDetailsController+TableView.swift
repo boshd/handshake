@@ -128,11 +128,13 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: locationViewCellId, for: indexPath) as? LocationViewCell ?? LocationViewCell(style: .subtitle, reuseIdentifier: locationViewCellId)
             if let isRemote = channel?.isRemote.value, isRemote {
+                print("IS REMOTE LOL")
                 cell.locationView.removeFromSuperview()
                 cell.detailTextLabel?.text = "If you can't find any information regarding virtual meetings try reaching out to one of the event organizers."
                 cell.contentView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
                 cell.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
             } else {
+                cell.addLocationView()
                 cell.locationView.locationNameLabel.text = ""
                 cell.locationView.locationLabel.text = ""
                 guard let locationName = channel?.locationName else { return cell }

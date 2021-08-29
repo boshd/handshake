@@ -86,6 +86,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         configureNaviationBar()
         configureMapView()
         addObservers()
+         xperiment()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -354,7 +355,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
             self?.rsvp(.notGoing, memberID: currentUserID)
         })
         
-        let tentativeAction = CustomAlertAction(title: "Tentative", style: .default , handler: { [weak self] in
+        let tentativeAction = CustomAlertAction(title: "Maybe", style: .default , handler: { [weak self] in
             self?.rsvp(.tentative, memberID: currentUserID)
         })
         
@@ -462,12 +463,12 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
             self?.channel = channel
             
 //            if self?.channel?.imageUrl != channel.imageUrl {
-                self?.configureChannelImageHeaderView()
+            self?.configureChannelImageHeaderView()
 //            }
             self?.configureFooterView()
             self?.configureMapView()
 //            if self?.channel?.participantIds != channel.participantIds {
-                self?.populateAttendees()
+            self?.populateAttendees()
 //            }
             
             DispatchQueue.main.async { [weak self] in
@@ -543,6 +544,14 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         
     }
     
+    func xperiment() {
+        print("local REALM // count: \(RealmKeychain.realmUsersArray().count) //")
+        print()
+        print("NON LOCAL REALM // count: \(RealmKeychain.nonLocalUsersRealm.objects(User.self).count) // \(RealmKeychain.nonLocalUsersRealm.objects(User.self).map({$0.name}))")
+        print()
+        print("default REALM // count: \(RealmKeychain.defaultRealm.objects(User.self).count) // \(RealmKeychain.defaultRealm.objects(User.self).map({$0.name}))")
+    }
+    
     func populateAttendees() {
         guard let currentUserID = Auth.auth().currentUser?.uid,
               let participantIds = self.channel?.participantIds
@@ -569,80 +578,120 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
             if participantId == currentUserID { continue }
             group.enter()
             
-            if RealmKeychain.realmNonLocalUsersArray().map({$0.id}).contains(participantId) {
-                if let usr = RealmKeychain.realmNonLocalUsersArray().first(where: {$0.id == participantId}) {
-                    attendees.append(usr)
-                }
-            }
+            /*
+             
+             The idea here is populate the users initially from local memory, BUT we need to fetch
+             them anyway and if they turn out to be different, we need to reload them.
+             
+             */
             
-            if RealmKeychain.realmUsersArray().map({$0.id}).contains(participantId) {
-                if let usr = RealmKeychain.realmUsersArray().first(where: {$0.id == participantId}) {
-                    attendees.append(usr)
-                }
+            if let user = RealmKeychain.realmUsersArray().first(where: {$0.id == participantId}) {
+                // IS IN LOCAL REALM
+                print("IN REALM \(user.localName)")
+                attendees.append(user)
             }
+//            else if let user = RealmKeychain.realmNonLocalUsersArray().first(where: {$0.id == participantId}) {
+//                // IN NON-LOCAL REALM
+//                attendees.append(user)
+//            }
             
-            UsersFetcher.fetchUser(id: participantId) { user, error in
+            UsersFetcher.fetchUser(id: participantId) { [weak self] user, error in
+                
                 group.leave()
-                if let user = user {
-                    guard error == nil else { print(error?.localizedDescription ?? "error"); return }
-
-                    if RealmKeychain.realmUsersArray().map({$0.id}).contains(user.id) {
-                        if let localRealmUser = RealmKeychain.usersRealm.object(ofType: User.self, forPrimaryKey: user.id),
-                           !user.isEqual_(to: localRealmUser) {
-                            // this shouldn't pass....?
-                            // update local realm user copy
-                            if !(self.localRealm.isInWriteTransaction) {
-                                self.localRealm.beginWrite()
-                                localRealmUser.email = user.email
-                                localRealmUser.name = user.name
-                                localRealmUser.localName = user.localName
-                                localRealmUser.phoneNumber = user.phoneNumber
-                                localRealmUser.userImageUrl = user.userImageUrl
-                                localRealmUser.userThumbnailImageUrl = user.userThumbnailImageUrl
-                                try! self.localRealm.commitWrite()
-                            }
-                            
-                            // update array
-                            if let index = self.attendees.firstIndex(where: { user_ in
-                                return user_.id == user.id
-                            }) {
-                                self.attendees[index] = user
+                
+                guard let user = user, error == nil else { return }
+                
+                if let localRealmUser = RealmKeychain.realmUsersArray().first(where: {$0.id == participantId}) {
+                    
+                    // if this person is different, we replace them in the array, otherwise do nothing because
+                    // they already xist in the array
+                    
+                    if !user.isEqual_(to: localRealmUser) {
+                        print("!isEqual_ -- fetched user \(user.localName) ... realm user \(localRealmUser.localName)")
+                        autoreleasepool {
+                            if let isInWriteTransaction = self?.localRealm.isInWriteTransaction, !isInWriteTransaction {
+                                try! self?.localRealm.safeWrite {
+                                    self?.localRealm.beginWrite()
+                                    localRealmUser.email = user.email
+                                    localRealmUser.name = user.name
+                                    localRealmUser.localName = user.localName
+                                    localRealmUser.phoneNumber = user.phoneNumber
+                                    localRealmUser.userImageUrl = user.userImageUrl
+                                    localRealmUser.userThumbnailImageUrl = user.userThumbnailImageUrl
+                                    try! self?.localRealm.commitWrite()
+                                }
                             }
                         }
-                    } else if RealmKeychain.realmNonLocalUsersArray().map({$0.id}).contains(user.id) {
-                        if let nonLocalRealmUser = RealmKeychain.nonLocalUsersRealm.object(ofType: User.self, forPrimaryKey: user.id),
-                           !user.isEqual_(to: nonLocalRealmUser) {
-                            
-                            // update local realm user copy
-                            if !(self.nonLocalRealm.isInWriteTransaction) {
-                                self.nonLocalRealm.beginWrite()
-                                nonLocalRealmUser.email = user.email
-                                nonLocalRealmUser.name = user.name
-                                nonLocalRealmUser.localName = user.localName
-                                nonLocalRealmUser.phoneNumber = user.phoneNumber
-                                nonLocalRealmUser.userImageUrl = user.userImageUrl
-                                nonLocalRealmUser.userThumbnailImageUrl = user.userThumbnailImageUrl
-                                try! self.nonLocalRealm.commitWrite()
-                            }
-                            
-                            // update array
-                            if let index = self.attendees.firstIndex(where: { user_ in
-                                return user_.id == user.id
-                            }) {
-                                self.attendees[index] = user
-                            }
+                        
+                        // update array
+                        if let index = self?.attendees.firstIndex(where: { user_ in
+                            return user_.id == user.id
+                        }) {
+                            self?.attendees[index] = user
                         }
                     } else {
-                        autoreleasepool {
-                            if !self.nonLocalRealm.isInWriteTransaction {
-                                self.nonLocalRealm.beginWrite()
-                                self.nonLocalRealm.create(User.self, value: user, update: .modified)
-                                try! self.nonLocalRealm.commitWrite()
-                            }
+                        if let contains = self?.attendees.map({$0.id}).contains(user.id), !contains {
+                            self?.attendees.append(user)
                         }
-                        self.attendees.append(user)
                     }
+                    
                 }
+//
+//                if let localRealmUser = RealmKeychain.usersRealm.object(ofType: User.self, forPrimaryKey: user.id),
+//                   !user.isEqual_(to: localRealmUser) {
+//                    // this shouldn't pass....?
+//                    // update local realm user copy
+//                    if !(self.localRealm.isInWriteTransaction) {
+//                        self.localRealm.beginWrite()
+//                        localRealmUser.email = user.email
+//                        localRealmUser.name = user.name
+//                        localRealmUser.localName = user.localName
+//                        localRealmUser.phoneNumber = user.phoneNumber
+//                        localRealmUser.userImageUrl = user.userImageUrl
+//                        localRealmUser.userThumbnailImageUrl = user.userThumbnailImageUrl
+//                        try! self.localRealm.commitWrite()
+//                    }
+//
+//                    // update array
+//                    if let index = self.attendees.firstIndex(where: { user_ in
+//                        return user_.id == user.id
+//                    }) {
+//                        self.attendees[index] = user
+//                    }
+//                } else if RealmKeychain.realmNonLocalUsersArray().map({$0.id}).contains(user.id) {
+//                    if let nonLocalRealmUser = RealmKeychain.nonLocalUsersRealm.object(ofType: User.self, forPrimaryKey: user.id),
+//                       !user.isEqual_(to: nonLocalRealmUser) {
+//
+//                        // update local realm user copy
+//                        if !(self.nonLocalRealm.isInWriteTransaction) {
+//                            self.nonLocalRealm.beginWrite()
+//                            nonLocalRealmUser.email = user.email
+//                            nonLocalRealmUser.name = user.name
+//                            nonLocalRealmUser.localName = user.localName
+//                            nonLocalRealmUser.phoneNumber = user.phoneNumber
+//                            nonLocalRealmUser.userImageUrl = user.userImageUrl
+//                            nonLocalRealmUser.userThumbnailImageUrl = user.userThumbnailImageUrl
+//                            try! self.nonLocalRealm.commitWrite()
+//                        }
+//
+//                        // update array
+//                        if let index = self.attendees.firstIndex(where: { user_ in
+//                            return user_.id == user.id
+//                        }) {
+//                            self.attendees[index] = user
+//                        }
+//                    }
+//                } else {
+//                    autoreleasepool {
+//                        if !self.nonLocalRealm.isInWriteTransaction {
+//                            self.nonLocalRealm.beginWrite()
+//                            self.nonLocalRealm.create(User.self, value: user, update: .modified)
+//                            try! self.nonLocalRealm.commitWrite()
+//                        }
+//                    }
+//                    self.attendees.append(user)
+//                }
+                
             }
             
             group.notify(queue: .main, execute: { [weak self] in

@@ -41,19 +41,20 @@ class ContactsFetcher: NSObject {
             CNContactImageDataKey, CNContactPhoneNumbersKey,
             CNContactThumbnailImageDataKey, CNContactImageDataAvailableKey]
             let request = CNContactFetchRequest(keysToFetch: keys as [CNKeyDescriptor])
-            var contacts = [CNContact]()
+            var contacts = [String:CNContact]()
             do {
                 try store.enumerateContacts(with: request) { contact, _ in
-                    contacts.append(contact)
+//                    contacts.append(contact)
+                    contacts[contact.identifier] = contact
                 }
             } catch {}
             
-            let phoneNumbers = contacts.flatMap({$0.phoneNumbers.map({$0.value.stringValue.digits})})
-            globalVariables.localContacts = contacts
+            let phoneNumbers = contacts.values.flatMap({$0.phoneNumbers.map({$0.value.stringValue.digits})})
+            globalVariables.localContactsDict = contacts
             globalVariables.localPhones = phoneNumbers
             
-            self.delegate?.contacts(updateDatasource: contacts)
-            self.syncronizeContacts(contacts: contacts)
+            self.delegate?.contacts(updateDatasource: Array(contacts.values))
+            self.syncronizeContacts(contacts: Array(contacts.values))
         }
     }
 

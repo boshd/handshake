@@ -13,7 +13,7 @@ import SVProgressHUD
 import RealmSwift
 import SafariServices
 
-class AccountSettingsController: UITableViewController, MFMailComposeViewControllerDelegate {
+class AccountSettingsController: UITableViewController, MFMailComposeViewControllerDelegate, UINavigationControllerDelegate {
     
     var window: UIWindow?
     
@@ -357,20 +357,21 @@ extension AccountSettingsController {
             } else if indexPath.row == 1 {
                 openUrl("https://www.notion.so/Your-privacy-matters-to-us-419248ff0f624d66ad9915e1b090fe1f")
             } else if  indexPath.row == 2 {
-                basicErrorAlert(errorMessage: "Coming soon.", controller: self)
+//                basicErrorAlert(errorMessage: "Coming soon.", controller: self)
                 openUrl("https://www.notion.so/Licences-575d5e806944479c9f97d685c18aab83")
             } else if indexPath.row == 3 {
-                logoutButtonTapped()
-//                if MFMailComposeViewController.canSendMail() {
-//                    let mailComposerVC = MFMailComposeViewController()
-//                    mailComposerVC.mailComposeDelegate = self
-//                    mailComposerVC.setToRecipients(["me@kareemarab.com"])
-//                    mailComposerVC.setSubject("Handshake feedback")
-//                    mailComposerVC.setMessageBody("", isHTML: false)
-//                    self.present(mailComposerVC, animated: true, completion: nil)
-//                } else {
-//                    displayErrorAlert(title: basicErrorTitleForAlert, message: "Your phone isn't configured to send emails. Send us an email at me@kareemarab.com", preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
-//                }
+//                logoutButtonTapped()
+                if MFMailComposeViewController.canSendMail() {
+                    let mailComposerVC = MFMailComposeViewController()
+                    mailComposerVC.mailComposeDelegate = self
+                    mailComposerVC.delegate = self
+                    mailComposerVC.setToRecipients(["me@kareemarab.com"])
+                    mailComposerVC.setSubject("Handshake feedback")
+                    mailComposerVC.setMessageBody("", isHTML: false)
+                    self.present(mailComposerVC, animated: true, completion: nil)
+                } else {
+                    displayErrorAlert(title: basicErrorTitleForAlert, message: "Your phone isn't configured to send emails. Send us an email at me@kareemarab.com", preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+                }
             } else {
 //                openUrl("https://kareemarab.now.sh/spl-redirect")
             }
@@ -452,6 +453,31 @@ extension AccountSettingsController {
 //        } else {
 //            return logoutSection.count
 //        }
+    }
+    
+//    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+//          controller.dismiss(animated: true, completion: nil)
+//      }
+    
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        switch (result) {
+        case .sent:
+            print("You sent the email.")
+            break
+        case .saved:
+            print("You saved a draft of this email")
+            break
+        case .cancelled:
+            print("You cancelled sending this email.")
+            break
+        case .failed:
+            print("Mail failed:  An error occurred when trying to compose this email")
+            break
+        default:
+            print("An error occurred when trying to compose this email")
+            break
+        }
+        controller.dismiss(animated: true, completion: nil)
     }
     
 }

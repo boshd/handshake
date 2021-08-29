@@ -441,7 +441,7 @@ enum Theme: Int {
     var seperatorColor: UIColor {
         switch self {
             case .normal:
-                return .handshakeMediumGray 
+                return .lighterGray()
             case .dark:
                 return .handshakeSecondaryDark
         }

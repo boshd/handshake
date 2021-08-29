@@ -22,7 +22,8 @@ extension ChannelCell {
     func configureCell(for indexPath: IndexPath, channels: Results<Channel>) {
         
         
-        
+        print()
+        print("for indexpath row \(indexPath.row) \(channels[indexPath.row].name)")
         let channel = channels[indexPath.row]
         // channel name
         title.text = "\(channel.name ?? "")"
@@ -32,23 +33,29 @@ extension ChannelCell {
             let message = messageText
             
             if let fromId = channel.lastMessage?.fromId, let currentUserID = Auth.auth().currentUser?.uid {
-                
+                print("arrived 1")
                 if fromId == currentUserID {
+                    print("its me")
                     name = "You"
                 } else {
-                    if let localName = RealmKeychain.realmUsersArray().first(where: { $0.id == fromId })?.localName {
+                    print("arrived 2")
+                    if let localName = RealmKeychain.realmUsersArray().first(where: {$0.id == fromId})?.localName {
+                        print("arrived 2.1")
                         name = localName
-                    } else if let nonLocalName = RealmKeychain.realmNonLocalUsersArray().first(where: { $0.id == fromId })?.name {
-                        name = nonLocalName
+                    } else if let name_ = RealmKeychain.realmUsersArray().first(where: {$0.id == fromId})?.name {
+                        print("arrived 2.2")
+                        name = name_
                     } else {
+                        print("arrived 2.3 \(channel.lastMessage?.fromId)")
                         if let senderName = channel.lastMessage?.senderName {
+                            print("arrived 2.3.1")
                             name = senderName
                         }
                     }
                 }
             }
-            
-            let mainText = name + ": " + message
+            //  \u{200E}
+            let mainText = "\u{200E}💬 " + name + ": " + message + "\u{200C}"
             
             let range = (mainText as NSString).range(of: name)
             let mutableAttributedString = NSMutableAttributedString.init(string: mainText)
@@ -77,7 +84,7 @@ extension ChannelCell {
         }
         
         if let locationName = channel.locationName {
-            subTitle.text = locationName
+            subTitle.text = "\(locationName)"
         } else {
             if let remote = channel.isRemote.value, remote {
                 subTitle.text = "Remote"
@@ -94,8 +101,6 @@ extension ChannelCell {
         } else {
             channelImageView.image = UIImage(named: "handshake")
         }
-        
-        
 
         let badgeInt = channels[indexPath.row].badge.value ?? 0
         

@@ -40,9 +40,9 @@ class UsersFetcher: NSObject {
         return preparedNumber
     }
     
-    func prepareNumberTuples(from contacts: [CNContact]) -> [(String, String)] {
+    func prepareNumberTuples(from contacts: [String:CNContact]) -> [(String, String)] {
         var preparedNumberTuples = [(String, String)]()
-        for contact in contacts {
+        for (_, contact) in contacts {
             let contactPhones = contact.phoneNumbers.map({$0.value.stringValue.digits})
             if !contactPhones.isEmpty {
                 for contactPhone in contactPhones {
@@ -78,7 +78,7 @@ class UsersFetcher: NSObject {
     fileprivate func requestUsers() {
         guard let currentUserID = Auth.auth().currentUser?.uid else { return }
         
-        let tuples = prepareNumberTuples(from: globalVariables.localContacts)
+        let tuples = prepareNumberTuples(from: globalVariables.localContactsDict)
         
         
         functions.httpsCallable("getUsersWithPreparedNumbers").call(["preparedNumbers": tuples.map({ $0.1 })]) { (result, error) in
@@ -201,7 +201,7 @@ class UsersFetcher: NSObject {
                 
                 user.localContactIdentifier = contactID
                 
-                user.localName = globalVariables.localContacts.first(where: { $0.identifier == contactID })?.givenName
+                user.localName = globalVariables.localContactsDict.values.first(where: { $0.identifier == contactID })?.givenName
                 
                 if let thumbnail = user.userThumbnailImageUrl, let url = URL(string: thumbnail) {
                     SDWebImagePrefetcher.shared.prefetchURLs([url])

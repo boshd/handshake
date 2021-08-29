@@ -29,8 +29,8 @@ class OutgoingMessageCell: BaseMessageCell {
     super.setupViews()
         textView.delegate = self
         
-        let interaction = UIContextMenuInteraction(delegate: self)
-        bubbleView.addInteraction(interaction)
+//        let interaction = UIContextMenuInteraction(delegate: self)
+//        bubbleView.addInteraction(interaction)
         
         bubbleView.addSubview(textView)
         bubbleView.addSubview(timeLabel)

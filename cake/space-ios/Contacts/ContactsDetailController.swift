@@ -12,7 +12,7 @@ import Contacts
 
 private let currentUserCellID = "currentUserCellID"
 private let contactPhoneNnumberTableViewCellID = "contactPhoneNnumberTableViewCellID"
-private let invitationText = "Hey 👋, I'm inviting you to join Handshake's beta program. Handshake is a new private events app that features chat, rsvp, location and more. Sign up here with your Apple account email: https://forms.gle/eoCN5hkBV9tPfLu37"
+private let invitationText = "Hey 👋, I'm inviting you to join Handshake's beta program. Handshake is a new private events app that features group chat, rsvp, location and more. Sign up here with your Apple account email: https://forms.gle/eoCN5hkBV9tPfLu37"
 
 class ContactsDetailController: UITableViewController {
 
@@ -20,13 +20,13 @@ class ContactsDetailController: UITableViewController {
     var contactPhoto: UIImage!
     var contactPhoneNumbers = [CNLabeledValue<CNPhoneNumber>]()
 
-    override init(style: UITableView.Style) {
-        super.init(style: .insetGrouped)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+//    override init(style: UITableView.Style) {
+//        super.init(style: .insetGrouped)
+//    }
+//    
+//    required init?(coder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

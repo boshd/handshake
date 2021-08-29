@@ -53,7 +53,7 @@ class BaseMessageCell: UICollectionViewCell {
     
     static let scrollIndicatorInset: CGFloat = 5
 
-    static let textViewTopInset: CGFloat = 15
+    static let textViewTopInset: CGFloat = 10
     static let textViewBottomInset: CGFloat = 20
     
     static let bubbleViewMaxWidth: CGFloat = CellSizes.bubbleViewMaxWidth()

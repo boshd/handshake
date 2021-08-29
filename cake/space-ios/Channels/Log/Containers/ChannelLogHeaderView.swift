@@ -116,24 +116,33 @@ class ChannelLogHeaderView: UIView {
         addSubview(viewDetails)
 //        addSubview(seperator)
         
+        let viewDetailsTrailingConstraint = viewDetails.rightAnchor.constraint(equalTo: rightAnchor, constant: -20)
+        viewDetailsTrailingConstraint.priority = UILayoutPriority(999)
+        
         NSLayoutConstraint.activate([
+            viewDetailsTrailingConstraint,
+            viewDetails.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0),
+            
             timeLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             timeLabel.topAnchor.constraint(equalTo: topAnchor, constant: 15),
+            timeLabel.trailingAnchor.constraint(equalTo: viewDetails.leadingAnchor, constant: -10),
             
             locationNameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             locationNameLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15),
+            locationNameLabel.trailingAnchor.constraint(equalTo: viewDetails.leadingAnchor, constant: -10),
             
 //            dateLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12),
 //            dateLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),
             
-            viewDetails.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            viewDetails.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0),
+
             
 //            seperator.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0),
 //            seperator.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
 //            seperator.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
 //            seperator.heightAnchor.constraint(equalToConstant: 0.5)
         ])
+        
+        
     }
     
     required init?(coder: NSCoder) {

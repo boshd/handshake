@@ -73,6 +73,7 @@ class ChannelCell: UITableViewCell {
         label.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         label.numberOfLines = 1
         label.textAlignment = .left
+        label.textAlignment = .justified
         return label
     }()
     
@@ -80,8 +81,8 @@ class ChannelCell: UITableViewCell {
         let label = DynamicLabel(withInsets: 0, 0, 0, 0)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
-        label.font = ThemeManager.currentTheme().secondaryFont(with: 9)
-        label.textColor = ThemeManager.currentTheme().generalSubtitleColor
+        label.font = ThemeManager.currentTheme().secondaryFontBold(with: 9)
+        label.textColor = .eventOrange()
         label.cornerRadius = 3
         
         return label
@@ -112,7 +113,7 @@ class ChannelCell: UITableViewCell {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.backgroundColor = .lighterGray()
-        imageView.cornerRadius = 35
+        imageView.cornerRadius = 32.5
         imageView.layer.cornerCurve = .circular
         imageView.contentMode = .scaleAspectFill
 //        imageView.borderColor = .handshakeLightPurple
@@ -154,6 +155,10 @@ class ChannelCell: UITableViewCell {
         contentView.backgroundColor = .clear
         selectionColor = ThemeManager.currentTheme().cellSelectionColor
         
+        subTitle.centerYAnchor.constraint(equalTo: channelImageView.centerYAnchor, constant: 0).isActive = true
+        subTitle.leadingAnchor.constraint(equalTo: title.leadingAnchor, constant: 0).isActive = true
+        subTitle.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -25).isActive = true
+        
         NSLayoutConstraint.activate([
             mainView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
             mainView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
@@ -167,15 +172,11 @@ class ChannelCell: UITableViewCell {
             
             channelImageView.centerYAnchor.constraint(equalTo: mainView.centerYAnchor, constant: 0),
             channelImageView.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: 0),
-            channelImageView.heightAnchor.constraint(equalToConstant: 70),
-            channelImageView.widthAnchor.constraint(equalToConstant: 70),
+            channelImageView.heightAnchor.constraint(equalToConstant: 65),
+            channelImageView.widthAnchor.constraint(equalToConstant: 65),
             
             title.bottomAnchor.constraint(equalTo: subTitle.topAnchor, constant: -7),
             title.leadingAnchor.constraint(equalTo: channelImageView.trailingAnchor, constant: 15),
-            
-            subTitle.centerYAnchor.constraint(equalTo: channelImageView.centerYAnchor, constant: 0),
-            subTitle.leadingAnchor.constraint(equalTo: title.leadingAnchor, constant: 0),
-            subTitle.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: 0),
             
             messageLabel.topAnchor.constraint(equalTo: subTitle.bottomAnchor, constant: 7),
             messageLabel.leadingAnchor.constraint(equalTo: channelImageView.trailingAnchor, constant: 15),
@@ -263,6 +264,8 @@ extension ChannelCell {
             let height = badgeLabel.frame.height + CGFloat(Int(0.4 * fontSize))
             let width = (count <= 9) ? height : badgeLabel.frame.width + CGFloat(Int(fontSize))
             
+            messageLabel.textColor = ThemeManager.currentTheme().tintColor
+            
             badgeLabel.layer.cornerRadius = height / 2.0
             badgeLabel.clipsToBounds = true
             customAccessoryView.addSubview(badgeLabel)
@@ -276,6 +279,7 @@ extension ChannelCell {
         } else {
             badgeLabel.text = "0"
             badgeLabel.isHidden = true
+            messageLabel.textColor = ThemeManager.currentTheme().generalSubtitleColor
         }
     }
 }

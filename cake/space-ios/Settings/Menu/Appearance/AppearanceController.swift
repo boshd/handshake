@@ -113,7 +113,6 @@ class AppearanceTableViewController: MenuControlsTableViewController {
             cell.isUserInteractionEnabled = true
             cell.selectionStyle = .none
             
-            
             if indexPath.row == 0 {
                 cell.setupCell(title: "Dark mode", subtitle: "Toggle Dark mode settings for the app.")
                 cell.switchAccessory.isOn = userDefaults.currentBoolObjectState(for: userDefaults.selectedTheme)

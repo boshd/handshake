@@ -104,6 +104,7 @@ class TabBarController: UITabBarController {
         guard Auth.auth().currentUser == nil else {
             return
         }
+        UIApplication.shared.applicationIconBadgeNumber = 0
         let destination = WelcomeViewController()
         let newNavigationController = UINavigationController(rootViewController: destination)
         newNavigationController.modalPresentationStyle = .overFullScreen

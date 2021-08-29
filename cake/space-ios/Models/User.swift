@@ -18,7 +18,16 @@ final class User: Object {
     @objc dynamic var userImageUrl: String?
     @objc dynamic var userThumbnailImageUrl: String?
     @objc dynamic var onlineStatus: String?
-    @objc dynamic var localName: String?
+    @objc dynamic var localName: String? {
+        get {
+            if let localContactIdentifier = localContactIdentifier {
+                return globalVariables.localContactsDict[localContactIdentifier]?.givenName
+            } else {
+                return nil
+            }
+        }
+        set {}
+    }
     
     @objc dynamic var fcmToken: String?
     
