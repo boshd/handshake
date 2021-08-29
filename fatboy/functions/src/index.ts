@@ -67,6 +67,8 @@ exports.notifyOnMessageCreation = functions.firestore
         const text = messageData['text']
         const channelName = messageData['channelName']
 
+        delete fcmTokens[fromId]
+
         const tokens = Object.keys(fcmTokens).map(key => fcmTokens[key])
 
         const messagePayload = constructNotificationPayload(
@@ -80,7 +82,7 @@ exports.notifyOnMessageCreation = functions.firestore
             0,
         )
 
-        if (fromId !== userId) {
+        if (fromId != userId) {
             return admin
             .messaging()
             .sendMulticast(messagePayload)

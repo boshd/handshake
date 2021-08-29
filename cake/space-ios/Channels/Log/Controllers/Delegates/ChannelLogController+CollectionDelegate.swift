@@ -110,8 +110,45 @@ extension ChannelLogController: CollectionDelegate {
             if message.isInformationMessage.value == nil || !(message.isInformationMessage.value ?? false) {
                 print("not info")
                 groupedMessages.last?.messages.last?.isCrooked.value = true
-                groupedMessages.last?.messages.last?.isFirstInSection.value = true
-//                if let index = groupedMessages.last?.messages.count, index > 1 {
+                
+                if let messageCount = groupedMessages.last?.messages.count, messageCount > 1 {
+                    // message is equal to messages.last
+                    if groupedMessages.last?.messages[messageCount-2].fromId != message.fromId {
+                        groupedMessages.last?.messages[messageCount-2].isCrooked.value = true
+                        groupedMessages.last?.messages.last?.isFirstInSection.value = true
+                    } else {
+                        groupedMessages.last?.messages[messageCount-2].isCrooked.value = false
+                    }
+                    
+                }
+                
+                //groupedMessages.last?.messages.last?.isFirstInSection.value = true
+                
+                // last msg = crooked
+                // b4 last msg = not crooked
+                
+                
+                // if last msg not same sender as current sender, then first in section
+                
+                
+                if let messageCount = groupedMessages.last?.messages.count, messageCount > 1 {
+                    if groupedMessages.last?.messages[messageCount - 2].fromId != groupedMessages.last?.messages.last?.fromId {
+                        groupedMessages.last?.messages.last?.isCrooked.value = true
+                    } else {
+                        groupedMessages.last?.messages[messageCount - 2].isCrooked.value = false
+                    }
+                }
+                
+                
+                
+
+                if let messageCount = groupedMessages.last?.messages.count, messageCount > 1 {
+                    if groupedMessages.last?.messages[messageCount - 2].fromId != groupedMessages.last?.messages.last?.fromId {
+                        groupedMessages.last?.messages.last?.isCrooked.value = true
+                    } else {
+                        groupedMessages.last?.messages[messageCount - 2].isCrooked.value = false
+                    }
+                }
 //                    if groupedMessages.last?.messages[index - 2].fromId != groupedMessages.last?.messages.last?.fromId {
 //                        groupedMessages.last?.messages.last?.isFirstInSection.value = true
 //                    } else {

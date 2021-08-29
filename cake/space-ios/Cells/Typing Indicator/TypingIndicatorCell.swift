@@ -106,10 +106,10 @@ static let typingIndicatorHeight: CGFloat = 30
             
             if currentTypingPrompt == nil {
                 if isIs {
-                    label.text = currentLabelText + TypingPrompt.isTyping1.rawValue
+                    label.text = "\u{200E}\(currentLabelText + TypingPrompt.isTyping1.rawValue)\u{200C}"
                     currentTypingPrompt = .isTyping1
                 } else {
-                    label.text = currentLabelText + TypingPrompt.areTyping1.rawValue
+                    label.text = "\u{200E}\(currentLabelText + TypingPrompt.areTyping1.rawValue)\u{200C}"
                     currentTypingPrompt = .areTyping1
                 }
                 
@@ -117,28 +117,28 @@ static let typingIndicatorHeight: CGFloat = 30
             
             switch currentTypingPrompt {
                 case .isTyping1:
-                    label.text = currentLabelText + TypingPrompt.isTyping2.rawValue
+                    label.text = "\u{200E}\(currentLabelText + TypingPrompt.isTyping2.rawValue)\u{200C}"
                     currentTypingPrompt = .isTyping2
                 case .isTyping2:
-                    label.text = currentLabelText + TypingPrompt.isTyping3.rawValue
+                    label.text = "\u{200E}\(currentLabelText + TypingPrompt.isTyping3.rawValue)\u{200C}"
                     currentTypingPrompt = .isTyping3
                 case .isTyping3:
-                    label.text = currentLabelText + TypingPrompt.isTyping1.rawValue
+                    label.text = "\u{200E}\(currentLabelText + TypingPrompt.isTyping1.rawValue)\u{200C}"
                     currentTypingPrompt = .isTyping1
                 case .areTyping1:
-                    label.text = currentLabelText + TypingPrompt.areTyping2.rawValue
+                    label.text = "\u{200E}\(currentLabelText + TypingPrompt.areTyping2.rawValue)\u{200C}"
                     currentTypingPrompt = .areTyping2
                 case .areTyping2:
-                    label.text = currentLabelText + TypingPrompt.areTyping3.rawValue
+                    label.text = "\u{200E}\(currentLabelText + TypingPrompt.areTyping3.rawValue)\u{200C}"
                     currentTypingPrompt = .areTyping3
                 case .areTyping3:
-                    label.text = currentLabelText + TypingPrompt.areTyping1.rawValue
+                    label.text = "\u{200E}\(currentLabelText + TypingPrompt.areTyping1.rawValue)\u{200C}"
                     currentTypingPrompt = .areTyping1
                 default:
                     break
             }
         }
-        
+        // \u{200E} \u{200C}
     }
     
 }

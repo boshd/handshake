@@ -46,6 +46,8 @@ class MessageSender: NSObject {
     fileprivate var progress = [UploadProgress]()
     
     fileprivate func sendMessagePlease() {
+        guard let currentUserID = Auth.auth().currentUser?.uid else { return }
+        
         let messageSendingGroup = DispatchGroup()
         let delegateGroup = DispatchGroup()
         
@@ -71,7 +73,9 @@ class MessageSender: NSObject {
         var fcmDict = [String:String]()
         
         channel?.fcmTokens.forEach({ (token) in
-            fcmDict[token.userId] = token.fcmToken
+            if fcmDict[token.userId] != currentUserID {
+                fcmDict[token.userId] = token.fcmToken
+            }
         })
         
         let defaultData: [String: AnyObject] = ["messageUID": messageUID as AnyObject,

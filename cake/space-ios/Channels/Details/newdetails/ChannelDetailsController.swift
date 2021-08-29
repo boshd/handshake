@@ -815,7 +815,7 @@ extension ChannelDetailsController {
             globalIndicator.showSuccess(withStatus: "Removed")
             hapticFeedback(style: .success)
             if let name = nameToBeDeleted, let channelName = self.channel?.name {
-//                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\(name) has been removed from the event", channel: self.channel)
+                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\(name) has been removed from the event", channel: self.channel)
             }
 //            self.channelDetailsContainerView.tableView.reloadData()
         }
@@ -931,10 +931,10 @@ extension ChannelDetailsController {
                 } else if rsvp == .notGoing {
                     text = "\(name) can't make it."
                 } else {
-                    text = "\(name) might attend."
+                    text = "\(name) isn't sure."
                 }
                 
-                // self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: text, channel: self.channel)
+                self.informationMessageSender.sendInformationMessage(channelID: self.channelID, channelName: channelName, participantIDs: [], text: text, channel: self.channel)
             }
             
         }
