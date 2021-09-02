@@ -195,6 +195,7 @@ class BaseMessageCell: UICollectionViewCell {
 
     private func prepareViewsForReuse() {
         nameLabel.text = ""
+        timeLabel.text = ""
         nameLabel.textColor = ThemeManager.currentTheme().authorNameTextColor
         timeLabel.backgroundColor = .clear
         backgroundColor = .clear

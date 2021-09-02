@@ -150,7 +150,6 @@ class CreateChannelController: UITableViewController {
         timeFormatter.dateFormat = "h:mm a"
         
         if startTime == nil && endTime == nil {
-            print("they nil")
             let nearestHour = Date().nearestHour()
             startTime = Int64(nearestHour.timeIntervalSince1970)
             endTime = Int64(nearestHour.nextHour.timeIntervalSince1970)
@@ -340,8 +339,8 @@ extension CreateChannelController {
 
         channelCreatingGroup.enter()
         channelCreatingGroup.enter()
-//        channelCreatingGroup.enter()
-//        fetchAndUpdateMemeberFCMTokens(reference: newChannelReference)
+        channelCreatingGroup.enter()
+        fetchAndUpdateMemeberFCMTokens(reference: newChannelReference)
         createChannelNode(newChannelReference: newChannelReference, channelData: channelData)
         uploadImage(reference: newChannelReference, image: selectedImage)
 

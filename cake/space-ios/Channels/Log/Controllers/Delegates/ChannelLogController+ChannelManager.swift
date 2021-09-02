@@ -114,46 +114,73 @@ extension ChannelLogController: ChannelManagerDelegate {
     }
     
     func addMember(id: String) {
-        guard let channel = self.channel, !channel.isInvalidated else { return }
-        
+        print("in remove member \(self.channel?.participantIds)")
         guard let members = self.channel?.participantIds else { return }
         if let _ = members.firstIndex(where: { (memberID) -> Bool in
             return memberID == id
-        }) {
-        } else {
+        }) {} else {
+            print("appending \(id) in safe write mode")
             try! realm.safeWrite {
                 self.channel?.participantIds.append(id)
+                print("post append \(self.channel?.participantIds)")
             }
         }
         
-//        let obj: [String: Any] = ["id": id]
-//        NotificationCenter.default.post(name: .memberAdded, object: obj)
+        self.changeUIAfterChildAddedIfNeeded()
     }
     
     func removeMember(id: String) {
-        guard let channel = self.channel, !channel.isInvalidated else { return }
-        
+        print("in remove member \(self.channel?.participantIds)")
         guard let members = self.channel?.participantIds else { return }
         guard let memberIndex = members.firstIndex(where: { (memberID) -> Bool in
             return memberID == id
         }) else { return }
-
         try! realm.safeWrite {
             self.channel?.participantIds.remove(at: memberIndex)
         }
         
-//        let obj: [String: Any] = ["id": id]
-//        NotificationCenter.default.post(name: .memberRemoved, object: obj)
-        
         self.changeUIAfterChildRemovedIfNeeded()
+        
+    }
+    
+    fileprivate func changeUIAfterChildAddedIfNeeded() {
+        if isCurrentUserMemberOfCurrentGroup() {
+            setupTitle()
+            if typingIndicatorCollectionListener == nil {
+                reloadInputViews()
+                inputAccessoryPlaceholder.add(inputContainerView)
+                observeTypingIndicator()
+                addChannelControllerTypingObserver()
+                channelLogContainerView.channelLogHeaderView.isUserInteractionEnabled = true
+                channelLogContainerView.channelLogHeaderView.viewDetails.isHidden = false
+            }
+        }
     }
     
     fileprivate func changeUIAfterChildRemovedIfNeeded() {
-        
         if isCurrentUserMemberOfCurrentGroup() {
             setupTitle()
             inputAccessoryPlaceholder.add(inputContainerView)
         } else {
+            //channelManager.removeAllListeners()
+            
+//            if channelManager.channelListener != nil {
+//                channelManager.channelListener.remove()
+//                channelManager.channelListener = nil
+//            }
+            // we wont remove parrticipant listener
+             
+//            if channelParticipantsListener != nil {
+//                channelParticipantsListener.remove()
+//                channelParticipantsListener = nil
+//                print("channelParticipantsListener became nil")
+//            }
+            
+//            if channelManager.userChannelsListener != nil {
+//                channelManager.userChannelsListener.remove()
+//                channelManager.userChannelsListener = nil
+//            }
+            
             messagesFetcher?.removeListener()
             self.inputContainerView.resignAllResponders()
             reloadInputViews()
@@ -168,6 +195,7 @@ extension ChannelLogController: ChannelManagerDelegate {
             
             inputAccessoryPlaceholder.add(inputBlockerContainerView)
             navigationItem.rightBarButtonItem?.isEnabled = false
+            // remove typing indicator listener
             if typingIndicatorCollectionListener != nil {
                 typingIndicatorCollectionListener?.remove()
                 typingIndicatorCollectionListener = nil
@@ -179,6 +207,10 @@ extension ChannelLogController: ChannelManagerDelegate {
         guard let membersIDs = channel?.participantIds,
               let uid = Auth.auth().currentUser?.uid, membersIDs.contains(uid) else { return false }
         return true
+    }
+    
+    func addChannelControllerTypingObserver() {
+        observeTypingIndicator()
     }
     
     fileprivate func removeSubtitleInGroupChat() {

@@ -84,13 +84,11 @@ extension ChannelLogController: InputAccessoryViewPlaceholderDelegate {
     func animateHeaderView(collapsed: Bool) {
         if collapsed {
 //            if inputAccessoryPlaceholder.accessibilityActivate()
-            print("gonna collapse ... state is \(inputAccessoryPlaceholder.keyboardState)")
             channelLogContainerView.headerTopConstraint?.constant = -75
             isChannelLogHeaderShowing = false
             collectionView.contentInset.top = 20
 //            channelLogContainerView.headerHeightConstraint?.constant = 0
         } else {
-            print("gonna UNcollapse ... state is \(inputAccessoryPlaceholder.keyboardState)")
             if channelLogContainerView.headerTopConstraint?.constant == -75 {
                 channelLogContainerView.headerTopConstraint?.constant = 10
                 isChannelLogHeaderShowing = true

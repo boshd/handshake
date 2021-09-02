@@ -979,6 +979,7 @@ let photoLibraryAccessDeniedMessageProfilePicture = " needs access to your photo
 
 let videoRecordedButLibraryUnavailableError = "To send a recorded video, it has to be saved to your photo library first. Please go to Settings –– Privacy –– Photos –– and set  to ON."
 
+let maximumAttendeesMessage = "Maximum number of attendees in an event is 250."
 let basicErrorTitleForAlert = "Error"
 let basicTitleForAccessError = "Please Allow Access"
 let noInternetError = "Internet is not available. Please try again later"

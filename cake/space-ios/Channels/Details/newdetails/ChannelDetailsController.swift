@@ -418,32 +418,26 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
         
         let channelName = self.channel?.name ?? ""
         
+        guard let channel = channel else { return }
+        
         let channelCopy = Channel(value: channel)
-        
-        let channelParticipantReference = Firestore.firestore().collection("channels").document(channelID).collection("participantIds").document(currentUserID)
+//
+//        let channelParticipantReference = Firestore.firestore().collection("channels").document(channelID).collection("participantIds").document(currentUserID)
         let channelReference = Firestore.firestore().collection("channels").document(channelID)
-        let participantChannelReference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID)
+        let participantReference = Firestore.firestore().collection("users").document(currentUserID)
         
-        let batch = Firestore.firestore().batch()
-        
-        batch.deleteDocument(channelParticipantReference)
-        batch.deleteDocument(participantChannelReference)
-        batch.updateData(["participantIds": FieldValue.arrayRemove([currentUserID])], forDocument: channelReference)
-        batch.updateData(["fcmTokens": FieldValue.arrayRemove([currentUserID])], forDocument: channelReference)
-        
-        batch.commit { [weak self] error in
-            guard let self = self else { return }
+        ChannelManager.removeMember(channelReference: channelReference, userReference: participantReference, memberID: currentUserID, channelID: channelID) { error in
             if error != nil {
                 print(error?.localizedDescription ?? "err")
                 return
             }
             
             self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: self.attendees.map({$0.id ?? ""}), text: text, channel: channelCopy)
-            
-            
+
+
             self.navigationController?.popViewController(animated: true)
+            
         }
-        
     }
     
     // MARK: - Datasource Observers
@@ -545,11 +539,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func xperiment() {
-        print("local REALM // count: \(RealmKeychain.realmUsersArray().count) //")
-        print()
-        print("NON LOCAL REALM // count: \(RealmKeychain.nonLocalUsersRealm.objects(User.self).count) // \(RealmKeychain.nonLocalUsersRealm.objects(User.self).map({$0.name}))")
-        print()
-        print("default REALM // count: \(RealmKeychain.defaultRealm.objects(User.self).count) // \(RealmKeychain.defaultRealm.objects(User.self).map({$0.name}))")
+
     }
     
     func populateAttendees() {
@@ -578,36 +568,15 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
             if participantId == currentUserID { continue }
             group.enter()
             
-            /*
-             
-             The idea here is populate the users initially from local memory, BUT we need to fetch
-             them anyway and if they turn out to be different, we need to reload them.
-             
-             */
-            
             if let user = RealmKeychain.realmUsersArray().first(where: {$0.id == participantId}) {
-                // IS IN LOCAL REALM
-                print("IN REALM \(user.localName)")
                 attendees.append(user)
             }
-//            else if let user = RealmKeychain.realmNonLocalUsersArray().first(where: {$0.id == participantId}) {
-//                // IN NON-LOCAL REALM
-//                attendees.append(user)
-//            }
             
             UsersFetcher.fetchUser(id: participantId) { [weak self] user, error in
-                
                 group.leave()
-                
                 guard let user = user, error == nil else { return }
-                
                 if let localRealmUser = RealmKeychain.realmUsersArray().first(where: {$0.id == participantId}) {
-                    
-                    // if this person is different, we replace them in the array, otherwise do nothing because
-                    // they already xist in the array
-                    
                     if !user.isEqual_(to: localRealmUser) {
-                        print("!isEqual_ -- fetched user \(user.localName) ... realm user \(localRealmUser.localName)")
                         autoreleasepool {
                             if let isInWriteTransaction = self?.localRealm.isInWriteTransaction, !isInWriteTransaction {
                                 try! self?.localRealm.safeWrite {
@@ -634,92 +603,22 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
                             self?.attendees.append(user)
                         }
                     }
-                    
+                } else {
+                    // everyone else
+                    if let contains = self?.attendees.map({$0.id}).contains(user.id), contains {
+                        if let index = self?.attendees.firstIndex(where: { user_ in
+                            return user_.id == user.id
+                        }) {
+                            self?.attendees[index] = user
+                        }
+                    } else {
+                        self?.attendees.append(user)
+                    }
                 }
-//
-//                if let localRealmUser = RealmKeychain.usersRealm.object(ofType: User.self, forPrimaryKey: user.id),
-//                   !user.isEqual_(to: localRealmUser) {
-//                    // this shouldn't pass....?
-//                    // update local realm user copy
-//                    if !(self.localRealm.isInWriteTransaction) {
-//                        self.localRealm.beginWrite()
-//                        localRealmUser.email = user.email
-//                        localRealmUser.name = user.name
-//                        localRealmUser.localName = user.localName
-//                        localRealmUser.phoneNumber = user.phoneNumber
-//                        localRealmUser.userImageUrl = user.userImageUrl
-//                        localRealmUser.userThumbnailImageUrl = user.userThumbnailImageUrl
-//                        try! self.localRealm.commitWrite()
-//                    }
-//
-//                    // update array
-//                    if let index = self.attendees.firstIndex(where: { user_ in
-//                        return user_.id == user.id
-//                    }) {
-//                        self.attendees[index] = user
-//                    }
-//                } else if RealmKeychain.realmNonLocalUsersArray().map({$0.id}).contains(user.id) {
-//                    if let nonLocalRealmUser = RealmKeychain.nonLocalUsersRealm.object(ofType: User.self, forPrimaryKey: user.id),
-//                       !user.isEqual_(to: nonLocalRealmUser) {
-//
-//                        // update local realm user copy
-//                        if !(self.nonLocalRealm.isInWriteTransaction) {
-//                            self.nonLocalRealm.beginWrite()
-//                            nonLocalRealmUser.email = user.email
-//                            nonLocalRealmUser.name = user.name
-//                            nonLocalRealmUser.localName = user.localName
-//                            nonLocalRealmUser.phoneNumber = user.phoneNumber
-//                            nonLocalRealmUser.userImageUrl = user.userImageUrl
-//                            nonLocalRealmUser.userThumbnailImageUrl = user.userThumbnailImageUrl
-//                            try! self.nonLocalRealm.commitWrite()
-//                        }
-//
-//                        // update array
-//                        if let index = self.attendees.firstIndex(where: { user_ in
-//                            return user_.id == user.id
-//                        }) {
-//                            self.attendees[index] = user
-//                        }
-//                    }
-//                } else {
-//                    autoreleasepool {
-//                        if !self.nonLocalRealm.isInWriteTransaction {
-//                            self.nonLocalRealm.beginWrite()
-//                            self.nonLocalRealm.create(User.self, value: user, update: .modified)
-//                            try! self.nonLocalRealm.commitWrite()
-//                        }
-//                    }
-//                    self.attendees.append(user)
-//                }
-                
             }
             
             group.notify(queue: .main, execute: { [weak self] in
                 guard let self = self else { return }
-                
-//                var ordinaryAttendees = [User]()
-//                var adminAttendees = [User]()
-//                var sortedAttendees = [User]()
-//
-//                for attendee in self.attendees {
-//                    if let admins = self.channel?.admins, let id = attendee.id {
-//                        if admins.contains(id) {
-//                            adminAttendees.append(attendee)
-//                        } else {
-//                            ordinaryAttendees.append(attendee)
-//                        }
-//                    }
-//                }
-                
-//                self.attendees.removeAll()
-//
-//                if let globalCurrentUser = globalCurrentUser {
-//                    self.attendees.append(globalCurrentUser)
-//                }
-                
-//                sortedAttendees = adminAttendees + ordinaryAttendees
-//                self.attendees += sortedAttendees
-                
                 self.channelDetailsContainerView.tableView.reloadData()
             })
         }
@@ -763,7 +662,7 @@ extension ChannelDetailsController {
             globalIndicator.showSuccess(withStatus: "Dismissed")
             hapticFeedback(style: .success)
             if let name = self.attendees.filter({ $0.id == memberID }).first?.name, let channelName = self.channel?.name {
-                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\(name) has been dismissed as Organizer", channel: self.channel)
+                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\u{200E}\(name) has been dismissed as Organizer\u{200C}", channel: self.channel)
             }
         }
     }
@@ -785,7 +684,7 @@ extension ChannelDetailsController {
             globalIndicator.showSuccess(withStatus: nil)
             hapticFeedback(style: .success)
             if let name = self.attendees.filter({ $0.id == memberID }).first?.name, let channelName = self.channel?.name {
-                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\(name) is now an Organizer", channel: self.channel)
+                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\u{200E}\(name) is now an Organizer\u{200C}", channel: self.channel)
             }
         }
     }
@@ -815,7 +714,15 @@ extension ChannelDetailsController {
             globalIndicator.showSuccess(withStatus: "Removed")
             hapticFeedback(style: .success)
             if let name = nameToBeDeleted, let channelName = self.channel?.name {
-                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\(name) has been removed from the event", channel: self.channel)
+                let copyChannel = Channel(value: self.channel as Any)
+                if let index = copyChannel.participantIds.firstIndex(where: { $0 == memberID }) {
+                    copyChannel.participantIds.remove(at: index)
+                }
+                if let index = copyChannel.fcmTokens.firstIndex(where: { $0.userId == memberID }) {
+                    copyChannel.fcmTokens.remove(at: index)
+                }
+                
+                self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "\u{200E}\(name) has been removed from the event\u{200C}", channel: copyChannel)
             }
 //            self.channelDetailsContainerView.tableView.reloadData()
         }
@@ -927,13 +834,12 @@ extension ChannelDetailsController {
             if let name = globalCurrentUser?.name, let channelName = self.channel?.name {
                 var text = ""
                 if rsvp == .going {
-                    text = "\(name) is going."
+                    text = "\u{200E}\(name) is going.\u{200C}"
                 } else if rsvp == .notGoing {
-                    text = "\(name) can't make it."
+                    text = "\u{200E}\(name) can't make it.\u{200C}"
                 } else {
-                    text = "\(name) isn't sure."
+                    text = "\u{200E}\(name) isn't sure about attending.\u{200C}"
                 }
-                
                 self.informationMessageSender.sendInformationMessage(channelID: self.channelID, channelName: channelName, participantIDs: [], text: text, channel: self.channel)
             }
             

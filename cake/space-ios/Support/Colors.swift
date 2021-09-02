@@ -23,7 +23,8 @@ extension UIColor {
     
     open class var handshakeBlue: UIColor {
 //        get { return UIColor(red: 0.12, green: 0.00, blue: 0.96, alpha: 1.00) }
-        get { return UIColor(red: 0.00, green: 0.35, blue: 1.00, alpha: 1.00) }
+        // get { return UIColor(red: 0.00, green: 0.35, blue: 1.00, alpha: 1.00) }
+        get { return UIColor(red: 0.20, green: 0.49, blue: 0.98, alpha: 1.00) }
     }
     
     open class var handshakeLightPurple: UIColor {

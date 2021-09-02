@@ -77,19 +77,15 @@ class UsersFetcher: NSObject {
     
     fileprivate func requestUsers() {
         guard let currentUserID = Auth.auth().currentUser?.uid else { return }
-        
         let tuples = prepareNumberTuples(from: globalVariables.localContactsDict)
-        
-        
         functions.httpsCallable("getUsersWithPreparedNumbers").call(["preparedNumbers": tuples.map({ $0.1 })]) { (result, error) in
             if error != nil {
-                print(error?.localizedDescription ?? "error in https call - getUsersWithPreparedNumbers")
+                print(error?.localizedDescription ?? "error getUsersWithPreparedNumbers")
                 return
             }
-            guard let response = result?.data as? [[String: AnyObject]] else { return }
+            guard let response = result?.data as? [[String: AnyObject]] else { print("stuck in requestUsers response return"); return }
             var fetchedUsers = [User]()
             var fetchedUsersTuples = [(User, String)]()
-            
             for object in response {
                 let user = User(dictionary: object)
                 
@@ -100,7 +96,6 @@ class UsersFetcher: NSObject {
                     }
                 }
             }
-            
             userDefaults.updateObject(for: userDefaults.contactsSyncronizationStatus, with: true)
             self.updateUsers(with: fetchedUsersTuples)
         }
@@ -157,15 +152,13 @@ class UsersFetcher: NSObject {
                 self.updateDataSource(newUsers: [User]())
                 return
             }
-            
             var userIDsAndContactIDs = [(String, String)]()
             
             for doc in docs {
                 let data = doc.data()
-                guard let contactId = data["localContactId"] as? String else { return }
+                guard let contactId = data["localContactId"] as? String else { continue }
                 userIDsAndContactIDs.append((doc.documentID, contactId))
             }
-            
             if let index = userIDsAndContactIDs.map({ $0.0 }).firstIndex(of: currentUserID) {
                 userIDsAndContactIDs.remove(at: index)
             }

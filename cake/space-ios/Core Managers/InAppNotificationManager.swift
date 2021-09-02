@@ -61,7 +61,6 @@ class InAppNotificationManager: NSObject {
                 changes.forEach { (diff) in
                     
                     if diff.type == .added {
-                        print("ADDED ")
                         let messageID = diff.document.documentID
                         
                         Firestore.firestore().collection("messages").document(messageID).getDocument { (snapshot, error) in

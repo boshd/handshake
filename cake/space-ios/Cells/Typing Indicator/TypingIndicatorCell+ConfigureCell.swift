@@ -77,27 +77,29 @@ extension TypingIndicatorCell {
     }
     
     func getName(for id: String, completion: @escaping (String) -> ()) {
-        if let realmUser = RealmKeychain.realmUsersArray().first(where: { $0.id == id }),
-           let name = realmUser.localName {
-            completion(name)
-        } else if let nonLocalRealmUser = RealmKeychain.realmNonLocalUsersArray().first(where: { $0.id == id }),
-                  let phone = nonLocalRealmUser.phoneNumber {
-            completion(phone)
+        if let realmUser = RealmKeychain.realmUsersArray().first(where: { $0.id == id }) {
+            if let localName = realmUser.localName {
+                completion(localName)
+            } else if let name = realmUser.name {
+                completion(name)
+            }
+            
         } else {
             // fetch user once and add to non local realm
             UsersFetcher.fetchUser(id: id) { [weak self] user, error in
                 guard error == nil else { print(error?.localizedDescription ?? ""); completion("somoene"); return }
                 // issues w/ initial state
-                if let user = user {
-                    if let number = user.phoneNumber {
-                        completion(number)
-                    } else {
-                        completion("somoene")
-                    }
-                    self?.addToRealm(user: user)
+                
+                guard let user = user else { return }
+                
+                if let name = user.name {
+                    completion(name)
+                } else if let number = user.phoneNumber {
+                    completion(number)
                 } else {
                     completion("somoene")
                 }
+                self?.addToRealm(user: user)
             }
         }
     }

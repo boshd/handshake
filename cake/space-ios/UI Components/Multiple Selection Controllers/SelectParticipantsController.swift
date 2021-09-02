@@ -143,6 +143,11 @@ class SelectParticipantsController: UIViewController {
 
     func CreateChannel() {
         let destination = CreateChannelController(style: .plain)
+        if selectedUsers.count > 250 {
+            hapticFeedback(style: .error)
+            displayErrorAlert(title: basicErrorTitleForAlert, message: maximumAttendeesMessage, preferredStyle: .alert, actionTitle: basicActionTitle, controller: self)
+            return
+        }
         destination.selectedUsers = selectedUsers
         navigationController?.pushViewController(destination, animated: true)
     }
@@ -154,40 +159,6 @@ class SelectParticipantsController: UIViewController {
         return ThemeManager.currentTheme().statusBarStyle
     }
 
-//    func addNewMembers() {
-//        ARSLineProgress.ars_showOnView(view)
-//        navigationController?.view.isUserInteractionEnabled = false
-//
-//        let reference = Database.database().reference().child("groupChats").child(chatIDForUsersUpdate).child(messageMetaDataFirebaseFolder).child("chatParticipantsIDs")
-//        reference.observeSingleEvent(of: .value) { (snapshot) in
-//
-//        guard let dictionary = snapshot.value as? [String: AnyObject] else { return }
-//        guard var membersIDs = Array(dictionary.values) as? [String] else { return }
-//
-//        var values = [String: AnyObject]()
-//        var selectedUserNames = [String]()
-//
-//        for selectedUser in self.selectedUsers {
-//            guard let selectedID = selectedUser.id, let selectedUserName = selectedUser.name else { continue }
-//            values.updateValue(selectedID as AnyObject, forKey: selectedID)
-//            selectedUserNames.append(selectedUserName)
-//            membersIDs.append(selectedID)
-//            }
-//
-//            reference.updateChildValues(values, withCompletionBlock: { (_, _) in
-//                let userNamesString = selectedUserNames.joined(separator: ", ")
-//                let usersTitleString = selectedUserNames.count > 1 ? "users" : "user"
-//                let text = "Admin added \(usersTitleString) \(userNamesString) to the group"
-//                self.informationMessageSender.sendInformationMessage(channelID: self.chatIDForUsersUpdate, participantIDs: membersIDs, text: text)
-//                // self.informationMessageSender.sendInformatoinMessage(chatID: self.chatIDForUsersUpdate, membersIDs: membersIDs, text: text)
-//
-//                ARSLineProgress.showSuccess()
-//                self.navigationController?.view.isUserInteractionEnabled = true
-//                self.navigationController?.popViewController(animated: true)
-//            })
-//        }
-//    }
-    
     // responsible for changing theme based on system theme
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)

@@ -45,10 +45,11 @@ class ChannelLogHistoryFetcher: NSObject {
         
         // messages to load = all existing messages, so 25 initialy + the amount we want which is 5 for example. So load 30 plz.
         
-        let firstIDQuery = firstIDReference.order(by: "timestamp", descending: true).limit(to: numberOfMessagesToLoad)
+        let firstIDQuery = firstIDReference.order(by: "timestamp").limit(to: numberOfMessagesToLoad)
         firstIDQuery.getDocuments { (snapshot, error) in
             guard let documents = snapshot?.documents else { print(error?.localizedDescription ?? "error"); return }
             guard let firstDocument = documents.last else { return }
+            print("1. got \(documents.count) docs, \(documents.last?.documentID)")
             self.getLastID(firstDocument, currentUserID, channelID)
         }
     }
@@ -56,9 +57,10 @@ class ChannelLogHistoryFetcher: NSObject {
     fileprivate func getLastID(_ firstDocument: DocumentSnapshot, _ currentUserID: String, _ channelID: String) {
         let nextMessageIndex = messages.count + 1
         let lastIDReference = Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(channelID).collection("messageIds")
-        let lastIDQuery = lastIDReference.order(by: "timestamp", descending: true).limit(to: nextMessageIndex)
+        let lastIDQuery = lastIDReference.order(by: "timestamp").limit(to: nextMessageIndex)
         lastIDQuery.getDocuments { (snapshot, error) in
             guard let documents = snapshot?.documents else { print(error?.localizedDescription ?? "error"); return }
+            print("2. got \(documents.count) docs, \(documents.last?.documentID)")
             guard let lastID = documents.last?.documentID, let lastDocument = documents.last else { return }
             if (firstDocument.documentID == lastID) && self.messages.contains(where: { (message) -> Bool in
                 return message.messageUID == lastID

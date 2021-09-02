@@ -128,7 +128,6 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: locationViewCellId, for: indexPath) as? LocationViewCell ?? LocationViewCell(style: .subtitle, reuseIdentifier: locationViewCellId)
             if let isRemote = channel?.isRemote.value, isRemote {
-                print("IS REMOTE LOL")
                 cell.locationView.removeFromSuperview()
                 cell.detailTextLabel?.text = "If you can't find any information regarding virtual meetings try reaching out to one of the event organizers."
                 cell.contentView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
@@ -192,11 +191,11 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
                     
                     if let author = channel?.author,
                        admins.contains(memberID) && member.id != author {
-                        alert.addAction(CustomAlertAction(title: "Dismiss as Organizer", style: .default , handler: { [unowned self] in
+                        alert.addAction(CustomAlertAction(title: "Dismiss as organizer", style: .default , handler: { [unowned self] in
                             removeAdmin(memberID: memberID)
                         }))
                     } else {
-                        alert.addAction(CustomAlertAction(title: "Make Organizer", style: .default , handler: { [unowned self] in
+                        alert.addAction(CustomAlertAction(title: "Make event organizer", style: .default , handler: { [unowned self] in
                             makeAdmin(memberID: memberID)
                         }))
                     }

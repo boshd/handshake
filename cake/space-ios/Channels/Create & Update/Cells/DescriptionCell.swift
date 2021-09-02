@@ -111,6 +111,10 @@ extension DescriptionCell: UITextViewDelegate {
 
             // If updated text view will be empty, add the placeholder
             // and set the cursor to the beginning of the text view
+        
+        if text.count > 5000 {
+            return false
+        }
             
 //            if text == "\n" {
 //                textView.resignFirstResponder()

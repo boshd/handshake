@@ -9,6 +9,7 @@
 import UIKit
 import SafariServices
 import SDWebImage
+import Firebase
 
 protocol ProfileOpeningDelegate: class {
     func openProfile(fromId: String)
@@ -69,7 +70,10 @@ class IncomingMessageCell: BaseMessageCell {
         textView.backgroundColor = .clear
         textView.textColor = ThemeManager.currentTheme().incomingMessageCellTextColor
         textView.font = ThemeManager.currentTheme().secondaryFont(with: IncomingMessageCell.messageTextSize)
+        
         userImageView.image = nil
+        textView.text = ""
+        
         bubbleView.frame.origin = BaseMessageCell.incomingBubbleOrigin
         timeLabel.backgroundColor = .clear
         timeLabel.textColor = ThemeManager.currentTheme().incomingTimestampTextColor
@@ -139,6 +143,8 @@ class IncomingMessageCell: BaseMessageCell {
                                       animations: { self?.userImageView.image = image },
                                       completion: nil)
                 })
+            } else {
+                userImageView.image = UIImage(named: "UserpicIcon")
             }
             
             if let isFirst = message.isFirstInSection.value, isFirst {
@@ -153,6 +159,7 @@ class IncomingMessageCell: BaseMessageCell {
     
     @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
         if let fromId = fromId {
+            hapticFeedback(style: .selectionChanged)
             delegate?.openProfile(fromId: fromId)
         }
     }

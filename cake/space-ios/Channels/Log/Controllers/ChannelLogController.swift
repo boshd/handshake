@@ -66,7 +66,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     private let fullDateFormatter = DateFormatter()
     private let numberFormatter = NumberFormatter()
     private let timeFormatter  = DateFormatter()
-    private let channelManager = ChannelManager()
+    let channelManager = ChannelManager()
     private let channelsRealmManager = ChannelsRealmManager()
     private let channelLogHistoryFetcher = ChannelLogHistoryFetcher()
     private let keyboardLayoutGuide = KeyboardLayoutGuide()
@@ -115,8 +115,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
             } else {
                 guard let channelID = channel?.id else { return }
                 Firestore.firestore().collection("channels").document(channelID).collection("typingUserIds").document(currentUserID).delete()
-//                Firestore.firestore().collection("channels").document(channelID).collection("typingUserIds").document("XevIxNAQAPYxV4OWFhtQOIIJfH33").delete()
-//                Firestore.firestore().collection("channels").document(channelID).collection("typingUserIds").document("ZFi01vpuzMhcpJWduO3KuAebDPv2").delete()
             }
         }
     }
@@ -312,6 +310,34 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
             typingIndicatorCollectionListener = nil
         }
         
+//        if let viewControllers = self.navigationController?.viewControllers {
+//            if viewControllers.count > 1 && viewControllers[viewControllers.count-2] == self {
+//                // do nothing
+//            } else {
+        removeChannelListener()
+
+        for message in groupedMessages {
+            message.notificationToken?.invalidate()
+        }
+
+        channelLogPresenter.tryDeallocate()
+
+        messagesFetcher?.removeListener()
+        if lastOutgoingMessageListener != nil {
+            lastOutgoingMessageListener?.remove()
+            lastOutgoingMessageListener = nil
+        }
+        messagesFetcher?.collectionDelegate = nil
+        messagesFetcher?.delegate = nil
+//            }
+//        }
+        
+        // this can get run multiple times when you drag to go back from details controller,
+        // but change your mind multiple times
+        
+        //blockInputViewConstraints()
+        savedContentOffset = collectionView.contentOffset
+        
         NotificationCenter.default.removeObserver(self)
         channelManager.removeAllListeners()
     }
@@ -319,33 +345,7 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 //        isKeyboardInitial = true
-        if let viewControllers = self.navigationController?.viewControllers {
-            if viewControllers.count > 1 && viewControllers[viewControllers.count-2] == self {
-                // do nothing
-            } else {
-                removeChannelListener()
 
-                for message in groupedMessages {
-                    message.notificationToken?.invalidate()
-                }
-
-                channelLogPresenter.tryDeallocate()
-
-                messagesFetcher?.removeListener()
-                if lastOutgoingMessageListener != nil {
-                    lastOutgoingMessageListener?.remove()
-                    lastOutgoingMessageListener = nil
-                }
-                messagesFetcher?.collectionDelegate = nil
-                messagesFetcher?.delegate = nil
-            }
-        }
-        
-        // this can get run multiple times when you drag to go back from details controller,
-        // but change your mind multiple times
-        
-        //blockInputViewConstraints()
-        savedContentOffset = collectionView.contentOffset
         
         if let navigationBarTitleGestureRecognizer = navigationBarTitleGestureRecognizer {
             self.navigationController?.navigationBar.removeGestureRecognizer(navigationBarTitleGestureRecognizer)
@@ -356,7 +356,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         print("DEINITED LOG")
         NotificationCenter.default.removeObserver(self)
         channelManager.removeAllListeners()
-        
     }
     
     // MARK: - Setup/config
@@ -534,8 +533,6 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
                 let section = MessageSection(messages: messages, title: date)
                 groupedMessages.insert(section, at: 0)
             }
-            
-            print(groupedMessages)
         }
     }
     

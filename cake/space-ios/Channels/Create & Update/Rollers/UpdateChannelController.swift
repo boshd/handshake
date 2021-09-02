@@ -204,8 +204,9 @@ class UpdateChannelController: CreateChannelController {
             "startTime": startTime as AnyObject,
             "endTime": endTime as AnyObject,
             "description": channelDescription as AnyObject
-        ]) { error in
+        ]) { [weak self] error in
             guard error == nil else {
+                guard let self = self else { return }
                 displayErrorAlert(title: basicErrorTitleForAlert, message: "Something went wrong", preferredStyle: .alert, actionTitle: "Dismiss", controller: self)
                 print(error?.localizedDescription ?? "error");
                 globalIndicator.dismiss();
@@ -213,7 +214,11 @@ class UpdateChannelController: CreateChannelController {
             }
             globalIndicator.showSuccess(withStatus: "Event updated")
             hapticFeedback(style: .success)
-            self.dismiss(animated: true, completion: nil)
+            if let channelName = self?.channel?.name {
+                self?.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: "Event details have been updated", channel: self?.channel)
+            }
+            
+            self?.dismiss(animated: true, completion: nil)
         }
 
     }

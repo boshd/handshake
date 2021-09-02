@@ -125,11 +125,11 @@ class ChannelLogHeaderView: UIView {
             
             timeLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             timeLabel.topAnchor.constraint(equalTo: topAnchor, constant: 15),
-            timeLabel.trailingAnchor.constraint(equalTo: viewDetails.leadingAnchor, constant: -10),
+            timeLabel.trailingAnchor.constraint(equalTo: locationNameLabel.trailingAnchor, constant: 0 ),
             
             locationNameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             locationNameLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15),
-            locationNameLabel.trailingAnchor.constraint(equalTo: viewDetails.leadingAnchor, constant: -10),
+            locationNameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -60),
             
 //            dateLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12),
 //            dateLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),

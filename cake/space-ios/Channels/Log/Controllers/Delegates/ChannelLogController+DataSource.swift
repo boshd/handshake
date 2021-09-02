@@ -173,7 +173,7 @@ extension ChannelLogController: UICollectionViewDelegateFlowLayout, UICollection
         let isTextMessage = message.text != nil && !isInformationMessage
         let isOutgoingMessage = message.fromId == Auth.auth().currentUser?.uid
         guard !isTextMessage else {
-            guard let estimate = message.estimatedFrameForText?.width.value else { return CGSize(width: collectionView.frame.width, height: 15) }
+//            guard let estimate = message.estimatedFrameForText?.width.value else { return CGSize(width: collectionView.frame.width, height: 15) }
             
 //            var width: CGFloat = CGFloat(estimate) + BaseMessageCell.outgoingMessageHorisontalInsets
 //            if (CGFloat(estimate) + BaseMessageCell.messageTimeWidth <=  BaseMessageCell.bubbleViewMaxWidth) ||

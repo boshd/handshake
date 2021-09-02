@@ -16,10 +16,6 @@ extension ChannelLogController {
               let channelID = channel?.id
         else { return }
         Firestore.firestore().collection("channels").document(channelID).collection("typingUserIds").document(currentUserID).setData(data as! [String : Any], merge: true)
-//        Firestore.firestore().collection("channels").document(channelID).collection("typingUserIds").document("XevIxNAQAPYxV4OWFhtQOIIJfH33").setData(data as! [String : Any], merge: true)
-//        Firestore.firestore().collection("channels").document(channelID).collection("typingUserIds").document("ZFi01vpuzMhcpJWduO3KuAebDPv2").setData(data as! [String : Any], merge: true)
-        
-        
     }
     
     func observeTypingIndicator() {
@@ -27,37 +23,44 @@ extension ChannelLogController {
               let channelID = channel?.id
         else { return }
         
-        typingIndicatorCollectionListener = Firestore.firestore().collection("channels").document(channelID).collection("typingUserIds").addSnapshotListener { (snapshot, error) in
-            if error != nil {
-                print(error?.localizedDescription ?? "error")
-                self.handleTypingIndicatorAppearance(isEnabled: false)
-                return
-            }
-            
-            guard let empty = snapshot?.isEmpty else { return }
-            
-            if empty {
-                self.handleTypingIndicatorAppearance(isEnabled: false)
-            }
-            
-            if let typingIds = snapshot?.documents.map({ $0.documentID }) {
-                self.typingUserIds = typingIds
-            }
-            
-            snapshot?.documentChanges.forEach({ (change) in
-                if change.type == .added {
-                    if change.document.documentID != currentUserID {
-                        self.handleTypingIndicatorAppearance(isEnabled: true)
-                    }
-                    
+        if typingIndicatorCollectionListener == nil {
+            typingIndicatorCollectionListener = Firestore.firestore().collection("channels").document(channelID).collection("typingUserIds").addSnapshotListener { (snapshot, error) in
+                if error != nil {
+                    print(error?.localizedDescription ?? "error")
+                    self.handleTypingIndicatorAppearance(isEnabled: false)
+                    return
                 }
-                if change.type == .removed {
-                    if let count = snapshot?.documents.count, count < 1 {
-                        self.handleTypingIndicatorAppearance(isEnabled: false)
-                    }
+                
+                guard let empty = snapshot?.isEmpty else { return }
+                
+                if empty {
+                    self.handleTypingIndicatorAppearance(isEnabled: false)
                 }
-            })
-            
+                
+                if let typingIds = snapshot?.documents.map({ $0.documentID }) {
+                    self.typingUserIds.removeAll()
+                    self.typingUserIds = typingIds.filter({$0 != currentUserID})
+                }
+                
+                snapshot?.documentChanges.forEach({ (change) in
+                    if change.type == .added {
+                        if change.document.documentID != currentUserID {
+                            self.handleTypingIndicatorAppearance(isEnabled: false)
+                            self.handleTypingIndicatorAppearance(isEnabled: true)
+                        }
+                        
+                    }
+                    if change.type == .removed {
+                        if let count = snapshot?.documents.count, count < 1 {
+                            self.handleTypingIndicatorAppearance(isEnabled: false)
+                        } else {
+                            self.handleTypingIndicatorAppearance(isEnabled: false)
+                            self.handleTypingIndicatorAppearance(isEnabled: true)
+                        }
+                    }
+                })
+                
+            }
         }
     }
     

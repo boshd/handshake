@@ -17,7 +17,7 @@ class SelectChannelParticipantsController: SelectParticipantsController {
         navigationItem.leftBarButtonItem = dismissButton
         setupRightBarButton(with: "Next")
         navigationItem.rightBarButtonItem?.isEnabled = true
-        title = "Select Participants"
+        title = "Select Attendees"
         navigationController?.interactivePopGestureRecognizer?.delegate = nil
     }
     

@@ -101,17 +101,11 @@ class ChannelsFetcher: NSObject {
     
     func observeChannelAddedOrRemoved() {
         if currentUserChannelIDsReference != nil {
-//            var first = true
             userChannelIdsCollectionListener = currentUserChannelIDsReference.addSnapshotListener({ [weak self] (snapshot, error) in
                 if error != nil {
                     print(error?.localizedDescription ?? "")
                     return
                 }
-                
-//                if first {
-//                    first = false
-//                    return
-//                }
                 
                 guard let snap = snapshot else { return }
                 snap.documentChanges.forEach { (diff) in
@@ -120,13 +114,12 @@ class ChannelsFetcher: NSObject {
                         self?.delegate?.channels(addedNewChannel: true, channelID: channelID)
                         self?.loadConversation(for: channelID)
                     } else if (diff.type == .removed) {
-//                        let obj: [String: Any] = ["channelID": channelID]
-//                        NotificationCenter.default.post(name: .channelRemoved, object: obj)
                         if self?.individualChannelListenersDict.count != 0 {
                             self?.individualChannelListenersDict[diff.document.documentID]?.remove()
                             if let index = self?.individualChannelListenersDict.firstIndex(where: { (channelID, _) -> Bool in
                                 return channelID == diff.document.documentID
                             }) {
+                                self?.individualChannelListenersDict[diff.document.documentID]?.remove()
                                 self?.individualChannelListenersDict.remove(at: index)
                             }
                         }
@@ -136,6 +129,7 @@ class ChannelsFetcher: NSObject {
                             if let index = self?.individualUserChannelListenersDict.firstIndex(where: { (channelID, _) -> Bool in
                                 return channelID == diff.document.documentID
                             }) {
+                                self?.individualUserChannelListenersDict[diff.document.documentID]?.remove()
                                 self?.individualUserChannelListenersDict.remove(at: index)
                             }
                         }
@@ -143,21 +137,6 @@ class ChannelsFetcher: NSObject {
                         self?.delegate?.channels(didRemove: true, channelID: diff.document.documentID)
                     } else if (diff.type == .modified) {
                         // CHANNEL MODIFIED
-//                        print("CHANNEL HAS BEEN MODIIFIED!!")
-//                        var dictionary = diff.document.data() as [String: AnyObject]
-//                        dictionary.updateValue(diff.document.documentID as AnyObject, forKey: "id")
-//
-//                        if let isGroupAlreadyFinished = self?.isGroupAlreadyFinished, isGroupAlreadyFinished {
-//                            self?.delegate?.channels(didStartUpdatingData: true)
-//                        }
-//
-//                        let channel = Channel(dictionary: dictionary)
-//                        channel.isTyping.value = channel.getTyping()
-//                        guard let lastMessageID = channel.lastMessageId else {
-//                            self?.loadAdditionalMetadata(for: channel)
-//                            return
-//                        }
-//                        self?.loadLastMessage(for: lastMessageID, channel: channel)
                     }
                 }
             })
@@ -165,26 +144,18 @@ class ChannelsFetcher: NSObject {
     }
 
     fileprivate func loadConversation(for channelID: String?) {
-        guard let currentUserID = Auth.auth().currentUser?.uid,
-              let channelID = channelID
+        guard let channelID = channelID
         else { return }
         
-//        let groupChannelDataReference = Firestore.firestore().collection("channels").document(channelID)
-//        let personal = Firestore.firestore().collection("users")
-        
-        // OBSERVATION HAPPENS HERE
-        var index = 0
-        
         let tempListener = currentUserChannelIDsReference.document(channelID).addSnapshotListener { snapshot, error in
-            guard let data = snapshot?.data() else {
+            guard let _ = snapshot?.data() else {
                 if error != nil {
                     print("error // ", error!)
                 }
-//                self.delegate?.channels(didFinishFetching: true, channels: self.channels)
+                self.delegate?.channels(didFinishFetching: true, channels: self.channels)
                 return
             }
-            
-            guard var dictionary = snapshot?.data() as? [String: AnyObject], let exists = snapshot?.exists, exists else { return }
+            guard var dictionary = snapshot?.data() as [String: AnyObject]?, let exists = snapshot?.exists, exists else { return }
             dictionary.updateValue(channelID as AnyObject, forKey: "id")
             
             if self.isGroupAlreadyFinished {
@@ -202,25 +173,6 @@ class ChannelsFetcher: NSObject {
             self.loadLastMessage(for: lastMessageID, channel: channel)
         }
         individualUserChannelListenersDict[channelID] = tempListener
-        
-//        currentUserChannelIDsReference.document(channelID).getDocument { (documentSnapshot, error) in
-//            guard let data = documentSnapshot?.data() else {
-//                if error != nil {
-//                    print("error // ", error!)
-//                }
-//                self.delegate?.channels(didFinishFetching: true, channels: self.channels)
-//                return
-//            }
-//            let channel = Channel(dictionary: data as [String : AnyObject])
-//
-//            channel.isTyping.value = channel.getTyping()
-//
-//            guard let lastMessageID = channel.lastMessageId else {
-//                self.loadAdditionalMetadata(for: channel)
-//                return
-//            }
-//            self.loadLastMessage(for: lastMessageID, channel: channel)
-//        }
     }
     
     fileprivate func loadLastMessage(for messageID: String, channel: Channel) {
@@ -243,56 +195,108 @@ class ChannelsFetcher: NSObject {
     
     fileprivate func loadAdditionalMetadata(for channel: Channel) {
         guard let channelID = channel.id, let _ = Auth.auth().currentUser?.uid else { return }
-        let tempListener = Firestore.firestore().collection("channels").document(channelID).addSnapshotListener { (snapshot, error) in
-//        Firestore.firestore().collection("channels").document(channelID).getDocument { snapshot, error in
-            if error != nil {
-                print(error as Any)
-                return
-            }
-            guard var dictionary = snapshot?.data() as [String: AnyObject]? else { return }
-            dictionary.updateValue(channelID as AnyObject, forKey: "id")
+        
+        if individualChannelListenersDict[channelID] == nil {
+            let tempListener_ = Firestore.firestore().collection("channels").document(channelID).addSnapshotListener { (snapshot, error) in
+                print("TRIGGERR")
+                if error != nil {
+                    print(error as Any)
+                    return
+                }
+                guard var dictionary = snapshot?.data() as [String: AnyObject]? else { print("stuck in return"); return }
+                dictionary.updateValue(channelID as AnyObject, forKey: "id")
 
-            if let membersIDs = dictionary["participantIds"] as? [String:AnyObject] {
-                dictionary.updateValue(Array(membersIDs.values) as AnyObject, forKey: "participantIds")
+                if let membersIDs = dictionary["participantIds"] as? [String:AnyObject] {
+                    dictionary.updateValue(Array(membersIDs.values) as AnyObject, forKey: "participantIds")
+                }
+                
+                let metaInfo = Channel(dictionary: dictionary)
+                channel.name = metaInfo.name
+                channel.imageUrl = metaInfo.imageUrl
+                channel.thumbnailImageUrl = metaInfo.thumbnailImageUrl
+                channel.participantIds.assign(metaInfo.participantIds)
+                print("new participantIds \(metaInfo.participantIds)")
+                channel.admins = metaInfo.admins
+                channel.author = metaInfo.author
+                channel.id = metaInfo.id
+                channel.goingIds = metaInfo.goingIds
+                channel.maybeIds = metaInfo.maybeIds
+                channel.notGoingIds = metaInfo.notGoingIds
+                channel.locationName = metaInfo.locationName
+                channel.latitude = metaInfo.latitude
+                channel.longitude = metaInfo.longitude
+                channel.isRemote = metaInfo.isRemote
+                channel.startTime = metaInfo.startTime
+                channel.endTime = metaInfo.endTime
+                channel.fcmTokens = metaInfo.fcmTokens
+                channel.description_ = metaInfo.description_
+                channel.locationName = metaInfo.locationName
+                channel.latitude = metaInfo.latitude
+                channel.longitude = metaInfo.longitude
+                
+                let location = Location()
+                location.name = metaInfo.locationName ?? ""
+                location.locationDescription = metaInfo.locationDescription ?? ""
+                location.latitude = metaInfo.latitude.value ?? 0.0
+                location.longitude = metaInfo.longitude.value ?? 0.0
+                channel.location = location
+                if let fcmTokensDict = dictionary["fcmTokens"] as? [String:String] {
+                    channel.fcmTokens = convertRawFCMTokensToRealmCompatibleType(fcmTokensDict)
+                }
+                prefetchThumbnail(from: channel.thumbnailImageUrl == nil ? channel.imageUrl : channel.thumbnailImageUrl)
+                self.updateConversationArrays(with: channel)
             }
+            individualChannelListenersDict[channelID] = tempListener_
+            print(individualChannelListenersDict)
+        } else {
+            Firestore.firestore().collection("channels").document(channelID).getDocument(completion: { (snapshot, error) in
+                if error != nil {
+                    print(error as Any)
+                    return
+                }
+                guard var dictionary = snapshot?.data() as [String: AnyObject]? else { print("stuck in return"); return }
+                dictionary.updateValue(channelID as AnyObject, forKey: "id")
 
-            let metaInfo = Channel(dictionary: dictionary)
-            channel.name = metaInfo.name
-            channel.imageUrl = metaInfo.imageUrl
-            channel.thumbnailImageUrl = metaInfo.thumbnailImageUrl
-            channel.participantIds.assign(metaInfo.participantIds)
-            channel.admins = metaInfo.admins
-            channel.author = metaInfo.author
-            channel.id = metaInfo.id
-            channel.goingIds = metaInfo.goingIds
-            channel.maybeIds = metaInfo.maybeIds
-            channel.notGoingIds = metaInfo.notGoingIds
-            channel.locationName = metaInfo.locationName
-            channel.latitude = metaInfo.latitude
-            channel.longitude = metaInfo.longitude
-            channel.isRemote = metaInfo.isRemote
-            channel.startTime = metaInfo.startTime
-            channel.endTime = metaInfo.endTime
-            channel.fcmTokens = metaInfo.fcmTokens
-            channel.description_ = metaInfo.description_
-            
-            channel.locationName = metaInfo.locationName
-            channel.latitude = metaInfo.latitude
-            channel.longitude = metaInfo.longitude
-            
-            let location = Location()
-            location.name = metaInfo.locationName ?? ""
-            location.locationDescription = metaInfo.locationDescription ?? ""
-            location.latitude = metaInfo.latitude.value ?? 0.0
-            location.longitude = metaInfo.longitude.value ?? 0.0
-            channel.location = location
-            if let fcmTokensDict = dictionary["fcmTokens"] as? [String:String] {
-                channel.fcmTokens = convertRawFCMTokensToRealmCompatibleType(fcmTokensDict)
-            }
-            prefetchThumbnail(from: channel.thumbnailImageUrl == nil ? channel.imageUrl : channel.thumbnailImageUrl)
-            self.updateConversationArrays(with: channel)
+                if let membersIDs = dictionary["participantIds"] as? [String:AnyObject] {
+                    dictionary.updateValue(Array(membersIDs.values) as AnyObject, forKey: "participantIds")
+                }
+                
+                let metaInfo = Channel(dictionary: dictionary)
+                channel.name = metaInfo.name
+                channel.imageUrl = metaInfo.imageUrl
+                channel.thumbnailImageUrl = metaInfo.thumbnailImageUrl
+                channel.participantIds.assign(metaInfo.participantIds)
+                channel.admins = metaInfo.admins
+                channel.author = metaInfo.author
+                channel.id = metaInfo.id
+                channel.goingIds = metaInfo.goingIds
+                channel.maybeIds = metaInfo.maybeIds
+                channel.notGoingIds = metaInfo.notGoingIds
+                channel.locationName = metaInfo.locationName
+                channel.latitude = metaInfo.latitude
+                channel.longitude = metaInfo.longitude
+                channel.isRemote = metaInfo.isRemote
+                channel.startTime = metaInfo.startTime
+                channel.endTime = metaInfo.endTime
+                channel.fcmTokens = metaInfo.fcmTokens
+                channel.description_ = metaInfo.description_
+                channel.locationName = metaInfo.locationName
+                channel.latitude = metaInfo.latitude
+                channel.longitude = metaInfo.longitude
+                let location = Location()
+                location.name = metaInfo.locationName ?? ""
+                location.locationDescription = metaInfo.locationDescription ?? ""
+                location.latitude = metaInfo.latitude.value ?? 0.0
+                location.longitude = metaInfo.longitude.value ?? 0.0
+                channel.location = location
+                if let fcmTokensDict = dictionary["fcmTokens"] as? [String:String] {
+                    channel.fcmTokens = convertRawFCMTokensToRealmCompatibleType(fcmTokensDict)
+                }
+                prefetchThumbnail(from: channel.thumbnailImageUrl == nil ? channel.imageUrl : channel.thumbnailImageUrl)
+                self.updateConversationArrays(with: channel)
+            })
         }
-        individualChannelListenersDict[channelID] = tempListener
+        
     }
     
     fileprivate let messagesFetcher = MessagesFetcher()
@@ -342,7 +346,6 @@ class ChannelsFetcher: NSObject {
             return
         }
         delegate?.channels(didFinishFetching: true, channels: channels)
-        
     }
     
 }

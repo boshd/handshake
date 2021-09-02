@@ -44,7 +44,7 @@ extension ChannelsController {
         guard let currentUserID = Auth.auth().currentUser?.uid,
               let channelID = channel.id,
               let currentUserDocToDelete = currentUserReference?.collection("channelIds").document(channelID),
-              let docToUpdate = channelsReference?.document(channelID),
+              let _ = channelsReference?.document(channelID),
               let channelDocToDelete = self.channelsReference?.document(channelID).collection("participantIds").document(currentUserID)
         else { return }
         

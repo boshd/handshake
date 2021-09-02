@@ -44,7 +44,6 @@ class WelcomeViewController: UIViewController {
     // responsible for changing theme based on system theme
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        print(userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme))
         if #available(iOS 13, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) &&
             userDefaults.currentBoolObjectState(for: userDefaults.useSystemTheme) {
             if traitCollection.userInterfaceStyle == .light {

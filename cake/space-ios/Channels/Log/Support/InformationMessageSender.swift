@@ -28,7 +28,9 @@ class InformationMessageSender: NSObject {
         var fcmDict = [String:String]()
         
         channel?.fcmTokens.forEach({ (token) in
-            fcmDict[token.userId] = token.fcmToken
+            if fcmDict[token.userId] != currentUserID {
+                fcmDict[token.userId] = token.fcmToken
+            }
         })
         
         let values: [String: AnyObject] = [

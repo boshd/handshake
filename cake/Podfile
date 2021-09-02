@@ -18,7 +18,6 @@ target 'space-ios' do
   pod 'Firebase/Crashlytics'
   pod 'Firebase/Analytics'
 
-#  pod 'ChatLayout'
   pod 'RealmSwift'
   pod 'SDWebImage'
   pod 'SVProgressHUD'

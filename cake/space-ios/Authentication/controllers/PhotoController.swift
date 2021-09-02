@@ -34,7 +34,7 @@ class PhotoController: UIViewController {
         title = "Your profile"
         
         let next = UIBarButtonItem(title: "Finish up", style: .plain, target: self, action: #selector(nextPressed))
-        next.setTitleTextAttributes([NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFont(with: 13)], for: .normal)
+        next.setTitleTextAttributes([NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFontBold(with: 14)], for: .normal)
         next.tintColor = ThemeManager.currentTheme().tintColor
         navigationItem.rightBarButtonItem = next
         

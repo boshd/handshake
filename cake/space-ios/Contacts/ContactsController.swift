@@ -57,6 +57,9 @@ class ContactsController: CustomTableViewController, MFMessageComposeViewControl
         addContactsObserver()
         addObservers()
         setupDataSource()
+        
+        contactsFetcher.forcedSync = true
+        
         DispatchQueue.global(qos: .userInteractive).async { [weak self] in
             self?.usersFetcher.loadUsers()
             self?.contactsFetcher.fetchContacts()
@@ -315,25 +318,6 @@ extension ContactsController {
         return "CONTACTS"
     }
     
-//    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//
-//        let myLabel = UILabel()
-//        myLabel.frame = CGRect(x: 15, y: 3, width: 320, height: 22)
-//        myLabel.font = .boldSystemFont(ofSize: 10)
-//        myLabel.text = self.tableView(tableView, titleForHeaderInSection: section)
-//        myLabel.textColor = .gray
-//
-////        let attributedString = NSMutableAttributedString(string: myLabel.text!)
-////        attributedString.addAttribute(NSAttributedString.Key.kern, value: CGFloat(1.5), range: NSRange(location: 0, length: attributedString.length))
-////        myLabel.attributedText = attributedString
-//
-//        let headerView = UIView()
-//        headerView.addSubview(myLabel)
-//        headerView.backgroundColor = ThemeManager.currentTheme().generalModalControllerBackgroundColor
-//
-//        return headerView
-//    }
-    
     override func tableView(_  tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         let header = view as! UITableViewHeaderFooterView
         header.textLabel?.font = ThemeManager.currentTheme().secondaryFontVeryBold(with: 10)
@@ -447,7 +431,7 @@ extension ContactsController: ContactsUpdatesDelegate {
     func contacts(shouldPerformSyncronization: Bool) {
         guard shouldPerformSyncronization else { return }
         DispatchQueue.main.async { [weak self] in
-            self?.navigationItem.showActivityView(with: .updating)
+            self?.navigationItem.showActivityView(with: .updatingUsers)
         }
         DispatchQueue.global(qos: .userInteractive).async { [weak self] in
             self?.usersFetcher.loadAndSyncUsers()
@@ -456,7 +440,7 @@ extension ContactsController: ContactsUpdatesDelegate {
     
     func contacts(updateDatasource contacts: [CNContact]) {
         self.contacts = contacts
-        self.filteredContacts = contacts
+        self.filteredContacts = contacts.filter({ $0.givenName != "" })
         DispatchQueue.main.async { [weak self] in
             UIView.performWithoutAnimation {
                 self?.tableView.reloadSections([1], with: .none)

@@ -38,60 +38,71 @@ class ChannelManager: NSObject {
     func removeAllListeners() {
         if channelListener != nil {
             channelListener.remove()
+            channelListener = nil
         }
         
         if channelParticipantsListener != nil {
             channelParticipantsListener.remove()
+            channelParticipantsListener = nil
+            print("channelParticipantsListener became nil")
         }
         
         if userChannelsListener != nil {
             userChannelsListener.remove()
+            userChannelsListener = nil
         }
     }
     
     func setupListeners(_ channel: Channel?) {
         guard let channelID = channel?.id else { return }
-        guard let channel = channel else { return }
         // CHANNEL UPDATING
         
-        channelListener = Firestore.firestore().collection("channels").document(channelID).addSnapshotListener { [weak self] snapshot, error in
-            print("channelListener")
-            if error != nil {
-                print(error?.localizedDescription ?? "error")
-                return
+//        if channelListener == nil {
+            channelListener = Firestore.firestore().collection("channels").document(channelID).addSnapshotListener { [weak self] snapshot, error in
+                print("channelListener")
+                if error != nil {
+                    print(error?.localizedDescription ?? "error")
+                    return
+                }
+                
+                // self?.delegate?.channelUpdated()
             }
-//            guard let dictionary = snapshot?.data() as [String: AnyObject]? else { return }
-//            let newChannel = Channel(dictionary: dictionary)
-//            self.processChanges(old: channel, new: newChannel)
-            self?.delegate?.channelUpdated()
-        }
+//        }
         
         
         // USER ADDITION AND DELETION
         
         channelParticipantsReference = Firestore.firestore().collection("channels").document(channelID).collection("participantIds")
-        channelParticipantsListener = channelParticipantsReference.addSnapshotListener({ (snapshot, error) in
-            if error != nil {
-                print(error?.localizedDescription ?? "")
-                return
-            }
-            
-            guard let documentChanges = snapshot?.documentChanges else { return }
-            documentChanges.forEach { diff in
-                if (diff.type == .added) {
-                    self.delegate?.addMember(id: diff.document.documentID)
+//        print("attempting to setup channelParticipantsListener")
+//        if channelParticipantsListener == nil {
+            print("did setup channelParticipantsListener")
+//        var first = true
+            channelParticipantsListener = channelParticipantsReference.addSnapshotListener({ (snapshot, error) in
+                if error != nil {
+                    print(error?.localizedDescription ?? "")
+                    return
                 }
-                if (diff.type == .removed) {
-                    self.delegate?.removeMember(id: diff.document.documentID)
+//                if first {
+//                    first = false
+//                    return
+//                }
+                guard let documentChanges = snapshot?.documentChanges else { return }
+                documentChanges.forEach { diff in
+                    if (diff.type == .added) {
+                        print("channelParticipantsReference \(diff.document.documentID) added")
+                        self.delegate?.addMember(id: diff.document.documentID)
+                    }
+                    if (diff.type == .removed) {
+                        print("channelParticipantsReference \(diff.document.documentID) removed")
+                        self.delegate?.removeMember(id: diff.document.documentID)
+                    }
                 }
-            }
-        })
+            })
+//        }
     }
     
     fileprivate func processChanges(old: Channel, new: Channel) {
-        print("processChanges \(RealmKeychain.defaultRealm.object(ofType: Channel.self, forPrimaryKey: old.id)?.name)")
         if let newName = new.name, old.name != newName {
-            print("name updated")
             delegate?.nameUpdated(name: newName)
         }
         
@@ -123,8 +134,12 @@ class ChannelManager: NSObject {
         
     }
     
+}
+
+// MARK: - Adminship
+
+extension ChannelManager {
     
-    // MARK: - Channel participant action handlers
     public static func removeAdmin(ref: DocumentReference, memberID: String, channelID: String, completion: @escaping (Error?) -> ()) {
         ref.updateData([
             "admins": FieldValue.arrayRemove([memberID])
@@ -151,11 +166,29 @@ class ChannelManager: NSObject {
             completion(nil)
         })
     }
-    
+}
+
+// MARK: - Removing member
+
+extension ChannelManager {
     public static func removeMember(channelReference: DocumentReference, userReference: DocumentReference, memberID: String, channelID: String, completion: @escaping (Error?) -> ()) {
-        
+        removeMemberBatchOperation(userReference: userReference, channelReference: channelReference, channelID: channelID, memberID: memberID) { error in
+            if error != nil {
+                print(error?.localizedDescription ?? "error removeUserBatchOperation")
+                completion(error)
+            }
+            removeUserFromFCMTokenMapTransaction(userToBeRemoved: memberID, currentChannelReference: channelReference) { error in
+                if error != nil {
+                    print(error?.localizedDescription ?? "error in transaction")
+                    completion(error)
+                }
+                completion(nil)
+            }
+        }
+    }
+    
+    fileprivate static func removeMemberBatchOperation(userReference: DocumentReference, channelReference: DocumentReference, channelID: String, memberID: String, completion: @escaping (Error?) -> ()) {
         let batch = Firestore.firestore().batch()
-        
         batch.deleteDocument(userReference.collection("channelIds").document(channelID))
         batch.deleteDocument(channelReference.collection("participantIds").document(memberID))
         batch.updateData([
@@ -165,7 +198,6 @@ class ChannelManager: NSObject {
             "maybeIds": FieldValue.arrayRemove([memberID]),
             "notGoingIds": FieldValue.arrayRemove([memberID]),
         ], forDocument: channelReference)
-        
         batch.commit { error in
             if error != nil {
                 print(error?.localizedDescription ?? "error")
@@ -174,9 +206,82 @@ class ChannelManager: NSObject {
             completion(nil)
         }
     }
-    /*
-     going: true false nil
-     */
+    
+}
+
+extension ChannelManager {
+    
+    // MARK: - Adding members
+    public static func addMembers(memberIds: [String], channelID: String, completion: @escaping (Error?) -> ()) {
+        let channelReference = Firestore.firestore().collection("channels").document(channelID)
+        addMembersBatchOperation(memberIds: memberIds, channelReference: channelReference, channelID: channelID) { error in
+            if error != nil {
+                print(error?.localizedDescription ?? "error removeUserBatchOperation")
+                completion(error)
+            }
+            
+            fetchMemeberFCMTokensMap(memberIds: memberIds) { dict, error in
+                if error != nil {
+                    print(error?.localizedDescription ?? "err")
+                    completion(error)
+                }
+                addUsersFromFCMTokenMapTransaction(fcmDict: dict, currentChannelReference: channelReference) {
+                    completion(nil)
+                }
+            }
+        }
+    }
+    
+    fileprivate static func addMembersBatchOperation(memberIds: [String], channelReference: DocumentReference, channelID: String, completion: @escaping (Error?) -> ()) {
+        let usersReference = Firestore.firestore().collection("users")
+        let currentChannelParticipantIDsReference = Firestore.firestore().collection("channels").document(channelID).collection("participantIds")
+        
+        let batch = Firestore.firestore().batch()
+        
+        for memberId in memberIds {
+            batch.setData(["participantId": memberId], forDocument: currentChannelParticipantIDsReference.document(memberId))
+            batch.updateData([
+                "participantIds": FieldValue.arrayUnion([memberId])
+            ], forDocument: channelReference)
+            batch.setData([
+                "channelId": channelID
+            ], forDocument: usersReference.document(memberId).collection("channelIds").document(channelID))
+        }
+        batch.commit { (error) in
+            if error != nil {
+                print(error?.localizedDescription ?? "error")
+                completion(error)
+                return
+            }
+            completion(nil)
+        }
+    }
+    
+    fileprivate static func fetchMemeberFCMTokensMap(memberIds: [String], completion: @escaping ([String:String], Error?) -> ()) {
+        var membersFCMTokensDict = [String:String]()
+        
+        let group = DispatchGroup()
+        
+        for memberId in memberIds {
+            group.enter()
+            Firestore.firestore().collection("fcmTokens").document(memberId).getDocument { (snapshot, error) in
+                group.leave()
+                guard let fcmDict = snapshot?.data(), let fcmToken = fcmDict["fcmToken"] as? String else { return }
+                membersFCMTokensDict[memberId] = fcmToken
+            }
+        }
+        
+        group.notify(queue: .main) {
+            completion(membersFCMTokensDict, nil)
+        }
+        
+    }
+    
+}
+
+// MARK: - RSVP
+
+extension ChannelManager {
     public static func rsvp(channelReference: DocumentReference, memberID: String, rsvp: EventRSVP, completion: @escaping (Error?) -> ()) {
         
         // batch is used here for cosmetics
@@ -209,57 +314,75 @@ class ChannelManager: NSObject {
             }
             completion(nil)
         }
-        
-        
-        // looks like it must be a transactional operation
-        
-//        Firestore.firestore().runTransaction { transaction, errPointer in
-//            let oldDoc: DocumentSnapshot
-//            do {
-//                try oldDoc = transaction.getDocument(channelReference)
-//            } catch let fetchError as NSError {
-//                errPointer?.pointee = fetchError
-//                return nil
-//            }
-//
-//            guard let oldGoingIds = oldDoc.data()?["goingIds"] as? [String],
-//                  let oldNotGoingIds = oldDoc.data()?["notGoingIds"] as? [String],
-//                  let oldMaybeIds = oldDoc.data()?["maybeIds"] as? [String]
-//            else { return nil }
-//
-//
-////            switch rsvp {
-////                case .going:
-////                    transaction.updateData([
-////                        "goingIds": FieldValue.arrayUnion([memberID]),
-////                        "notGoingIds": FieldValue.arrayRemove([memberID]),
-////                        "maybeIds": FieldValue.arrayRemove([memberID])
-////                    ], forDocument: channelReference)
-////                case .notGoing:
-////                    transaction.updateData([
-////                        "goingIds": FieldValue.arrayRemove([memberID]),
-////                        "notGoingIds": FieldValue.arrayUnion([memberID]),
-////                        "maybeIds": FieldValue.arrayRemove([memberID])
-////                    ], forDocument: channelReference)
-////                case .tentative:
-////                    transaction.updateData([
-////                        "goingIds": FieldValue.arrayRemove([memberID]),
-////                        "notGoingIds": FieldValue.arrayRemove([memberID]),
-////                        "maybeIds": FieldValue.arrayUnion([memberID])
-////                    ], forDocument: channelReference)
-////            }
-//
-//            return nil
-//        } completion: { object, error in
-//            if let error = error {
-//                print("Transaction failed: \(error)")
-//            } else {
-//                print("Transaction successfully committed!")
-//            }
-//        }
-//
-//
     }
+
+}
+
+// MARK: - FCM Token Transactions
+
+extension ChannelManager {
+    
+    fileprivate static func removeUserFromFCMTokenMapTransaction(userToBeRemoved: String, currentChannelReference: DocumentReference, completion: @escaping ((Error?) -> Void)) {
+        Firestore.firestore().runTransaction { (transaction, errorPointer) -> Any? in
+            let document: DocumentSnapshot
+//            do {
+            try! document = transaction.getDocument(currentChannelReference)
+//            } catch let fetchError as NSError {
+//                print(fetchError.localizedDescription)
+//                completion(fetchError)
+//            }
+            
+            guard let oldFCMTokensMap = document.data()?["fcmTokens"] as? [String:String] else { return nil }
+            
+            var newFCMTokensMap = oldFCMTokensMap
+            
+            if newFCMTokensMap[userToBeRemoved] != nil, let index = newFCMTokensMap.index(forKey: userToBeRemoved) {
+                newFCMTokensMap.remove(at: index)
+            }
+            transaction.updateData(["fcmTokens": newFCMTokensMap], forDocument: currentChannelReference)
+            return nil
+        } completion: { (object, error) in
+            if let error = error {
+                completion(error)
+                print("Transaction failed: \(error)")
+            } else {
+                completion(nil)
+                print("Transaction successfully committed!")
+            }
+        }
+    }
+    
+    fileprivate static func addUsersFromFCMTokenMapTransaction(fcmDict: [String:String], currentChannelReference: DocumentReference, completion: @escaping (() -> Void)) {
+        Firestore.firestore().runTransaction { (transaction, errorPointer) -> Any? in
+            let document: DocumentSnapshot
+            do {
+                try document = transaction.getDocument(currentChannelReference)
+            } catch let fetchError as NSError {
+                print(fetchError.localizedDescription)
+                return nil
+            }
+            
+            guard let oldFCMTokensMap = document.data()?["fcmTokens"] as? [String:String] else { return nil }
+            
+            var newFCMTokensMap = oldFCMTokensMap
+            
+            newFCMTokensMap.merge(dict: fcmDict)
+            
+            transaction.updateData(["fcmTokens": newFCMTokensMap], forDocument: currentChannelReference)
+            return nil
+        } completion: { (object, error) in
+            completion()
+            if let error = error {
+                print("Transaction failed: \(error)")
+            } else {
+                print("Transaction successfully committed!")
+            }
+        }
+    }
+    
+//    fileprivate static func fcmTokenMapTransaction_(newFcmTokensMap: [String:String], currentChannelReference: DocumentReference, completion: @escaping (() -> Void)) {
+//
+//    }
 }
 
 enum EventRSVP {

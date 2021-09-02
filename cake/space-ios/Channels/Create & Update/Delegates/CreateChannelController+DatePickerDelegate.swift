@@ -10,7 +10,6 @@ import Firebase
 
 extension CreateChannelController: DatePickerDelegate {
     func didChangeDate(cell: UITableViewCell, date: Date) {
-        print("REACHED \(tableView.indexPath(for: cell))")
         let indexPath = tableView.indexPath(for: cell)
         let cell = cell as! DatePickerCell
         
@@ -30,16 +29,13 @@ extension CreateChannelController: DatePickerDelegate {
             }
             startTime = Int64(date.timeIntervalSince1970)
         } else if indexPath?.row == 2 {
-            print("in here")
             if let startTime = startTime {
                 if Int64(date.timeIntervalSince1970) < startTime {
                     endTime = Int64(Date(timeIntervalSince1970: TimeInterval(startTime)).nextHour.timeIntervalSince1970)
                     cell.datePicker.date = Date(timeIntervalSince1970: TimeInterval(startTime)).nextHour
-                    print("in here2")
                     return
                 }
             }
-            print("in here3")
             endTime = Int64(date.timeIntervalSince1970)
         }
         DispatchQueue.main.async { [weak self] in
