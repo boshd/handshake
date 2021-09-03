@@ -1,3 +1,38 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a872bb19c7ca0a6cd254d4068faffd672ffa316b3857c38af4d7e3ea280f8da8
-size 857
+//
+//  CustomizedView.swift
+//  space-ios
+//
+//  Created by Kareem Arab on 2021-04-09.
+//  Copyright © 2021 Kareem Arab. All rights reserved.
+//
+
+import UIKit
+
+class CustomizedView: UIView {
+    
+//    override var cornerRadius: CGFloat {
+//        didSet {
+//            self.layer.cornerRadius = cornerRadius
+//        }
+//    }
+//
+//    override var borderWidth: CGFloat {
+//        didSet {
+//            self.layer.borderWidth = borderWidth
+//        }
+//    }
+    
+//    override var borderColor: UIColor {
+//        didSet {
+//            self.layer.borderColor = borderColor.cgColor
+//        }
+//    }
+    
+    func removeGestureRecgonizers() {
+        guard let _gestureReognizers = gestureRecognizers else { return }
+        for gestureRecognizer in _gestureReognizers {
+            removeGestureRecognizer(gestureRecognizer)
+        }
+    }
+}
+

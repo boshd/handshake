@@ -474,6 +474,15 @@ enum Theme: Int {
         }
     }
     
+    var notificationBannerBackgroundColor: UIColor {
+        switch self {
+            case .normal:
+                return .handshakeLightPurple
+            case .dark:
+                return .handshakeSecondaryDark
+        }
+    }
+    
     var selectedChatLogHeaderBackgroundColor: UIColor {
         switch self {
             case .normal:
@@ -484,6 +493,15 @@ enum Theme: Int {
     }
     
     var chatLogHeaderTextColor: UIColor {
+        switch self {
+            case .normal:
+                return tintColor
+            case .dark:
+                return .white
+        }
+    }
+    
+    var notificationBannerTextColor: UIColor {
         switch self {
             case .normal:
                 return tintColor

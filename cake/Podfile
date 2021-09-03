@@ -17,6 +17,7 @@ target 'space-ios' do
   pod 'Firebase/Functions'
   pod 'Firebase/Crashlytics'
   pod 'Firebase/Analytics'
+  pod 'Firebase/InAppMessaging'
 
   pod 'RealmSwift'
   pod 'SDWebImage'

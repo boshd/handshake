@@ -198,7 +198,6 @@ class ChannelsFetcher: NSObject {
         
         if individualChannelListenersDict[channelID] == nil {
             let tempListener_ = Firestore.firestore().collection("channels").document(channelID).addSnapshotListener { (snapshot, error) in
-                print("TRIGGERR")
                 if error != nil {
                     print(error as Any)
                     return
@@ -215,7 +214,6 @@ class ChannelsFetcher: NSObject {
                 channel.imageUrl = metaInfo.imageUrl
                 channel.thumbnailImageUrl = metaInfo.thumbnailImageUrl
                 channel.participantIds.assign(metaInfo.participantIds)
-                print("new participantIds \(metaInfo.participantIds)")
                 channel.admins = metaInfo.admins
                 channel.author = metaInfo.author
                 channel.id = metaInfo.id
@@ -247,7 +245,6 @@ class ChannelsFetcher: NSObject {
                 self.updateConversationArrays(with: channel)
             }
             individualChannelListenersDict[channelID] = tempListener_
-            print(individualChannelListenersDict)
         } else {
             Firestore.firestore().collection("channels").document(channelID).getDocument(completion: { (snapshot, error) in
                 if error != nil {

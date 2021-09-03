@@ -103,30 +103,6 @@ class InAppNotificationManager: NSObject {
                     self.showInAppNotification(channel: channels[index], title: title, subtitle: self.subtitleForMessage(message: message), resource: channelAvatar(resource: channels[index].thumbnailImageUrl), placeholder: channelPlaceholder() )
                 }
             }
-            
-//            if let muted = channels[index].isMuted.value, !muted, let channelName = channels[index].name {
-//                self.playNotificationSound()
-//                if userDefaults.currentBoolObjectState(for: userDefaults.inAppNotifications) {
-//                    var title = ""
-//                    if message.historicSenderName != nil {
-//                        title = "\(message.historicSenderName ?? "") @ \(channelName)"
-//                    } else {
-//                        title = channelName
-//                    }
-//                    self.showInAppNotification(channel: channels[index], title: title, subtitle: self.subtitleForMessage(message: message), resource: channelAvatar(resource: channels[index].thumbnailImageUrl), placeholder: channelPlaceholder() )
-//                }
-//            } else if let channelName = channels[index].name, channels[index].isMuted.value == nil {
-//                self.playNotificationSound()
-//                if userDefaults.currentBoolObjectState(for: userDefaults.inAppNotifications) {
-//                    var title = ""
-//                    if message.historicSenderName != nil {
-//                        title = "\(message.historicSenderName ?? "") @ \(channelName)"
-//                    } else {
-//                        title = channelName
-//                    }
-//                    self.showInAppNotification(channel: channels[index], title: title, subtitle: self.subtitleForMessage(message: message), resource: channelAvatar(resource: channels[index].thumbnailImageUrl), placeholder: channelPlaceholder())
-//                }
-//            }
         }
     }
     
@@ -163,31 +139,46 @@ class InAppNotificationManager: NSObject {
     }
 
     fileprivate func showInAppNotification(channel: Channel, title: String, subtitle: String, resource: Any?, placeholder: Data?) {
-        
         let notification: InAppNotification = InAppNotification(resource: resource, title: title, subtitle: subtitle, data: placeholder)
         InAppNotificationDispatcher.shared.show(notification: notification) { (_) in
-//            print(UIApplication.shared.windows.filter({ $0.isKeyWindow }).first?., "UIApplication.shared.windows.filter({ $0.isKeyWindow }).first?.rootViewController")
-            
-            
-//            let keyWindow = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
-//
-//            if var topController = keyWindow?.rootViewController {
-//                while let presentedViewController = topController.presentedViewController {
-//                    topController = presentedViewController
-//                    print(topController, "topcontroller")
-//                }
-//
-//            // topController should now be your topmost view controller
-//            }
-            
+            print("in nottif hadler \(UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController)")
+            print(UIApplication.shared.windows.filter({$0.isKeyWindow}))
             guard let controller = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController else { return }
-            print(controller, "controller")
+            print("in nottif hadler2")
             guard let id = channel.id, let realmChannel = RealmKeychain.defaultRealm.objects(Channel.self).filter("id == %@", id).first else {
+                print("in nottif hadle3")
                 channelLogPresenter.open(channel, controller: controller)
                 return
             }
+            print("in nottif hadler4")
             channelLogPresenter.open(realmChannel, controller: controller)
         }
+//        print("SEELECTED")
+//        let notification: InAppNotification = InAppNotification(resource: resource, title: title, subtitle: subtitle, data: placeholder)
+//        InAppNotificationDispatcher.shared.show(notification: notification) { (_) in
+//            print("in completion")
+////            print(UIApplication.shared.windows.filter({ $0.isKeyWindow }).first?., "UIApplication.shared.windows.filter({ $0.isKeyWindow }).first?.rootViewController")
+//
+//
+////            let keyWindow = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
+////
+////            if var topController = keyWindow?.rootViewController {
+////                while let presentedViewController = topController.presentedViewController {
+////                    topController = presentedViewController
+////                    print(topController, "topcontroller")
+////                }
+////
+////            // topController should now be your topmost view controller
+////            }
+//
+//            guard let controller = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController else { return }
+//            print(controller, "controller")
+//            guard let id = channel.id, let realmChannel = RealmKeychain.defaultRealm.objects(Channel.self).filter("id == %@", id).first else {
+//                channelLogPresenter.open(channel, controller: controller)
+//                return
+//            }
+//            channelLogPresenter.open(realmChannel, controller: controller)
+//        }
     }
 
     fileprivate func playNotificationSound() {        

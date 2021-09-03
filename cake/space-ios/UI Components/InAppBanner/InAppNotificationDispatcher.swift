@@ -60,6 +60,7 @@ public class InAppNotificationDispatcher {
     
     // MARK: - Show/Hide banner
     private func showBanner(_ completion: @escaping () -> ()) {
+        banner.setColors()
         bannerWindow = initializeNewWindow()
         setup(window: bannerWindow, for: UIApplication.shared.statusBarOrientation, in: UIDevice.current.userInterfaceIdiom)
       

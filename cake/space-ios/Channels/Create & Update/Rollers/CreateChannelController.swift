@@ -484,7 +484,7 @@ extension CreateChannelController {
             if indexPath.row == 0 {
                 let cell = SpecialSwitchCell(style: .subtitle, reuseIdentifier: specialSwitchCellId)
                 cell.textLabel?.text = secondSection[0]
-                cell.detailTextLabel?.text = "Indicate to others that this event will be held remotely and that no physical location will be given."
+                cell.detailTextLabel?.text = "Indicate to others that this event is to be held remotely and that no physical location will be set."
                 // cell.detailTextLabel?.text = "Plan a remote event. Share any details in the description below."
                 cell.backgroundColor = ThemeManager.currentTheme().modalGroupedInsetCellBackgroundColor
                 cell.switchAccessory.isOn = isRemote

@@ -628,7 +628,8 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     // MARK: - Helper methods
     
     func isCurrentUserMemberOfCurrentGroup() -> Bool {
-        guard let membersIDs = channel?.participantIds, let uid = Auth.auth().currentUser?.uid, membersIDs.contains(uid) else { return false }
+        let membersIDs = attendees.map({ $0.id ?? "" })
+        guard let uid = Auth.auth().currentUser?.uid, membersIDs.contains(uid) else { return false }
         return true
     }
     
