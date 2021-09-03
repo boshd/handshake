@@ -367,12 +367,17 @@ PODS:
   - Firebase/Functions (8.6.1):
     - Firebase/CoreOnly
     - FirebaseFunctions (~> 8.6.0)
+  - Firebase/InAppMessaging (8.6.1):
+    - Firebase/CoreOnly
+    - FirebaseInAppMessaging (~> 8.6.0-beta)
   - Firebase/Messaging (8.6.1):
     - Firebase/CoreOnly
     - FirebaseMessaging (~> 8.6.0)
   - Firebase/Storage (8.6.1):
     - Firebase/CoreOnly
     - FirebaseStorage (~> 8.6.0)
+  - FirebaseABTesting (8.6.0):
+    - FirebaseCore (~> 8.0)
   - FirebaseAnalytics (8.6.0):
     - FirebaseAnalytics/AdIdSupport (= 8.6.0)
     - FirebaseCore (~> 8.0)
@@ -431,6 +436,12 @@ PODS:
   - FirebaseFunctions (8.6.0):
     - FirebaseCore (~> 8.0)
     - GTMSessionFetcher/Core (~> 1.5)
+  - FirebaseInAppMessaging (8.6.0-beta):
+    - FirebaseABTesting (~> 8.0)
+    - FirebaseCore (~> 8.0)
+    - FirebaseInstallations (~> 8.0)
+    - GoogleUtilities/Environment (~> 7.4)
+    - nanopb (~> 2.30908.0)
   - FirebaseInstallations (8.6.0):
     - FirebaseCore (~> 8.0)
     - GoogleUtilities/Environment (~> 7.4)
@@ -543,6 +554,7 @@ DEPENDENCIES:
   - Firebase/Database
   - Firebase/Firestore
   - Firebase/Functions
+  - Firebase/InAppMessaging
   - Firebase/Messaging
   - Firebase/Storage
   - FloatingPanel
@@ -558,6 +570,7 @@ SPEC REPOS:
     - BoringSSL-GRPC
     - CropViewController
     - Firebase
+    - FirebaseABTesting
     - FirebaseAnalytics
     - FirebaseAuth
     - FirebaseCore
@@ -566,6 +579,7 @@ SPEC REPOS:
     - FirebaseDatabase
     - FirebaseFirestore
     - FirebaseFunctions
+    - FirebaseInAppMessaging
     - FirebaseInstallations
     - FirebaseMessaging
     - FirebaseStorage
@@ -591,6 +605,7 @@ SPEC CHECKSUMS:
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   CropViewController: 7093b39ec3cb508531b22d35773e06cecd7378d8
   Firebase: e84d95f6d3a91f634abc384f0751c434cb3aecfa
+  FirebaseABTesting: c3e48ebf5e7e5c674c5a131c68e941d7921d83dc
   FirebaseAnalytics: 8f32ae54ad42754f503354782575c4ddfc1425c3
   FirebaseAuth: 223adeeb2262b417532e89bf06a960e3a0a1e9e4
   FirebaseCore: a753c231801f04f5ccd10cc92119ad1b12a61165
@@ -599,6 +614,7 @@ SPEC CHECKSUMS:
   FirebaseDatabase: 917fbeed577a68eb1ba0eb48c52a3aa10ac13f92
   FirebaseFirestore: 7b8bd72aff4d3ad91498343e81fdbaa994ce8abe
   FirebaseFunctions: 7639390ac39a914ab7a137fd162956b99cba59a7
+  FirebaseInAppMessaging: a37656c9d9f7bd2354f431caa8218532bdef8384
   FirebaseInstallations: 0ede6ffcd215b8f93c19d9b06c1c54e2d4107e98
   FirebaseMessaging: ce0a5ee974f7bfe83b6cc5acce88c2d969e37c41
   FirebaseStorage: 2765944230981e63f8bd2938d9d5819158b7c34c
@@ -619,6 +635,6 @@ SPEC CHECKSUMS:
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
 
-PODFILE CHECKSUM: 5275085fca8ca9f3d0f0d0eaa305f200a2a60de2
+PODFILE CHECKSUM: b883e2af91b37c38d97a0294891185ac231d5f9b
 
 COCOAPODS: 1.10.0
