@@ -110,12 +110,14 @@ exports.addMessageReferenceToParticipantsOnMessageCreation = functions.firestore
         const fcmTokens = messageData['fcmTokens']
         const participantIds = Object.keys(fcmTokens)
 
-        const batch = admin.firestore().batch()
-
         participantIds.forEach(participantId => {
             if (participantId !== fromId) {
                 LOGGER.log('writing for id: ', participantId)
+
+                const batch = admin.firestore().batch()
                 const userChannelReference = admin.firestore().collection(constants.USERS_COLLECTION).doc(participantId).collection('channelIds').doc(channelId)
+
+                // set msg reference
                 batch.set((
                 userChannelReference
                 .collection('messageIds')
@@ -125,95 +127,68 @@ exports.addMessageReferenceToParticipantsOnMessageCreation = functions.firestore
                     'timestamp': timestamp,
                 }, { merge: true })
 
+                // set last msg
                 batch.set((
                     userChannelReference
                 ), {
                     'lastMessageId': messageId,
                 }, { merge: true })
+
+                // atomically increment the channel's badge by 1.
+                batch.update(userChannelReference, {
+                    badge: admin.firestore.FieldValue.increment(1),
+                })
+
+                // update badge
+                try {
+                    batch.commit()
+                    .then(() => { LOGGER.log('SUCCESSFUL OPREATIONS for ', participantId) })
+                    .catch((err) => { LOGGER.error(err) })
+                } catch (err) { LOGGER.error(participantId, ' -- one of the addMessageReferenceToParticipantsOnMessageCreation operations failed: ', err) }
             }
         })
-
-        try {
-            return batch.commit()
-            .then(() => { LOGGER.log('SUCCESS setting id for each user') })
-            .catch((err) => { LOGGER.error(err) })
-        } catch (err) {
-            LOGGER.error(err)
-            return null
-        }
     }
-    return null
-
 })
 
-exports.incrementBadgeOnUserMessageCreation = functions.firestore
-.document(constants.USERS_COLLECTION + '/{userId}/channelIds/{channelId}/messageIds/{messageId}')
-.onCreate((snapshot, context) => {
-    const userId: string = context.params['userId']
-    const channelId: string = context.params['channelId']
-    if (snapshot.exists && userId) {
-       const messageData = snapshot.data()
-       const fromId = messageData['fromId']
-        if (fromId !== userId) {
-            incrementBadge(userId, channelId)
-            ?.then(() => {
-                LOGGER.log('SUCCESS incrementing badge for user')
+// exports.incrementBadgeOnUserMessageCreation = functions.firestore
+// .document(constants.USERS_COLLECTION + '/{userId}/channelIds/{channelId}/messageIds/{messageId}')
+// .onCreate((snapshot, context) => {
+//     const userId: string = context.params['userId']
+//     const channelId: string = context.params['channelId']
+//     if (snapshot.exists && userId) {
+//        const messageData = snapshot.data()
+//        const fromId = messageData['fromId']
+//         if (fromId != userId) {
+//             const userChannelRef = db
+//             .collection('users')
+//             .doc(userId)
+//             .collection('channelIds')
+//             .doc(channelId)
 
-            })
-            .catch((err) => { LOGGER.error(err) })
-        }
-    }
+//             try {
+//                 return db.runTransaction(async (updateFunction) => {
+//                     const userChannelDoc: FirebaseFirestore.DocumentData = await updateFunction.get(userChannelRef)
 
-    function incrementBadge(id: string, chanlId: string) {
-       const userChannelRef = db
-       .collection('users')
-       .doc(id)
-       .collection('channelIds')
-       .doc(chanlId)
+//                     LOGGER.info('user channel doc ', userChannelDoc.data())
+//                     const newUserChannelBadgeValue = (userChannelDoc.data()['badge'] || 0) + 1
+//                     updateFunction.update(userChannelRef, {
+//                         'badge': newUserChannelBadgeValue,
+//                     })
+//                 })
+//                 .then(_ => { LOGGER.info('success incrementing badge') })
+//                 .catch(err => { LOGGER.error('error in incrementing badge // ', err) })
+//             } catch (err) {
+//                 LOGGER.error('Transaction failure:', err)
+//                 return null
+//             }
+//         } else {
+//             return null
+//         }
+//     } else {
+//         return null
+//     }
 
-    //    const userRef = db
-    //    .collection('users')
-    //    .doc(id)
-
-        try {
-            return db.runTransaction(async (updateFunction) => {
-                const userChannelDoc: FirebaseFirestore.DocumentData = await updateFunction.get(userChannelRef)
-                // const userDoc: FirebaseFirestore.DocumentData = await updateFunction.get(userRef)
-
-                LOGGER.info('user channel doc ', userChannelDoc.data())
-                // LOGGER.info('user doc ', userDoc.data())
-
-                // if (userChannelDoc.data()['badge'] === undefined) {
-                //     updateFunction.set(userChannelRef, {
-                //         'badge': 0,
-                //     }, { merge: true })
-                // } else {
-                const newUserChannelBadgeValue = (userChannelDoc.data()['badge'] || 0) + 1
-                updateFunction.update(userChannelRef, {
-                    'badge': newUserChannelBadgeValue,
-                })
-                // }
-
-                // if (userDoc.data()['badge'] === undefined) {
-                //     updateFunction.set(userRef, {
-                //         'badge': 0,
-                //     }, { merge: true })
-                // } else {
-                // const newUserBadgeValue = (userDoc.data()['badge'] || 0) + 1
-                // updateFunction.update(userRef, {
-                //     'badge': newUserBadgeValue,
-                // })
-                // }
-            })
-            .then(_ => { LOGGER.info('success incrementing badge') })
-            .catch(err => { LOGGER.error('error in incrementing badge // ', err) })
-        } catch (err) {
-            LOGGER.error('Transaction failure:', err)
-            return null
-        }
-    }
-
-})
+// })
 
 /**
  * Returns users given prepaerd phone numbers.
@@ -310,7 +285,7 @@ exports.updateChannelParticipantIdsUponDelete = functions.firestore
 
 
 /**
- * Returns users given prepaerd phone numbers.
+ * ...
  *
  * @param {!express:Request} req HTTP request context.
  * @param {!express:Response} res HTTP response context.
