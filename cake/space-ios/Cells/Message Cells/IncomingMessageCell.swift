@@ -69,7 +69,7 @@ class IncomingMessageCell: BaseMessageCell {
         super.prepareForReuse()
         textView.backgroundColor = .clear
         textView.textColor = ThemeManager.currentTheme().incomingMessageCellTextColor
-        textView.font = ThemeManager.currentTheme().secondaryFont(with: IncomingMessageCell.messageTextSize)
+//        textView.font = ThemeManager.currentTheme().secondaryFont(with: IncomingMessageCell.messageTextSize)
         
         userImageView.image = nil
         textView.text = ""

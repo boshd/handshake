@@ -56,7 +56,7 @@ class PhotoController: UIViewController {
         self.uploadPhotoGroup.enter()
         self.uploadPhotoGroup.enter()
         self.uploadUserImage(channelImage: self.selectedImage, reference: userReference)
-        self.updateName(name: name, reference: userReference)
+        self.updateName(name: name.trimmingCharacters(in: .whitespaces), reference: userReference)
         globalIndicator.show()
         
         self.uploadPhotoGroup.notify(queue: .main) {

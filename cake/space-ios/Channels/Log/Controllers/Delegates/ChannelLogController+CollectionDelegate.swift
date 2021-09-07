@@ -65,6 +65,7 @@ extension ChannelLogController: CollectionDelegate {
             UIApplication.topViewController() is ChannelLogController {
             let systemSoundID: SystemSoundID = 1003
             AudioServicesPlaySystemSound(systemSoundID)
+            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
         }
         
         if mustCreateNewSection {

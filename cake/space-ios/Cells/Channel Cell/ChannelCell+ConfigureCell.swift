@@ -24,58 +24,61 @@ extension ChannelCell {
         // channel name
         title.text = "\(channel.name ?? "")"
         
-        if let messageText = channel.lastMessage?.text, let messageTime = channel.lastMessage?.shortConvertedTimestamp {
-            
-            if let isInfoMessage = channel.lastMessage?.isInformationMessage.value, isInfoMessage {
-                messageLabel.text = messageText
-            } else {
-                var name = "Someone"
-                let message = messageText
-                
-                if let fromId = channel.lastMessage?.fromId, let currentUserID = Auth.auth().currentUser?.uid {
-                    if fromId == currentUserID {
-                        name = "You"
-                    } else {
-                        if let localName = RealmKeychain.realmUsersArray().first(where: {$0.id == fromId})?.localName {
-                            name = localName
-                        } else if let name_ = RealmKeychain.realmUsersArray().first(where: {$0.id == fromId})?.name {
-                            name = name_
-                        } else {
-                            print("arrived 2.3 \(channel.lastMessage?.fromId)")
-                            if let senderName = channel.lastMessage?.senderName {
-                                name = senderName
-                            }
-                        }
-                    }
-                }
-                //  \u{200E}
-                let mainText = "\u{200E}💬 " + name + ": " + message + "\u{200C}"
-                
-                let range = (mainText as NSString).range(of: name)
-                let mutableAttributedString = NSMutableAttributedString.init(string: mainText)
-                mutableAttributedString.addAttributes([
-                    NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFontBold(with: 12)
-                ], range: range)
-                messageLabel.attributedText = mutableAttributedString
-                
-            }
-            
-            
-            
-//            messageLabel.text = mainText
-        }
+//        if let messageText = channel.lastMessage?.text, let messageTime = channel.lastMessage?.shortConvertedTimestamp {
+//
+//            if let isInfoMessage = channel.lastMessage?.isInformationMessage.value, isInfoMessage {
+//                messageLabel.text = messageText
+//            } else {
+//                var name = "Someone"
+//                let message = messageText
+//
+//                if let fromId = channel.lastMessage?.fromId, let currentUserID = Auth.auth().currentUser?.uid {
+//                    if fromId == currentUserID {
+//                        name = "You"
+//                    } else {
+//                        if let localName = RealmKeychain.realmUsersArray().first(where: {$0.id == fromId})?.localName {
+//                            name = localName
+//                        } else if let name_ = RealmKeychain.realmUsersArray().first(where: {$0.id == fromId})?.name {
+//                            name = name_
+//                        } else {
+//                            print("arrived 2.3 \(channel.lastMessage?.fromId)")
+//                            if let senderName = channel.lastMessage?.senderName {
+//                                name = senderName
+//                            }
+//                        }
+//                    }
+//                }
+//                //  \u{200E}
+//                let mainText = "\u{200E}💬 " + name + ": " + message + "\u{200C}"
+//
+//                let range = (mainText as NSString).range(of: name)
+//                let mutableAttributedString = NSMutableAttributedString.init(string: mainText)
+//                mutableAttributedString.addAttributes([
+//                    NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFontBold(with: 12)
+//                ], range: range)
+//                messageLabel.attributedText = mutableAttributedString
+//
+//            }
+//
+//
+//
+////            messageLabel.text = mainText
+//        }
         
         if let startTime = channel.startTime.value, let endTime = channel.endTime.value {
-            dateTitle.text = getDateString(startTime: startTime, endTime: endTime)
+            dateTitle.text = "\(getDateString(startTime: startTime, endTime: endTime))"
             
             if endTime < Int64(Date().timeIntervalSince1970) {
                 statusIndicator.backgroundColor = .red
+                dateTitle.textColor = .red
 //                channelImageView.borderColor = .red
             } else if startTime > Int64(Date().timeIntervalSince1970) {
                 statusIndicator.backgroundColor = .handshakeGreen
+                dateTitle.textColor = ThemeManager.currentTheme().tintColor
 //                channelImageView.borderColor = .handshakeGreen
             } else if startTime < Int64(Date().timeIntervalSince1970) && endTime > Int64(Date().timeIntervalSince1970) {
                 statusIndicator.backgroundColor = .eventOrange()
+                dateTitle.textColor = ThemeManager.currentTheme().tintColor
 //                channelImageView.borderColor = .eventOrange()
             }
         }

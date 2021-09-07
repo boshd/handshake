@@ -120,7 +120,7 @@ class PhoneController: UIViewController {
         guard let phoneNumber = verifyNumber() else { return }
         
         globalIndicator.show()
-        Auth.auth().settings?.isAppVerificationDisabledForTesting = false
+        Auth.auth().settings?.isAppVerificationDisabledForTesting = true
         PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil) { (verificationID, error) in
             globalIndicator.dismiss()
             if let error = error {

@@ -44,8 +44,10 @@ extension LocationSearchController: UITableViewDataSource {
             guard searchCompletions.count > indexPath.row else {
                 return
             }
-            searchTableContainerView.searchBar.text = searchCompletions[indexPath.row].title
-            self.delegate?.clickSearchButton(searchBar: searchTableContainerView.searchBar)
+//            searchTableContainerView.searchBar.text = searchCompletions[indexPath.row].title
+//            self.delegate?.clickSearchButton(searchBar: searchTableContainerView.searchBar)
+            let selectedCompletionItem = searchCompletions[indexPath.row]
+            self.delegate?.didSelectCompletionItem(completion: selectedCompletionItem)
             break
         case .mapItem:
             guard searchMapItems.count > indexPath.row else {

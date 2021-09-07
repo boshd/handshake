@@ -409,24 +409,24 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     @objc
     func leaveEvent() {
         guard let channelID = channel?.id, let currentUserID = Auth.auth().currentUser?.uid else { return }
-        
-        guard let index = attendees.firstIndex(where: { (user) -> Bool in
-            return user.id == currentUserID
-        }) else { return }
-        guard let memberName = attendees[index].name else { return }
-        let text = "\(memberName) left the group"
+        print("leaveEvent1")
+//        guard let index = attendees.firstIndex(where: { (user) -> Bool in
+//            return user.id == currentUserID
+//        }) else { return }
+//        guard let memberName = attendees[index].name else { return }
+        let text = "\(globalCurrentUser?.name ?? "someone") left the group"
         
         let channelName = self.channel?.name ?? ""
         
         guard let channel = channel else { return }
         
         let channelCopy = Channel(value: channel)
-//
-//        let channelParticipantReference = Firestore.firestore().collection("channels").document(channelID).collection("participantIds").document(currentUserID)
+
         let channelReference = Firestore.firestore().collection("channels").document(channelID)
         let participantReference = Firestore.firestore().collection("users").document(currentUserID)
-        
+        print("leaveEventpre")
         ChannelManager.removeMember(channelReference: channelReference, userReference: participantReference, memberID: currentUserID, channelID: channelID) { error in
+            print("leaveEventdoone")
             if error != nil {
                 print(error?.localizedDescription ?? "err")
                 return
@@ -577,20 +577,20 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
                 guard let user = user, error == nil else { return }
                 if let localRealmUser = RealmKeychain.realmUsersArray().first(where: {$0.id == participantId}) {
                     if !user.isEqual_(to: localRealmUser) {
-                        autoreleasepool {
-                            if let isInWriteTransaction = self?.localRealm.isInWriteTransaction, !isInWriteTransaction {
-                                try! self?.localRealm.safeWrite {
-                                    self?.localRealm.beginWrite()
-                                    localRealmUser.email = user.email
-                                    localRealmUser.name = user.name
-                                    localRealmUser.localName = user.localName
-                                    localRealmUser.phoneNumber = user.phoneNumber
-                                    localRealmUser.userImageUrl = user.userImageUrl
-                                    localRealmUser.userThumbnailImageUrl = user.userThumbnailImageUrl
-                                    try! self?.localRealm.commitWrite()
-                                }
-                            }
-                        }
+//                        autoreleasepool {
+//                            if let isInWriteTransaction = self?.localRealm.isInWriteTransaction, !isInWriteTransaction {
+//                                try! self?.localRealm.safeWrite {
+//                                    self?.localRealm.beginWrite()
+//                                    localRealmUser.email = user.email
+//                                    localRealmUser.name = user.name
+//                                    localRealmUser.localName = user.localName
+//                                    localRealmUser.phoneNumber = user.phoneNumber
+//                                    localRealmUser.userImageUrl = user.userImageUrl
+//                                    localRealmUser.userThumbnailImageUrl = user.userThumbnailImageUrl
+//                                    try! self?.localRealm.commitWrite()
+//                                }
+//                            }
+//                        }
                         
                         // update array
                         if let index = self?.attendees.firstIndex(where: { user_ in

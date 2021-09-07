@@ -22,6 +22,8 @@ extension ChannelsController {
         let cell = tableView.dequeueReusableCell(withIdentifier: channelCellId, for: indexPath) as? ChannelCell ?? ChannelCell()
         guard let realmChannels = theRealmChannels else { return cell }
         cell.configureCell(for: indexPath, channels: realmChannels)
+        cell.accessoryType = .disclosureIndicator
+        cell.accessoryView?.tintColor = ThemeManager.currentTheme().tintColor
         
         return cell
     }
@@ -37,7 +39,7 @@ extension ChannelsController {
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 90 // previously 75
+        return UITableView.automaticDimension // previously 75
     }
     
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {

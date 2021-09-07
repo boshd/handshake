@@ -26,14 +26,14 @@ extension LocationSearchController: UISearchBarDelegate {
     }
     
     public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchRequestStart(dismissKeyboard: true)
+        completionSearchRequestStart(dismissKeyboard: true)
         searchTableContainerView.searchBar.resignFirstResponder()
     }
 
     public func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         searchCompletionRequest?.cancel()
         searchRequestFuture?.invalidate()
-        searchRequestStart(dismissKeyboard: true)
+        completionSearchRequestStart(dismissKeyboard: true)
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
@@ -42,11 +42,15 @@ extension LocationSearchController: UISearchBarDelegate {
     
     public func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         searchRequestFuture?.invalidate()
-        if !searchText.isEmpty {
-            searchCompletionRequest?.queryFragment = searchText
-            searchRequestStart(dismissKeyboard: true)
-        } else {
-            // show placeholder or smth
-        }
+//        print(searchCompletions.count)
+        print("nnn \(searchMapItems.count)")
+//        if !searchText.isEmpty {
+            completionSearchRequestStart(dismissKeyboard: true)
+//            searchRequestStart(dismissKeyboard: true)
+//        } else {
+//            print("empty")
+//            searchMapItems.removeAll()
+//            // show placeholder or smth
+//        }
     }
 }

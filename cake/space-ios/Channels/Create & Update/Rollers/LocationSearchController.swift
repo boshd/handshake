@@ -12,6 +12,7 @@ import MapKit
 protocol LocationSearchDelegate: class {
     func clickSearchButton(searchBar: UISearchBar)
     func didSelectMapItem(mapItem: MKMapItem)
+    func didSelectCompletionItem(completion: MKLocalSearchCompletion)
 }
 
 class LocationSearchController: UIViewController, CLLocationManagerDelegate {
@@ -44,6 +45,7 @@ class LocationSearchController: UIViewController, CLLocationManagerDelegate {
         didSet {
             switch tableViewType {
             case .searchCompletion:
+                print("IN HERE WITH \(searchCompletions.count) searchMapItems")
                 searchTableContainerView.tableView.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
                 if searchCompletions.count == 0 {
                     tablePopulated(isEmpty: true)
@@ -51,6 +53,7 @@ class LocationSearchController: UIViewController, CLLocationManagerDelegate {
                     tablePopulated(isEmpty: false)
                 }
             case .mapItem:
+                print("IN HERE WITH \(searchMapItems.count) searchMapItems")
                 searchTableContainerView.tableView.separatorInset = UIEdgeInsets(top: 0, left: 67, bottom: 0, right: 0)
                 if searchMapItems.count == 0 {
                     tablePopulated(isEmpty: true)
@@ -117,6 +120,7 @@ class LocationSearchController: UIViewController, CLLocationManagerDelegate {
         searchCompletionRequest = MKLocalSearchCompleter()
         searchTableContainerView.searchBar.delegate = self
         searchCompletionRequest?.delegate = self
+       
 
         if searchMapItems.count == 0 {
             tablePopulated(isEmpty: true)
@@ -156,14 +160,31 @@ class LocationSearchController: UIViewController, CLLocationManagerDelegate {
         viewPlaceholder.add(for: view, title: .searchForLocation, subtitle: .empty, priority: .medium, position: .top)
     }
     
+    func completionSearchRequestStart(dismissKeyboard: Bool = false) {
+        guard let text = searchTableContainerView.searchBar.text, !text.isEmpty else {
+            searchCompletions.removeAll()
+            searchTableContainerView.tableView.reloadData()
+            tablePopulated(isEmpty: true)
+            return
+        }
+        
+        if let currentRegion = currentRegion {
+            searchCompletionRequest?.region = currentRegion
+        }
+        
+        searchCompletionRequest?.resultTypes = [.address, .pointOfInterest]
+        searchCompletionRequest?.queryFragment = text
+    }
+    
     // vcvcv
     func searchRequestStart(dismissKeyboard: Bool = false, isMapPan: Bool = false) {
         searchRequestCancel()
-        
+        print("hereeee")
         guard let text = searchTableContainerView.searchBar.text, !text.isEmpty else {
-            searchTableContainerView.searchBar.resignFirstResponder()
+//            searchTableContainerView.searchBar.resignFirstResponder()
             searchMapItems.removeAll()
             searchTableContainerView.tableView.reloadData()
+            tablePopulated(isEmpty: true)
             return
         }
         let request = MKLocalSearch.Request()
@@ -172,7 +193,11 @@ class LocationSearchController: UIViewController, CLLocationManagerDelegate {
             request.region = currentRegion
         }
         let search = MKLocalSearch(request: request)
-        search.start { [weak self] (response, error) in
+        
+//        let searchh = MKLocalSearchCompleter()
+//        searchh.re
+        
+        search.start { [weak self] response, error in
             self?.searchRequestDidComplete(withResponse: response, error, dismissKeyboard: dismissKeyboard)
         }
         searchRequest = search
@@ -188,6 +213,9 @@ class LocationSearchController: UIViewController, CLLocationManagerDelegate {
         guard let response = response else {
             return
         }
+        
+        
+        print("ARRIVED")
         searchMapItems = response.mapItems
         tableViewType = .mapItem
 //        if isMapPan { // Add new annotations from dragging and searching new areas.
@@ -218,9 +246,12 @@ class LocationSearchController: UIViewController, CLLocationManagerDelegate {
     // Search Completions Request are invoked on textDidChange in searchBar,
     // and region is updated upon regionDidChange in mapView.
     func searchCompletionRequest(didComplete searchCompletions: [MKLocalSearchCompletion]) {
+        print("searchCompletionRequest DID COMPLETE")
         searchRequestCancel()
         self.searchCompletions = searchCompletions
         tableViewType = .searchCompletion
+        
+        
     }
 
     func searchCompletionRequestCancel() {

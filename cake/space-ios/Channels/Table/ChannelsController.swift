@@ -157,6 +157,7 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         // tableview cell registration
         tableView.register(ChannelCell.self, forCellReuseIdentifier: channelCellId)
         tableView.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
+        tableView.separatorColor = ThemeManager.currentTheme().seperatorColor
         // add targets
 //        channelsContainerView.createButton.addTarget(self, action: #selector(presentCreateChannelController), for: .touchUpInside)
 //        channelsContainerView.contactsButton.addTarget(self, action: #selector(presentContactsController), for: .touchUpInside)
@@ -166,7 +167,7 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorStyle = .singleLine
-        tableView.separatorInset = UIEdgeInsets(top: 0, left: 90, bottom: 0, right: 0)
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: 95, bottom: 0, right: 0)
         tableView.tableFooterView = UIView()
     }
     
@@ -286,6 +287,8 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
     }
     
     @objc fileprivate func initializeDataSource() {
+        configureTabBarBadge()
+        
         guard !isAppLoaded, let currentUserID = Auth.auth().currentUser?.uid else { return }
         
         channelsFetcher.fetchChannels()
@@ -370,9 +373,6 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
     // MARK: - User experience
     
     @objc func handleReloadTable() {
-//        inProgressRealmChannels = inProgressRealmChannels?.sorted(byKeyPath: "startTime", ascending: false)
-//        upcomingRealmChannels = upcomingRealmChannels?.sorted(byKeyPath: "startTime", ascending: false)
-//        pastRealmChannels = pastRealmChannels?.sorted(byKeyPath: "startTime", ascending: false)
         theRealmChannels = theRealmChannels?.sorted(byKeyPath: "startTime", ascending: false)
 
         guard let realmChannels = theRealmChannels else { return }

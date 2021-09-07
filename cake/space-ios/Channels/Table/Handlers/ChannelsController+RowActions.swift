@@ -68,19 +68,22 @@ extension ChannelsController {
                 channelsFetcher.cleanFetcherChannels()
             }
         }
-            let batch = Firestore.firestore().batch()
-            batch.deleteDocument(currentUserDocToDelete)
-            batch.deleteDocument(channelDocToDelete)
-            batch.commit { (error) in
-                if error != nil {
-                    print(error?.localizedDescription ?? "")
-                    return
-                }
-
-                if let realmChannels = self.realmChannels, realmChannels.count <= 0 {
-                    self.checkIfThereAnyActiveChats(isEmpty: true)
-                }
+        
+        let batch = Firestore.firestore().batch()
+        batch.deleteDocument(currentUserDocToDelete)
+        batch.deleteDocument(channelDocToDelete)
+        batch.commit { (error) in
+            if error != nil {
+                print(error?.localizedDescription ?? "")
+                return
             }
+            
+            self.configureTabBarBadge()
+
+            if let realmChannels = self.realmChannels, realmChannels.count <= 0 {
+                self.checkIfThereAnyActiveChats(isEmpty: true)
+            }
+        }
         
         
     }

@@ -30,8 +30,8 @@ class SettingsFooterContainerView: UIView {
         footerView.delegate = self
         addSubview(footerView)
         
-        let mainString = "v1.3 (1)\nbeta"
-        let stringToColor = "v1.3 (1)\nbeta"
+        let mainString = "v1.5 (1)\nbeta"
+        let stringToColor = "v1.5 (1)\nbeta"
         let range = (mainString as NSString).range(of: stringToColor)
         let mutableAttributedString = NSMutableAttributedString.init(string: mainString)
         mutableAttributedString.addAttribute(NSAttributedString.Key.foregroundColor, value: ThemeManager.currentTheme().generalSubtitleColor, range: range)

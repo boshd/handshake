@@ -37,9 +37,9 @@ extension ChannelsController: ChannelUpdatesDelegate {
         if let realmChannels = realmChannels {
             notificationsManager.updateChannels(to: Array(realmChannels))
         }
-        if reloadNeeded {
-            handleReloadTable()
-        }
+//        if reloadNeeded {
+//            handleReloadTable()
+//        }
         
         hideActivityTitle(title: .updating)
     }

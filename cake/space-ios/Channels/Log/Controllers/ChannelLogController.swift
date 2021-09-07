@@ -649,11 +649,12 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
         
         Firestore.firestore().collection("users").document(currentUserID).collection("channelIds").document(toId).setData([
             "badge": 0
-        ], merge: true) { [weak self] (error) in
+        ], merge: true) { (error) in
             if error != nil { print("error // ", error?.localizedDescription ?? "error") }
-            try! self?.realm.safeWrite {
-                channel.badge.value = 0
-            }
+
+        }
+        try! self.realm.safeWrite {
+            channel.badge.value = 0
         }
     }
     

@@ -1121,13 +1121,13 @@ func getDateString(startTime: Int64, endTime: Int64) -> String {
     // event starts today
     if startDate.isInToday {
         dateFormatter.dateFormat = "h:mm a"
-        text = "Today at \(dateFormatter.string(from: startDate))"
+        text = "Today • \(dateFormatter.string(from: startDate))"
     }
     
     // event starts tmrw
     if startDate.isInTomorrow {
         dateFormatter.dateFormat = "h:mm a"
-        text = "Tmrw at \(dateFormatter.string(from: startDate))"
+        text = "Tmrw • \(dateFormatter.string(from: startDate))"
     }
     
     let shortDateFormatter = DateFormatter()

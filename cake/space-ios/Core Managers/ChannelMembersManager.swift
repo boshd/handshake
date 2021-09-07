@@ -172,6 +172,7 @@ extension ChannelManager {
 
 extension ChannelManager {
     public static func removeMember(channelReference: DocumentReference, userReference: DocumentReference, memberID: String, channelID: String, completion: @escaping (Error?) -> ()) {
+        print("pre remove member")
         removeMemberBatchOperation(userReference: userReference, channelReference: channelReference, channelID: channelID, memberID: memberID) { error in
             if error != nil {
                 print(error?.localizedDescription ?? "error removeUserBatchOperation")
@@ -323,7 +324,9 @@ extension ChannelManager {
 extension ChannelManager {
     
     fileprivate static func removeUserFromFCMTokenMapTransaction(userToBeRemoved: String, currentChannelReference: DocumentReference, completion: @escaping ((Error?) -> Void)) {
+        print("transaction pre")
         Firestore.firestore().runTransaction { (transaction, errorPointer) -> Any? in
+            print("transaction 1")
             let document: DocumentSnapshot
 //            do {
             try! document = transaction.getDocument(currentChannelReference)
@@ -333,15 +336,17 @@ extension ChannelManager {
 //            }
             
             guard let oldFCMTokensMap = document.data()?["fcmTokens"] as? [String:String] else { return nil }
-            
+            print("transaction 2")
             var newFCMTokensMap = oldFCMTokensMap
             
             if newFCMTokensMap[userToBeRemoved] != nil, let index = newFCMTokensMap.index(forKey: userToBeRemoved) {
                 newFCMTokensMap.remove(at: index)
             }
+            print("transaction 3")
             transaction.updateData(["fcmTokens": newFCMTokensMap], forDocument: currentChannelReference)
             return nil
         } completion: { (object, error) in
+            print("transaction done")
             if let error = error {
                 completion(error)
                 print("Transaction failed: \(error)")

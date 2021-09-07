@@ -57,7 +57,7 @@ class ChannelCell: UITableViewCell {
         label.textColor = .black
         label.textAlignment = .left
         label.textColor = ThemeManager.currentTheme().generalSubtitleColor
-        label.font = ThemeManager.currentTheme().secondaryFont(with: 12)
+        label.font = ThemeManager.currentTheme().secondaryFont(with: 11)
         label.numberOfLines = 1
 //        label.backgroundColor = .red
 //        label.lineBreakMode = .byWordWrapping
@@ -71,9 +71,10 @@ class ChannelCell: UITableViewCell {
         label.textAlignment = .left
         label.textColor = ThemeManager.currentTheme().generalSubtitleColor
         label.font = ThemeManager.currentTheme().secondaryFont(with: 12)
-        label.numberOfLines = 1
-        label.textAlignment = .left
-        label.textAlignment = .justified
+        label.numberOfLines = 2
+//        label.textAlignment = .left
+//        label.textAlignment = .justified
+        
         return label
     }()
     
@@ -81,8 +82,8 @@ class ChannelCell: UITableViewCell {
         let label = DynamicLabel(withInsets: 0, 0, 0, 0)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
-        label.font = ThemeManager.currentTheme().secondaryFontBold(with: 9)
-        label.textColor = .eventOrange()
+        label.font = ThemeManager.currentTheme().secondaryFont(with: 11)
+        label.textColor = ThemeManager.currentTheme().tintColor
         label.cornerRadius = 3
         
         return label
@@ -91,7 +92,7 @@ class ChannelCell: UITableViewCell {
     let statusIndicator: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.cornerRadius = 3.5
+        view.cornerRadius = 5
         view.backgroundColor = .handshakeGreen
         
         return view
@@ -113,7 +114,7 @@ class ChannelCell: UITableViewCell {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.backgroundColor = .lighterGray()
-        imageView.cornerRadius = 32.5
+        imageView.cornerRadius = 35
         imageView.layer.cornerCurve = .circular
         imageView.contentMode = .scaleAspectFill
 //        imageView.borderColor = .handshakeLightPurple
@@ -144,7 +145,7 @@ class ChannelCell: UITableViewCell {
         mainView.addSubview(channelImageView)
         mainView.addSubview(title)
         mainView.addSubview(subTitle)
-        mainView.addSubview(messageLabel)
+//        mainView.addSubview(messageLabel)
         mainView.addSubview(badgeLabel)
         mainView.addSubview(customAccessoryView)
         mainView.addSubview(statusIndicator)
@@ -155,9 +156,9 @@ class ChannelCell: UITableViewCell {
         contentView.backgroundColor = .clear
         selectionColor = ThemeManager.currentTheme().cellSelectionColor
         
-        subTitle.centerYAnchor.constraint(equalTo: channelImageView.centerYAnchor, constant: 0).isActive = true
-        subTitle.leadingAnchor.constraint(equalTo: title.leadingAnchor, constant: 0).isActive = true
-        subTitle.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -25).isActive = true
+        dateTitle.centerYAnchor.constraint(equalTo: channelImageView.centerYAnchor, constant: 0).isActive = true
+        dateTitle.leadingAnchor.constraint(equalTo: title.leadingAnchor, constant: 0).isActive = true
+        dateTitle.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -25).isActive = true
         
         NSLayoutConstraint.activate([
             mainView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
@@ -165,30 +166,32 @@ class ChannelCell: UITableViewCell {
             mainView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
             mainView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0),
             
-            statusIndicator.topAnchor.constraint(equalTo: mainView.topAnchor, constant: 5),
-            statusIndicator.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: 4),
-            statusIndicator.heightAnchor.constraint(equalToConstant: 7),
-            statusIndicator.widthAnchor.constraint(equalToConstant: 7),
+            statusIndicator.topAnchor.constraint(equalTo: mainView.topAnchor, constant: 15),
+            statusIndicator.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: 5),
+            statusIndicator.heightAnchor.constraint(equalToConstant: 10),
+            statusIndicator.widthAnchor.constraint(equalToConstant: 10),
             
-            channelImageView.centerYAnchor.constraint(equalTo: mainView.centerYAnchor, constant: 0),
+            channelImageView.topAnchor.constraint(equalTo: mainView.topAnchor, constant: 10),
             channelImageView.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: 0),
-            channelImageView.heightAnchor.constraint(equalToConstant: 65),
-            channelImageView.widthAnchor.constraint(equalToConstant: 65),
+            channelImageView.heightAnchor.constraint(equalToConstant: 70),
+            channelImageView.widthAnchor.constraint(equalToConstant: 70),
+            channelImageView.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: -10),
             
-            title.bottomAnchor.constraint(equalTo: subTitle.topAnchor, constant: -7),
+            title.bottomAnchor.constraint(equalTo: dateTitle.topAnchor, constant: -7),
             title.leadingAnchor.constraint(equalTo: channelImageView.trailingAnchor, constant: 15),
             
-            messageLabel.topAnchor.constraint(equalTo: subTitle.bottomAnchor, constant: 7),
-            messageLabel.leadingAnchor.constraint(equalTo: channelImageView.trailingAnchor, constant: 15),
-            messageLabel.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: 0),
+//            messageLabel.topAnchor.constraint(equalTo: channelImageView.bottomAnchor, constant: 10),
+//            messageLabel.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: 5),
+//            messageLabel.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -5),
+//            messageLabel.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: -15),
             
             customAccessoryView.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: 0),
             customAccessoryView.topAnchor.constraint(equalTo: title.topAnchor, constant: 0),
-            customAccessoryView.bottomAnchor.constraint(equalTo: subTitle.bottomAnchor, constant: 0),
+            customAccessoryView.bottomAnchor.constraint(equalTo: dateTitle.bottomAnchor, constant: 0),
             customAccessoryView.widthAnchor.constraint(equalToConstant: 50),
             
-            dateTitle.centerYAnchor.constraint(equalTo: title.centerYAnchor, constant: 0),
-            dateTitle.trailingAnchor.constraint(equalTo: customAccessoryView.trailingAnchor, constant: 0),
+            subTitle.topAnchor.constraint(equalTo: dateTitle.bottomAnchor, constant: 7),
+            subTitle.leadingAnchor.constraint(equalTo: dateTitle.leadingAnchor, constant: 0),
             
             
         ])
@@ -234,7 +237,7 @@ class ChannelCell: UITableViewCell {
         imageView?.image = nil
         channelImageView.image = nil
         textLabel?.text = ""
-        messageLabel.text = ""
+        //messageLabel.text = ""
         title.text = ""
         subTitle.text = ""
 //        channel = nil
@@ -264,7 +267,7 @@ extension ChannelCell {
             let height = badgeLabel.frame.height + CGFloat(Int(0.4 * fontSize))
             let width = (count <= 9) ? height : badgeLabel.frame.width + CGFloat(Int(fontSize))
             
-            messageLabel.textColor = ThemeManager.currentTheme().tintColor
+//            messageLabel.textColor = ThemeManager.currentTheme().tintColor
             
             badgeLabel.layer.cornerRadius = height / 2.0
             badgeLabel.clipsToBounds = true
@@ -279,7 +282,7 @@ extension ChannelCell {
         } else {
             badgeLabel.text = "0"
             badgeLabel.isHidden = true
-            messageLabel.textColor = ThemeManager.currentTheme().generalSubtitleColor
+//            messageLabel.textColor = ThemeManager.currentTheme().generalSubtitleColor
         }
     }
 }

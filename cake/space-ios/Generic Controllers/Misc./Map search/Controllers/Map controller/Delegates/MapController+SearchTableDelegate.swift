@@ -1,3 +1,23 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f15ef0a32cb4c1608e4b7f2e3704a85f2865d3716a0866c4813573232fa819da
-size 421
+//
+//  MapController+SearchTableDelegate.swift
+//  space-ios
+//
+//  Created by Kareem Arab on 2020-12-29.
+//  Copyright © 2020 Kareem Arab. All rights reserved.
+//
+
+import MapKit
+
+extension LocationSearchController: LocationSearchDelegate {
+    func didSelectCompletionItem(completion: MKLocalSearchCompletion) {
+        //
+    }
+    
+    func clickSearchButton(searchBar: UISearchBar) {
+        searchBarSearchButtonClicked(searchBar)
+    }
+    
+    func didSelectMapItem(mapItem: MKMapItem) {
+        //
+    }
+}
