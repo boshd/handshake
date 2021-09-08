@@ -53,3 +53,39 @@ export function constructNotificationPayload(tokens: string[], messageId: string
         tokens: tokens,
     };
 }
+
+export function constructNotificationPayloadForReminder(tokens: string[], channelId: string, channelName: string, text: string) {
+    // var title: string = ''
+    // var textString: string = text
+
+    var title = channelName
+
+    // format date
+
+    // var textString = "This is a reminder"
+
+    return {
+        priority: 'high',
+        sound: 'default',
+        notification: {
+            title: title,
+            body: text,
+        },
+        apns: {
+            headers: {
+                'apns-priority': '10',
+            },
+            payload: {
+                aps: {
+                    'content-available': 0,
+                    sound: 'push.aiff',
+                    category: 'QuickReply',
+                    // badge: badge,
+                    'mutable-content': 1,
+                },
+                channelId: channelId,
+            },
+        },
+        tokens: tokens,
+    };
+}

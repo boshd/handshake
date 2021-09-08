@@ -3,4 +3,5 @@ export const constants = {
     CHANNELS_COLLECTION: 'channels',
     FCM_TOKENS_COLLECTION: 'fcmTokens',
     MESSAGES_COLLECTION: 'messages',
+    TASKS_COLLECTION: 'tasks',
 }

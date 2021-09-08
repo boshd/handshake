@@ -84,7 +84,7 @@ class TabBarController: UITabBarController {
         tabBar.tintColor = ThemeManager.currentTheme().selectedButtonTintColor
         tabBar.isTranslucent = false
         tabBar.clipsToBounds = true
-        UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().selectedButtonTintColor], for: .selected)
+        UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.foregroundColor: ThemeManager.currentTheme().tintColor], for: .selected)
         setTabs()
     }
     

@@ -120,7 +120,8 @@ class SelectParticipantsController: UIViewController {
     }
 
     @objc func rightBarButtonTapped() {
-        hapticFeedback(style: .impact)
+//        hapticFeedback(style: .impact)
+//        Firestore.firestore().collection("sdsd").wh
     }
     
     func checkIfThereAnyUsers(isEmpty: Bool) {

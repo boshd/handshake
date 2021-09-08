@@ -1,5 +1,5 @@
 import { firestore } from 'firebase-admin'
-import { constructNotificationPayload } from './helpers/notifications'
+import { constructNotificationPayload, constructNotificationPayloadForReminder } from './helpers/notifications'
 import * as functions from 'firebase-functions'
 import { db, admin } from './core/admin'
 import { constants } from './core/constants'
@@ -47,6 +47,193 @@ exports.getUsersWithPreparedNumbers = functions.https.onRequest((req, res) => {
 	}
 })
 
+exports.onChannelUpdate = functions.firestore
+.document(constants.CHANNELS_COLLECTION + '/{channelId}')
+.onWrite(async (snapshot, context) => {
+
+    const channelId = context.params['channelId']
+
+    // Depending on the event type, we handle accrodingly
+
+    // Only edit data when it is first created.
+    // if (snapshot.before.exists)
+    //     return
+
+    // Exit when the data is deleted.
+    if (!snapshot.after.exists)
+        return
+
+
+
+    const afterData = snapshot.after.data()
+    const oldData = snapshot.before.data()
+
+    if (afterData !== undefined && oldData !== undefined) {
+        LOGGER.info('DATA AVAILABLE')
+
+
+        const afterTimestamp = afterData['startTime']
+        const oldTimestamp = oldData['startTime']
+
+        LOGGER.info(afterTimestamp, oldTimestamp)
+
+        if (afterTimestamp !== oldTimestamp) {
+            LOGGER.info('DIFFEREENCE BETWEEN START TIMES')
+            const tmpDate = afterTimestamp
+
+            // const unixTimestamp = afterTimestamp
+
+            const hours = 1
+
+            const milliseconds = (tmpDate - (hours * 3600)) * 1000 // 1575909015000
+
+            const dateObject = new Date(milliseconds)
+
+            // const humanDateFormat = dateObject.toLocaleString() //2019-12-9 10:30:15
+
+            const perfomAtDate = dateObject
+
+            LOGGER.info(perfomAtDate)
+
+            const query = db.collection('tasks').where('forId', '==', channelId);
+            const tasks = await query.get();
+
+            tasks.forEach(task => {
+                db.collection('tasks').doc(task.id).delete()
+                .then(() => { LOGGER.info('Destryed task for ', channelId) })
+                .catch(err => { LOGGER.error('Failed to destroy task for ', channelId) })
+            })
+
+            db.collection(constants.TASKS_COLLECTION).doc()
+            .set({
+                'worker': 'sendReminderNotification',
+                'status': 'scheduled',
+                'performAt': firestore.Timestamp.fromDate(perfomAtDate),
+                'options': {
+                    'forId': channelId,
+                },
+                'forId': channelId,
+            })
+            .then(() => { LOGGER.info('Created task for ', channelId) })
+            .catch(err => { LOGGER.error('Failed to create task for ', channelId) })
+        }
+    }
+
+})
+
+async function notifyEventAttendees(channelId: string) {
+
+    return db.collection('channels').doc(channelId).get()
+    .then((snapshot) => {
+
+        if (snapshot.exists) {
+            const data = snapshot.data()
+
+            if (data !== undefined) {
+
+                const fcmTokens = data['fcmTokens']
+                const startTimestamp = data['startTime']
+                const channelName = data['name']
+                const text = 'Heads up! ' + hoursTillTimestamp(startTimestamp) + ' hour(s) till the event starts. 🚀'
+
+                const tokens = Object.keys(fcmTokens).map(key => fcmTokens[key])
+
+                const messagePayload = constructNotificationPayloadForReminder(
+                    tokens,
+                    channelId,
+                    channelName,
+                    text
+                )
+
+                admin
+                .messaging()
+                .sendMulticast(messagePayload)
+                .then((res) => { functions.logger.info('Successfully sent notification // ', res) })
+                .catch((error) => { functions.logger.error('Error sending notification // ', error) })
+            }
+
+        }
+
+    })
+    .catch(err => { LOGGER.error('ERROR') })
+
+
+}
+
+function hoursTillTimestamp(futureTimestamp: number) {
+    // get total seconds between the times
+    var delta = Math.abs(futureTimestamp - new Date().getTime() / 1000) / 1000;
+
+    // calculate (and subtract) whole days
+    var days = Math.floor(delta / 86400);
+    delta -= days * 86400;
+
+    // calculate (and subtract) whole hours
+    var hours = Math.floor(delta / 3600) % 24;
+    delta -= hours * 3600;
+
+    // calculate (and subtract) whole minutes
+    var minutes = Math.floor(delta / 60) % 60;
+    delta -= minutes * 60;
+
+    // what's left is seconds
+    // var seconds = delta % 60;  // in theory the modulus is not required
+    return hours
+}
+
+/*
+Taks runner
+*/
+
+// Optional interface, all worker functions should return Promise.
+interface Workers {
+    [key: string]: (options: any) => Promise<any>
+}
+
+// Business logic for named tasks. Function name should match worker field on task document.
+const workers: Workers = {
+    sendReminderNotification: async ({ forId }) => {
+        await notifyEventAttendees(forId)
+    },
+}
+
+exports.taskRunner = functions.runWith( { memory: '2GB' } )
+.pubsub
+.schedule('* * * * *')
+.onRun(async context => {
+    const now = firestore.Timestamp.now()
+    // const f = (now.toDate().getTime)
+    // const gg = f/1000
+    // const threeHoursBeforeNow = firestore.Timestamp()
+
+    // every 60 seconds, query firestore for all eligble scheduled tasks, push to jobs queue.
+
+    // Query all documents ready to perform
+    const query = db.collection('tasks').where('performAt', '<=', now).where('status', '==', 'scheduled');
+
+    const tasks = await query.get();
+
+
+    // Jobs to execute concurrently.
+    const jobs: Promise<any>[] = [];
+
+    // Loop over documents and push job.
+    tasks.forEach(snapshot => {
+        const { worker, options } = snapshot.data();
+
+        const job = workers[worker](options)
+
+            // Update doc with status on success or error
+            .then(() => snapshot.ref.update({ status: 'complete' }))
+            .catch((err) => snapshot.ref.update({ status: 'error' }));
+
+        jobs.push(job);
+    });
+
+    // Execute all jobs concurrently
+    return await Promise.all(jobs);
+})
+
 exports.notifyOnMessageCreation = functions.firestore
 .document(constants.MESSAGES_COLLECTION + '/{messageId}')
 .onCreate((snapshot, context) => {
@@ -80,6 +267,8 @@ exports.notifyOnMessageCreation = functions.firestore
             text,
             0,
         )
+
+        // check if person is actually in channel, just in case
 
         if (fromId != userId) {
             return admin
