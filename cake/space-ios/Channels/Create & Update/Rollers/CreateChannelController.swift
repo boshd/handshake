@@ -65,7 +65,7 @@ class CreateChannelController: UITableViewController {
         "Ends"
     ]
     var fourthSection = [
-        "Description"
+        "Event description"
     ]
     
     var datePickerIndexPath: IndexPath?
@@ -164,7 +164,7 @@ class CreateChannelController: UITableViewController {
         title = "New Event"
         
         if selectedUsers.count > 0 {
-            navigationItem.setTitle(title: "New Event", subtitle: selectedUsers.count > 1 ? "\(selectedUsers.count) attendees selected" : "\(selectedUsers.count) attendee selected")
+            navigationItem.setTitle(title: "New Event", subtitle: selectedUsers.count > 1 ? "\(selectedUsers.count) attendees selected" : "\(selectedUsers.count) attendee selected", url: nil)
         }
         
         navigationController?.navigationBar.titleTextAttributes = [.font: ThemeManager.currentTheme().primaryFontItalic(with: 34)]

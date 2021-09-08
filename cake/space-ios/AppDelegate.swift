@@ -46,21 +46,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         window = UIWindow(frame: UIScreen.main.bounds)
-        if let tabBarController = tabBarController {
-            let navigationController = CustomNavigationController(rootViewController: tabBarController)
+//        if let tabBarController = tabBarController {
+            let navigationController = UINavigationController(rootViewController: tabBarController ?? UIViewController())
             navigationController.navigationBar.isHidden = true
-    //        self.window?.rootViewController = navigationController
-    //        self.window?.makeKeyAndVisible()
-    //        self.window?.backgroundColor = ThemeManager.currentTheme().windowBackground
+            self.window?.rootViewController = navigationController
+            self.window?.makeKeyAndVisible()
+            self.window?.backgroundColor = ThemeManager.currentTheme().windowBackground
             
+//        self.window
+//            UIApplication.shared.windows.first?.rootViewController = navigationController
+//            UIApplication.shared.windows.first?.makeKeyAndVisible()
+////            UIApplication.shared.windows.first?.isKeyWindow = true
+//            UIApplication.shared.windows.first?.backgroundColor = ThemeManager.currentTheme().windowBackground
             
-            UIApplication.shared.windows.first?.rootViewController = navigationController
-            UIApplication.shared.windows.first?.makeKeyAndVisible()
-//            UIApplication.shared.windows.first?.isKeyWindow = true
-            UIApplication.shared.windows.first?.backgroundColor = ThemeManager.currentTheme().windowBackground
-            
-            tabBarController.presentOnboardingController()
-        }
+            tabBarController?.presentOnboardingController()
+//        }
 
         fetchContacts()
         

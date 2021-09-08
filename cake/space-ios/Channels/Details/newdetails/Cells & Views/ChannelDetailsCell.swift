@@ -17,6 +17,10 @@ class ChannelDetailsCell: UITableViewCell {
         textLabel?.textColor = ThemeManager.currentTheme().generalTitleColor
         detailTextLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         detailTextLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
+//        backgroundColor = .red
+//        contentView.backgroundColor = .green
+//        contentView.inset
+        imageView?.tintColor = ThemeManager.currentTheme().tintColor
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -25,6 +29,7 @@ class ChannelDetailsCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        imageView?.tintColor = ThemeManager.currentTheme().tintColor
         textLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         textLabel?.textColor = ThemeManager.currentTheme().generalTitleColor
         detailTextLabel?.font = ThemeManager.currentTheme().secondaryFont(with: 12)

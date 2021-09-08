@@ -116,6 +116,7 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
             } else {
                 let cell = UITableViewCell(style: .value2, reuseIdentifier: userCellId) as? UserCell ?? UserCell(style: .subtitle, reuseIdentifier: userCellId)
                 guard let userID = attendees[indexPath.row].id else { return cell }
+                cell.channel = channel
                 cell.configureCell(for: indexPath, users: attendees, admin: channel?.admins.contains(userID) ?? false)
                 cell.accessoryView = .none
                 cell.accessoryType = .none
@@ -256,7 +257,7 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
             let button = UIButton()
             button.translatesAutoresizingMaskIntoConstraints = false
             button.setTitleColor(ThemeManager.currentTheme().tintColor, for: .normal)
-            button.setTitle("RSVP List", for: .normal)
+            button.setTitle("See all", for: .normal)
             button.contentHorizontalAlignment = .right
             button.titleLabel?.font = ThemeManager.currentTheme().secondaryFontBold(with: 12)
             button.addTarget(self, action: #selector(presentRSVPList), for: .touchUpInside)

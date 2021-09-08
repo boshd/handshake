@@ -216,7 +216,8 @@ extension ChannelLogController: ChannelManagerDelegate {
     fileprivate func removeSubtitleInGroupChat() {
         if let title = channel?.name {
             let subtitle = ""
-            navigationItem.setTitle(title: title, subtitle: subtitle)
+            print("arriveeeeeeeeeeeeeeeeeeeeeeeee")
+            navigationItem.setTitle(title: title, subtitle: subtitle, url: nil)
             return
         }
     }

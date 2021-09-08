@@ -11,6 +11,8 @@ import Firebase
 
 class UserCell: UITableViewCell {
     
+    var channel: Channel?
+    
     let rightLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -106,6 +108,10 @@ class UserCell: UITableViewCell {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        channel = nil
     }
     
     override func prepareForReuse() {

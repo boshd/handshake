@@ -14,7 +14,7 @@ class InAppNotificationBanner: CustomizedView {
         contentView.backgroundColor = ThemeManager.currentTheme().notificationBannerBackgroundColor
         titleLabel.textColor = ThemeManager.currentTheme().notificationBannerTextColor
         detailsLabel.textColor = ThemeManager.currentTheme().notificationBannerTextColor
-        indicatorView.backgroundColor = ThemeManager.currentTheme().generalTitleColor
+        indicatorView.backgroundColor = .white
     }
   
     private let contentView: UIView = {
@@ -43,7 +43,7 @@ class InAppNotificationBanner: CustomizedView {
         label.clipsToBounds = true
         label.backgroundColor = .clear
         label.textColor = ThemeManager.currentTheme().notificationBannerTextColor
-        label.font = ThemeManager.currentTheme().secondaryFontBold(with: 15)
+        label.font = ThemeManager.currentTheme().secondaryFontBold(with: 13.5)
         return label
     }()
     
@@ -53,16 +53,16 @@ class InAppNotificationBanner: CustomizedView {
         label.clipsToBounds = true
         label.backgroundColor = .clear
         label.textColor = ThemeManager.currentTheme().notificationBannerTextColor
-        label.font = ThemeManager.currentTheme().secondaryFont(with: 13)
+        label.font = ThemeManager.currentTheme().secondaryFont(with: 12)
         return label
     }()
     
     private let indicatorView: CustomizedView = {
         let view = CustomizedView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = ThemeManager.currentTheme().generalTitleColor
+        view.backgroundColor = .white
         view.clipsToBounds = true
-        view.cornerRadius = 3
+        view.cornerRadius = 2
         return view
     }()
     
@@ -110,7 +110,7 @@ class InAppNotificationBanner: CustomizedView {
         detailsLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 0),
         indicatorView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
         indicatorView.widthAnchor.constraint(equalToConstant: 50),
-        indicatorView.heightAnchor.constraint(equalToConstant: 6),
+        indicatorView.heightAnchor.constraint(equalToConstant: 4),
         indicatorView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -6)
         ])
     }

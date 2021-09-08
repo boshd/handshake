@@ -627,30 +627,30 @@ extension ParticipantsController: UITableViewDelegate, UITableViewDataSource {
         switch (segmentedControlIndex) {
         case 0:
             if channelAdmins.contains(noResponseParticipants[indexPath.row].id ?? "") {
-                cell.configureCell(for: indexPath, users: noResponseParticipants, admin: true)
+                cell.configureCellForParticipantsCell(for: indexPath, users: noResponseParticipants, admin: true)
             } else {
-                cell.configureCell(for: indexPath, users: noResponseParticipants, admin: false)
+                cell.configureCellForParticipantsCell(for: indexPath, users: noResponseParticipants, admin: false)
             }
             break
         case 1:
             if channelAdmins.contains(maybeParticipants[indexPath.row].id ?? "") {
-                cell.configureCell(for: indexPath, users: maybeParticipants, admin: true)
+                cell.configureCellForParticipantsCell(for: indexPath, users: maybeParticipants, admin: true)
             } else {
-                cell.configureCell(for: indexPath, users: maybeParticipants, admin: false)
+                cell.configureCellForParticipantsCell(for: indexPath, users: maybeParticipants, admin: false)
             }
             break
         case 2:
             if channelAdmins.contains(goingParticipants[indexPath.row].id ?? "") {
-                cell.configureCell(for: indexPath, users: goingParticipants, admin: true)
+                cell.configureCellForParticipantsCell(for: indexPath, users: goingParticipants, admin: true)
             } else {
-                cell.configureCell(for: indexPath, users: goingParticipants, admin: false)
+                cell.configureCellForParticipantsCell(for: indexPath, users: goingParticipants, admin: false)
             }
             break
         case 3:
             if channelAdmins.contains(notGoingParticipants[indexPath.row].id ?? "") {
-                cell.configureCell(for: indexPath, users: notGoingParticipants, admin: true)
+                cell.configureCellForParticipantsCell(for: indexPath, users: notGoingParticipants, admin: true)
             } else {
-                cell.configureCell(for: indexPath, users: notGoingParticipants, admin: false)
+                cell.configureCellForParticipantsCell(for: indexPath, users: notGoingParticipants, admin: false)
             }
             break
         default: break }

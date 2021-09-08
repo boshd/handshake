@@ -101,6 +101,7 @@
 		BC3AE88A24B9F23C00619FCF /* LocationSearchTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3AE88924B9F23C00619FCF /* LocationSearchTable.swift */; };
 		BC3AE88F24B9F5C800619FCF /* RoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3AE88E24B9F5C800619FCF /* RoundButton.swift */; };
 		BC41D7D1261F92180090FFF7 /* TypingIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC41D7D0261F92180090FFF7 /* TypingIndicatorManager.swift */; };
+		BC432C8126E7DAA800FB6E26 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC432C8026E7DAA800FB6E26 /* SceneDelegate.swift */; };
 		BC44E6C522CCDCB400F50956 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC44E6C422CCDCB400F50956 /* UserCell.swift */; };
 		BC44E6C722CCDD4E00F50956 /* UserCell+ConfigureCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC44E6C622CCDD4E00F50956 /* UserCell+ConfigureCell.swift */; };
 		BC44E6C922CCE1F600F50956 /* CheckableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC44E6C822CCE1F600F50956 /* CheckableTableViewCell.swift */; };
@@ -487,6 +488,7 @@
 		BC3AE88924B9F23C00619FCF /* LocationSearchTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchTable.swift; sourceTree = "<group>"; };
 		BC3AE88E24B9F5C800619FCF /* RoundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundButton.swift; sourceTree = "<group>"; };
 		BC41D7D0261F92180090FFF7 /* TypingIndicatorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingIndicatorManager.swift; sourceTree = "<group>"; };
+		BC432C8026E7DAA800FB6E26 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		BC44E6C422CCDCB400F50956 /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		BC44E6C622CCDD4E00F50956 /* UserCell+ConfigureCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserCell+ConfigureCell.swift"; sourceTree = "<group>"; };
 		BC44E6C822CCE1F600F50956 /* CheckableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckableTableViewCell.swift; sourceTree = "<group>"; };
@@ -813,12 +815,12 @@
 				BCDE18512555AEEC00A64499 /* ChannelMembersManager.swift */,
 				BC41D7D0261F92180090FFF7 /* TypingIndicatorManager.swift */,
 				BCF6EFC1250917D300853718 /* BlockedUsersManager.swift */,
-				BCC9A5F0237FD29F0052446A /* InAppNotificationManager.swift */,
 				BCC1A28222D4A63600766AF9 /* StorageManager.swift */,
 				BC4C95EE23752223000579F4 /* ThemeManager.swift */,
 				BC57BCAF2509411800AAB5AC /* RealmKeychain.swift */,
 				BC57BCB12509453400AAB5AC /* GlobalVariables.swift */,
 				BCA88162251012AE004D3ED7 /* UserDefaultsManager.swift */,
+				BCC9A5F0237FD29F0052446A /* InAppNotificationManager.swift */,
 				BC089C912585578000A42B7D /* PushNotificationManager.swift */,
 				BC089C962585598F00A42B7D /* PushNotificationSender.swift */,
 			);
@@ -1981,6 +1983,7 @@
 				BC166B5426A9B3B300A159EB /* Util */,
 				BCAC056E22AD37FC006D0C24 /* Support */,
 				BCF979FE229D5F6A0088C568 /* AppDelegate.swift */,
+				BC432C8026E7DAA800FB6E26 /* SceneDelegate.swift */,
 				BC7AABD726250EFB0024A20D /* TabBarController.swift */,
 				BCB921EC25B47BF000A943D5 /* LaunchScreen.storyboard */,
 				BCF97A08229D5F6B0088C568 /* Assets.xcassets */,
@@ -2362,6 +2365,7 @@
 				BCBBC29A25388C5A0010F39E /* ActivityTitleView.swift in Sources */,
 				BC67F638252FA03B00E7D274 /* VerificationController.swift in Sources */,
 				BCCF55272620D80E00AFBF7C /* InAppNotificationDispatcher.swift in Sources */,
+				BC432C8126E7DAA800FB6E26 /* SceneDelegate.swift in Sources */,
 				BC7AABD826250EFB0024A20D /* TabBarController.swift in Sources */,
 				BC6C60B62384507D003DBB53 /* ChannelLogController+MessageSenderDelegate.swift in Sources */,
 				BCB027D52568453B0082B318 /* MenuControlsTableViewController.swift in Sources */,

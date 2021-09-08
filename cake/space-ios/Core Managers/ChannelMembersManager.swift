@@ -59,7 +59,6 @@ class ChannelManager: NSObject {
         
 //        if channelListener == nil {
             channelListener = Firestore.firestore().collection("channels").document(channelID).addSnapshotListener { [weak self] snapshot, error in
-                print("channelListener")
                 if error != nil {
                     print(error?.localizedDescription ?? "error")
                     return
@@ -75,25 +74,19 @@ class ChannelManager: NSObject {
         channelParticipantsReference = Firestore.firestore().collection("channels").document(channelID).collection("participantIds")
 //        print("attempting to setup channelParticipantsListener")
 //        if channelParticipantsListener == nil {
-            print("did setup channelParticipantsListener")
 //        var first = true
             channelParticipantsListener = channelParticipantsReference.addSnapshotListener({ (snapshot, error) in
                 if error != nil {
                     print(error?.localizedDescription ?? "")
                     return
                 }
-//                if first {
-//                    first = false
-//                    return
-//                }
+
                 guard let documentChanges = snapshot?.documentChanges else { return }
                 documentChanges.forEach { diff in
                     if (diff.type == .added) {
-                        print("channelParticipantsReference \(diff.document.documentID) added")
                         self.delegate?.addMember(id: diff.document.documentID)
                     }
                     if (diff.type == .removed) {
-                        print("channelParticipantsReference \(diff.document.documentID) removed")
                         self.delegate?.removeMember(id: diff.document.documentID)
                     }
                 }
@@ -324,9 +317,7 @@ extension ChannelManager {
 extension ChannelManager {
     
     fileprivate static func removeUserFromFCMTokenMapTransaction(userToBeRemoved: String, currentChannelReference: DocumentReference, completion: @escaping ((Error?) -> Void)) {
-        print("transaction pre")
         Firestore.firestore().runTransaction { (transaction, errorPointer) -> Any? in
-            print("transaction 1")
             let document: DocumentSnapshot
 //            do {
             try! document = transaction.getDocument(currentChannelReference)
@@ -336,17 +327,14 @@ extension ChannelManager {
 //            }
             
             guard let oldFCMTokensMap = document.data()?["fcmTokens"] as? [String:String] else { return nil }
-            print("transaction 2")
             var newFCMTokensMap = oldFCMTokensMap
             
             if newFCMTokensMap[userToBeRemoved] != nil, let index = newFCMTokensMap.index(forKey: userToBeRemoved) {
                 newFCMTokensMap.remove(at: index)
             }
-            print("transaction 3")
             transaction.updateData(["fcmTokens": newFCMTokensMap], forDocument: currentChannelReference)
             return nil
         } completion: { (object, error) in
-            print("transaction done")
             if let error = error {
                 completion(error)
                 print("Transaction failed: \(error)")

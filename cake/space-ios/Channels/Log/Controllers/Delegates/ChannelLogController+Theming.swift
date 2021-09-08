@@ -39,7 +39,11 @@ extension ChannelLogController {
         collectionView.updateColors()
         
         if let title = channel?.name {
-            navigationItem.setTitle(title: title, subtitle: "Tap for more information")
+            if let url = channel?.thumbnailImageUrl {
+                navigationItem.setTitle(title: title, subtitle: "Tap for more information", url: URL(string: url))
+            } else {
+                navigationItem.setTitle(title: title, subtitle: "Tap for more information", url: nil)
+            }
         }
 
         DispatchQueue.main.async { [weak self] in

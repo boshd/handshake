@@ -477,7 +477,7 @@ enum Theme: Int {
     var notificationBannerBackgroundColor: UIColor {
         switch self {
             case .normal:
-                return .handshakeLightPurple
+                return .handshakeSecondaryDark
             case .dark:
                 return .handshakeSecondaryDark
         }
@@ -504,7 +504,7 @@ enum Theme: Int {
     var notificationBannerTextColor: UIColor {
         switch self {
             case .normal:
-                return tintColor
+                return .white
             case .dark:
                 return .white
         }

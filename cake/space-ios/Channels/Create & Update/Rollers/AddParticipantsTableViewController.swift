@@ -30,7 +30,7 @@ class AddParticipantsController: SelectionTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.setTitle(title: "Add participants", subtitle: "")
+        navigationItem.setTitle(title: "Add participants", subtitle: "", url: nil)
         
         setupNavigationBar()
         

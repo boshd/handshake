@@ -94,7 +94,7 @@ extension DescriptionCell: UITextViewDelegate {
     
     func textViewDidBeginEditing(_ textView: UITextView) {
         if self.contentView.window != nil {
-            if textView.textColor == ThemeManager.currentTheme().generalSubtitleColor && (textView.text.isEmpty || textView.text == "Description") {
+            if textView.textColor == ThemeManager.currentTheme().generalSubtitleColor && (textView.text.isEmpty || textView.text == "Event description") {
                 DispatchQueue.main.async {
                     textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
                 }
@@ -121,7 +121,7 @@ extension DescriptionCell: UITextViewDelegate {
 //                return false
 //            } else
             if updatedText.isEmpty {
-                textView.text = "Description"
+                textView.text = "Event description"
                 textView.textColor = ThemeManager.currentTheme().generalSubtitleColor
                 textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
             } else if textView.textColor == ThemeManager.currentTheme().generalSubtitleColor && !text.isEmpty {

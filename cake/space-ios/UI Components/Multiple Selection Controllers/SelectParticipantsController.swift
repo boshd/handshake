@@ -95,7 +95,7 @@ class SelectParticipantsController: UIViewController {
     }
 
     func setupNavigationItemTitle(title: String, subTitle: String) {
-        navigationItem.setTitle(title: title, subtitle: subTitle)
+        navigationItem.setTitle(title: title, subtitle: subTitle, url: nil)
     }
 
     func setupRightBarButton(with title: String) {

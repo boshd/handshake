@@ -936,31 +936,115 @@ extension UIScrollView {
 }
 
 extension UINavigationItem {
-    func setTitle(title:String, subtitle:String) {
-        let one = UILabel()
-        one.text = title
-        one.textColor = ThemeManager.currentTheme().generalTitleColor
-        one.font = ThemeManager.currentTheme().secondaryFontVeryBold(with: 15)
-        one.textAlignment = .center
-        one.sizeToFit()
+    func setTitle(title:String, subtitle:String, url: URL?) {
 
-        let two = UILabel()
-        two.text = subtitle
-        two.font = ThemeManager.currentTheme().secondaryFontItalic(with: 10)
-        two.textAlignment = .center
-        two.textColor = ThemeManager.currentTheme().generalSubtitleColor
-        two.sizeToFit()
+        
+        if let url = url {
+            let one = UILabel()
+            one.text = title
+            one.textColor = ThemeManager.currentTheme().generalTitleColor
+            one.font = ThemeManager.currentTheme().secondaryFontVeryBold(with: 15)
+            one.textAlignment = .left
+            one.sizeToFit()
 
-        let stackView = UIStackView(arrangedSubviews: [one, two])
-        stackView.distribution = .equalCentering
-        stackView.axis = .vertical
+            let two = UILabel()
+            two.text = subtitle
+            two.font = ThemeManager.currentTheme().secondaryFontItalic(with: 10)
+            two.textAlignment = .left
+            two.textColor = ThemeManager.currentTheme().generalSubtitleColor
+            two.sizeToFit()
 
-        let width = max(one.frame.size.width, two.frame.size.width)
-        stackView.frame = CGRect(x: 0, y: 0, width: width, height: 35)
+            let stackView = UIStackView(arrangedSubviews: [one, two])
+            stackView.distribution = .fill
+            stackView.axis = .vertical
 
-        one.sizeToFit()
-        two.sizeToFit()
-        self.titleView = stackView
+            let width = max(one.frame.size.width, two.frame.size.width)
+            stackView.frame = CGRect(x: 0, y: 0, width: width, height: 35)
+//            stackView.backgroundColor = .yellow
+            
+            print("here")
+            // if image exists, change layout
+            let imageView = UIImageView()
+            imageView.backgroundColor = .red
+            imageView.contentMode = .scaleAspectFit
+//            imageView.image = image
+
+            NSLayoutConstraint.activate([
+                imageView.widthAnchor .constraint(equalToConstant: 30),
+                imageView.heightAnchor.constraint(equalToConstant: 30)
+            ])
+
+            imageView.setContentCompressionResistancePriority(UILayoutPriority.required, for: .horizontal)
+            imageView.setContentCompressionResistancePriority(UILayoutPriority.required, for: .vertical)
+
+//            imageView.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+            imageView.cornerRadius = 15
+            imageView.layer.cornerCurve = .circular
+            imageView.sizeToFit()
+            
+            imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "handshake"), options: [.scaleDownLargeImages, .continueInBackground, .avoidAutoSetImage], completed: { (image, _, cacheType, _) in
+                guard image != nil else { return }
+                
+                guard cacheType != SDImageCacheType.memory, cacheType != SDImageCacheType.disk else {
+                    imageView.image = image
+                    return
+                }
+
+                UIView.transition(with: imageView,
+                                  duration: 0.2,
+                                  options: .transitionCrossDissolve,
+                                  animations: { imageView.image = image },
+                                  completion: nil)
+                
+
+            })
+            
+//            let stackView = UIStackView(arrangedSubviews: [one, two])
+//            stackView.distribution = .equalCentering
+//            stackView.axis = .vertical
+            
+            let secondaryStackView = UIStackView(arrangedSubviews: [imageView, stackView])
+            secondaryStackView.distribution = .fill
+            secondaryStackView.spacing = 5
+            secondaryStackView.axis = .horizontal
+//            secondaryStackView.backgroundColor = .green
+
+            let width_ = stackView.frame.size.width + 35
+            secondaryStackView.frame = CGRect(x: 0, y: 0, width: width_, height: 35)
+            
+            one.sizeToFit()
+            two.sizeToFit()
+            imageView.sizeToFit()
+            self.titleView = secondaryStackView
+        } else {
+            let one = UILabel()
+            one.text = title
+            one.textColor = ThemeManager.currentTheme().generalTitleColor
+            one.font = ThemeManager.currentTheme().secondaryFontVeryBold(with: 15)
+            one.textAlignment = .center
+            one.sizeToFit()
+
+            let two = UILabel()
+            two.text = subtitle
+            two.font = ThemeManager.currentTheme().secondaryFontItalic(with: 10)
+            two.textAlignment = .center
+            two.textColor = ThemeManager.currentTheme().generalSubtitleColor
+            two.sizeToFit()
+
+            let stackView = UIStackView(arrangedSubviews: [one, two])
+            stackView.distribution = .equalCentering
+            stackView.axis = .vertical
+
+            let width = max(one.frame.size.width, two.frame.size.width)
+            stackView.frame = CGRect(x: 0, y: 0, width: width, height: 35)
+//            stackView.backgroundColor = .yellow
+            print("there")
+            one.sizeToFit()
+            two.sizeToFit()
+            self.titleView = stackView
+        }
+
+
     }
 }
 
