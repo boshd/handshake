@@ -70,7 +70,7 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
             
             cell.textLabel?.attributedText = mutableAttributedString
             
-            cell.detailTextLabel?.text = "Event dates are subject to change by organizer."
+            cell.detailTextLabel?.text = "Eventd dates are subject to change by organizer."
             cell.imageView?.image = UIImage(named: "Time Square")?.withRenderingMode(.alwaysTemplate)
             cell.imageView?.tintColor = ThemeManager.currentTheme().generalTitleColor
             return cell
