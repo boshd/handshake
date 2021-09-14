@@ -8,11 +8,55 @@
 
 import UIKit
 import Firebase
+import MapKit
+
+class ChannelCellMainView: UIView {
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        DispatchQueue.main.async {
+//            self.shrink(down: true)
+            UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveLinear, animations: {
+                self.backgroundColor = .handshakeSecondaryLight
+            }, completion: nil)
+        }
+    }
+
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        DispatchQueue.main.async {
+//            self.shrink(down: false)
+            UIView.animate(withDuration: 0, delay: 0.0, options: .curveLinear, animations: {
+                self.backgroundColor = .white
+            }, completion: nil)
+        }
+    }
+
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        DispatchQueue.main.async {
+//            self.shrink(down: false)
+            UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveLinear, animations: {
+                self.backgroundColor = .white
+            }, completion: nil)
+        }
+    }
+    
+    
+    func shrink(down: Bool) {
+        UIView.animate(withDuration: 0.05, delay: 0.0, options: [.allowUserInteraction], animations: {
+            if down {
+                self.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+            } else {
+                self.transform = .identity
+            }
+        }, completion: nil)
+        
+    }
+}
 
 class ChannelCell: UITableViewCell {
     
     private var timer: Timer?
     private var timeCounter: Double = 0
+    var currentRegion: MKCoordinateRegion?
     
 //    var channel: Channel?
     var channelId: String?
@@ -20,8 +64,8 @@ class ChannelCell: UITableViewCell {
     let mainView: UIView = {
         let mainView = UIView(frame: .zero)
         mainView.translatesAutoresizingMaskIntoConstraints = false
-        mainView.layer.cornerRadius = 0
-        mainView.layer.shadowColor = UIColor.black.cgColor
+//        mainView.layer.cornerRadius = 0
+//        mainView.layer.shadowColor = UIColor.black.cgColor
         mainView.backgroundColor = .clear
         mainView.borderWidth = 0
         mainView.borderColor = .lighterGray()
@@ -51,17 +95,30 @@ class ChannelCell: UITableViewCell {
         return label
     }()
     
-    let subTitle: DynamicLabel = {
-        let label = DynamicLabel(withInsets: 0, 0, 0, 0)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .black
-        label.textAlignment = .left
-        label.textColor = ThemeManager.currentTheme().generalSubtitleColor
-        label.font = ThemeManager.currentTheme().secondaryFont(with: 11)
-        label.numberOfLines = 1
+    let locatioImageAttachment : NSTextAttachment = {
+        let imageAttachment = NSTextAttachment()
+        
+        
+        return imageAttachment
+    }()
+    
+    let subTitle: UITextView = {
+        let textView = UITextView()
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.textColor = .black
+        textView.textAlignment = .left
+        textView.textColor = ThemeManager.currentTheme().generalSubtitleColor
+        textView.font = ThemeManager.currentTheme().secondaryFont(with: 11)
+//        label.numberOfLines = 2
 //        label.backgroundColor = .red
+        textView.isEditable = false
+        textView.isSelectable = false
+        textView.backgroundColor = .clear
+        let padding = textView.textContainer.lineFragmentPadding
+        textView.textContainerInset =  UIEdgeInsets(top: 0, left: -padding, bottom: 0, right: -padding)
 //        label.lineBreakMode = .byWordWrapping
-        return label
+        
+        return textView
     }()
     
     let messageLabel: DynamicLabel = {
@@ -82,7 +139,7 @@ class ChannelCell: UITableViewCell {
         let label = DynamicLabel(withInsets: 0, 0, 0, 0)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
-        label.font = ThemeManager.currentTheme().secondaryFont(with: 11)
+        label.font = ThemeManager.currentTheme().secondaryFontBold(with: 9)
         label.textColor = ThemeManager.currentTheme().tintColor
         label.cornerRadius = 3
         
@@ -150,34 +207,42 @@ class ChannelCell: UITableViewCell {
         mainView.addSubview(customAccessoryView)
         mainView.addSubview(statusIndicator)
         
-        customAccessoryView.addSubview(dateTitle)
+        mainView.addSubview(dateTitle)
+        
+        mainView.layer.shadowColor = ThemeManager.currentTheme().generalTitleColor.cgColor
+        mainView.layer.shadowOpacity = 0.04
+        mainView.layer.shadowRadius = 4
+        mainView.layer.shadowOffset = CGSize(width: 0, height: 4)
+        mainView.clipsToBounds = false
+        
+        clipsToBounds = false
         
         backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         contentView.backgroundColor = .clear
-        selectionColor = ThemeManager.currentTheme().cellSelectionColor
+//        selectionColor = ThemeManager.currentTheme().cellSelectionColor
         
-        dateTitle.centerYAnchor.constraint(equalTo: channelImageView.centerYAnchor, constant: 0).isActive = true
-        dateTitle.leadingAnchor.constraint(equalTo: title.leadingAnchor, constant: 0).isActive = true
-        dateTitle.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -25).isActive = true
+        dateTitle.centerYAnchor.constraint(equalTo: title.centerYAnchor, constant: 0).isActive = true
+//        dateTitle.leadingAnchor.constraint(equalTo: title.leadingAnchor, constant: 0).isActive = true
+        dateTitle.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -15).isActive = true
         
         NSLayoutConstraint.activate([
             mainView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
-            mainView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
-            mainView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
+            mainView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 5),
+            mainView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
             mainView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0),
             
-            statusIndicator.topAnchor.constraint(equalTo: mainView.topAnchor, constant: 15),
-            statusIndicator.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: 5),
+            statusIndicator.topAnchor.constraint(equalTo: mainView.topAnchor, constant: 20),
+            statusIndicator.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: 17),
             statusIndicator.heightAnchor.constraint(equalToConstant: 10),
             statusIndicator.widthAnchor.constraint(equalToConstant: 10),
             
-            channelImageView.topAnchor.constraint(equalTo: mainView.topAnchor, constant: 10),
-            channelImageView.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: 0),
+            channelImageView.topAnchor.constraint(equalTo: mainView.topAnchor, constant: 15),
+            channelImageView.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: 12),
             channelImageView.heightAnchor.constraint(equalToConstant: 70),
             channelImageView.widthAnchor.constraint(equalToConstant: 70),
             channelImageView.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: -10),
             
-            title.bottomAnchor.constraint(equalTo: dateTitle.topAnchor, constant: -7),
+            title.bottomAnchor.constraint(equalTo: subTitle.topAnchor, constant: -7),
             title.leadingAnchor.constraint(equalTo: channelImageView.trailingAnchor, constant: 15),
             
 //            messageLabel.topAnchor.constraint(equalTo: channelImageView.bottomAnchor, constant: 10),
@@ -185,13 +250,15 @@ class ChannelCell: UITableViewCell {
 //            messageLabel.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -5),
 //            messageLabel.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: -15),
             
-            customAccessoryView.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: 0),
-            customAccessoryView.topAnchor.constraint(equalTo: title.topAnchor, constant: 0),
-            customAccessoryView.bottomAnchor.constraint(equalTo: dateTitle.bottomAnchor, constant: 0),
+            customAccessoryView.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -15),
+            customAccessoryView.topAnchor.constraint(equalTo: subTitle.topAnchor, constant: 0),
+            customAccessoryView.heightAnchor.constraint(equalToConstant: 20),
             customAccessoryView.widthAnchor.constraint(equalToConstant: 50),
             
-            subTitle.topAnchor.constraint(equalTo: dateTitle.bottomAnchor, constant: 7),
-            subTitle.leadingAnchor.constraint(equalTo: dateTitle.leadingAnchor, constant: 0),
+            subTitle.topAnchor.constraint(equalTo: channelImageView.centerYAnchor, constant: -4),
+            subTitle.leadingAnchor.constraint(equalTo: title.leadingAnchor, constant: 0),
+            subTitle.trailingAnchor.constraint(equalTo: customAccessoryView.leadingAnchor, constant: -10),
+            subTitle.bottomAnchor.constraint(equalTo: channelImageView.bottomAnchor, constant: 0),
             
             
         ])
@@ -275,7 +342,7 @@ extension ChannelCell {
             badgeLabel.isHidden = false
             NSLayoutConstraint.activate([
                 badgeLabel.trailingAnchor.constraint(equalTo: customAccessoryView.trailingAnchor, constant: 0),
-                badgeLabel.bottomAnchor.constraint(equalTo: customAccessoryView.bottomAnchor, constant: 0),
+                badgeLabel.topAnchor.constraint(equalTo: customAccessoryView.topAnchor, constant: 0),
                 badgeLabel.heightAnchor.constraint(equalToConstant: height),
                 badgeLabel.widthAnchor.constraint(equalToConstant: width)
             ])

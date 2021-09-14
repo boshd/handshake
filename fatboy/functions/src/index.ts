@@ -79,6 +79,13 @@ exports.onChannelUpdate = functions.firestore
 
         if (afterTimestamp !== oldTimestamp) {
             LOGGER.info('DIFFEREENCE BETWEEN START TIMES')
+
+
+            if ((afterTimestamp * 1000) < new Date().getTime()) {
+                LOGGER.log('attempting to create task for start date before the current date; proof (leading w/ start date): ', (afterTimestamp * 1000), new Date().getTime())
+                return
+            }
+
             const tmpDate = afterTimestamp
 
             // const unixTimestamp = afterTimestamp
@@ -132,23 +139,32 @@ async function notifyEventAttendees(channelId: string) {
             if (data !== undefined) {
 
                 const fcmTokens = data['fcmTokens']
-                const startTimestamp = data['startTime']
+                // const startTimestamp = data['startTime']
                 const channelName = data['name']
-                const text = 'Heads up! ' + hoursTillTimestamp(startTimestamp) + ' hour(s) till the event starts. 🚀'
+                // const text = 'Heads up! ' + hoursTillTimestamp(startTimestamp) + ' hour(s) till the event starts. 🚀'
+
+                const text = 'Heads up! The event will be starting soon, open the app to view the event details.'
 
                 const tokens = Object.keys(fcmTokens).map(key => fcmTokens[key])
+
+                var title =  'It\'s nearly time for \"' + channelName + '\" 🚀'
 
                 const messagePayload = constructNotificationPayloadForReminder(
                     tokens,
                     channelId,
                     channelName,
-                    text
+                    text,
+                    title
                 )
 
                 admin
                 .messaging()
                 .sendMulticast(messagePayload)
-                .then((res) => { functions.logger.info('Successfully sent notification // ', res) })
+                .then((res) => {
+                    LOGGER.info('Successfully sent notification // ', res)
+                    // update message to indicate delivery
+
+                 })
                 .catch((error) => { functions.logger.error('Error sending notification // ', error) })
             }
 
@@ -160,26 +176,26 @@ async function notifyEventAttendees(channelId: string) {
 
 }
 
-function hoursTillTimestamp(futureTimestamp: number) {
-    // get total seconds between the times
-    var delta = Math.abs(futureTimestamp - new Date().getTime() / 1000) / 1000;
+// function hoursTillTimestamp(futureTimestamp: number) {
+//     // get total seconds between the times
+//     var delta = Math.abs(futureTimestamp - new Date().getTime() / 1000) / 1000;
 
-    // calculate (and subtract) whole days
-    var days = Math.floor(delta / 86400);
-    delta -= days * 86400;
+//     // calculate (and subtract) whole days
+//     var days = Math.floor(delta / 86400);
+//     delta -= days * 86400;
 
-    // calculate (and subtract) whole hours
-    var hours = Math.floor(delta / 3600) % 24;
-    delta -= hours * 3600;
+//     // calculate (and subtract) whole hours
+//     var hours = Math.floor(delta / 3600) % 24;
+//     delta -= hours * 3600;
 
-    // calculate (and subtract) whole minutes
-    var minutes = Math.floor(delta / 60) % 60;
-    delta -= minutes * 60;
+//     // calculate (and subtract) whole minutes
+//     var minutes = Math.floor(delta / 60) % 60;
+//     delta -= minutes * 60;
 
-    // what's left is seconds
-    // var seconds = delta % 60;  // in theory the modulus is not required
-    return hours
-}
+//     // what's left is seconds
+//     // var seconds = delta % 60;  // in theory the modulus is not required
+//     return hours
+// }
 
 /*
 Taks runner
@@ -242,12 +258,13 @@ exports.notifyOnMessageCreation = functions.firestore
 
     const userId: string = context.params['userId']
     const messageId: string = context.params['messageId']
-    const channelId: string = context.params['channelId']
+    // const channelId: string = context.params['channelId']
 
     if (snapshot.exists) {
         const messageData = snapshot.data()
         // const timestamp = messageData['timestamp']
         const fromId = messageData['fromId']
+        const channelId = messageData['toId']
         const fcmTokens = messageData['fcmTokens']
         const senderName = messageData['senderName']
         const text = messageData['text']
@@ -274,7 +291,19 @@ exports.notifyOnMessageCreation = functions.firestore
             return admin
             .messaging()
             .sendMulticast(messagePayload)
-            .then((res) => { functions.logger.info('Successfully sent notification // ', res) })
+            .then((res) => {
+                LOGGER.info('Successfully sent notification // ', res)
+                // update message to indicate delivery
+                const participantIds = Object.keys(fcmTokens)
+                participantIds.forEach(participantId => {
+                    db.collection('users').doc(participantId).collection('channelIds').doc(channelId).collection('messageIds').doc(messageId).set({
+                        'notified': true,
+                    }, {merge:true})
+                    .then(() => { LOGGER.info('good') })
+                    .catch(err => { LOGGER.error('Fbad') })
+                });
+
+             })
             .catch((error) => { functions.logger.error('Error sending notification // ', error) })
         } else {
             return null

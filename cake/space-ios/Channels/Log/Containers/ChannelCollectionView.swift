@@ -58,7 +58,13 @@ class ChannelCollectionView: UICollectionView {
         guard let frame = frame, let height = frame.height.value else { return 0 }
         
         if !isOutgoingMessage {
-            if let isFirst = message.isFirstInSection.value, isFirst {
+            
+            if let isFirst = message.isFirstInSection.value,
+               let isCrooked = message.isCrooked.value,
+               isCrooked,
+               isFirst {
+                return CGFloat(height) + BaseMessageCell.textFirstMessageInsets + BaseMessageCell.incomingMessageAuthorNameLabelHeight
+            } else if let isFirst = message.isFirstInSection.value, isFirst {
                 return CGFloat(height) + BaseMessageCell.textFirstMessageInsets
             } else if let isCrooked = message.isCrooked.value, isCrooked {
                 return CGFloat(height) + BaseMessageCell.textMessageInsets + 15

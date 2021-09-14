@@ -114,15 +114,12 @@ extension ChannelLogController: ChannelManagerDelegate {
     }
     
     func addMember(id: String) {
-        print("in remove member \(self.channel?.participantIds)")
         guard let members = self.channel?.participantIds else { return }
         if let _ = members.firstIndex(where: { (memberID) -> Bool in
             return memberID == id
         }) {} else {
-            print("appending \(id) in safe write mode")
             try! realm.safeWrite {
                 self.channel?.participantIds.append(id)
-                print("post append \(self.channel?.participantIds)")
             }
         }
         
@@ -130,7 +127,6 @@ extension ChannelLogController: ChannelManagerDelegate {
     }
     
     func removeMember(id: String) {
-        print("in remove member \(self.channel?.participantIds)")
         guard let members = self.channel?.participantIds else { return }
         guard let memberIndex = members.firstIndex(where: { (memberID) -> Bool in
             return memberID == id
@@ -140,7 +136,6 @@ extension ChannelLogController: ChannelManagerDelegate {
         }
         
         self.changeUIAfterChildRemovedIfNeeded()
-        
     }
     
     fileprivate func changeUIAfterChildAddedIfNeeded() {

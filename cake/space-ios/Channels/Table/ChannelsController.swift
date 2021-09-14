@@ -10,6 +10,8 @@ import UIKit
 import Firebase
 import RealmSwift
 import SDWebImage
+import CoreLocation
+import MapKit
 //import SwiftConfettiView
 
 enum ActivityTitle: String {
@@ -29,7 +31,7 @@ protocol CurrentUserDelegate: class {
     func currentUser(didUpdate user: User)
 }
 
-class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate {
+class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate, CLLocationManagerDelegate {
     
     var isSyncingUsers = false
     
@@ -39,12 +41,15 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
     
     let channelCellId = "channelCellId"
     
+    let locationManager = CLLocationManager()
     let channelsFetcher = ChannelsFetcher()
     let viewPlaceholder = ViewPlaceholder()
     let notificationsManager = InAppNotificationManager()
     let realmManager = ChannelsRealmManager()
     let dateFormatter = DateFormatter()
     let informationMessageSender = InformationMessageSender()
+    
+    var currentRegion: MKCoordinateRegion?
     
     var channelsReference: CollectionReference?
     var currentChannelReference: DocumentReference?
@@ -98,6 +103,8 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let dest = GeneralUpdatesController()
+        present(dest, animated: true, completion: nil)
         addObservers()
         configureController()
         configureNavigationBar()
@@ -209,6 +216,13 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         self.navigationItem.rightBarButtonItem?.tintColor = ThemeManager.currentTheme().tintColor
     }
     
+    fileprivate func configureCurrentLocation() {
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestAlwaysAuthorization()
+        locationManager.startUpdatingLocation()
+    }
+    
     // MARK: - Observers
     
     func addObservers() {
@@ -295,6 +309,8 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         checkConnectivity()
         managePresense()
         setupDataSource()
+        
+        configureCurrentLocation()
         
         currentUserReference = Firestore.firestore().collection("users").document(currentUserID)
         listenToCurrentUser()
@@ -484,6 +500,30 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
         } else {
             hapticFeedback(style: .selectionChanged)
         }
+        
+//        let alert = CustomAlertController(title_: nil, message: nil, preferredStyle: .actionSheet)
+//
+//        alert.addAction(CustomAlertAction(title: "New group", style: .default , handler: { [unowned self] in
+//            let destination = ParticipantProfileController()
+//
+//            guard let user = users?[indexPath.row] else { return }
+//            destination.member = user
+//            destination.userProfileContainerView.addPhotoLabel.isHidden = true
+//            destination.hidesBottomBarWhenPushed = true
+//            navigationController?.pushViewController(destination, animated: true)
+//        }))
+//
+//        alert.addAction(CustomAlertAction(title: "New event", style: .default , handler: { [unowned self] in
+//            let destination = ParticipantProfileController()
+//
+//            guard let user = users?[indexPath.row] else { return }
+//            destination.member = user
+//            destination.userProfileContainerView.addPhotoLabel.isHidden = true
+//            destination.hidesBottomBarWhenPushed = true
+//            navigationController?.pushViewController(destination, animated: true)
+//        }))
+        
+//        self.present(alert, animated: true, completion: nil)
 
         let destination = SelectChannelParticipantsController()
         // remove blocked users
@@ -530,4 +570,25 @@ class ChannelsController: CustomTableViewController, UIGestureRecognizerDelegate
 
 extension ChannelsController: WelcomeControllerDelegate {
     func onboardingFinished() {}
+}
+
+// MARK: - Location Manager Delegate
+
+extension ChannelsController {
+    
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        if manager.authorizationStatus == .notDetermined {
+            manager.requestWhenInUseAuthorization()
+        }
+        
+        // if authorization is denied, setting the region will be automatically skipped.
+        // if authorization is given, the region will be set.
+    }
+    
+    @objc
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let coordinates = manager.location?.coordinate {
+            currentRegion = MKCoordinateRegion(center: coordinates, latitudinalMeters: 10, longitudinalMeters: 10)
+        }
+    }
 }

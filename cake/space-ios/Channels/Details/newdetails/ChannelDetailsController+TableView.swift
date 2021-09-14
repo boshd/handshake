@@ -31,26 +31,7 @@ extension ChannelDetailsController: UITableViewDelegate, UITableViewDataSource {
             return 1
         } else if section == 3 {
             guard let count = channel?.participantIds.count, isInitial && initialNumberOfAttendees < count else { return attendees.count }
-
             return attendees.count + 1
-            
-            
-//            print("attendess count \(attendees.count)")
-//            guard let count = channel?.participantIds.count,
-//                  count > initialNumberOfAttendees,
-//                  !showMoreUsers
-//            else { return attendees.count }
-            
-            // +2 because of the current user AND "Load more" cell
-//            return initialNumberOfAttendees + 2
-
-            
-//            if allAttendeesLoaded || !initialAttendeesLoaded {
-//                return attendees.count
-//            } else {
-//                return attendees.count + 1
-//            }
-            
         } else {
             return 1
         }

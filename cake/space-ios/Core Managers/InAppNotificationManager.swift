@@ -60,6 +60,11 @@ class InAppNotificationManager: NSObject {
                     
                     if diff.type == .added {
                         let messageID = diff.document.documentID
+                        let data = diff.document.data()
+                        
+                        if let notified = data["notified"] as? Bool, notified {
+                            return
+                        }
                         
                         Firestore.firestore().collection("messages").document(messageID).getDocument { (snapshot, error) in
                             guard error == nil else { return }

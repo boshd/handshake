@@ -46,7 +46,7 @@ extension UserCell {
                 
                 textLabel?.text = "\(phoneNumber ?? "phone")"
                 
-                rightLabel.text = "~ \(username ?? "name")"
+                rightLabel.text = "~\(username ?? "name")"
             }
         }
         guard let url = users[indexPath.row].userThumbnailImageUrl else { return }
@@ -127,7 +127,7 @@ extension UserCell {
                 
                 textLabel?.text = "\(phoneNumber ?? "phone")"
                 
-                rightLabel.text = "~ \(username ?? "name")"
+                rightLabel.text = "~\(username ?? "name")"
             }
         }
         guard let url = users[indexPath.row].userThumbnailImageUrl else { return }

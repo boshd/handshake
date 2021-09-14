@@ -169,7 +169,15 @@ class IncomingMessageCell: BaseMessageCell {
         let portraitBubbleMaxW = BaseMessageCell.bubbleViewMaxWidth
         let portraitAuthorMaxW = BaseMessageCell.incomingMessageAuthorNameLabelMaxWidth
         
-        if let isFirst = message.isFirstInSection.value, isFirst {
+        if let isFirst = message.isFirstInSection.value,
+           let isCrooked = message.isCrooked.value,
+           isCrooked,
+           isFirst {
+            return getGroupBubbleSizeForFirstAndLast(messageWidth: CGFloat(portaritWidth),
+                                      bubbleMaxWidth: portraitBubbleMaxW,
+                                      authorMaxWidth: portraitAuthorMaxW)
+        
+        } else if let isFirst = message.isFirstInSection.value, isFirst {
             return getGroupBubbleSizeForFirst(messageWidth: CGFloat(portaritWidth),
                                       bubbleMaxWidth: portraitBubbleMaxW,
                                       authorMaxWidth: portraitAuthorMaxW)
@@ -196,6 +204,19 @@ class IncomingMessageCell: BaseMessageCell {
                                        frame.size.height, 10).integral
 
         return rect.size
+    }
+    
+    fileprivate func getGroupBubbleSizeForFirstAndLast(messageWidth: CGFloat, bubbleMaxWidth: CGFloat, authorMaxWidth: CGFloat) -> CGSize {
+        let horisontalInsets = BaseMessageCell.incomingMessageHorisontalInsets
+
+        let rect = setupFrameWithLabelForFirstAndLast(bubbleView.frame.origin.x,
+                                       bubbleMaxWidth,
+                                       messageWidth,
+                                       horisontalInsets,
+                                       frame.size.height, 10).integral
+
+        return rect.size
+    
     }
     
     fileprivate func getGroupBubbleSizeForFirst(messageWidth: CGFloat, bubbleMaxWidth: CGFloat, authorMaxWidth: CGFloat) -> CGSize {

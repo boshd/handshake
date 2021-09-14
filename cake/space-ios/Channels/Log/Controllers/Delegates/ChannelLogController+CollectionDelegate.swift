@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import RealmSwift
 import AVFoundation
 
 extension ChannelLogController: CollectionDelegate {
@@ -79,21 +80,10 @@ extension ChannelLogController: CollectionDelegate {
             }
             
             groupedMessages.insert(newSection, at: insertionIndex)
-            groupedMessages.last?.messages.last?.isCrooked.value = true
             
-            if let messageCount = groupedMessages.last?.messages.count, messageCount > 1 {
-                // message is equal to messages.last
-                if groupedMessages.last?.messages[messageCount-2].fromId != groupedMessages.last?.messages.last?.fromId {
-                    groupedMessages.last?.messages[messageCount-2].isCrooked.value = true
-                    groupedMessages.last?.messages.last?.isFirstInSection.value = true
-                } else {
-                    groupedMessages.last?.messages[messageCount-2].isCrooked.value = false
-                    groupedMessages.last?.messages.last?.isFirstInSection.value = false
-                }
-                
-            } else {
-                groupedMessages.last?.messages.last?.isCrooked.value = true
-                groupedMessages.last?.messages.last?.isFirstInSection.value = true
+            if let messages = groupedMessages.last?.messages {
+                configureBubblesTails(for: messages)
+                configureIsFirstnessInSection(for: messages)
             }
             
             collectionView.performBatchUpdates({
@@ -103,26 +93,12 @@ extension ChannelLogController: CollectionDelegate {
             }
         } else {
             guard let indexPath = Message.get(indexPathOf: message, in: groupedMessages) else { try! self.realm.commitWrite(); return }
-            if message.isInformationMessage.value == nil || !(message.isInformationMessage.value ?? false) {
-                groupedMessages.last?.messages.last?.isCrooked.value = true
-                
-                if let messageCount = groupedMessages.last?.messages.count, messageCount > 1 {
-                    // message is equal to messages.last
-                    if groupedMessages.last?.messages[messageCount-2].fromId != groupedMessages.last?.messages.last?.fromId {
-                        groupedMessages.last?.messages[messageCount-2].isCrooked.value = true
-                        groupedMessages.last?.messages.last?.isFirstInSection.value = true
-                    } else {
-                        groupedMessages.last?.messages[messageCount-2].isCrooked.value = false
-                        groupedMessages.last?.messages.last?.isFirstInSection.value = false
-                    }
-                    
-                } else {
-                    groupedMessages.last?.messages.last?.isCrooked.value = true
-                    groupedMessages.last?.messages.last?.isFirstInSection.value = true
-                }
+            
+            if let messages = groupedMessages.last?.messages {
+                configureBubblesTails(for: messages)
+                configureIsFirstnessInSection(for: messages)
             }
 
-            
             // temporary due to inefficiency
             UIView.performWithoutAnimation {
                 collectionView.performBatchUpdates({
@@ -134,7 +110,6 @@ extension ChannelLogController: CollectionDelegate {
         }
         try! self.realm.commitWrite()
     }
-
     
     fileprivate func isInsertingToTheBottom(message: Message) -> Bool {
         let firstObject = groupedMessages.last?.messages.first?.timestamp.value ?? 0

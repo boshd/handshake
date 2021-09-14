@@ -151,7 +151,7 @@ class MessagesFetcher: NSObject {
         }
 
         loadedUserNamesGroup.notify(queue: .main, execute: {
-          self.loadingNamesGroup.leave()
+            self.loadingNamesGroup.leave()
         })
         for index in 0...messages.count - 1 {
             guard let senderID = messages[index].fromId else { continue }
@@ -201,7 +201,7 @@ class MessagesFetcher: NSObject {
     func estimateFrameForText(_ text: String) -> CGRect {
         let size = CGSize(width: 200, height: 10000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-        let attributes = [NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFont(with: 13)]
+        let attributes = [NSAttributedString.Key.font: ThemeManager.currentTheme().secondaryFont(with: 12)]
         return text.boundingRect(with: size, options: options, attributes: attributes, context: nil).integral
     }
     
@@ -287,7 +287,7 @@ class MessagesFetcher: NSObject {
         return NSString(string: text).boundingRect(with: portraitSize,
                                                    options: options,
                                                    attributes: [NSAttributedString.Key.font: MessageFontsAppearance.defaultMessageTextFont],
-                                                   context: nil).integral
+                                                   context: nil)
         
 //        //we make the height arbitrarily large so we don't undershoot height in calculation
 //        let height: CGFloat = 320

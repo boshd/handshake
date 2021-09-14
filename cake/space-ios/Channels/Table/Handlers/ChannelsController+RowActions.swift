@@ -43,47 +43,69 @@ extension ChannelsController {
         
         guard let currentUserID = Auth.auth().currentUser?.uid,
               let channelID = channel.id,
-              let currentUserDocToDelete = currentUserReference?.collection("channelIds").document(channelID),
-              let _ = channelsReference?.document(channelID),
-              let channelDocToDelete = self.channelsReference?.document(channelID).collection("participantIds").document(currentUserID)
+              // let currentUserDocToDelete = currentUserReference?.collection("channelIds").document(channelID),
+              let _ = channelsReference?.document(channelID)
+              // let channelDocToDelete = self.channelsReference?.document(channelID).collection("participantIds").document(currentUserID)
         else { return }
         
-        // copy values from channel before it's purged from realm
-//        let deletedChannelID = String(channel.id!)
-//        let deletedChannelName = String(channel.name!)
-//        let admins = Array(channel.admins)
-//        let participantIds = Array(channel.participantIds)
-//        let channelToBeRemoved = Channel(value: channel)
-        
-        if !RealmKeychain.defaultRealm.isInWriteTransaction {
-            RealmKeychain.defaultRealm.beginWrite()
-            let result = RealmKeychain.defaultRealm.objects(Channel.self).filter("id = '\(channel.id!)'")
-            let messagesResult = channel.messages
+        let text = "\(globalCurrentUser?.name ?? "Someone") left the group"
+        let channelName = channel.name ?? ""
+        let channelCopy = Channel(value: channel)
 
-            RealmKeychain.defaultRealm.delete(messagesResult)
-            RealmKeychain.defaultRealm.delete(result)
-            try! RealmKeychain.defaultRealm.commitWrite()
-            
-            if theRealmChannels.count == 0 {
-                channelsFetcher.cleanFetcherChannels()
-            }
-        }
-        
-        let batch = Firestore.firestore().batch()
-        batch.deleteDocument(currentUserDocToDelete)
-        batch.deleteDocument(channelDocToDelete)
-        batch.commit { (error) in
+        let channelReference = Firestore.firestore().collection("channels").document(channelID)
+        let participantReference = Firestore.firestore().collection("users").document(currentUserID)
+        ChannelManager.removeMember(channelReference: channelReference, userReference: participantReference, memberID: currentUserID, channelID: channelID) { error in
             if error != nil {
-                print(error?.localizedDescription ?? "")
+                print(error?.localizedDescription ?? "err")
                 return
             }
+            self.informationMessageSender.sendInformationMessage(channelID: channelID, channelName: channelName, participantIDs: [], text: text, channel: channelCopy)
             
-            self.configureTabBarBadge()
+            if !RealmKeychain.defaultRealm.isInWriteTransaction {
+                RealmKeychain.defaultRealm.beginWrite()
+                let result = RealmKeychain.defaultRealm.objects(Channel.self).filter("id = '\(channel.id!)'")
+                let messagesResult = channel.messages
 
-            if let realmChannels = self.realmChannels, realmChannels.count <= 0 {
-                self.checkIfThereAnyActiveChats(isEmpty: true)
+                RealmKeychain.defaultRealm.delete(messagesResult)
+                RealmKeychain.defaultRealm.delete(result)
+                try! RealmKeychain.defaultRealm.commitWrite()
+                
+                if theRealmChannels.count == 0 {
+                    self.channelsFetcher.cleanFetcherChannels()
+                }
             }
+            
+            //self.navigationController?.popViewController(animated: true)
         }
+        
+//        let batch = Firestore.firestore().batch()
+//        batch.deleteDocument(currentUserDocToDelete)
+        
+//        channelDocToDelete.delete { error in
+//            if error != nil {
+//                print(error?.localizedDescription ?? "")
+//                return
+//            }
+//            self.configureTabBarBadge()
+//
+//            if let realmChannels = self.realmChannels, realmChannels.count <= 0 {
+//                self.checkIfThereAnyActiveChats(isEmpty: true)
+//            }
+//        }
+        
+//        batch.deleteDocument(channelDocToDelete)
+//        batch.commit { (error) in
+//            if error != nil {
+//                print(error?.localizedDescription ?? "")
+//                return
+//            }
+//
+//            self.configureTabBarBadge()
+//
+//            if let realmChannels = self.realmChannels, realmChannels.count <= 0 {
+//                self.checkIfThereAnyActiveChats(isEmpty: true)
+//            }
+//        }
         
         
     }

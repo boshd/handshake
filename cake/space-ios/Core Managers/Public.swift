@@ -962,7 +962,6 @@ extension UINavigationItem {
             stackView.frame = CGRect(x: 0, y: 0, width: width, height: 35)
 //            stackView.backgroundColor = .yellow
             
-            print("here")
             // if image exists, change layout
             let imageView = UIImageView()
             imageView.backgroundColor = .red
@@ -1157,7 +1156,17 @@ extension Date {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium
         dateFormatter.dateFormat = "dd/MM/yy"
+        
         return dateFormatter.string(from: self)
+        
+//        if self.isInToday {
+//            return "Today"
+//        } else if self.isInYesterday {
+//            return "Yesterday"
+//        } else {
+//            return dateFormatter.string(from: self)
+//        }
+        
     }
     
     func getTimeStringFromUTC() -> String {

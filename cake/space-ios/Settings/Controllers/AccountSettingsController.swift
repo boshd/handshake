@@ -414,12 +414,8 @@ extension AccountSettingsController {
     
     override func tableView(_  tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         let header = view as! UITableViewHeaderFooterView
-        header.textLabel?.font = ThemeManager.currentTheme().secondaryFontVeryBold(with: 10)
+        header.textLabel?.font = ThemeManager.currentTheme().secondaryFontBold(with: 10)
         header.textLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
-        
-//        let attributedString = NSMutableAttributedString(string: (header.textLabel?.text)!)
-//        attributedString.addAttribute(NSAttributedString.Key.kern, value: CGFloat(3), range: NSRange(location: 0, length: attributedString.length))
-//        header.textLabel?.attributedText = attributedString
     }
     
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {

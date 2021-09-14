@@ -179,7 +179,6 @@ class LocationSearchController: UIViewController, CLLocationManagerDelegate {
     // vcvcv
     func searchRequestStart(dismissKeyboard: Bool = false, isMapPan: Bool = false) {
         searchRequestCancel()
-        print("hereeee")
         guard let text = searchTableContainerView.searchBar.text, !text.isEmpty else {
 //            searchTableContainerView.searchBar.resignFirstResponder()
             searchMapItems.removeAll()

@@ -52,7 +52,6 @@
 		BC166B5726A9EE3300A159EB /* ChannelLogController+Theming.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC166B5626A9EE3300A159EB /* ChannelLogController+Theming.swift */; };
 		BC166B5926AA0B9000A159EB /* KeyboardService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC166B5826AA0B9000A159EB /* KeyboardService.swift */; };
 		BC166B5B26ADC87C00A159EB /* InputAccessoryViewPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC166B5A26ADC87B00A159EB /* InputAccessoryViewPlaceholder.swift */; };
-		BC17473325F30C630011BF91 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BC17473225F30C630011BF91 /* GoogleService-Info.plist */; };
 		BC1A77FB22A2C71D005AC5CE /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1A77FA22A2C71D005AC5CE /* Colors.swift */; };
 		BC1A77FD22A3F8B6005AC5CE /* fChannelLogController+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1A77FC22A3F8B6005AC5CE /* fChannelLogController+DataSource.swift */; };
 		BC1A77FF22A3F9B7005AC5CE /* RevealableCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1A77FE22A3F9B7005AC5CE /* RevealableCollectionViewCell.swift */; };
@@ -102,6 +101,8 @@
 		BC3AE88F24B9F5C800619FCF /* RoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3AE88E24B9F5C800619FCF /* RoundButton.swift */; };
 		BC41D7D1261F92180090FFF7 /* TypingIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC41D7D0261F92180090FFF7 /* TypingIndicatorManager.swift */; };
 		BC432C8126E7DAA800FB6E26 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC432C8026E7DAA800FB6E26 /* SceneDelegate.swift */; };
+		BC432C8326EA91D400FB6E26 /* GeneralUpdatesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC432C8226EA91D300FB6E26 /* GeneralUpdatesController.swift */; };
+		BC432C8526EA91FC00FB6E26 /* GeneralUpdatesContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC432C8426EA91FC00FB6E26 /* GeneralUpdatesContainerView.swift */; };
 		BC44E6C522CCDCB400F50956 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC44E6C422CCDCB400F50956 /* UserCell.swift */; };
 		BC44E6C722CCDD4E00F50956 /* UserCell+ConfigureCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC44E6C622CCDD4E00F50956 /* UserCell+ConfigureCell.swift */; };
 		BC44E6C922CCE1F600F50956 /* CheckableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC44E6C822CCE1F600F50956 /* CheckableTableViewCell.swift */; };
@@ -294,6 +295,8 @@
 		BCBDA1DC254F109D0051A183 /* CreateChannelController+HeaderCell_.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA1DB254F109D0051A183 /* CreateChannelController+HeaderCell_.swift */; };
 		BCBDA1E4254F22710051A183 /* CreateChannelController+AvatarOpener_.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBDA1E3254F22710051A183 /* CreateChannelController+AvatarOpener_.swift */; };
 		BCBEAC6B23B0888300E52850 /* DynamicLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBEAC6A23B0888300E52850 /* DynamicLabel.swift */; };
+		BCC06E9B26F02869003C8E01 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC06E9A26F02869003C8E01 /* Event.swift */; };
+		BCC06E9E26F02B4A003C8E01 /* CreateEventCotroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC06E9D26F02B4A003C8E01 /* CreateEventCotroller.swift */; };
 		BCC1A27B22D3C47000766AF9 /* PhoneContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A27A22D3C47000766AF9 /* PhoneContainerView.swift */; };
 		BCC1A27F22D4826900766AF9 /* PhotoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A27E22D4826900766AF9 /* PhotoController.swift */; };
 		BCC1A28122D482BB00766AF9 /* PhotoContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A28022D482BB00766AF9 /* PhotoContainerView.swift */; };
@@ -437,7 +440,6 @@
 		BC166B5626A9EE3300A159EB /* ChannelLogController+Theming.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelLogController+Theming.swift"; sourceTree = "<group>"; };
 		BC166B5826AA0B9000A159EB /* KeyboardService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardService.swift; sourceTree = "<group>"; };
 		BC166B5A26ADC87B00A159EB /* InputAccessoryViewPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessoryViewPlaceholder.swift; sourceTree = "<group>"; };
-		BC17473225F30C630011BF91 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		BC1A77FA22A2C71D005AC5CE /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		BC1A77FC22A3F8B6005AC5CE /* fChannelLogController+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "fChannelLogController+DataSource.swift"; sourceTree = "<group>"; };
 		BC1A77FE22A3F9B7005AC5CE /* RevealableCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevealableCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -489,6 +491,8 @@
 		BC3AE88E24B9F5C800619FCF /* RoundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundButton.swift; sourceTree = "<group>"; };
 		BC41D7D0261F92180090FFF7 /* TypingIndicatorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingIndicatorManager.swift; sourceTree = "<group>"; };
 		BC432C8026E7DAA800FB6E26 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		BC432C8226EA91D300FB6E26 /* GeneralUpdatesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralUpdatesController.swift; sourceTree = "<group>"; };
+		BC432C8426EA91FC00FB6E26 /* GeneralUpdatesContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralUpdatesContainerView.swift; sourceTree = "<group>"; };
 		BC44E6C422CCDCB400F50956 /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		BC44E6C622CCDD4E00F50956 /* UserCell+ConfigureCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserCell+ConfigureCell.swift"; sourceTree = "<group>"; };
 		BC44E6C822CCE1F600F50956 /* CheckableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckableTableViewCell.swift; sourceTree = "<group>"; };
@@ -681,6 +685,10 @@
 		BCBDA1DB254F109D0051A183 /* CreateChannelController+HeaderCell_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelController+HeaderCell_.swift"; sourceTree = "<group>"; };
 		BCBDA1E3254F22710051A183 /* CreateChannelController+AvatarOpener_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CreateChannelController+AvatarOpener_.swift"; sourceTree = "<group>"; };
 		BCBEAC6A23B0888300E52850 /* DynamicLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicLabel.swift; sourceTree = "<group>"; };
+		BCC06E9526F019A4003C8E01 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		BCC06E9726F019A4003C8E01 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		BCC06E9A26F02869003C8E01 /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		BCC06E9D26F02B4A003C8E01 /* CreateEventCotroller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateEventCotroller.swift; sourceTree = "<group>"; };
 		BCC1A27A22D3C47000766AF9 /* PhoneContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneContainerView.swift; sourceTree = "<group>"; };
 		BCC1A27E22D4826900766AF9 /* PhotoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoController.swift; sourceTree = "<group>"; };
 		BCC1A28022D482BB00766AF9 /* PhotoContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoContainerView.swift; sourceTree = "<group>"; };
@@ -1135,6 +1143,8 @@
 			children = (
 				BCF97A00229D5F6A0088C568 /* WelcomeViewController.swift */,
 				BC59274722A076B3006A5CEF /* WelcomeContainerView.swift */,
+				BC432C8226EA91D300FB6E26 /* GeneralUpdatesController.swift */,
+				BC432C8426EA91FC00FB6E26 /* GeneralUpdatesContainerView.swift */,
 			);
 			path = nonauth;
 			sourceTree = "<group>";
@@ -1181,6 +1191,7 @@
 			children = (
 				BC59273622A0157D006A5CEF /* User.swift */,
 				BC59273822A0159E006A5CEF /* Channel.swift */,
+				BCC06E9A26F02869003C8E01 /* Event.swift */,
 				BC7D9DB726616F8A008CBF8F /* LocationPoint.swift */,
 				BC59273C22A01B41006A5CEF /* Message.swift */,
 				BC57BCAD25093F4E00AAB5AC /* RealmCGRect.swift */,
@@ -1765,6 +1776,39 @@
 			path = Delegates;
 			sourceTree = "<group>";
 		};
+		BCC06E9326F019A4003C8E01 /* Firebase */ = {
+			isa = PBXGroup;
+			children = (
+				BCC06E9426F019A4003C8E01 /* Prod */,
+				BCC06E9626F019A4003C8E01 /* Dev */,
+			);
+			path = Firebase;
+			sourceTree = "<group>";
+		};
+		BCC06E9426F019A4003C8E01 /* Prod */ = {
+			isa = PBXGroup;
+			children = (
+				BCC06E9526F019A4003C8E01 /* GoogleService-Info.plist */,
+			);
+			path = Prod;
+			sourceTree = "<group>";
+		};
+		BCC06E9626F019A4003C8E01 /* Dev */ = {
+			isa = PBXGroup;
+			children = (
+				BCC06E9726F019A4003C8E01 /* GoogleService-Info.plist */,
+			);
+			path = Dev;
+			sourceTree = "<group>";
+		};
+		BCC06E9C26F02B08003C8E01 /* Events */ = {
+			isa = PBXGroup;
+			children = (
+				BCC06E9D26F02B4A003C8E01 /* CreateEventCotroller.swift */,
+			);
+			path = Events;
+			sourceTree = "<group>";
+		};
 		BCCB59F5248C57F6004AA4AA /* Cellsd */ = {
 			isa = PBXGroup;
 			children = (
@@ -1973,6 +2017,7 @@
 				BC59273E22A04D2A006A5CEF /* Authentication */,
 				BC49303E253A15B400441F62 /* Contacts */,
 				BC0722E4237727B300A4D476 /* Channels */,
+				BCC06E9C26F02B08003C8E01 /* Events */,
 				BCDB2BF322FDE13E002FC6A2 /* Settings */,
 				BC59276422A11CB1006A5CEF /* Cells */,
 				BC6A821024731CC200FA1F93 /* UI Components */,
@@ -1982,6 +2027,7 @@
 				BC59273522A0156D006A5CEF /* Models */,
 				BC166B5426A9B3B300A159EB /* Util */,
 				BCAC056E22AD37FC006D0C24 /* Support */,
+				BCC06E9326F019A4003C8E01 /* Firebase */,
 				BCF979FE229D5F6A0088C568 /* AppDelegate.swift */,
 				BC432C8026E7DAA800FB6E26 /* SceneDelegate.swift */,
 				BC7AABD726250EFB0024A20D /* TabBarController.swift */,
@@ -1990,7 +2036,6 @@
 				BCF97A0D229D5F6B0088C568 /* Info.plist */,
 				BCDE5661252F5A010013C978 /* space-ios.entitlements */,
 				BCF97A05229D5F6A0088C568 /* space_ios.xcdatamodeld */,
-				BC17473225F30C630011BF91 /* GoogleService-Info.plist */,
 				BC32F499236C6A1200867D85 /* spaces.xcdatamodeld */,
 				BC0DC06322ED744B00A27BC3 /* archive */,
 				BC8FAB1725C091FD0044277E /* Images.xcassets */,
@@ -2049,6 +2094,7 @@
 				4287FF393C963FA88A7AB7E9 /* [CP] Check Pods Manifest.lock */,
 				BCF979F7229D5F6A0088C568 /* Sources */,
 				BCF979F8229D5F6A0088C568 /* Frameworks */,
+				BCC06E9826F019F7003C8E01 /* Setup Firebase Env GoogleService-Info.plist */,
 				BCF979F9229D5F6A0088C568 /* Resources */,
 				15BCA17D2A3383716BC93BD4 /* [CP] Embed Pods Frameworks */,
 				BC2BE15F25B40782003C3F2D /* ShellScript */,
@@ -2192,7 +2238,6 @@
 				BC1A781822A44141005AC5CE /* TimestampView.xib in Resources */,
 				BCB921D925B4782A00A943D5 /* push.aiff in Resources */,
 				BCEDCD0C2592427000337B3C /* sent.caf in Resources */,
-				BC17473325F30C630011BF91 /* GoogleService-Info.plist in Resources */,
 				BC457B2B22EEDC140020AC74 /* Roboto-BlackItalic.ttf in Resources */,
 				BC457B2E22EEDC140020AC74 /* Roboto-Light.ttf in Resources */,
 				BCB921ED25B47BF000A943D5 /* LaunchScreen.storyboard in Resources */,
@@ -2329,6 +2374,24 @@
 			shellPath = /bin/sh;
 			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
 		};
+		BCC06E9826F019F7003C8E01 /* Setup Firebase Env GoogleService-Info.plist */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Setup Firebase Env GoogleService-Info.plist";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Name of the resource we're selectively copying\nGOOGLESERVICE_INFO_PLIST=GoogleService-Info.plist\n\n# Get references to dev and prod versions of the GoogleService-Info.plist\n# NOTE: These should only live on the file system and should NOT be part of the target (since we'll be adding them to the target manually)\nGOOGLESERVICE_INFO_DEV=${PROJECT_DIR}/${TARGET_NAME}/Firebase/Dev/${GOOGLESERVICE_INFO_PLIST}\nGOOGLESERVICE_INFO_PROD=${PROJECT_DIR}/${TARGET_NAME}/Firebase/Prod/${GOOGLESERVICE_INFO_PLIST}\n\n# Make sure the dev version of GoogleService-Info.plist exists\necho \"Looking for ${GOOGLESERVICE_INFO_PLIST} in ${GOOGLESERVICE_INFO_DEV}\"\nif [ ! -f $GOOGLESERVICE_INFO_DEV ]\nthen\n    echo \"No Development GoogleService-Info.plist found. Please ensure it's in the proper directory.\"\n    exit 1\nfi\n\n# Make sure the prod version of GoogleService-Info.plist exists\necho \"Looking for ${GOOGLESERVICE_INFO_PLIST} in ${GOOGLESERVICE_INFO_PROD}\"\nif [ ! -f $GOOGLESERVICE_INFO_PROD ]\nthen\n    echo \"No Production GoogleService-Info.plist found. Please ensure it's in the proper directory.\"\n    exit 1\nfi\n\n# Get a reference to the destination location for the GoogleService-Info.plist\nPLIST_DESTINATION=${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app\necho \"Will copy ${GOOGLESERVICE_INFO_PLIST} to final destination: ${PLIST_DESTINATION}\"\n\n# Copy over the prod GoogleService-Info.plist for Release builds\nif [ \"${CONFIGURATION}\" == \"Release\" ]\nthen\n    echo \"Using ${GOOGLESERVICE_INFO_PROD}\"\n    cp \"${GOOGLESERVICE_INFO_PROD}\" \"${PLIST_DESTINATION}\"\nelse\n    echo \"Using ${GOOGLESERVICE_INFO_DEV}\"\n    cp \"${GOOGLESERVICE_INFO_DEV}\" \"${PLIST_DESTINATION}\"\nfi\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -2410,8 +2473,10 @@
 				BC82CFA02378538D003B2360 /* ChannelLogController+ChannelLogHistoryFetcher.swift in Sources */,
 				BC0C427A256AE94F000C740F /* ProfileController+AvatarOpenerDelegate.swift in Sources */,
 				BCE64DE7235B2D74001F27FD /* SelectUsersContainerView.swift in Sources */,
+				BC432C8526EA91FC00FB6E26 /* GeneralUpdatesContainerView.swift in Sources */,
 				BC306C28266C581400CBB507 /* LocationViewCell.swift in Sources */,
 				BC5187D825332DB700880418 /* Country.swift in Sources */,
+				BCC06E9E26F02B4A003C8E01 /* CreateEventCotroller.swift in Sources */,
 				BC6B9AE32489CC2500157725 /* CreateChannelController_.swift in Sources */,
 				BCBD85E72598DE7600303A25 /* FloatingPanelLayout.swift in Sources */,
 				BC0EAF2F2511AC1100394898 /* KeyboardFrameObserver.swift in Sources */,
@@ -2454,6 +2519,7 @@
 				BC59276922A1321D006A5CEF /* AutoSizingCollectionViewFlowLayout.swift in Sources */,
 				BCBEAC6B23B0888300E52850 /* DynamicLabel.swift in Sources */,
 				BC5BAFDA25A24F2C00996DCB /* AlertContainerView.swift in Sources */,
+				BC432C8326EA91D400FB6E26 /* GeneralUpdatesController.swift in Sources */,
 				BC1A781622A43C23005AC5CE /* dChannelLogController+CollectionDelegate.swift in Sources */,
 				BC0F42872358C2A6000D3DF0 /* StackCell.swift in Sources */,
 				BC74F2B422D0A62E00B37801 /* CreateAccountContainerView.swift in Sources */,
@@ -2658,6 +2724,7 @@
 				BCEDCD12259243DF00337B3C /* NotificationsController.swift in Sources */,
 				BC3AE88A24B9F23C00619FCF /* LocationSearchTable.swift in Sources */,
 				BCF8EE122389D18700234160 /* INSPhotosInteractionAnimator.swift in Sources */,
+				BCC06E9B26F02869003C8E01 /* Event.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

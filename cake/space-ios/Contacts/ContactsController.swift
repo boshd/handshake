@@ -311,16 +311,18 @@ extension ContactsController {
             if users?.count == 0 {
                 return ""
             } else {
-                return "AVAILABLE ON HANDSHAKE"
+//                return "AVAILABLE ON HANDSHAKE"
+                return "🤙 Friends (\(users?.count ?? 0))"
             }
         }
         guard section == 1, filteredContacts.count != 0 else { return " " }
-        return "CONTACTS"
+//        return "CONTACTS"
+        return "Contacts"
     }
     
     override func tableView(_  tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         let header = view as! UITableViewHeaderFooterView
-        header.textLabel?.font = ThemeManager.currentTheme().secondaryFontVeryBold(with: 10)
+        header.textLabel?.font = ThemeManager.currentTheme().secondaryFontBold(with: 10)
         header.textLabel?.textColor = ThemeManager.currentTheme().generalSubtitleColor
         header.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor
         view.backgroundColor = ThemeManager.currentTheme().generalBackgroundColor

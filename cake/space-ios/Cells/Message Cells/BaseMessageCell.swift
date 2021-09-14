@@ -233,6 +233,31 @@ class BaseMessageCell: UICollectionViewCell {
         return rect
     }
     
+    func setupFrameWithLabelForFirstAndLast(_ x: CGFloat,
+                             _ bubbleMaxWidth: CGFloat,
+                             _ estimate: CGFloat,
+                             _ insets: CGFloat,
+                             _ cellHeight: CGFloat,
+                             _ spacer: CGFloat = 10) -> CGRect {
+        
+        var x = x
+        if (estimate + BaseMessageCell.messageTimeWidth <=  bubbleMaxWidth) ||
+            estimate <= BaseMessageCell.messageTimeWidth {
+            x = x - BaseMessageCell.messageTimeWidth + spacer
+        }
+
+        var width: CGFloat = estimate + insets
+        if (estimate + BaseMessageCell.messageTimeWidth <=  bubbleMaxWidth) ||
+            estimate <= BaseMessageCell.messageTimeWidth {
+            width = width + BaseMessageCell.messageTimeWidth - spacer
+        }
+
+        let rect = CGRect(x: x, y: 0, width: width, height: cellHeight  - BaseMessageCell.incomingMessageAuthorNameLabelHeight - 15).integral
+        
+        
+        return rect
+    }
+    
     func setupFrameWithLabelForFirst(_ x: CGFloat,
                              _ bubbleMaxWidth: CGFloat,
                              _ estimate: CGFloat,

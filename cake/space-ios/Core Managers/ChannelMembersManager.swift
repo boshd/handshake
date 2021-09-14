@@ -165,7 +165,6 @@ extension ChannelManager {
 
 extension ChannelManager {
     public static func removeMember(channelReference: DocumentReference, userReference: DocumentReference, memberID: String, channelID: String, completion: @escaping (Error?) -> ()) {
-        print("pre remove member")
         removeMemberBatchOperation(userReference: userReference, channelReference: channelReference, channelID: channelID, memberID: memberID) { error in
             if error != nil {
                 print(error?.localizedDescription ?? "error removeUserBatchOperation")

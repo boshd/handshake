@@ -486,8 +486,30 @@ class ChannelLogController: UIViewController, UIGestureRecognizerDelegate {
             for index in (0..<messages.count).reversed() {
                 let isLastMessage = index == messages.count - 1
                 if isLastMessage { messages[index].isFirstInSection.value = true }
-                guard messages.indices.contains(index - 1) else { return }
+                guard messages.indices.contains(index - 1) else {
+                    messages[index].isFirstInSection.value = true
+                    return
+                }
                 let isPreviousMessageSenderDifferent = messages[index - 1].fromId != messages[index].fromId
+                
+                // no prev messages
+                
+                if let isInfoMsg = messages[index - 1].isInformationMessage.value,
+                   isInfoMsg,
+                   isPreviousMessageSenderDifferent {
+                    
+                    messages[index].isFirstInSection.value = true
+                    
+                } else if isPreviousMessageSenderDifferent {
+                    messages[index].isFirstInSection.value = true
+                } else {
+                    messages[index].isFirstInSection.value = false
+                }
+                
+//                if let isInfoMsg = messages[index].isInformationMessage.value, isInfoMsg {
+//                    messages[index].isFirstInSection.value =
+//                }
+                
                 messages[index].isFirstInSection.value = isPreviousMessageSenderDifferent ? true : messages[index].isInformationMessage.value ?? false
             }
         }

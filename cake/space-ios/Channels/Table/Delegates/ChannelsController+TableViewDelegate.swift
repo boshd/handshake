@@ -21,9 +21,11 @@ extension ChannelsController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: channelCellId, for: indexPath) as? ChannelCell ?? ChannelCell()
         guard let realmChannels = theRealmChannels else { return cell }
+        cell.currentRegion = currentRegion
+        cell.selectionStyle = .default
         cell.configureCell(for: indexPath, channels: realmChannels)
-        cell.accessoryType = .disclosureIndicator
-        cell.accessoryView?.tintColor = ThemeManager.currentTheme().tintColor
+//        cell.accessoryType = .disclosureIndicator
+//        cell.accessoryView?.tintColor = ThemeManager.currentTheme().tintColor
         
         return cell
     }
@@ -33,7 +35,7 @@ extension ChannelsController {
         
         let channel = theRealmChannels[indexPath.row]
         // let _ = channel.updateAndReturnStatus()
-        
+//        print(self)
         channelLogPresenter.open(channel, controller: self)
         
     }

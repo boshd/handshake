@@ -20,7 +20,7 @@ export function constructNotificationPayload(tokens: string[], messageId: string
 
     if (senderName && channelName) {
         title =  channelName
-        textString = '@' + senderName + ': ' + text
+        textString = senderName + ': ' + text
     } else if (channelName) {
         title = channelName
     } else {
@@ -54,11 +54,11 @@ export function constructNotificationPayload(tokens: string[], messageId: string
     };
 }
 
-export function constructNotificationPayloadForReminder(tokens: string[], channelId: string, channelName: string, text: string) {
+export function constructNotificationPayloadForReminder(tokens: string[], channelId: string, channelName: string, text: string, title: string) {
     // var title: string = ''
     // var textString: string = text
 
-    var title = channelName
+
 
     // format date
 

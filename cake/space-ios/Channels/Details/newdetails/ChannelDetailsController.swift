@@ -409,11 +409,6 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
     @objc
     func leaveEvent() {
         guard let channelID = channel?.id, let currentUserID = Auth.auth().currentUser?.uid else { return }
-        print("leaveEvent1")
-//        guard let index = attendees.firstIndex(where: { (user) -> Bool in
-//            return user.id == currentUserID
-//        }) else { return }
-//        guard let memberName = attendees[index].name else { return }
         let text = "\(globalCurrentUser?.name ?? "someone") left the group"
         
         let channelName = self.channel?.name ?? ""
@@ -424,9 +419,7 @@ class ChannelDetailsController: UIViewController, UIGestureRecognizerDelegate {
 
         let channelReference = Firestore.firestore().collection("channels").document(channelID)
         let participantReference = Firestore.firestore().collection("users").document(currentUserID)
-        print("leaveEventpre")
         ChannelManager.removeMember(channelReference: channelReference, userReference: participantReference, memberID: currentUserID, channelID: channelID) { error in
-            print("leaveEventdoone")
             if error != nil {
                 print(error?.localizedDescription ?? "err")
                 return

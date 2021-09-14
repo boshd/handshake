@@ -46,27 +46,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         window = UIWindow(frame: UIScreen.main.bounds)
-//        if let tabBarController = tabBarController {
+        if let tabBarController = tabBarController {
             let navigationController = UINavigationController(rootViewController: tabBarController ?? UIViewController())
             navigationController.navigationBar.isHidden = true
             self.window?.rootViewController = navigationController
             self.window?.makeKeyAndVisible()
             self.window?.backgroundColor = ThemeManager.currentTheme().windowBackground
-            
-//        self.window
-//            UIApplication.shared.windows.first?.rootViewController = navigationController
-//            UIApplication.shared.windows.first?.makeKeyAndVisible()
-////            UIApplication.shared.windows.first?.isKeyWindow = true
-//            UIApplication.shared.windows.first?.backgroundColor = ThemeManager.currentTheme().windowBackground
-            
-            tabBarController?.presentOnboardingController()
-//        }
+            tabBarController.presentOnboardingController()
+        }
 
         fetchContacts()
-        
         pushManager.registerForPushNotifications()
-        
         configureIndicator()
+        
+        // Check if launched from notification
+        let notificationOption = launchOptions?[.remoteNotification]
+
+        // 1
+        if let notification = notificationOption as? [String: AnyObject],
+           let aps = notification["aps"] as? [String: AnyObject] {
+            // 2
+            print("OPENED AFTER DEATH")
+
+            // 3
+            (window?.rootViewController as? UITabBarController)?.selectedIndex = 1
+        }
         
         return true
     }

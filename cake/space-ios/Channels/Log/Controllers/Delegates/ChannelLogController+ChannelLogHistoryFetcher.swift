@@ -102,11 +102,15 @@ extension ChannelLogController: ChannelLogHistoryDelegate {
                 let limitedMessagesForSection = messagesInSection.filter("timestamp >= %@", timestampOfLastMessageToDisplay)
                 messagesInSection = limitedMessagesForSection
                 let newSection = MessageSection(messages: messagesInSection, title: date)
+                configureBubblesTails(for: newSection.messages)
+                configureIsFirstnessInSection(for: newSection.messages)
                 groupedMessages.insert(newSection, at: 0)
                 sectionsInserted += 1
                 break
             } else {
                 let newSection = MessageSection(messages: messagesInSection, title: date)
+                configureBubblesTails(for: newSection.messages)
+                configureIsFirstnessInSection(for: newSection.messages)
                 groupedMessages.insert(newSection, at: 0)
                 sectionsInserted += 1
             }
